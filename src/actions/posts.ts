@@ -93,13 +93,13 @@ export async function createPost(
           body: JSON.stringify(imagePrompt),
         }).then( async (res) => {
           imageResponse = await res.json();
-          console.log("image response: ", response);
-          return response;
-        }).then((response)=>{
+          console.log("image response: ", imageResponse);
+          return imageResponse;
+        }).then((imageResponse)=>{
           return db.image.create({
             data:{
               id: generateIdFromEntropySize(10),
-              src: response.url,
+              src: imageResponse.url,
               prompt: imagePrompt.input
             }
           })

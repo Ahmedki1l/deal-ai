@@ -46,10 +46,22 @@ export default async function Dashboard({ params: { lang } }: DashboardProps) {
 
       <div className="mx-auto mt-10 flex flex-col gap-10">
         <section>
-          <div className="flex justify-around gap-4 [&>div]:w-fit [&>div]:rounded-lg [&>div]:bg-white">
-            <Image src={dailyProgress?.["src"]} alt="" />
-            <Image src={charts?.["src"]} alt="" />
-            <Image src={shutterstock?.["src"]} alt="" />
+          <div className="grid grid-cols-3 gap-4">
+            <Image
+              src={dailyProgress?.["src"]}
+              alt=""
+              className="aspect-video rounded border"
+            />
+            <Image
+              src={charts?.["src"]}
+              alt=""
+              className="aspect-video rounded border"
+            />
+            <Image
+              src={shutterstock?.["src"]}
+              alt=""
+              className="aspect-video rounded border"
+            />
           </div>
         </section>
 

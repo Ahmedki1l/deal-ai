@@ -12,7 +12,7 @@ export function Image({ className, src, alt, ...props }: ImageProps) {
       width={999999999999999}
       height={999999999999999}
       className={cn(
-        "h-full w-full rounded-md border bg-muted object-cover object-center transition-colors",
+        // "h-full w-full rounded-md border bg-muted object-cover object-center transition-colors",
         className,
       )}
       {...props}

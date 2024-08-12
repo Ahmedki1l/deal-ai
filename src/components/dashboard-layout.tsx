@@ -32,6 +32,7 @@ import {
 import { t } from "@/lib/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { Dictionary } from "@/types/locale";
+import { LocaleSwitcher } from "./locale-switcher";
 
 type DashboardLayoutProps = {
   user: User;
@@ -43,10 +44,11 @@ type DashboardLayoutProps = {
     top?: SelectItem[][];
     bottom?: SelectItem[][];
   };
-} & Dictionary["dashboard-layout"];
+} & Dictionary["dashboard-layout"] &
+  Dictionary["locale-switcher"];
 
 export function DashboardLayout({
-  dic: { "dashboard-layout": c },
+  dic: { "dashboard-layout": c, ...dic },
   user,
   links,
   children,
@@ -152,7 +154,7 @@ export function DashboardLayout({
                 >
                   <Card>
                     <CardHeader className="flex flex-col items-center justify-center gap-4">
-                      <div className="flex w-full items-center justify-start gap-3">
+                      <div className="flex w-full items-center justify-center gap-3">
                         <Avatar
                           user={user}
                           className={cn(
@@ -164,15 +166,16 @@ export function DashboardLayout({
                             className: isCollapsed ? "w-3 h-3" : "w-5 h-5",
                           }}
                         />
-                        {!isCollapsed && (
-                          <CardTitle>{user?.["name"]}</CardTitle>
-                        )}
                       </div>
                       {!isCollapsed && (
                         <div className="text-sm">
+                          {!isCollapsed && (
+                            <CardTitle>{user?.["name"]}</CardTitle>
+                          )}
                           <CardDescription className="tuncate line-clamp-1">
                             {user?.["email"]}
                           </CardDescription>
+                          <LocaleSwitcher dic={dic} />
                         </div>
                       )}
                     </CardHeader>

@@ -212,55 +212,55 @@
   },
 
   "post-create-button": {
-    "created successfully.": "created successfully.",
-    "submit": "Submit",
-    "create posts": "Create Posts",
+    "created successfully.": "تم بنجاح",
+    "submit": "تأكيد",
+    "create posts": "أنشئ بوستات",
     "this step is essential for informing patients about the treatments available at your posts.": "this step is essential for informing patients about the treatments available at your posts."
   },
   "post-delete-button": {
-    "deleted successfully.": "deleted successfully.",
-    "delete": "Delete",
-    "delete post": "Delete Post",
+    "deleted successfully.": "تم الحذف بنجاح",
+    "delete": "حذف",
+    "delete post": "حذف البوست",
     "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your post."
   },
   "post-form": {
-    "title": { "label": "Title", "health center": "Health Center" },
+    "title": { "label": "العنوان", "health center": "مركز الصحة" },
     "description": {
-      "label": "Description",
-      "describe your post": "Describe your post"
+      "label": "الوصف",
+      "describe your post": "أوصف الحملة السوشيال ميديا"
     },
     "content": {
-      "label": "Content",
-      "describe your post's content": "Describe your post's content"
+      "label": "محتويات",
+      "describe your post's content": "أوصف محتوى البوست"
     },
-    "noOfWeeks": { "label": "Number of Weeks" },
+    "noOfWeeks": { "label": "عدد الأسابيع" },
     "campaignType": {
-      "label": "Campaign Type",
-      "select your campaign": "Select your campaign"
+      "label": "نوع الحملة",
+      "select your campaign": "إختر الحملة"
     },
     "contentLength": {
-      "label": "Content Length",
-      "select your content length": "select your content length"
+      "label": "طول المحتوى",
+      "select your content length": "اختر طول المحتوى"
     },
     "platform": {
-      "label": "Platform",
-      "select your platform": "Select your platform"
+      "label": "المنصة",
+      "select your platform": "اختر المنصة"
     },
     "postAt": {
-      "label": "Post At"
+      "label": "ميعاد النشر"
     }
   },
   "post-update-content-button": {
-    "content updated successfully.": "content updated successfully.",
-    "submit": "Submit",
-    "update content": "Update Content",
+    "content updated successfully.": "تم تحديث المحتوى بنجاح",
+    "submit": "تسليم",
+    "update content": "حدث المحتوى",
     "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your post."
   },
   "post-update-form": {
-    "updated successfully.": "updated successfully.",
-    "submit": "Submit",
-    "post details": "Post Details",
-    "discard": "Discard",
+    "updated successfully.": "تم التحديث بنجاح",
+    "submit": "تسليم",
+    "post details": "تفاصيل البوست",
+    "discard": "",
     "save changes": "Save Changes",
     "post information": "Post Information"
   },

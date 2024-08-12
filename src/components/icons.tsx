@@ -42,7 +42,7 @@ export const Icons = {
     <CutomImage
       src={icon?.["src"]}
       alt=""
-      className={cn(IconsVariants({}), "mr-2 h-6 w-6", className)}
+      className={cn(IconsVariants({}), "mr-2 h-6 w-6 bg-none", className)}
       // {...props}
     />
   ),
@@ -51,7 +51,7 @@ export const Icons = {
     <CutomImage
       src={logo?.["src"]}
       alt=""
-      className={cn(IconsVariants({}), "mr-2 h-6 w-6", className)}
+      className={cn(IconsVariants({}), "mr-2 h-6 w-6 bg-none", className)}
       // {...props}
     />
   ),

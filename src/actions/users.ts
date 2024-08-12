@@ -16,6 +16,7 @@ import {
 } from "@/validations/users";
 import { lucia, getAuth } from "@/lib/auth";
 import { db } from "@/db";
+import { getLocale } from "@/lib/locale";
 
 export async function signUpWithPassword(
   credentials: z.infer<typeof userAuthRegisterSchema>,
@@ -59,7 +60,9 @@ export async function signUpWithPassword(
       sessionCookie.attributes,
     );
 
-    return redirect("/login");
+    const currentUrl = new URL(window.location.href);
+    const lang = currentUrl.pathname.split("/")[1];
+    return redirect(`/${lang}/login`);
   } catch (error: any) {
     if (isRedirectError(error)) throw error;
     throw Error(error?.["message"] ?? "an error occured, try again.");
@@ -102,7 +105,9 @@ export async function signInWithPassword(
       sessionCookie.attributes,
     );
 
-    return redirect("/");
+    const currentUrl = new URL(window.location.href);
+    const lang = currentUrl.pathname.split("/")[1];
+    return redirect(`/${lang}/dashboard`);
   } catch (error: any) {
     if (isRedirectError(error)) throw error;
 
@@ -150,5 +155,7 @@ export async function logout() {
     sessionCookie.attributes,
   );
 
-  return redirect("/login");
+  const currentUrl = new URL(window.location.href);
+  const lang = currentUrl.pathname.split("/")[1];
+  return redirect(`/${lang}/login`);
 }

@@ -66,7 +66,7 @@ export function DialogResponsive({
           </DialogHeader>
           {content}
 
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             {confirmButton}
 
             <DialogClose asChild>
@@ -94,7 +94,7 @@ export function DialogResponsive({
         </DrawerHeader>
         <div className="px-4">{content}</div>
 
-        <DrawerFooter>
+        <DrawerFooter className="gap-2">
           {confirmButton}
 
           <DrawerClose asChild>

@@ -194,7 +194,7 @@ export default async function CaseStudy({
                           <Card className="overview-hidden">
                             <CardHeader className="rounded-none p-0">
                               <Link
-                                href={`/dashboard/projects/${projectId}/${caseStudyId}/${e?.["id"]}`}
+                                href={`/dashboard/projects/${projectId}/cases/${caseStudyId}/posts/${e?.["id"]}`}
                               >
                                 <Image
                                   src={

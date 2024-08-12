@@ -260,91 +260,91 @@
     "updated successfully.": "تم التحديث بنجاح",
     "submit": "تسليم",
     "post details": "تفاصيل البوست",
-    "discard": "",
-    "save changes": "Save Changes",
-    "post information": "Post Information"
+    "discard": "إزالة",
+    "save changes": "حفظ التغييرات",
+    "post information": "تفاصيل البوست"
   },
   "post-update-schedule-button": {
-    "scheduled successfully.": "scheduled successfully.",
-    "submit": "Submit",
-    "update schedule": "Update Schedule",
+    "scheduled successfully.": "تمت الجدولة بنجاح",
+    "submit": "تسليم",
+    "update schedule": "حدث الجدولة",
     "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your case study."
   },
 
   "project-create-button": {
-    "created successfully.": "created successfully.",
-    "submit": "Submit",
-    "type of assets": "Type of Assets",
-    "unit": "unit",
-    "create project": "Create Project",
+    "created successfully.": "تمت العملية بنجاح",
+    "submit": "تسليم",
+    "type of assets": "نوع الوحدات",
+    "unit": "وحدة",
+    "create project": "إنشاء المشروع",
     "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
   },
   "project-delete-button": {
-    "deleted successfully.": "deleted successfully.",
-    "delete": "Delete",
-    "delete project": "Delete Project",
+    "deleted successfully.": "تم الحذف بنجاح",
+    "delete": "حذف",
+    "delete project": "حذف المشروع",
     "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
   },
   "project-form": {
-    "title": { "label": "Title", "health center": "health center" },
+    "title": { "label": "العنوان", "health center": "بالم هيلز" },
     "description": {
-      "label": "Description",
-      "describe your project": "describe your project"
+      "label": "الوصف",
+      "describe your project": "وصف المشروع"
     },
-    "distinct": { "label": "Distinct", "nasr city": "Nasr City" },
-    "city": { "label": "City", "cairo": "Cairo" },
-    "country": { "label": "Country", "egypt": "Egypt" },
-    "spaces": { "label": "Spaces" },
+    "distinct": { "label": "المنطقة", "nasr city": "مدينة نصر" },
+    "city": { "label": "المدينة", "cairo": "القاهرة" },
+    "country": { "label": "الدولة", "egypt": "مصر" },
+    "spaces": { "label": "المساحات" },
     "platforms": {
-      "label": "Platforms",
-      "select your platform": "Select your platform"
+      "label": "المنصات",
+      "select your platform": "إختر المنصة"
     }
   },
   "project-update-form": {
-    "updated successfully.": "updated successfully.",
-    "submit": "Submit",
-    "update project": "Update Project",
+    "updated successfully.": "تم التحديث بنجاح",
+    "submit": "تسليم",
+    "update project": "تحديث المشروع",
     "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
   },
 
   "property-create-button": {
-    "created successfully.": "created successfully.",
-    "submit": "Submit",
-    "type of assets": "Type of Assets",
-    "unit": "unit",
-    "create property": "Create Property",
+    "created successfully.": "تمت العملية بنجاح",
+    "submit": "تسليم",
+    "type of assets": "نوع الوحدات",
+    "unit": "وحدة",
+    "create property": "أضف وحدات",
     "this step is essential for informing patients about the treatments available at your property.": "this step is essential for informing patients about the treatments available at your property."
   },
   "property-delete-button": {
-    "deleted successfully.": "deleted successfully.",
-    "delete": "Delete",
-    "delete property": "Delete Property",
+    "deleted successfully.": "تم الحذف بنجاح",
+    "delete": "حذف",
+    "delete property": "حذف المشروع",
     "this step is essential for informing patients about the treatments available at your property.": "this step is essential for informing patients about the treatments available at your property."
   },
   "property-form": {
-    "type": { "select your property type": "Select your property type" },
-    "title": { "label": "Title", "health center": "health center" },
-    "units": { "label": "Units" },
-    "space": { "label": "Space" },
-    "finishing": { "label": "Finishing" },
-    "floors": { "label": "Floors" },
-    "rooms": { "label": "Rooms" },
-    "bathrooms": { "label": "Bathrooms" },
-    "recipients": { "label": "Recipients" },
-    "garden": { "label": "Garden" },
-    "pool": { "label": "Pool" },
-    "view": { "label": "View" }
+    "type": { "select your property type": "إختر نوع الوحدة" },
+    "title": { "label": "العنوان", "health center": "وحدة سكنية 1" },
+    "units": { "label": "الوحدات" },
+    "space": { "label": "المساحات" },
+    "finishing": { "label": "التشطيب" },
+    "floors": { "label": "عدد الادوار" },
+    "rooms": { "label": "عدد الغرف" },
+    "bathrooms": { "label": "عدد الحمامات" },
+    "recipients": { "label": "عدد غرف الاستقبال" },
+    "garden": { "label": "حديثة" },
+    "pool": { "label": "حمام سباحة" },
+    "view": { "label": "المنظر" }
   },
 
   "user-form": {
     "name": {
-      "label": "Full Name"
+      "label": "الإسم بالكامل"
     },
     "email": {
-      "label": "Email"
+      "label": "الإيميل"
     },
     "password": {
-      "label": "Password"
+      "label": "كلمة المرور"
     }
   }
 }

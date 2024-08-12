@@ -163,7 +163,7 @@ export function PostUpdateForm({
                 <CardDescription>{post?.["description"]}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
-                <PostForm.title dic={dic} form={form as any} loading={true} />
+                <PostForm.title dic={dic} form={form as any} loading={loading} />
                 <PostForm.content
                   dic={dic}
                   form={form as any}
@@ -186,7 +186,7 @@ export function PostUpdateForm({
                   <PostForm.postAt
                     dic={dic}
                     form={form as any}
-                    loading={true}
+                    loading={loading}
                   />
                   <PostForm.noOfWeeks
                     dic={dic}

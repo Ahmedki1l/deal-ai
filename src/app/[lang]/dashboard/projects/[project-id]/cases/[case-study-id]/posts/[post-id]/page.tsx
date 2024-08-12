@@ -88,7 +88,7 @@ export default async function CaseStudy({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink
-                href={`/dashboard/projects/${projectId}/${caseStudyId}`}
+                href={`/dashboard/projects/${projectId}/cases/${caseStudyId}`}
               >
                 {post?.["caseStudy"]?.["title"]}
               </BreadcrumbLink>

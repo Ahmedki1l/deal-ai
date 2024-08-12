@@ -25,7 +25,7 @@ export default async function Login({ params: { lang } }: LoginProps) {
         <div className="absolute inset-0 bg-primary/30" />
         <p className="z-20 flex items-center text-lg font-medium">
           <Icons.logo />
-          Acme Inc
+          Deal AI
         </p>
 
         <div className="z-20 mt-auto">

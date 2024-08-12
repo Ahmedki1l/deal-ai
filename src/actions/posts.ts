@@ -40,7 +40,7 @@ export async function createPost(
     };
     console.log(result);
     const domain = process.env.NEXT_PUBLIC_AI_API;
-    const endpoint = domain + "/chat/socialmediaplan";
+    const endpoint = domain + "/en/chat/socialmediaplan";
 
     const response = await fetch(endpoint, {
       method: "POST",

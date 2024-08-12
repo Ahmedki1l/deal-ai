@@ -74,13 +74,13 @@ export default async function CaseStudy({
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href={`/dashboard/projects`}>
+              <BreadcrumbLink href={`/${lang}/dashboard/projects`}>
                 Projects
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href={`/dashboard/projects/${projectId}`}>
+              <BreadcrumbLink href={`/${lang}/dashboard/projects/${projectId}`}>
                 {post?.["caseStudy"]?.["project"]?.["title"]}
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -88,7 +88,7 @@ export default async function CaseStudy({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink
-                href={`/dashboard/projects/${projectId}/cases/${caseStudyId}`}
+                href={`/${lang}/dashboard/projects/${projectId}/cases/${caseStudyId}`}
               >
                 {post?.["caseStudy"]?.["title"]}
               </BreadcrumbLink>

@@ -61,7 +61,7 @@ export default async function Project({
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href={`/dashboard/projects`}>
+              <BreadcrumbLink href={`/${lang}/dashboard/projects`}>
                 Projects
               </BreadcrumbLink>
             </BreadcrumbItem>

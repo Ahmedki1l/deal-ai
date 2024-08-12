@@ -57,13 +57,13 @@ export default async function CaseStudy({
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href={`/dashboard/projects`}>
+              <BreadcrumbLink href={`/${lang}/dashboard/projects`}>
                 Projects
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href={`/dashboard/projects/${projectId}`}>
+              <BreadcrumbLink href={`/${lang}/dashboard/projects/${projectId}`}>
                 {property?.["project"]?.["title"]}
               </BreadcrumbLink>
             </BreadcrumbItem>

@@ -69,6 +69,7 @@ export function ProjectCreateButton({
       },
       success: () => {
         router.refresh();
+        console.log(data)
         form.reset();
         setOpen(false);
         return c?.["created successfully."];

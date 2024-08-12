@@ -11,7 +11,6 @@ export const caseStudySchema = z.object(
     title: z.string("title"),
     description: z.string("description").optional(),
     refImages: z.array(z.string("reference image")),
-
     content: z.string("content"),
     targetAudience: z.string("targetAudience"),
     pros: z.string("pros"),

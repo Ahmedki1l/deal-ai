@@ -17,6 +17,7 @@ export const projectSchema = z.object(
 
     propertyTypes: z.array(z.enum(propertyTypesArr)),
     platforms: z.array(z.enum(platformsArr)),
+    
   },
 );
 

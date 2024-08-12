@@ -1,0 +1,350 @@
+{
+  "site": {
+    "name": "Deal Ai",
+    "description": "We bring together all those who love exploration, and adventure through different and diverse projects that suit different people's interests, while focusing on the people throughout the trip."
+  },
+  "auth": {
+    "login": {
+      "don't have an account? sign up now": "Don't have an account? Sign Up now",
+      "or continue with": "or continue with",
+      "sign in with email": "Sign In with Email",
+      "sign in with google": "Sign In with Google",
+      "sign in with facebook": "Sign In with Facebook",
+      "forgot password": "Forgot Password?"
+    },
+    "register": {
+      "already have an account? sign in.": "Already have an account? Sign In.",
+      "or continue with": "or continue with",
+      "sign up with email": "Sign Up with Email",
+      "sign up with google": "Sign Up with Google",
+      "sign up with facebook": "Sign Up with Facebook"
+    }
+  },
+  "dashboard": {
+    "user": {
+      "main-nav": {
+        "top": [
+          {
+            "segment": null,
+            "value": "/dashboard",
+            "label": "Dashboard",
+            "icon": "home"
+          },
+          {
+            "segment": "projects",
+            "value": "/dashboard/projects",
+            "label": "My Projects",
+            "icon": "analytics"
+          }
+        ],
+        "bottom": [
+          {
+            "segment": "settings",
+            "value": "/dashboard/settings",
+            "label": "Settings",
+            "icon": "settings"
+          }
+        ]
+      },
+      "dashboard": {
+        "dashboard": "Dashboard",
+        "take a glance and manage your projects.": "Take a glance and manage your projects.",
+        "create project": "Create Project",
+        "latest projects": "Latest Projects"
+      },
+      "projects": {
+        "projects": "Projects",
+        "create and manage projects.": "Create and manage posts.",
+        "create project": "Create Project",
+        "table": {
+          "project": "Project",
+          "case study": "Case Study",
+          "target audience": "Target Audience",
+          "properties": "Properties",
+          "posts": "Posts",
+          "platforms": "Platforms",
+          "edit": "Edit",
+          "delete": "Delete"
+        },
+        "project": {
+          "here's a list of your case studies.": "Here's a list of your case studies.",
+          "case studies": "Case Studies",
+          "create case study": "Create Case Study",
+          "here's a list of your properties.": "Here's a list of your properties.",
+          "create properties": "Create Properties",
+
+          "cases": {
+            "case": {
+              "case study content": "Case Study Content",
+              "target audience": "Target Audience",
+              "pros": "Pros",
+              "cons": "Cons",
+              "reference images": "Reference Images",
+              "navigate to get what you want.": "Navigate to get what you want.",
+              "create posts": "Create Posts",
+              "posts": {
+                "posts": "Posts"
+              }
+            },
+            "table": {
+              "name": "Name",
+              "description": "Description",
+              "case study": "Case Study",
+              "target audience": "Target Audience",
+              "posts": "Posts",
+              "platforms": "Platforms",
+              "edit": "Edit",
+              "delete": "Delete"
+            }
+          },
+          "properties": {
+            "properties": "Properties",
+            "table": {
+              "name": "Name",
+              "units": "Units",
+              "type": "Type",
+              "space": "space",
+              "finishing": "finishing",
+              "floors": "floors",
+              "rooms": "rooms",
+              "bathrooms": "bathrooms",
+              "recipients": "recipients",
+              "garden": "garden",
+              "pool": "pool",
+              "view": "view",
+              "edit": "Edit",
+              "delete": "Delete"
+            }
+          }
+        }
+      },
+      "settings": {
+        "settings": "Settings",
+        "Create and manage account.": "Create and manage account."
+      }
+    }
+  },
+
+  "back-button": { "back": "back" },
+
+  "case-study-create-button": {
+    "created successfully.": "created successfully.",
+    "submit": "Submit",
+    "create case study": "Create Case Study",
+    "this step is essential for informing patients about the treatments available at your case study.": "this step is essential for informing patients about the treatments available at your case study."
+  },
+  "case-study-delete-button": {
+    "deleted successfully.": "deleted successfully.",
+    "delete": "Delete",
+    "delete case study": "delete case study",
+    "this step is essential for informing patients about the treatments available at your case study.": "this step is essential for informing patients about the treatments available at your case study."
+  },
+  "case-study-form": {
+    "title": { "label": "Title", "health center": "Health Center" },
+    "description": {
+      "label": "Description",
+      "describe your case study": "Describe your case study"
+    },
+    "reference image": { "label": "Reference Image" },
+    "content": {
+      "label": "Content",
+      "describe your case study's content": "describe your case study's content"
+    },
+    "targetAudience": {
+      "label": "Description",
+      "describe your case study's target audience": "describe your case study's target audience"
+    },
+    "pros": {
+      "label": "Pros",
+      "describe your case study's pros": "describe your case study's pros"
+    },
+    "cons": {
+      "label": "Cons",
+      "describe your case study's cons": "describe your case study's cons"
+    }
+  },
+  "case-study-update-form": {
+    "updated successfully.": "updated successfully.",
+    "submit": "Submit",
+    "update case study": "Update Case Study",
+    "this step is essential for informing patients about the treatments available at your case study.": "this step is essential for informing patients about the treatments available at your case study."
+  },
+
+  "dashboard-layout": {
+    "logout": "Logout"
+  },
+
+  "data-table": {
+    "no results.": "No Results."
+  },
+  "data-table-column-header": {
+    "asc": "Asc",
+    "desc": "Desc",
+    "hide": "Hide"
+  },
+  "data-table-pagination": {
+    "of": "of",
+    "row(s) selected.": "row(s) selected.",
+    "rows per page": "rows per page",
+    "go to first page": "Go to first page",
+    "go to previous page": "Go to previous page",
+    "go to next page": "Go to next page",
+    "go to last page": "Go to last page",
+    "page": "page"
+  },
+  "data-table-view-options": {
+    "view": "View",
+    "toggle columns": "Toggle columns"
+  },
+
+  "dialog": {
+    "are you sure you want to proceed?": "Are you sure you want to proceed?",
+    "Please confirm that all the provided information is accurate. This action cannot be undone.": "Please confirm that all the provided information is accurate. This action cannot be undone.",
+    "cancel": "Cancel"
+  },
+
+  "locale-switcher": {
+    "current locale of the website": "current locale of the website",
+    "en": "English (EN)",
+    "ar": "العربية (AR)",
+    "fr": "French (FR)",
+    "de": "Deautch (DE)"
+  },
+
+  "post-create-button": {
+    "created successfully.": "created successfully.",
+    "submit": "Submit",
+    "create posts": "Create Posts",
+    "this step is essential for informing patients about the treatments available at your posts.": "this step is essential for informing patients about the treatments available at your posts."
+  },
+  "post-delete-button": {
+    "deleted successfully.": "deleted successfully.",
+    "delete": "Delete",
+    "delete post": "Delete Post",
+    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your post."
+  },
+  "post-form": {
+    "title": { "label": "Title", "health center": "Health Center" },
+    "description": {
+      "label": "Description",
+      "describe your post": "Describe your post"
+    },
+    "content": {
+      "label": "Content",
+      "describe your post's content": "Describe your post's content"
+    },
+    "noOfWeeks": { "label": "Number of Weeks" },
+    "campaignType": {
+      "label": "Campaign Type",
+      "select your campaign": "Select your campaign"
+    },
+    "contentLength": {
+      "label": "Content Length",
+      "select your content length": "select your content length"
+    },
+    "platform": {
+      "label": "Platform",
+      "select your platform": "Select your platform"
+    },
+    "postAt": {
+      "label": "Post At"
+    }
+  },
+  "post-update-content-button": {
+    "content updated successfully.": "content updated successfully.",
+    "submit": "Submit",
+    "update content": "Update Content",
+    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your post."
+  },
+  "post-update-form": {
+    "updated successfully.": "updated successfully.",
+    "submit": "Submit",
+    "post details": "Post Details",
+    "discard": "Discard",
+    "save changes": "Save Changes",
+    "post information": "Post Information"
+  },
+  "post-update-schedule-button": {
+    "scheduled successfully.": "scheduled successfully.",
+    "submit": "Submit",
+    "update schedule": "Update Schedule",
+    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your case study."
+  },
+
+  "project-create-button": {
+    "created successfully.": "created successfully.",
+    "submit": "Submit",
+    "type of assets": "Type of Assets",
+    "unit": "unit",
+    "create project": "Create Project",
+    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
+  },
+  "project-delete-button": {
+    "deleted successfully.": "deleted successfully.",
+    "delete": "Delete",
+    "delete project": "Delete Project",
+    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
+  },
+  "project-form": {
+    "title": { "label": "Title", "health center": "health center" },
+    "description": {
+      "label": "Description",
+      "describe your project": "describe your project"
+    },
+    "distinct": { "label": "Distinct", "nasr city": "Nasr City" },
+    "city": { "label": "City", "cairo": "Cairo" },
+    "country": { "label": "Country", "egypt": "Egypt" },
+    "spaces": { "label": "Spaces" },
+    "platforms": {
+      "label": "Platforms",
+      "select your platform": "Select your platform"
+    }
+  },
+  "project-update-form": {
+    "updated successfully.": "updated successfully.",
+    "submit": "Submit",
+    "update project": "Update Project",
+    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
+  },
+
+  "property-create-button": {
+    "created successfully.": "created successfully.",
+    "submit": "Submit",
+    "type of assets": "Type of Assets",
+    "unit": "unit",
+    "create property": "Create Property",
+    "this step is essential for informing patients about the treatments available at your property.": "this step is essential for informing patients about the treatments available at your property."
+  },
+  "property-delete-button": {
+    "deleted successfully.": "deleted successfully.",
+    "delete": "Delete",
+    "delete property": "Delete Property",
+    "this step is essential for informing patients about the treatments available at your property.": "this step is essential for informing patients about the treatments available at your property."
+  },
+  "property-form": {
+    "type": { "select your property type": "Select your property type" },
+    "title": { "label": "Title", "health center": "health center" },
+    "units": { "label": "Units" },
+    "space": { "label": "Space" },
+    "finishing": { "label": "Finishing" },
+    "floors": { "label": "Floors" },
+    "rooms": { "label": "Rooms" },
+    "bathrooms": { "label": "Bathrooms" },
+    "recipients": { "label": "Recipients" },
+    "garden": { "label": "Garden" },
+    "pool": { "label": "Pool" },
+    "view": { "label": "View" }
+  },
+
+  "user-form": {
+    "name": {
+      "label": "Full Name"
+    },
+    "email": {
+      "label": "Email"
+    },
+    "password": {
+      "label": "Password"
+    }
+  }
+}

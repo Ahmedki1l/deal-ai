@@ -1,0 +1,350 @@
+{
+  "site": {
+    "name": "صفقة الذكاء الاصطناعي",
+    "description": "نجمع بين جميع محبي الاستكشاف والمغامرة من خلال مشاريع متنوعة ومختلفة تناسب اهتمامات الناس المختلفة، مع التركيز على الناس طوال الرحلة."
+  },
+  "auth": {
+    "login": {
+      "don't have an account? sign up now": "ليس لديك حساب؟ اشترك الآن",
+      "or continue with": "أو تابع مع",
+      "sign in with email": "تسجيل الدخول بالبريد الإلكتروني",
+      "sign in with google": "تسجيل الدخول باستخدام جوجل",
+      "sign in with facebook": "تسجيل الدخول باستخدام فيسبوك",
+      "forgot password": "نسيت كلمة المرور؟"
+    },
+    "register": {
+      "already have an account? sign in.": "هل لديك حساب بالفعل؟ تسجيل الدخول.",
+      "or continue with": "أو تابع مع",
+      "sign up with email": "اشترك بالبريد الإلكتروني",
+      "sign up with google": "اشترك باستخدام جوجل",
+      "sign up with facebook": "اشترك باستخدام فيسبوك"
+    }
+  },
+  "dashboard": {
+    "user": {
+      "main-nav": {
+        "top": [
+          {
+            "segment": null,
+            "value": "/dashboard",
+            "label": "لوحة التحكم",
+            "icon": "home"
+          },
+          {
+            "segment": "projects",
+            "value": "/dashboard/projects",
+            "label": "مشاريعي",
+            "icon": "analytics"
+          }
+        ],
+        "bottom": [
+          {
+            "segment": "settings",
+            "value": "/dashboard/settings",
+            "label": "الإعدادات",
+            "icon": "settings"
+          }
+        ]
+      },
+      "dashboard": {
+        "dashboard": "لوحة التحكم",
+        "take a glance and manage your projects.": "ألقِ نظرة وقم بإدارة مشاريعك.",
+        "create project": "إنشاء مشروع",
+        "latest projects": "آخر المشاريع"
+      },
+      "projects": {
+        "projects": "المشاريع",
+        "create and manage projects.": "إنشاء وإدارة المشاريع.",
+        "create project": "إنشاء مشروع",
+        "table": {
+          "project": "المشروع",
+          "case study": "دراسة الحالة",
+          "target audience": "الجمهور المستهدف",
+          "properties": "الخصائص",
+          "posts": "المنشورات",
+          "platforms": "المنصات",
+          "edit": "تعديل",
+          "delete": "حذف"
+        },
+        "project": {
+          "here's a list of your case studies.": "إليك قائمة بدراسات الحالة الخاصة بك.",
+          "case studies": "دراسات الحالة",
+          "create case study": "إنشاء دراسة حالة",
+          "here's a list of your properties.": "إليك قائمة بالخصائص الخاصة بك.",
+          "create properties": "إنشاء خصائص",
+
+          "cases": {
+            "case": {
+              "case study content": "محتوى دراسة الحالة",
+              "target audience": "الجمهور المستهدف",
+              "pros": "الإيجابيات",
+              "cons": "السلبيات",
+              "reference images": "الصور المرجعية",
+              "navigate to get what you want.": "تصفح للحصول على ما تريد.",
+              "create posts": "إنشاء منشورات",
+              "posts": {
+                "posts": "المنشورات"
+              }
+            },
+            "table": {
+              "name": "الاسم",
+              "description": "الوصف",
+              "case study": "دراسة الحالة",
+              "target audience": "الجمهور المستهدف",
+              "posts": "المنشورات",
+              "platforms": "المنصات",
+              "edit": "تعديل",
+              "delete": "حذف"
+            }
+          },
+          "properties": {
+            "properties": "الخصائص",
+            "table": {
+              "name": "الاسم",
+              "units": "الوحدات",
+              "type": "النوع",
+              "space": "المساحة",
+              "finishing": "التشطيب",
+              "floors": "الطوابق",
+              "rooms": "الغرف",
+              "bathrooms": "الحمامات",
+              "recipients": "المستفيدين",
+              "garden": "حديقة",
+              "pool": "مسبح",
+              "view": "عرض",
+              "edit": "تعديل",
+              "delete": "حذف"
+            }
+          }
+        }
+      },
+      "settings": {
+        "settings": "الإعدادات",
+        "Create and manage account.": "إنشاء وإدارة الحساب."
+      }
+    }
+  },
+
+  "back-button": { "back": "رجوع" },
+
+  "case-study-create-button": {
+    "created successfully.": "تم الإنشاء بنجاح.",
+    "submit": "إرسال",
+    "create case study": "إنشاء دراسة حالة",
+    "this step is essential for informing patients about the treatments available at your case study.": "هذه الخطوة ضرورية لإعلام المرضى بالعلاجات المتاحة في دراسة الحالة الخاصة بك."
+  },
+  "case-study-delete-button": {
+    "deleted successfully.": "تم الحذف بنجاح.",
+    "delete": "حذف",
+    "delete case study": "حذف دراسة الحالة",
+    "this step is essential for informing patients about the treatments available at your case study.": "هذه الخطوة ضرورية لإعلام المرضى بالعلاجات المتاحة في دراسة الحالة الخاصة بك."
+  },
+  "case-study-form": {
+    "title": { "label": "العنوان", "health center": "مركز صحي" },
+    "description": {
+      "label": "الوصف",
+      "describe your case study": "وصف دراسة الحالة الخاصة بك"
+    },
+    "reference image": { "label": "الصورة المرجعية" },
+    "content": {
+      "label": "المحتوى",
+      "describe your case study's content": "وصف محتوى دراسة الحالة الخاصة بك"
+    },
+    "targetAudience": {
+      "label": "الوصف",
+      "describe your case study's target audience": "وصف الجمهور المستهدف لدراسة الحالة الخاصة بك"
+    },
+    "pros": {
+      "label": "الإيجابيات",
+      "describe your case study's pros": "وصف إيجابيات دراسة الحالة الخاصة بك"
+    },
+    "cons": {
+      "label": "السلبيات",
+      "describe your case study's cons": "وصف سلبيات دراسة الحالة الخاصة بك"
+    }
+  },
+  "case-study-update-form": {
+    "updated successfully.": "تم التحديث بنجاح.",
+    "submit": "إرسال",
+    "update case study": "تحديث دراسة الحالة",
+    "this step is essential for informing patients about the treatments available at your case study.": "هذه الخطوة ضرورية لإعلام المرضى بالعلاجات المتاحة في دراسة الحالة الخاصة بك."
+  },
+
+  "dashboard-layout": {
+    "logout": "تسجيل الخروج"
+  },
+
+  "data-table": {
+    "no results.": "لا توجد نتائج."
+  },
+  "data-table-column-header": {
+    "asc": "تصاعدي",
+    "desc": "تنازلي",
+    "hide": "إخفاء"
+  },
+  "data-table-pagination": {
+    "of": "من",
+    "row(s) selected.": "صف (صفوف) محدد.",
+    "rows per page": "الصفوف لكل صفحة",
+    "go to first page": "الانتقال إلى الصفحة الأولى",
+    "go to previous page": "الانتقال إلى الصفحة السابقة",
+    "go to next page": "الانتقال إلى الصفحة التالية",
+    "go to last page": "الانتقال إلى الصفحة الأخيرة",
+    "page": "صفحة"
+  },
+  "data-table-view-options": {
+    "view": "عرض",
+    "toggle columns": "تبديل الأعمدة"
+  },
+
+  "dialog": {
+    "are you sure you want to proceed?": "هل أنت متأكد أنك تريد المتابعة؟",
+    "Please confirm that all the provided information is accurate. This action cannot be undone.": "يرجى تأكيد أن جميع المعلومات المقدمة دقيقة. لا يمكن التراجع عن هذا الإجراء.",
+    "cancel": "إلغاء"
+  },
+
+  "locale-switcher": {
+    "current locale of the website": "current locale of the website",
+    "en": "English (EN)",
+    "ar": "العربية (AR)",
+    "fr": "French (FR)",
+    "de": "Deautch (DE)"
+  },
+
+  "post-create-button": {
+    "created successfully.": "created successfully.",
+    "submit": "Submit",
+    "create posts": "Create Posts",
+    "this step is essential for informing patients about the treatments available at your posts.": "this step is essential for informing patients about the treatments available at your posts."
+  },
+  "post-delete-button": {
+    "deleted successfully.": "deleted successfully.",
+    "delete": "Delete",
+    "delete post": "Delete Post",
+    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your post."
+  },
+  "post-form": {
+    "title": { "label": "Title", "health center": "Health Center" },
+    "description": {
+      "label": "Description",
+      "describe your post": "Describe your post"
+    },
+    "content": {
+      "label": "Content",
+      "describe your post's content": "Describe your post's content"
+    },
+    "noOfWeeks": { "label": "Number of Weeks" },
+    "campaignType": {
+      "label": "Campaign Type",
+      "select your campaign": "Select your campaign"
+    },
+    "contentLength": {
+      "label": "Content Length",
+      "select your content length": "select your content length"
+    },
+    "platform": {
+      "label": "Platform",
+      "select your platform": "Select your platform"
+    },
+    "postAt": {
+      "label": "Post At"
+    }
+  },
+  "post-update-content-button": {
+    "content updated successfully.": "content updated successfully.",
+    "submit": "Submit",
+    "update content": "Update Content",
+    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your post."
+  },
+  "post-update-form": {
+    "updated successfully.": "updated successfully.",
+    "submit": "Submit",
+    "post details": "Post Details",
+    "discard": "Discard",
+    "save changes": "Save Changes",
+    "post information": "Post Information"
+  },
+  "post-update-schedule-button": {
+    "scheduled successfully.": "scheduled successfully.",
+    "submit": "Submit",
+    "update schedule": "Update Schedule",
+    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your case study."
+  },
+
+  "project-create-button": {
+    "created successfully.": "created successfully.",
+    "submit": "Submit",
+    "type of assets": "Type of Assets",
+    "unit": "unit",
+    "create project": "Create Project",
+    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
+  },
+  "project-delete-button": {
+    "deleted successfully.": "deleted successfully.",
+    "delete": "Delete",
+    "delete project": "Delete Project",
+    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
+  },
+  "project-form": {
+    "title": { "label": "Title", "health center": "health center" },
+    "description": {
+      "label": "Description",
+      "describe your project": "describe your project"
+    },
+    "distinct": { "label": "Distinct", "nasr city": "Nasr City" },
+    "city": { "label": "City", "cairo": "Cairo" },
+    "country": { "label": "Country", "egypt": "Egypt" },
+    "spaces": { "label": "Spaces" },
+    "platforms": {
+      "label": "Platforms",
+      "select your platform": "Select your platform"
+    }
+  },
+  "project-update-form": {
+    "updated successfully.": "updated successfully.",
+    "submit": "Submit",
+    "update project": "Update Project",
+    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
+  },
+
+  "property-create-button": {
+    "created successfully.": "created successfully.",
+    "submit": "Submit",
+    "type of assets": "Type of Assets",
+    "unit": "unit",
+    "create property": "Create Property",
+    "this step is essential for informing patients about the treatments available at your property.": "this step is essential for informing patients about the treatments available at your property."
+  },
+  "property-delete-button": {
+    "deleted successfully.": "deleted successfully.",
+    "delete": "Delete",
+    "delete property": "Delete Property",
+    "this step is essential for informing patients about the treatments available at your property.": "this step is essential for informing patients about the treatments available at your property."
+  },
+  "property-form": {
+    "type": { "select your property type": "Select your property type" },
+    "title": { "label": "Title", "health center": "health center" },
+    "units": { "label": "Units" },
+    "space": { "label": "Space" },
+    "finishing": { "label": "Finishing" },
+    "floors": { "label": "Floors" },
+    "rooms": { "label": "Rooms" },
+    "bathrooms": { "label": "Bathrooms" },
+    "recipients": { "label": "Recipients" },
+    "garden": { "label": "Garden" },
+    "pool": { "label": "Pool" },
+    "view": { "label": "View" }
+  },
+
+  "user-form": {
+    "name": {
+      "label": "Full Name"
+    },
+    "email": {
+      "label": "Email"
+    },
+    "password": {
+      "label": "Password"
+    }
+  }
+}

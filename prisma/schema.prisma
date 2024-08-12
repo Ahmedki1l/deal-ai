@@ -1,0 +1,162 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id       String    @id @map("_id")
+  sessions Session[]
+
+  name     String
+  email    String  @unique
+  image    String?
+  password String? // creadentials
+  googleId String? @unique @map("google-id")
+
+  createdAt DateTime @default(now())
+
+  projects Project[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @map("_id")
+  userId    String   @map("user-id")
+  expiresAt DateTime @map("expires-at")
+
+  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+enum PLATFORM {
+  FACEBOOK
+  LINKEDIN
+  INSTAGRAM
+  TWITTER
+}
+ 
+
+model Project {
+  id          String  @id @map("_id")
+  userId      String  @map("user-id")
+  title       String
+  description String?
+
+  country  String
+  city     String
+  distinct String
+  spaces   String
+
+  createdAt DateTime @default(now())
+
+  propertyTypes  PROPERTY_TYPE[] @map("property-types")
+  platforms      PLATFORM[]
+
+  properties  Property[]
+  caseStudy CaseStudy[]
+  user      User        @relation(references: [id], fields: [userId], onDelete: Cascade)
+
+  @@map("projects")
+}
+
+model CaseStudy {
+  id          String   @id @map("_id")
+  projectId   String   @map("project-id")
+  title       String
+  description String?
+  refImages   String[] @map("ref-images")
+
+  content        String
+  targetAudience String @map("target-audience")
+  pros           String @map("pros")
+  cons           String @map("cons")
+  hashtags       String
+
+  posts   Post[]
+  project Project @relation(references: [id], fields: [projectId], onDelete: Cascade)
+
+  @@map("case-studies")
+}
+
+enum PROPERTY_TYPE {
+  APARTMENT
+  VILLA
+}
+
+model Property {
+  id        String @id @map("_id")
+  projectId String @map("project-id")
+  title     String
+
+  type       PROPERTY_TYPE
+  units      String
+  space      String
+  finishing  String
+  floors     String
+  rooms      String
+  bathrooms  String
+  recipients String?
+  garden     String?
+  pool       String?
+  view       String?
+
+  project Project @relation(references: [id], fields: [projectId], onDelete: Cascade)
+
+  @@map("properties")
+}
+
+enum POST_CAMPAIGN {
+  BRANDING_AWARENESS
+  ENGAGEMENT
+  SALES_CONVERSION
+}
+
+enum POST_CONTENT_LENGTH {
+  SHORT
+  MEDIUM
+  LONG
+}
+
+model Image {
+  id     String @id @map("_id")
+  src    String
+  prompt String
+
+  posts Post[]
+
+  @@map("images")
+}
+
+model Post {
+  id          String  @id @map("_id")
+  caseStudyId String  @map("case-study-id")
+  imageId     String? @map("image-id")
+
+  title       String
+  description String
+  noOfWeeks   String @map("no-of-weeks")
+  content     String
+
+  platform      PLATFORM
+  contentLength POST_CONTENT_LENGTH @map("content-length")
+  campaignType  POST_CAMPAIGN       @map("campaign-type")
+
+  postAt DateTime @map("post-at")
+
+  image     Image?    @relation(fields: [imageId], references: [id], onDelete: NoAction)
+  caseStudy CaseStudy @relation(references: [id], fields: [caseStudyId], onDelete: Cascade)
+
+  @@map("posts")
+}

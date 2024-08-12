@@ -26,7 +26,7 @@ export async function createCaseStudy(
     const result = {
       input: `create a casestudy about ${project.title} ${project?.["propertyTypes"]} located in: ${project.distinct}, ${project.city}, ${project.country}, which has a land space of: ${project.spaces}, ${project.description}. Create the Hashtags for ${project?.["platforms"]}`,
     };
-    const endpoint = process.env.NEXT_PUBLIC_AI_API + "/chat/casestudy";
+    const endpoint = process.env.NEXT_PUBLIC_AI_API + "/en/chat/casestudy";
 
     // Send data to the server
     const response = await fetch(endpoint, {

@@ -41,12 +41,14 @@ export async function createPost(
         : 3;
 
     let image_analyzer_response;
+
+    console.log(caseStudy.refImages);
     
-    if(caseStudy.refImages.length > 0){
-      let image_anaylzer_prompt = '';
+    if(caseStudy.refImages){
+      let image_anaylzer_prompt = {input:""};
       
       caseStudy.refImages.forEach((url)=>{
-        image_anaylzer_prompt += url + ', '
+        image_anaylzer_prompt.input += url + ', '
       });
 
       const image_analyzer_endpoint = domain + '/en/image-analyzer';
@@ -56,6 +58,8 @@ export async function createPost(
         body: JSON.stringify(image_anaylzer_prompt),
       }).then((r) => r?.json());
     }
+
+    console.log("image analyzer",image_analyzer_response);
 
     const prompt = {
       previousPrompt: caseStudy.prompt,
@@ -109,7 +113,11 @@ export async function createPost(
           body: JSON.stringify(prompt_generator_prompt),
         }).then((r) => r?.json());
 
+        console.log("prompt generator ",prompt_generator_response);
+
         const imagePrompt = { input: image_analyzer_response?.prompt + ' ' + prompt_generator_response?.prompt };
+
+        console.log("image prompt: ", imagePrompt);
 
         let imageResponse;
         const fetchPromise = fetch(imageApiEndpoint, {

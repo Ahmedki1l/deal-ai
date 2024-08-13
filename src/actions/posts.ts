@@ -30,12 +30,32 @@ export async function createPost(
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
 
+    //defaults
+    const domain = process.env.NEXT_PUBLIC_AI_API;
+
     let weeks = data.noOfWeeks ? parseInt(data.noOfWeeks, 10) : 0;
     let noOfPostsPerWeek =
       data.campaignType === "BRANDING_AWARENESS" ||
       data.campaignType === "ENGAGEMENT"
         ? 5
         : 3;
+
+    let image_analyzer_response;
+    
+    if(caseStudy.refImages.length > 0){
+      let image_anaylzer_prompt = '';
+      
+      caseStudy.refImages.forEach((url)=>{
+        image_anaylzer_prompt += url + ', '
+      });
+
+      const image_analyzer_endpoint = domain + '/en/image-analyzer';
+      image_analyzer_response = await fetch(image_analyzer_endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(image_anaylzer_prompt),
+      }).then((r) => r?.json());
+    }
 
     const prompt = {
       previousPrompt: caseStudy.prompt,
@@ -44,25 +64,24 @@ export async function createPost(
     };
 
     console.log(prompt);
-    const domain = process.env.NEXT_PUBLIC_AI_API;
-    const endpoint = domain + "/en/chat/socialmediaplan";
+    const social_media_endpoint = domain + "/en/chat/socialmediaplan";
 
-    const response = await fetch(endpoint, {
+    const social_midea_response = await fetch(social_media_endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(prompt),
     }).then((r) => r?.json());
 
-    console.log(response);
+    console.log(social_midea_response);
     const daysToPost = noOfPostsPerWeek === 3 ? [0, 2, 4] : [0, 1, 2, 3, 4];
     const imageApiEndpoint = domain + "/image";
     let imageFetchPromises = [];
     let allPostDetails: Post[] = [];
 
     // uppercasing key, to match platform
-    const responseData = Object.keys(response).reduce(
+    const responseData = Object.keys(social_midea_response).reduce(
       (acc, key) => {
-        acc[key.toUpperCase()] = response?.[key];
+        acc[key.toUpperCase()] = social_midea_response?.[key];
         return acc;
       },
       {} as { [key: string]: { [key: string]: string }[] },
@@ -79,7 +98,18 @@ export async function createPost(
       let currentDate = new Date();
 
       for (let i = 0; i < accountPosts.length; i++) {
-        const imagePrompt = { input: accountPosts[i][`Post${i + 1}`] };
+
+        const prompt_generator_endpoint = domain + "/en/prompt-generator";
+
+        const prompt_generator_prompt = {input: accountPosts[i][`Post${i + 1}`]}
+
+        const prompt_generator_response = await fetch(prompt_generator_endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(prompt_generator_prompt),
+        }).then((r) => r?.json());
+
+        const imagePrompt = { input: image_analyzer_response?.prompt + ' ' + prompt_generator_response?.prompt };
 
         let imageResponse;
         const fetchPromise = fetch(imageApiEndpoint, {

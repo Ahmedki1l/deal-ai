@@ -1,7 +1,7 @@
 import { z } from "@/lib/zod";
 
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 5; // 5MB
-const ACCEPTED_FILE_TYPES = ["image/png"];
+const ACCEPTED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/gif", "image/webp"];
 
 export const caseStudySchema = z.object(
   // <Record<keyof CaseStudy, any>>
@@ -36,7 +36,7 @@ export const caseStudyCreateFormSchema = caseStudyCreateSchema
               return !file || file.size <= MAX_UPLOAD_SIZE;
             }, "File size must be less than 5MB")
             .refine((file) => {
-              return ACCEPTED_FILE_TYPES.includes(file.type);
+              return ACCEPTED_IMAGE_TYPES.includes(file.type);
             }, "File must be a PNG"),
           base64: z.string("base64"),
         }),
@@ -57,7 +57,7 @@ export const caseStudyUpdateFormSchema = caseStudyUpdateSchema
               return !file || file.size <= MAX_UPLOAD_SIZE;
             }, "File size must be less than 5MB")
             .refine((file) => {
-              return ACCEPTED_FILE_TYPES.includes(file.type);
+              return ACCEPTED_IMAGE_TYPES.includes(file.type);
             }, "File must be a PNG"),
           base64: z.string("base64"),
         }),

@@ -48,11 +48,13 @@ export function DialogResponsive({
 }: DialogResponsiveProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
+  const contentClassName = "overflow-auto max-h-[80vh]"; // 50% of viewport height and scrollable
+
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild {...props} />
-        <DialogContent className="w-fit">
+        <DialogContent className={`w-fit ${contentClassName}`}>
           <DialogHeader>
             <DialogTitle>
               {title ?? c?.["are you sure you want to proceed?"]}
@@ -68,7 +70,6 @@ export function DialogResponsive({
 
           <DialogFooter className="gap-2">
             {confirmButton}
-
             <DialogClose asChild>
               <Button variant="outline">{c?.["cancel"]}</Button>
             </DialogClose>
@@ -80,7 +81,7 @@ export function DialogResponsive({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild {...props} />
-      <DrawerContent>
+      <DrawerContent className={contentClassName}>
         <DrawerHeader>
           <DrawerTitle>
             {title ?? c?.["are you sure you want to proceed?"]}
@@ -96,7 +97,6 @@ export function DialogResponsive({
 
         <DrawerFooter className="gap-2">
           {confirmButton}
-
           <DrawerClose asChild>
             <Button variant="outline">{c?.["cancel"]}</Button>
           </DrawerClose>

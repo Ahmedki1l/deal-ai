@@ -69,7 +69,7 @@ export function ProjectCreateButton({
       },
       success: () => {
         router.refresh();
-        console.log(data)
+        console.log(data);
         form.reset();
         setOpen(false);
         return c?.["created successfully."];
@@ -87,13 +87,13 @@ export function ProjectCreateButton({
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Button disabled={loading} className="w-full md:w-fit">
               {loading && <Icons.spinner />}
-              {c?.["submit"]}
+              Submit
             </Button>
           </form>
         </Form>
       }
       content={
-        <>
+        <div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
               <ProjectForm.title
@@ -176,7 +176,7 @@ export function ProjectCreateButton({
                             onClick={() =>
                               // @ts-ignore
                               field?.properties?.push({
-                                projectId: "x",
+                                projectId: i.toString(),
                               })
                             }
                           >
@@ -195,6 +195,21 @@ export function ProjectCreateButton({
                                 <CardTitle>
                                   {c?.["unit"]} {j + 1}
                                 </CardTitle>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => {
+                                    field.properties = field.properties.filter((property, index) => {
+                                      console.log("card ", property);
+                                      console.log('card index ', j);
+                                      console.log("item index ", index)
+                                      return index !== j;
+                                    });
+                                    console.log(field.properties);
+                                  }}
+                                >
+                                  <Icons.x />
+                                </Button>
                               </div>
                             </CardHeader>
 
@@ -304,7 +319,7 @@ export function ProjectCreateButton({
               </div>
             </form>
           </Form>
-        </>
+        </div>
       }
       title={c?.["create project"]}
       description={

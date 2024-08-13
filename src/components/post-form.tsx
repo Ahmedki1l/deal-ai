@@ -80,26 +80,26 @@ export const PostForm = {
   //     )}
   //   />
   // ),
-  description: ({ dic: { "post-form": c }, loading, form }: PostFormProps) => (
-    <FormField
-      control={form.control}
-      name="description"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>{c?.["description"]?.["label"]}</FormLabel>
-          <FormControl>
-            <Textarea
-              className="min-h-56 w-full"
-              placeholder={c?.["description"]?.["describe your post"]}
-              disabled={loading}
-              {...field}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  ),
+  // description: ({ dic: { "post-form": c }, loading, form }: PostFormProps) => (
+  //   <FormField
+  //     control={form.control}
+  //     name="description"
+  //     render={({ field }) => (
+  //       <FormItem>
+  //         <FormLabel>{c?.["description"]?.["label"]}</FormLabel>
+  //         <FormControl>
+  //           <Textarea
+  //             className="min-h-56 w-full"
+  //             placeholder={c?.["description"]?.["describe your post"]}
+  //             disabled={loading}
+  //             {...field}
+  //           />
+  //         </FormControl>
+  //         <FormMessage />
+  //       </FormItem>
+  //     )}
+  //   />
+  // ),
   content: ({ dic: { "post-form": c }, loading, form }: PostFormProps) => (
     <FormField
       control={form.control}

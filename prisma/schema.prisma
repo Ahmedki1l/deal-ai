@@ -84,7 +84,7 @@ model CaseStudy {
   cons                    String @map("cons")
   hashtags                String
   prompt                  String?
-  caseStudyResponse       Json?
+  caseStudyResponse       String?
 
   posts   Post[]
   project Project @relation(references: [id], fields: [projectId], onDelete: Cascade)

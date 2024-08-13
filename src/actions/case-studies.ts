@@ -13,6 +13,12 @@ import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
 import { Project } from "@prisma/client";
 
+// Function to check if a string contains Arabic characters
+function containsArabic(text: string) {
+  const arabicRegex = /[\u0600-\u06FF]/;
+  return arabicRegex.test(text);
+}
+
 export async function createCaseStudy(
   data: z.infer<typeof caseStudyCreateSchema>,
   project: Project,
@@ -33,9 +39,17 @@ export async function createCaseStudy(
       },
     });
 
+    let endpoint_language = "en";
+
     const prompt = {
       input: `create a casestudy about ${actualProject?.title} ${actualProject?.["propertyTypes"]} located in: ${actualProject?.distinct}, ${actualProject?.city}, ${actualProject?.country}, which has a land space of: ${actualProject?.spaces}, ${actualProject?.description}. Create the Hashtags for ${project?.["platforms"]}. `,
     };
+
+    if (
+      containsArabic(prompt.input)
+    ) {
+      endpoint_language = "ar";
+    }
 
     actualProject?.properties.forEach((property)=>{
       prompt.input += 'The availabel assets are: ' + property.units + ', assets type: ' + property.title + ' ' + property.type + ', space: ' + property.space + ', number of bedrooms: ' + property.rooms + ', number of bathrooms ' + property.bathrooms + ', number of Reception rooms: ' + property.recipients + ', finishing:  ' + property.finishing + ', floors: ' + property.floors;
@@ -46,7 +60,7 @@ export async function createCaseStudy(
 
     console.log(prompt);
 
-    const endpoint = process.env.NEXT_PUBLIC_AI_API + "/en/chat/casestudy";
+    const endpoint = process.env.NEXT_PUBLIC_AI_API + `/${endpoint_language}/chat/casestudy`;
 
     // Send data to the server
     const response = await fetch(endpoint, {

@@ -89,11 +89,11 @@ export function PostCreateButton({
         <>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-              <PostForm.description
+              {/* <PostForm.description
                 dic={dic}
                 form={form as any}
                 loading={loading}
-              />
+              /> */}
               <PostForm.noOfWeeks
                 dic={dic}
                 form={form as any}

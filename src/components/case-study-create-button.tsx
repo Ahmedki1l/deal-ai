@@ -101,11 +101,11 @@ export function CaseStudyCreateButton({
                 form={form as any}
                 loading={loading}
               />
-              <CaseStudyForm.description
+              {/* <CaseStudyForm.description
                 dic={dic}
                 form={form as any}
                 loading={loading}
-              />
+              /> */}
               <CaseStudyForm.refImages
                 dic={dic}
                 form={form as any}

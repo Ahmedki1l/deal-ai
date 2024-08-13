@@ -68,10 +68,7 @@ export function CaseStudyTable({
                 })}
               >
                 <CardTitle>{r?.["title"]}</CardTitle>
-                <CardDescription>{r?.["description"]}</CardDescription>
-                {/* <CardDescription>
-                    {[r?.["distinct"], r?.["city"], r?.["country"]].join(", ")}
-                  </CardDescription> */}
+                
               </Link>
             ),
             enableSorting: false,

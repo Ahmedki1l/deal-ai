@@ -160,7 +160,7 @@ export function PostUpdateForm({
             <Card>
               <CardHeader>
                 <CardTitle>{c?.["post information"]}</CardTitle>
-                <CardDescription>{post?.["description"]}</CardDescription>
+                {/* <CardDescription>{post?.["description"]}</CardDescription> */}
               </CardHeader>
               <CardContent className="space-y-2">
                 <PostForm.title dic={dic} form={form as any} loading={loading} />

@@ -10,7 +10,6 @@ export const postSchema = z.object({
   caseStudyId: z.string("caseStudyId"),
   imageId: z.string("imageId"),
   title: z.string("title"),
-  description: z.string("description"),
   content: z.string("content"),
   noOfWeeks: z.string("no of weeks"),
   campaignType: z.enum(postCampaignArr),

@@ -41,8 +41,6 @@ export async function createPost(
         : 3;
 
     let image_analyzer_response;
-
-    console.log(caseStudy.refImages);
     
     if(caseStudy.refImages){
       let image_anaylzer_prompt = {input:""};
@@ -58,8 +56,6 @@ export async function createPost(
         body: JSON.stringify(image_anaylzer_prompt),
       }).then((r) => r?.json());
     }
-
-    console.log("image analyzer",image_analyzer_response);
 
     const prompt = {
       previousPrompt: caseStudy.prompt,
@@ -114,28 +110,38 @@ export async function createPost(
         }).then((r) => r?.json());
 
         console.log("prompt generator ",prompt_generator_response);
+        console.log("image analyzer",image_analyzer_response);
 
         const imagePrompt = { input: image_analyzer_response?.prompt + ' ' + prompt_generator_response?.prompt };
 
-        console.log("image prompt: ", imagePrompt);
+        const adjusted_image_prompt = {input: `you must adjust this prompt to be only 1000 characters long at max: ${imagePrompt.input}`};
+
+        const adjusted_image_response = await fetch(prompt_generator_endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(adjusted_image_prompt),
+        }).then((r) => r?.json());
 
         let imageResponse;
+
+        const adjusted_image = {input: adjusted_image_response?.prompt};
         const fetchPromise = fetch(imageApiEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(imagePrompt),
+          body: JSON.stringify(adjusted_image),
         })
           .then(async (res) => {
             imageResponse = await res.json();
-            console.log("image response: ", imageResponse);
             return imageResponse;
           })
           .then((imageResponse) => {
+            console.log("image prompt: ", adjusted_image);
+            console.log("image response: ", imageResponse);
             return db.image.create({
               data: {
                 id: generateIdFromEntropySize(10),
                 src: imageResponse.url,
-                prompt: imagePrompt.input,
+                prompt: adjusted_image.input,
               },
             });
           });
@@ -143,6 +149,7 @@ export async function createPost(
         imageFetchPromises.push(fetchPromise);
 
         fetchPromise.then((imageData) => {
+          console.log("image Data: ", imageData);
           console.log(currentDate.getDay());
           currentDate.setDate(currentDate.getDate() + 1);
           console.log(currentDate.getDay());

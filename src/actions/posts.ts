@@ -18,12 +18,13 @@ import {
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
-import { Post, Project } from "@prisma/client";
+import { CaseStudy, Post, Project } from "@prisma/client";
 import { platformsArr } from "@/db/enums";
 
 export async function createPost(
   data: z.infer<typeof postCreateSchema>,
   project: Project,
+  caseStudy: CaseStudy,
 ) {
   try {
     const user = await getAuth();
@@ -35,17 +36,21 @@ export async function createPost(
       data.campaignType === "ENGAGEMENT"
         ? 5
         : 3;
-    const result = {
+
+    const prompt = {
+      previousPrompt: caseStudy.prompt,
+      history: caseStudy.caseStudyResponse,
       input: `create a social media content plan that consists of ${noOfPostsPerWeek * weeks} posts for each platform for a period of ${data.noOfWeeks} weeks, for the platforms ${project?.["platforms"]}. The content should be long and includes hashtags and emojis.`,
     };
-    console.log(result);
+
+    console.log(prompt);
     const domain = process.env.NEXT_PUBLIC_AI_API;
     const endpoint = domain + "/en/chat/socialmediaplan";
 
     const response = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(result),
+      body: JSON.stringify(prompt),
     }).then((r) => r?.json());
 
     console.log(response);
@@ -63,6 +68,8 @@ export async function createPost(
       {} as { [key: string]: { [key: string]: string }[] },
     );
 
+    let indicator = 1;
+
     for (const acc of platformsArr) {
       const accountPosts = responseData?.[acc];
 
@@ -70,44 +77,47 @@ export async function createPost(
 
       // Calculate the starting date for each account to ensure unique dates
       let currentDate = new Date();
-      currentDate.setDate(currentDate.getDate() + 1); // Start from the next day
 
       for (let i = 0; i < accountPosts.length; i++) {
-        // Adjust currentDate to the next valid posting day
-        while (
-          currentDate.getDay() === 5 ||
-          currentDate.getDay() === 6 ||
-          !daysToPost.includes(currentDate.getDay())
-        ) {
-          currentDate.setDate(currentDate.getDate() + 1);
-        }
-
-        const randomHour = Math.floor(Math.random() * (20 - 11) + 11);
-        currentDate.setHours(randomHour, 0, 0);
-
         const imagePrompt = { input: accountPosts[i][`Post${i + 1}`] };
+
         let imageResponse;
         const fetchPromise = fetch(imageApiEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(imagePrompt),
-        }).then( async (res) => {
-          imageResponse = await res.json();
-          console.log("image response: ", imageResponse);
-          return imageResponse;
-        }).then((imageResponse)=>{
-          return db.image.create({
-            data:{
-              id: generateIdFromEntropySize(10),
-              src: imageResponse.url,
-              prompt: imagePrompt.input
-            }
+        })
+          .then(async (res) => {
+            imageResponse = await res.json();
+            console.log("image response: ", imageResponse);
+            return imageResponse;
           })
-        });
+          .then((imageResponse) => {
+            return db.image.create({
+              data: {
+                id: generateIdFromEntropySize(10),
+                src: imageResponse.url,
+                prompt: imagePrompt.input,
+              },
+            });
+          });
 
         imageFetchPromises.push(fetchPromise);
 
         fetchPromise.then((imageData) => {
+          console.log(currentDate.getDay());
+          currentDate.setDate(currentDate.getDate() + 1);
+          console.log(currentDate.getDay());
+          // Adjust currentDate to the next valid posting day
+          while (!daysToPost.includes(currentDate.getDay())) {
+            currentDate.setDate(currentDate.getDate() + 1);
+          }
+
+          console.log(currentDate.getDay());
+
+          const randomHour = Math.floor(Math.random() * (20 - 11) + 11);
+          currentDate.setHours(randomHour, 0, 0);
+
           allPostDetails.push({
             ...data,
             id: generateIdFromEntropySize(10),
@@ -115,10 +125,9 @@ export async function createPost(
             content: accountPosts[i][`Post${i + 1}`],
             platform: acc,
             postAt: new Date(currentDate),
-            imageId: imageData.id
+            imageId: imageData.id,
           });
-          // Increment the date for the next post
-          currentDate.setDate(currentDate.getDate() + 1);
+          indicator++;
         });
       }
     }

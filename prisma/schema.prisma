@@ -78,11 +78,13 @@ model CaseStudy {
   description String?
   refImages   String[] @map("ref-images")
 
-  content        String
-  targetAudience String @map("target-audience")
-  pros           String @map("pros")
-  cons           String @map("cons")
-  hashtags       String
+  content                 String
+  targetAudience          String @map("target-audience")
+  pros                    String @map("pros")
+  cons                    String @map("cons")
+  hashtags                String
+  prompt                  String?
+  caseStudyResponse       Json?
 
   posts   Post[]
   project Project @relation(references: [id], fields: [projectId], onDelete: Cascade)

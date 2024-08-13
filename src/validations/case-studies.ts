@@ -16,6 +16,8 @@ export const caseStudySchema = z.object(
     pros: z.string("pros"),
     cons: z.string("cons"),
     hashtags: z.string("hashtags"),
+    prompt: z.string("prompt").optional(),
+    caseStudyResponse: z.string("prompt").optional(),
   },
 );
 

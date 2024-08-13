@@ -54,7 +54,7 @@ export function PostCreateButton({
     setLoading(true);
 
     // Schedule the post and handle the promise
-    toast.promise(createPost(data, project), {
+    toast.promise(createPost(data, project, caseStudy), {
       finally: () => setLoading(false),
       error: async (err) => {
         const msg = await t(err?.["message"], lang);

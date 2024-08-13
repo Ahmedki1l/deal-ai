@@ -23,11 +23,28 @@ export async function createCaseStudy(
     if (!user) throw new RequiresLoginError();
     // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
 
-    const result = {
-      input: `create a casestudy about ${project.title} ${project?.["propertyTypes"]} located in: ${project.distinct}, ${project.city}, ${project.country}, which has a land space of: ${project.spaces}, ${project.description}. Create the Hashtags for ${project?.["platforms"]}. `,
+    const actualProject = await db.project.findFirst({
+      include: {
+        caseStudy: { include: { posts: true } },
+        properties: true,
+      },
+      where: {
+        id: project.id,
+      },
+    });
+
+    const prompt = {
+      input: `create a casestudy about ${actualProject?.title} ${actualProject?.["propertyTypes"]} located in: ${actualProject?.distinct}, ${actualProject?.city}, ${actualProject?.country}, which has a land space of: ${actualProject?.spaces}, ${actualProject?.description}. Create the Hashtags for ${project?.["platforms"]}. `,
     };
 
-    
+    actualProject?.properties.forEach((property)=>{
+      prompt.input += 'The availabel assets are: ' + property.units + ', assets type: ' + property.title + ' ' + property.type + ', space: ' + property.space + ', number of bedrooms: ' + property.rooms + ', number of bathrooms ' + property.bathrooms + ', number of Reception rooms: ' + property.recipients + ', finishing:  ' + property.finishing + ', floors: ' + property.floors;
+      prompt.input += property.garden? ', includes number of gardens: ' + property.garden : '';
+      prompt.input += property.pool? ', includes number of pools: ' + property.pool : '';
+      prompt.input += property.view? ', the view of the assets is: ' + property.view : '';
+    });
+
+    console.log(prompt);
 
     const endpoint = process.env.NEXT_PUBLIC_AI_API + "/en/chat/casestudy";
 
@@ -37,13 +54,15 @@ export async function createCaseStudy(
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(result),
+      body: JSON.stringify(prompt),
     }).then((r) => r?.json());
 
     data.content = response["Case_Study"];
     data.targetAudience = response["Target_Audience"];
     data.pros = response["Pros"];
     data.cons = response["Cons"];
+    data.prompt = prompt.input;
+    data.caseStudyResponse = JSON.stringify(response);
 
     const id = generateIdFromEntropySize(10);
     await db.caseStudy.create({

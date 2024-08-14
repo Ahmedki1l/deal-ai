@@ -34,6 +34,7 @@ export async function createPost(
   caseStudy: CaseStudy,
 ) {
   try {
+    console.log("starting to make posts");
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
 

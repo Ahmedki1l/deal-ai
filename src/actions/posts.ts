@@ -22,6 +22,12 @@ import { generateIdFromEntropySize } from "lucia";
 import { CaseStudy, Post, Project } from "@prisma/client";
 import { platformsArr } from "@/db/enums";
 
+// Function to check if a string contains Arabic characters
+function containsArabic(text: string | null) {
+  const arabicRegex = /[\u0600-\u06FF]/;
+  return arabicRegex.test(text ? text : "");
+}
+
 export async function createPost(
   data: z.infer<typeof postCreateSchema>,
   project: Project,
@@ -30,6 +36,15 @@ export async function createPost(
   try {
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
+
+    let endpoint_language = "en";
+
+    if (
+      containsArabic(caseStudy.prompt) ||
+      containsArabic(caseStudy.caseStudyResponse)
+    ) {
+      endpoint_language = "ar";
+    }
 
     //defaults
     const domain = process.env.NEXT_PUBLIC_AI_API;
@@ -43,8 +58,6 @@ export async function createPost(
 
     let image_analyzer_response;
 
-    console.log(caseStudy.refImages);
-
     if (caseStudy.refImages) {
       let image_anaylzer_prompt = { input: "" };
 
@@ -52,15 +65,13 @@ export async function createPost(
         image_anaylzer_prompt.input += url + ", ";
       });
 
-      const image_analyzer_endpoint = domain + "/en/image-analyzer";
+      const image_analyzer_endpoint = domain + `/en/image-analyzer`;
       image_analyzer_response = await fetch(image_analyzer_endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(image_anaylzer_prompt),
       }).then((r) => r?.json());
     }
-
-    console.log("image analyzer", image_analyzer_response);
 
     const prompt = {
       previousPrompt: caseStudy.prompt,
@@ -69,7 +80,8 @@ export async function createPost(
     };
 
     console.log(prompt);
-    const social_media_endpoint = domain + "/en/chat/socialmediaplan";
+    const social_media_endpoint =
+      domain + `/${endpoint_language}/chat/socialmediaplan`;
 
     const social_midea_response = await fetch(social_media_endpoint, {
       method: "POST",
@@ -103,7 +115,7 @@ export async function createPost(
       let currentDate = new Date();
 
       for (let i = 0; i < accountPosts.length; i++) {
-        const prompt_generator_endpoint = domain + "/en/prompt-generator";
+        const prompt_generator_endpoint = domain + `/en/prompt-generator`;
 
         const prompt_generator_prompt = {
           input: accountPosts[i][`Post${i + 1}`],
@@ -119,6 +131,7 @@ export async function createPost(
         ).then((r) => r?.json());
 
         console.log("prompt generator ", prompt_generator_response);
+        console.log("image analyzer", image_analyzer_response);
 
         const imagePrompt = {
           input:
@@ -127,25 +140,36 @@ export async function createPost(
             prompt_generator_response?.prompt,
         };
 
-        console.log("image prompt: ", imagePrompt);
+        const adjusted_image_prompt = {
+          input: `you must adjust this prompt to be only 1000 characters long at max: ${imagePrompt.input}`,
+        };
+
+        const adjusted_image_response = await fetch(prompt_generator_endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(adjusted_image_prompt),
+        }).then((r) => r?.json());
 
         let imageResponse;
+
+        const adjusted_image = { input: adjusted_image_response?.prompt };
         const fetchPromise = fetch(imageApiEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(imagePrompt),
+          body: JSON.stringify(adjusted_image),
         })
           .then(async (res) => {
             imageResponse = await res.json();
-            console.log("image response: ", imageResponse);
             return imageResponse;
           })
           .then((imageResponse) => {
+            console.log("image prompt: ", adjusted_image);
+            console.log("image response: ", imageResponse);
             return db.image.create({
               data: {
                 id: generateIdFromEntropySize(10),
                 src: imageResponse.url,
-                prompt: imagePrompt.input,
+                prompt: adjusted_image.input,
               },
             });
           });
@@ -153,6 +177,7 @@ export async function createPost(
         imageFetchPromises.push(fetchPromise);
 
         fetchPromise.then((imageData) => {
+          console.log("image Data: ", imageData);
           console.log(currentDate.getDay());
           currentDate.setDate(currentDate.getDate() + 1);
           console.log(currentDate.getDay());
@@ -209,7 +234,14 @@ export async function updatePost({
     if (!user) throw new RequiresLoginError();
 
     await db.post.update({
-      data,
+      data: {
+        ...data,
+        image: {
+          update: {
+            ...data?.["image"],
+          },
+        },
+      },
       where: {
         id,
       },

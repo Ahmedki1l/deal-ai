@@ -49,12 +49,14 @@ export function PostUpdateForm({
   const lang = useLocale();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
-  const [open, setOpen] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof postUpdateSchema>>({
     resolver: zodResolver(postUpdateSchema),
     defaultValues: {
       ...post,
+      image: {
+        prompt: post?.["image"]?.["prompt"] ?? "",
+      },
     },
   });
 
@@ -68,7 +70,6 @@ export function PostUpdateForm({
       },
       success: () => {
         router.refresh();
-        setOpen(false);
         return c?.["updated successfully."];
       },
     });

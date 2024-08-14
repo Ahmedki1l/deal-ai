@@ -26,6 +26,7 @@ import { t } from "@/lib/locale";
 import { Tooltip } from "./tooltip";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { postUpdateSchema } from "@/validations/posts";
+import { db } from "@/db";
 
 export type ImageFormProps = {
   loading: boolean;
@@ -132,7 +133,12 @@ export const ImageForm = {
             const msg = await t(err?.["message"], lang);
             return msg;
           },
-          success: (src: string) => {
+          success: async (src: string) => {
+            const new_prompt = form.getValues("image.prompt");
+            console.log("new prompt: ", new_prompt);
+            const prev_image_src = form.getValues("image.src");
+            console.log("prev_image_src: ", prev_image_src);
+
             form.resetField("image.base64");
             form.resetField("image.file");
 

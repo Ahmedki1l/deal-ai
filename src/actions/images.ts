@@ -69,9 +69,36 @@ export async function regenerateImagePrompt({
   try {
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
-    const newPrompt = "new prompt";
+    
+    //defaults
+    const domain = process.env.NEXT_PUBLIC_AI_API;
 
-    return newPrompt;
+    const prompt_enhancer_endpoint = domain + `/en/prompt-enhancer`;
+
+    const enhanced_prompt_response = await fetch(prompt_enhancer_endpoint, {
+      method: "POST",
+      headers: {"content-Type": "application/json"},
+      body: JSON.stringify({input: data.prompt}),
+    }).then((r)=>r?.json());
+
+    console.log(enhanced_prompt_response);
+
+    const adjusted_image_prompt = {
+      input: `you must adjust this prompt to be only 1000 characters long at max: ${enhanced_prompt_response.prompt}`,
+    };
+
+    console.log("adjusted image request: ", adjusted_image_prompt)
+
+    const prompt_generator_endpoint = domain + `/en/prompt-generator`;
+    const adjusted_image_response = await fetch(prompt_generator_endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(adjusted_image_prompt),
+    }).then((r) => r?.json());
+
+    console.log("adjusted prompt: ", adjusted_image_response);
+
+    return adjusted_image_response.prompt;
   } catch (error: any) {
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) throw new ZodError(error);
@@ -88,10 +115,21 @@ export async function generateImage({
   try {
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
-    const url =
-      "https://images.unsplash.com/photo-1692166623396-1a44298e22fe?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+    
+    //defaults
+    const domain = process.env.NEXT_PUBLIC_AI_API;
 
-    return url;
+    const image_generator_endpoint = domain + `/image`;
+
+    const image_generator_response = await fetch(image_generator_endpoint, {
+      method: "POST",
+      headers: {"content-Type": "application/json"},
+      body: JSON.stringify({input: data.prompt}),
+    }).then((r)=>r?.json());
+
+    console.log(image_generator_response);
+
+    return image_generator_response.url;
   } catch (error: any) {
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) throw new ZodError(error);

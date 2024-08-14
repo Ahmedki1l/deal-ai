@@ -24,17 +24,19 @@ import { toast } from "sonner";
 import { generateImage, regenerateImagePrompt } from "@/actions/images";
 import { t } from "@/lib/locale";
 import { Tooltip } from "./tooltip";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { postUpdateSchema } from "@/validations/posts";
 
-type ImageFormProps = {
+export type ImageFormProps = {
   loading: boolean;
-  form: UseFormReturn<z.infer<typeof imageUpdateFormSchema>, any, undefined>;
+  form: UseFormReturn<z.infer<typeof postUpdateSchema>, any, undefined>;
 } & Dictionary["image-form"];
 
 export const ImageForm = {
   src: ({ dic: { "image-form": c }, loading, form }: ImageFormProps) => (
     <FormField
       control={form?.["control"]}
-      name="src.file"
+      name="image.file"
       render={({ field }) => (
         <FormItem>
           <FormControl>
@@ -44,23 +46,22 @@ export const ImageForm = {
                 {...field}
                 value={undefined}
                 onChange={async (e) => {
+                  form.resetField("image");
+
                   const file = e?.["target"]?.["files"]?.[0];
+
                   if (file) {
                     const base64 = (await convertBase64(file))?.toString();
 
                     field.onChange(file);
-                    form.setValue("src.base64", base64 ?? "");
-                    form.resetField("src.url");
+                    form.setValue("image.base64", base64 ?? "");
                   }
                 }}
+                disabled={loading}
               />
-              {/* @ts-ignore */}
-              {form.watch("src")?.["base64"] || form.watch("src")?.["url"] ? (
+              {!!form.watch("image.base64") ? (
                 <Image
-                  src={
-                    form.getValues("src")?.["base64"] ??
-                    form.getValues("src")?.["url"]
-                  }
+                  src={form.getValues("image.base64")!}
                   alt=""
                   className="h-8 w-8"
                 />
@@ -70,9 +71,16 @@ export const ImageForm = {
                 variant="outline"
                 size="icon"
                 onClick={() => {
-                  form.resetField("src.file");
-                  form.resetField("src.base64");
+                  const image = form.getValues("image");
+                  form.resetField("image");
+                  form.setValue("image", {
+                    // @ts-ignore
+                    prompt: image?.["prompt"] ?? undefined,
+                    // @ts-ignore
+                    src: image?.["src"] ?? undefined,
+                  });
                 }}
+                disabled={loading}
               >
                 <Icons.x />
               </Button>
@@ -87,16 +95,15 @@ export const ImageForm = {
     dic: { "image-form": c },
     loading,
     form,
-    image,
-  }: ImageFormProps & { image: ImageType | null }) {
+  }: ImageFormProps) {
     const lang = useLocale();
     const [generating, setGenerating] = useState(false);
 
-    function enhance() {
+    async function enhance() {
       setGenerating(true);
       toast.promise(
         regenerateImagePrompt({
-          prompt: image?.["prompt"] ?? "",
+          prompt: form.getValues("image.prompt") ?? "",
         }),
         {
           finally: () => setGenerating(false),
@@ -105,7 +112,7 @@ export const ImageForm = {
             return msg;
           },
           success: (newPrompt: string) => {
-            form.setValue("prompt", newPrompt);
+            form.setValue("image.prompt", newPrompt);
 
             return c?.["prompt"]?.["enhanced successfully."];
           },
@@ -113,12 +120,11 @@ export const ImageForm = {
       );
     }
 
-    function generate() {
+    async function generate() {
       setGenerating(true);
       toast.promise(
         generateImage({
-          // @ts-ignore
-          prompt: image?.["prompt"] ?? "",
+          prompt: form.getValues("image.prompt") ?? "",
         }),
         {
           finally: () => setGenerating(false),
@@ -126,10 +132,11 @@ export const ImageForm = {
             const msg = await t(err?.["message"], lang);
             return msg;
           },
-          success: (url: string) => {
-            form?.setValue("src.url", url);
-            form.resetField("src.base64");
-            form.resetField("src.file");
+          success: (src: string) => {
+            form.resetField("image.base64");
+            form.resetField("image.file");
+
+            form?.setValue("image.src", src);
 
             return c?.["prompt"]?.["generated successfully."];
           },
@@ -138,50 +145,66 @@ export const ImageForm = {
     }
     return (
       <div className="grid gap-2">
-        <FormField
-          control={form.control}
-          name="prompt"
-          render={({ field }) => (
-            <FormItem>
-              <div className="mb-2 flex items-center justify-between gap-2">
-                <FormLabel>{c?.["prompt"]?.["label"]}</FormLabel>
+        <Tabs defaultValue="enhance">
+          <TabsList>
+            <TabsTrigger value="enhance">Enhance</TabsTrigger>
+            <TabsTrigger value="generate">Generate Image </TabsTrigger>
+          </TabsList>
 
-                <div className="flex items-center gap-2">
-                  <Tooltip text={c?.["prompt"]?.["enhance prompt"]}>
-                    <Button
-                      type="button"
-                      size="icon"
-                      onClick={enhance}
-                      disabled={loading || generating}
-                    >
-                      <Icons.reload />
-                    </Button>
-                  </Tooltip>
-
-                  <Tooltip text={c?.["prompt"]?.["new image"]}>
-                    <Button
-                      type="button"
-                      size="icon"
-                      onClick={generate}
-                      disabled={loading || generating}
-                    >
-                      <Icons.image />
-                    </Button>
-                  </Tooltip>
-                </div>
-              </div>
-
-              <FormControl>
-                <Textarea
-                  className="min-h-56 w-full"
+          <TabsContent value="enhance">
+            <div className="flex items-center justify-end">
+              <Tooltip text={c?.["prompt"]?.["enhance prompt"]}>
+                <Button
+                  type="button"
+                  size="icon"
+                  onClick={enhance}
                   disabled={loading || generating}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                >
+                  <Icons.reload />
+                </Button>
+              </Tooltip>
+            </div>
+
+            <FormField
+              control={form.control}
+              name="image.prompt"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{c?.["prompt"]?.["label"]}</FormLabel>
+
+                  <FormControl>
+                    <Textarea
+                      className="min-h-56 w-full"
+                      disabled={loading || generating}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </TabsContent>
+          <TabsContent value="generate">
+            <div className="flex items-center justify-end">
+              <Tooltip text={c?.["prompt"]?.["new image"]}>
+                <Button
+                  type="button"
+                  size="icon"
+                  onClick={generate}
+                  disabled={loading || generating}
+                >
+                  <Icons.imageReload />
+                </Button>
+              </Tooltip>
+            </div>
+
+            <Image
+              src={form.watch("image.src")!}
+              alt=""
+              className="aspect-square max-h-40"
+            />
+          </TabsContent>
+        </Tabs>
       </div>
     );
   },

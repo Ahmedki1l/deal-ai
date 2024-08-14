@@ -18,24 +18,22 @@ export const imageCreateSchema = imageSchema.omit({
   id: true,
 });
 export const imageUpdateSchema = imageSchema;
-export const imageUpdateFormSchema = imageUpdateSchema
-  .omit({
-    src: true,
+export const imageUpdateFormSchema = z
+  .object({
+    file: z
+      .instanceof(File)
+      .refine((file) => {
+        return !file || file.size <= MAX_UPLOAD_SIZE;
+      }, "File size must be less than 5MB")
+      .refine((file) => {
+        return ACCEPTED_IMAGE_TYPES.includes(file.type);
+      }, "File must be a PNG"),
+    base64: z.string("base64").min(0),
   })
-  .and(
+  .or(
     z.object({
-      src: z.object({
-        file: z
-          .instanceof(File)
-          .refine((file) => {
-            return !file || file.size <= MAX_UPLOAD_SIZE;
-          }, "File size must be less than 5MB")
-          .refine((file) => {
-            return ACCEPTED_IMAGE_TYPES.includes(file.type);
-          }, "File must be a PNG"),
-        base64: z.string("base64").min(0),
-        url: z.string("url"),
-      }),
+      prompt: z.string("prompt").min(0),
+      src: z.string("src").min(0),
     }),
   );
 export const imageRegeneratePromptSchema = imageSchema.pick({

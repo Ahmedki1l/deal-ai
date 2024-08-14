@@ -31,12 +31,11 @@ import { DialogResponsive } from "./dialog";
 import { DialogClose } from "./ui/dialog";
 import { DrawerClose } from "./ui/drawer";
 import { ImageForm } from "./image-form";
-import { ImageUpdateButton } from "./image-update-button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 type PostUpdateFormProps = {
   post: Post & { image: ImageType | null };
 } & Dictionary["post-update-form"] &
-  Dictionary["image-update-button"] &
   Dictionary["image-form"] &
   Dictionary["post-form"] &
   Dictionary["dialog"] &
@@ -49,13 +48,16 @@ export function PostUpdateForm({
   const lang = useLocale();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof postUpdateSchema>>({
     resolver: zodResolver(postUpdateSchema),
     defaultValues: {
       ...post,
       image: {
-        prompt: post?.["image"]?.["prompt"] ?? "",
+        ...post?.["image"],
+        src: post?.["image"]?.["src"],
+        prompt: post?.["image"]?.["prompt"],
       },
     },
   });
@@ -74,59 +76,118 @@ export function PostUpdateForm({
       },
     });
   }
-  function isValidUrl(url: string) {
+  function isValidUrl(src: string) {
     try {
-      new URL(url);
+      new URL(src);
       return true;
     } catch (e) {
       return false;
     }
   }
   return (
-    <div>
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <BackButton dic={dic} type="button" variant="ghost" size="sm" />
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <BackButton dic={dic} type="button" variant="ghost" size="sm" />
 
-          <h1 className="text-md font-semibold">{c?.["post details"]}</h1>
-        </div>
+              <h1 className="text-md font-semibold">{c?.["post details"]}</h1>
+            </div>
 
-        <div className="hidden items-center gap-2 md:flex">
-          <Button
-            type="button"
-            onClick={() => form.reset()}
-            variant="outline"
-            size="sm"
-          >
-            {c?.["discard"]}
-          </Button>
-          <Button type="submit" size="sm" className="w-full" disabled={loading}>
-            {loading && <Icons.spinner />}
-            {c?.["save changes"]}
-          </Button>
-        </div>
-      </div>
-      <div className="grid gap-4 lg:grid-cols-[0.7fr,1fr]">
-        <div
-          className={cn(
-            "relative h-full min-h-60 flex-col overflow-hidden rounded text-primary-foreground dark:border-r lg:flex",
-            // form.watch("image") && `bg-[url(${form.getValues("image")})]`,
-          )}
-        >
-          <div className="absolute inset-0 bg-primary/30" />
-          {isValidUrl(post?.["image"]?.["src"] ?? "") ? (
-            <Image src={post?.["image"]?.["src"]!} alt="" className="" />
-          ) : null}
-          <div className="absolute right-4 top-4 z-50 flex items-center text-lg font-medium">
-            <ImageUpdateButton dic={dic} image={post?.["image"]!}>
-              <Button size="icon" variant="secondary">
-                <Icons.edit />
+            <div className="hidden items-center gap-2 md:flex">
+              <Button
+                type="button"
+                onClick={() => form.reset()}
+                variant="outline"
+                size="sm"
+              >
+                {c?.["discard"]}
               </Button>
-            </ImageUpdateButton>
+              <Button
+                type="submit"
+                size="sm"
+                className="w-full"
+                disabled={loading}
+              >
+                {loading && <Icons.spinner />}
+                {c?.["save changes"]}
+              </Button>
+            </div>
           </div>
-        </div>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+
+          <div className="grid gap-4 lg:grid-cols-[0.7fr,1fr]">
+            <div
+              className={cn(
+                "relative h-full min-h-60 flex-col overflow-hidden rounded text-primary-foreground dark:border-r lg:flex",
+                // form.watch("image") && `bg-[src(${form.getValues("image")})]`,
+              )}
+            >
+              <div className="absolute inset-0 bg-primary/30" />
+              {isValidUrl(form.getValues("image.src") ?? "") ? (
+                <Image src={form.getValues("image.src")!} alt="" />
+              ) : null}
+              <div className="absolute right-4 top-4 z-50 flex items-center text-lg font-medium">
+                <DialogResponsive
+                  dic={dic}
+                  confirmButton={
+                    <>
+                      <DialogClose asChild className="hidden md:flex">
+                        <Button disabled={loading} className="w-full md:w-fit">
+                          {loading && <Icons.spinner />}
+                          {c?.["submit"]}
+                        </Button>
+                      </DialogClose>
+
+                      <DrawerClose asChild className="md:hidden">
+                        <Button disabled={loading} className="w-full md:w-fit">
+                          {loading && <Icons.spinner />}
+                          {c?.["submit"]}
+                        </Button>
+                      </DrawerClose>
+                    </>
+                  }
+                  content={
+                    <>
+                      <Tabs defaultValue="choose">
+                        <TabsList>
+                          <TabsTrigger value="choose">Choose</TabsTrigger>
+                          <TabsTrigger value="generate">
+                            Generate AI
+                          </TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="choose">
+                          <ImageForm.src
+                            dic={dic}
+                            form={form}
+                            loading={loading}
+                          />
+                        </TabsContent>
+                        <TabsContent value="generate">
+                          <ImageForm.prompt
+                            dic={dic}
+                            form={form}
+                            loading={loading}
+                          />
+                        </TabsContent>
+                      </Tabs>
+                    </>
+                  }
+                  title={c?.["update image"]}
+                  description={
+                    c?.[
+                      "this step is essential for informing patients about the treatments available at your image."
+                    ]
+                  }
+                  open={open}
+                  setOpen={setOpen}
+                >
+                  <Button size="icon" variant="secondary">
+                    <Icons.edit />
+                  </Button>
+                </DialogResponsive>
+              </div>
+            </div>
             <Card>
               <CardHeader>
                 <CardTitle>{c?.["post information"]}</CardTitle>
@@ -170,11 +231,7 @@ export function PostUpdateForm({
                 </div>
               </CardContent>
             </Card>
-          </form>
-        </Form>
-      </div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          </div>
           <div className="flex items-center justify-center gap-2 md:hidden">
             <Button
               type="button"
@@ -195,8 +252,8 @@ export function PostUpdateForm({
               {c?.["save changes"]}
             </Button>
           </div>
-        </form>
-      </Form>
-    </div>
+        </div>
+      </form>
+    </Form>
   );
 }

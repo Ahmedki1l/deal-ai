@@ -27,6 +27,7 @@ import {
   Image,
   Edit,
   Globe,
+  ImagePlay,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { VariantProps, cva } from "class-variance-authority";
@@ -43,7 +44,11 @@ export const Icons = {
     <CutomImage
       src={icon?.["src"]}
       alt=""
-      className={cn(IconsVariants({}), "mr-2 h-6 w-6 bg-none", className)}
+      className={cn(
+        IconsVariants({}),
+        "mr-2 h-6 w-6 rounded-none border-none bg-background",
+        className,
+      )}
       // {...props}
     />
   ),
@@ -52,7 +57,11 @@ export const Icons = {
     <CutomImage
       src={logo?.["src"]}
       alt=""
-      className={cn(IconsVariants({}), "mr-2 h-6 w-6 bg-none", className)}
+      className={cn(
+        IconsVariants({}),
+        "mr-2 h-6 w-6 rounded-none border-none bg-background",
+        className,
+      )}
       // {...props}
     />
   ),
@@ -88,6 +97,9 @@ export const Icons = {
   ),
   image: ({ className, ...props }: IconProps) => (
     <Image className={cn(IconsVariants({}), className)} {...props} />
+  ),
+  imageReload: ({ className, ...props }: IconProps) => (
+    <ImagePlay className={cn(IconsVariants({}), className)} {...props} />
   ),
   edit: ({ className, ...props }: IconProps) => (
     <Edit className={cn(IconsVariants({}), className)} {...props} />

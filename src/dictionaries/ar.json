@@ -197,12 +197,6 @@
     "toggle columns": "تبديل الأعمدة"
   },
 
-  "image-update-button": {
-    "updated successfully.": "updated successfully.",
-    "submit": "Submit",
-    "update image": "Update Image",
-    "this step is essential for informing patients about the treatments available at your image.": "this step is essential for informing patients about the treatments available at your image."
-  },
   "image-form": {
     "src": {
       "label": "Image Source",
@@ -282,7 +276,9 @@
     "post details": "تفاصيل البوست",
     "discard": "إزالة",
     "save changes": "حفظ التغييرات",
-    "post information": "تفاصيل البوست"
+    "post information": "تفاصيل البوست",
+    "update image": "Update Image",
+    "this step is essential for informing patients about the treatments available at your image.": "this step is essential for informing patients about the treatments available at your image."
   },
   "post-update-schedule-button": {
     "scheduled successfully.": "تمت الجدولة بنجاح",

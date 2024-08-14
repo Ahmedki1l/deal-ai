@@ -203,12 +203,6 @@
     "cancel": "Cancel"
   },
 
-  "image-update-button": {
-    "updated successfully.": "updated successfully.",
-    "submit": "Submit",
-    "update image": "Update Image",
-    "this step is essential for informing patients about the treatments available at your image.": "this step is essential for informing patients about the treatments available at your image."
-  },
   "image-form": {
     "src": {
       "label": "Image Source",
@@ -281,7 +275,9 @@
     "post details": "Post Details",
     "discard": "Discard",
     "save changes": "Save Changes",
-    "post information": "Post Information"
+    "post information": "Post Information",
+    "update image": "Update Image",
+    "this step is essential for informing patients about the treatments available at your image.": "this step is essential for informing patients about the treatments available at your image."
   },
   "post-update-schedule-button": {
     "scheduled successfully.": "scheduled successfully.",

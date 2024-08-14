@@ -145,6 +145,7 @@ export async function createPost(
           input: `you must adjust this prompt to be only 1000 characters long at max: ${imagePrompt.input}`,
         };
 
+        
         const adjusted_image_response = await fetch(prompt_generator_endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },

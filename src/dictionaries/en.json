@@ -302,6 +302,7 @@
   },
   "project-form": {
     "title": { "label": "Title", "health center": "health center" },
+    "map": { "label": "Map" },
     "description": {
       "label": "Description",
       "describe your project": "describe your project"

@@ -96,18 +96,29 @@ export function ProjectCreateButton({
         <div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-              <ProjectForm.title
-                dic={dic}
-                form={form as any}
-                loading={loading}
-              />
-              <ProjectForm.description
-                dic={dic}
-                form={form as any}
-                loading={loading}
-              />
+              <div className="grid gap-2 md:grid-cols-[1fr,0.75fr]">
+                <div className="space-y-2">
+                  <ProjectForm.title
+                    dic={dic}
+                    form={form as any}
+                    loading={loading}
+                  />
+                  <ProjectForm.description
+                    dic={dic}
+                    form={form as any}
+                    loading={loading}
+                  />
+                </div>
+                <div className="grow bg-muted">
+                  <ProjectForm.map
+                    dic={dic}
+                    form={form as any}
+                    loading={loading}
+                  />
+                </div>
+              </div>
 
-              <div className="grid gap-4 sm:grid-cols-4">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <ProjectForm.distinct
                   dic={dic}
                   form={form as any}

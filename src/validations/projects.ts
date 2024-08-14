@@ -17,13 +17,18 @@ export const projectSchema = z.object(
 
     propertyTypes: z.array(z.enum(propertyTypesArr)),
     platforms: z.array(z.enum(platformsArr)),
-    
   },
 );
 
 export const projectCreateSchema = projectSchema.omit({ id: true });
 export const projectCreateFormSchema = projectCreateSchema
-  .omit({ platforms: true, propertyTypes: true })
+  .omit({
+    platforms: true,
+    propertyTypes: true,
+    distinct: true,
+    city: true,
+    country: true,
+  })
   .and(
     z.object({
       platforms: z.array(
@@ -31,6 +36,7 @@ export const projectCreateFormSchema = projectCreateSchema
           value: z.enum(platformsArr),
         }),
       ),
+      map: z.string("map"),
     }),
   )
   .and(propertyCreateFormSchema);

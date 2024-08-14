@@ -18,6 +18,9 @@ import { LocaleProps } from "@/types/locale";
 import { getDictionary } from "@/lib/dictionaries";
 import { CaseStudyTable } from "./case-study-table";
 import { PropertyTable } from "./properties-table";
+import { platforms } from "@/db/enums";
+import { Icons } from "@/components/icons";
+import { Map } from "@/components/map";
 
 type ProjectProps = Readonly<{
   params: { "project-id": string } & LocaleProps;
@@ -72,11 +75,66 @@ export default async function Project({
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">
-              {project?.["title"]}
-            </h2>
+        <div className="mb-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight">
+                {project?.["title"]}
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                {project?.["description"]}
+              </p>
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                {project?.["platforms"]?.map((e, i) => {
+                  const p = platforms.find((p) => p?.["value"] === e);
+                  if (!p) return "---";
+
+                  const Icon = Icons?.[p?.["icon"]] ?? null;
+
+                  return <Icon key={i} />;
+                })}
+              </div>
+
+              <p className="text-sm text-muted-foreground">
+                {new Date(project?.["createdAt"])?.toLocaleDateString()}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="flex flex-col justify-center">
+              <p className="text-muted-foreground">
+                <span className="font-semibold text-foreground">
+                  Distinct:{" "}
+                </span>
+                {project?.["distinct"]}
+              </p>
+
+              <p className="text-muted-foreground">
+                <span className="font-semibold text-foreground">City: </span>
+                {project?.["city"]}
+              </p>
+
+              <p className="text-muted-foreground">
+                <span className="font-semibold text-foreground">Country: </span>
+                {project?.["country"]}
+              </p>
+
+              <p className="text-muted-foreground">
+                <span className="font-semibold text-foreground">Spaces: </span>
+                {project?.["spaces"]}
+              </p>
+
+              <p className="text-muted-foreground">
+                <span className="font-semibold text-foreground">
+                  Property Types:{" "}
+                </span>
+                {project?.["propertyTypes"].join(", ")}
+              </p>
+            </div>
+            <Map {...project} />
           </div>
         </div>
       </div>

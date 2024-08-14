@@ -15,6 +15,7 @@ import { generateIdFromEntropySize } from "lucia";
 export async function createProject({
   types,
   platforms,
+  map,
   ...data
 }: z.infer<typeof projectCreateFormSchema>) {
   try {
@@ -34,19 +35,32 @@ export async function createProject({
       .flat();
 
     const id = generateIdFromEntropySize(10);
+    const project = {
+      ...data,
+      id,
+      userId: user?.["id"],
+      platforms: platforms.map((e) => e?.["value"]),
+      propertyTypes: types?.map((e) => e?.["value"]),
+
+      // Google Map
+      distinct: map,
+      city: map,
+      country: map,
+    };
+
     await db.project.create({
-      data: {
-        ...data,
-        id,
-        userId: user?.["id"],
-        platforms: platforms.map((e) => e?.["value"]),
-        propertyTypes: types?.map((e) => e?.["value"]),
-        properties: {
-          createMany: {
-            data: properties,
+      data: properties?.["length"]
+        ? {
+            ...project,
+            properties: {
+              createMany: {
+                data: properties,
+              },
+            },
+          }
+        : {
+            ...project,
           },
-        },
-      },
     });
 
     revalidatePath("/", "layout");

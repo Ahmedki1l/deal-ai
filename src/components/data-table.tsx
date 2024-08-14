@@ -131,11 +131,11 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length}>
-                  <EmptyPlaceholder className="border-none">
+                  <EmptyPlaceholder className="min-h-20 border-none">
                     <EmptyPlaceholder.Icon name="empty" />
-                    <EmptyPlaceholder.Title className="h-60 text-center text-base">
+                    <EmptyPlaceholder.Description className="text-center">
                       {c?.["no results."]}
-                    </EmptyPlaceholder.Title>
+                    </EmptyPlaceholder.Description>
                   </EmptyPlaceholder>
                 </TableCell>
               </TableRow>

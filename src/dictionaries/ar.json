@@ -303,6 +303,7 @@
   },
   "project-form": {
     "title": { "label": "العنوان", "health center": "بالم هيلز" },
+    "map": { "label": "الخريطة" },
     "description": {
       "label": "الوصف",
       "describe your project": "وصف المشروع"

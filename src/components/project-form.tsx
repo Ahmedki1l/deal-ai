@@ -58,6 +58,21 @@ export const ProjectForm = {
       )}
     />
   ),
+  map: ({ dic: { "project-form": c }, loading, form }: ProjectFormProps) => (
+    <FormField
+      control={form.control}
+      name="map"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{c?.["map"]?.["label"]}</FormLabel>
+          <FormControl>
+            <Input type="text" disabled={loading} {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  ),
   description: ({
     dic: { "project-form": c },
     loading,

@@ -73,8 +73,8 @@ export async function createCaseStudy(
 
     data.content = response["Case_Study"];
     data.targetAudience = response["Target_Audience"];
-    data.pros = response["Pros"];
-    data.cons = response["Cons"];
+    data.pros = JSON.stringify(response["Pros"]);
+    data.cons = JSON.stringify(response["Cons"]);
     data.prompt = prompt.input;
     data.caseStudyResponse = JSON.stringify(response);
 

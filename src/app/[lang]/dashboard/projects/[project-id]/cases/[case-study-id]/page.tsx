@@ -121,9 +121,7 @@ export default async function CaseStudy({
             </AccordionItem>
             <AccordionItem value="target-audience">
               <AccordionTrigger>{c?.["target audience"]}</AccordionTrigger>
-              <AccordionContent>
-                {caseStudy?.["targetAudience"]}
-              </AccordionContent>
+              <AccordionContent>{caseStudy?.["targetAudience"]}</AccordionContent>
             </AccordionItem>
             <AccordionItem value="pros">
               <AccordionTrigger>{c?.["pros"]}</AccordionTrigger>

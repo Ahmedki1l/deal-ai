@@ -59,7 +59,7 @@ export async function createPost(
 
     let image_analyzer_response;
 
-    if (caseStudy.refImages) {
+    if (caseStudy.refImages.length > 0) {
       let image_anaylzer_prompt = { input: "" };
 
       caseStudy.refImages.forEach((url) => {

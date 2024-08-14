@@ -52,7 +52,7 @@ export async function createCaseStudy(
     }
 
     actualProject?.properties.forEach((property)=>{
-      prompt.input += 'The availabel assets are: ' + property.units + ', assets type: ' + property.title + ' ' + property.type + ', space: ' + property.space + ', number of bedrooms: ' + property.rooms + ', number of bathrooms ' + property.bathrooms + ', number of Reception rooms: ' + property.recipients + ', finishing:  ' + property.finishing + ', floors: ' + property.floors;
+      prompt.input += 'The availabel assets are: ' + property.units + ', assets type: ' + property.title + ' ' + property.type + ', property spaces: ' + property.space + ', number of bedrooms: ' + property.rooms + ', number of bathrooms ' + property.bathrooms + ', number of Reception rooms: ' + property.recipients + ', finishing:  ' + property.finishing + ', floors: ' + property.floors;
       prompt.input += property.garden? ', includes number of gardens: ' + property.garden : '';
       prompt.input += property.pool? ', includes number of pools: ' + property.pool : '';
       prompt.input += property.view? ', the view of the assets is: ' + property.view : '';

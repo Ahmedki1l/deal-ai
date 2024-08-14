@@ -25,9 +25,6 @@ export const projectCreateFormSchema = projectCreateSchema
   .omit({
     platforms: true,
     propertyTypes: true,
-    distinct: true,
-    city: true,
-    country: true,
   })
   .and(
     z.object({

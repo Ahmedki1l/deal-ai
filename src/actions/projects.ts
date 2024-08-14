@@ -43,9 +43,9 @@ export async function createProject({
       propertyTypes: types?.map((e) => e?.["value"]),
 
       // Google Map
-      distinct: map,
-      city: map,
-      country: map,
+      distinct: map ?? data?.["distinct"],
+      city: map ?? data?.["city"],
+      country: map ?? data?.["country"],
     };
 
     await db.project.create({

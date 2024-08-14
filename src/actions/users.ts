@@ -16,7 +16,7 @@ import {
 } from "@/validations/users";
 import { lucia, getAuth } from "@/lib/auth";
 import { db } from "@/db";
-import { getLocale } from "@/lib/locale";
+import { getLocale } from "./helpers";
 
 export async function signUpWithPassword(
   credentials: z.infer<typeof userAuthRegisterSchema>,
@@ -60,7 +60,8 @@ export async function signUpWithPassword(
       sessionCookie.attributes,
     );
 
-    return redirect(`/login`);
+    const locale = getLocale();
+    return redirect(`/${locale}/login`);
   } catch (error: any) {
     if (isRedirectError(error)) throw error;
     throw Error(error?.["message"] ?? "an error occured, try again.");
@@ -72,7 +73,6 @@ export async function signInWithPassword(
 ) {
   try {
     const { email, password } = userAuthLoginSchema.parse(credentials);
-
     const existingUser = await db.user.findFirst({
       where: {
         email: {
@@ -81,29 +81,24 @@ export async function signInWithPassword(
         },
       },
     });
-
     if (!existingUser) throw new Error("No such a user.");
     if (!existingUser?.["password"]) throw new Error("Incorrect password.");
-
     const validPassword = await verify(existingUser?.["password"], password, {
       memoryCost: 19456,
       timeCost: 2,
       outputLen: 32,
       parallelism: 1,
     });
-
     if (!validPassword) throw new Error("Incorrect email or password");
-
     const session = await lucia.createSession(existingUser?.["id"], {});
     const sessionCookie = lucia.createSessionCookie(session?.["id"]);
-
     cookies().set(
       sessionCookie.name,
       sessionCookie.value,
       sessionCookie.attributes,
     );
-
-    return redirect(`/dashboard`);
+    const locale = getLocale();
+    return redirect(`/${locale}/dashboard`);
   } catch (error: any) {
     if (isRedirectError(error)) throw error;
 
@@ -151,5 +146,6 @@ export async function logout() {
     sessionCookie.attributes,
   );
 
-  return redirect(`/login`);
+  const locale = getLocale();
+  return redirect(`/${locale}/login`);
 }

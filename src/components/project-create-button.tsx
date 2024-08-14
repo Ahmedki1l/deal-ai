@@ -87,7 +87,7 @@ export function ProjectCreateButton({
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Button disabled={loading} className="w-full md:w-fit">
               {loading && <Icons.spinner />}
-              Submit
+              {c?.["submit"]}
             </Button>
           </form>
         </Form>
@@ -199,12 +199,14 @@ export function ProjectCreateButton({
                                   variant="ghost"
                                   size="icon"
                                   onClick={() => {
-                                    field.properties = field.properties.filter((property, index) => {
-                                      console.log("card ", property);
-                                      console.log('card index ', j);
-                                      console.log("item index ", index)
-                                      return index !== j;
-                                    });
+                                    field.properties = field.properties.filter(
+                                      (property, index) => {
+                                        console.log("card ", property);
+                                        console.log("card index ", j);
+                                        console.log("item index ", index);
+                                        return index !== j;
+                                      },
+                                    );
                                     console.log(field.properties);
                                   }}
                                 >

@@ -1,5 +1,6 @@
 "use server";
 
+import { Locale } from "@/types/locale";
 import { cookies, headers } from "next/headers";
 
 export async function getCookie(key: string) {
@@ -10,6 +11,22 @@ export async function setCookie(key: string, val: string) {
 }
 
 export async function getHeader(key: string) {
-  const header = headers();
-  return header.get(key) || "";
+  return headers().get(key) || "";
+}
+
+export async function getLocale() {
+  const refererUrl = await getHeader("referer");
+  let locale = "ar"; // default locale
+
+  if (refererUrl) {
+    const url = new URL(refererUrl);
+    const pathname = url.pathname;
+
+    const match = pathname.match(/^\/([a-zA-Z-]{2,5})\//);
+    if (match) {
+      locale = match[1];
+    }
+  }
+
+  return locale as Locale;
 }

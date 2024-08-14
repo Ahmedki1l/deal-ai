@@ -25,6 +25,7 @@ export const postSchema = z.object({
 export const postCreateSchema = postSchema.omit({
   id: true,
   imageId: true,
+  image: true,
 });
 export const postUpdateSchema = postSchema.omit({
   caseStudyId: true,

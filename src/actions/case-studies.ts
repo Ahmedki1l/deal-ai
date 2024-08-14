@@ -45,22 +45,43 @@ export async function createCaseStudy(
       input: `create a casestudy about ${actualProject?.title} ${actualProject?.["propertyTypes"]} located in: ${actualProject?.distinct}, ${actualProject?.city}, ${actualProject?.country}, which has a land space of: ${actualProject?.spaces}, ${actualProject?.description}. Create the Hashtags for ${project?.["platforms"]}. `,
     };
 
-    if (
-      containsArabic(prompt.input)
-    ) {
-      endpoint_language = "ar";
-    }
+    if (containsArabic(prompt.input)) endpoint_language = "ar";
 
-    actualProject?.properties.forEach((property)=>{
-      prompt.input += 'The availabel assets are: ' + property.units + ', assets type: ' + property.title + ' ' + property.type + ', property spaces: ' + property.space + ', number of bedrooms: ' + property.rooms + ', number of bathrooms ' + property.bathrooms + ', number of Reception rooms: ' + property.recipients + ', finishing:  ' + property.finishing + ', floors: ' + property.floors;
-      prompt.input += property.garden? ', includes number of gardens: ' + property.garden : '';
-      prompt.input += property.pool? ', includes number of pools: ' + property.pool : '';
-      prompt.input += property.view? ', the view of the assets is: ' + property.view : '';
+    actualProject?.properties.forEach((property) => {
+      prompt.input +=
+        "The availabel assets are: " +
+        property.units +
+        ", assets type: " +
+        property.title +
+        " " +
+        property.type +
+        ", property spaces: " +
+        property.space +
+        ", number of bedrooms: " +
+        property.rooms +
+        ", number of bathrooms " +
+        property.bathrooms +
+        ", number of Reception rooms: " +
+        property.recipients +
+        ", finishing:  " +
+        property.finishing +
+        ", floors: " +
+        property.floors;
+      prompt.input += property.garden
+        ? ", includes number of gardens: " + property.garden
+        : "";
+      prompt.input += property.pool
+        ? ", includes number of pools: " + property.pool
+        : "";
+      prompt.input += property.view
+        ? ", the view of the assets is: " + property.view
+        : "";
     });
 
     console.log(prompt);
 
-    const endpoint = process.env.NEXT_PUBLIC_AI_API + `/${endpoint_language}/chat/casestudy`;
+    const endpoint =
+      process.env.NEXT_PUBLIC_AI_API + `/${endpoint_language}/chat/casestudy`;
 
     // Send data to the server
     const response = await fetch(endpoint, {

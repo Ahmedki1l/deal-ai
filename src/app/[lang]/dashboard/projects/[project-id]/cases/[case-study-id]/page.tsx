@@ -84,6 +84,9 @@ export default async function CaseStudy({
       </div>
     );
 
+  const pros: string[] = Object.values(JSON.parse(caseStudy?.["pros"]));
+  const cons: string[] = Object.values(JSON.parse(caseStudy?.["cons"]));
+
   return (
     <div className="container flex-1 py-6">
       <div className="flex flex-col gap-5">
@@ -121,15 +124,33 @@ export default async function CaseStudy({
             </AccordionItem>
             <AccordionItem value="target-audience">
               <AccordionTrigger>{c?.["target audience"]}</AccordionTrigger>
-              <AccordionContent>{caseStudy?.["targetAudience"]}</AccordionContent>
+              <AccordionContent>
+                {caseStudy?.["targetAudience"]}
+              </AccordionContent>
             </AccordionItem>
             <AccordionItem value="pros">
               <AccordionTrigger>{c?.["pros"]}</AccordionTrigger>
-              <AccordionContent>{caseStudy?.["pros"]}</AccordionContent>
+              <AccordionContent>
+                <ul className="list-decimal ltr:pl-5 rtl:pr-5">
+                  {pros?.map((e, i) => (
+                    <li key={i} className="mb-1">
+                      {e}
+                    </li>
+                  ))}
+                </ul>
+              </AccordionContent>
             </AccordionItem>
             <AccordionItem value="cons">
               <AccordionTrigger>{c?.["cons"]}</AccordionTrigger>
-              <AccordionContent>{caseStudy?.["cons"]}</AccordionContent>
+              <AccordionContent>
+                <ul className="list-decimal ltr:pl-5 rtl:pr-5">
+                  {cons?.map((e, i) => (
+                    <li key={i} className="mb-1">
+                      {e}
+                    </li>
+                  ))}
+                </ul>
+              </AccordionContent>
             </AccordionItem>
             <AccordionItem value="images">
               <AccordionTrigger>{c?.["reference images"]}</AccordionTrigger>

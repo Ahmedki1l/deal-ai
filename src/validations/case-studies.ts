@@ -1,7 +1,5 @@
 import { z } from "@/lib/zod";
-
-const MAX_UPLOAD_SIZE = 1024 * 1024 * 5; // 5MB
-const ACCEPTED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/gif", "image/webp"];
+import { ACCEPTED_IMAGE_TYPES, MAX_UPLOAD_SIZE } from "./images";
 
 export const caseStudySchema = z.object(
   // <Record<keyof CaseStudy, any>>

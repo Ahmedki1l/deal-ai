@@ -54,52 +54,6 @@ export const PostForm = {
       )}
     />
   ),
-  // image: ({
-  //   loading,
-  //   form,
-  // }: PostFormProps<
-  //   z.infer<typeof postCreateSchema> | z.infer<typeof postUpdateSchema>
-  // >) => (
-  //   <FormField
-  //     control={form.control}
-  //     name="image"
-  //     render={({ field }) => (
-  //       <FormItem>
-  //         <FormLabel>Image</FormLabel>
-  //         <FormControl>
-  //           <Input
-  //             type="text"
-  //             className="w-full"
-  //             placeholder="unsplash url"
-  //             disabled={loading}
-  //             {...field}
-  //           />
-  //         </FormControl>
-  //         <FormMessage />
-  //       </FormItem>
-  //     )}
-  //   />
-  // ),
-  // description: ({ dic: { "post-form": c }, loading, form }: PostFormProps) => (
-  //   <FormField
-  //     control={form.control}
-  //     name="description"
-  //     render={({ field }) => (
-  //       <FormItem>
-  //         <FormLabel>{c?.["description"]?.["label"]}</FormLabel>
-  //         <FormControl>
-  //           <Textarea
-  //             className="min-h-56 w-full"
-  //             placeholder={c?.["description"]?.["describe your post"]}
-  //             disabled={loading}
-  //             {...field}
-  //           />
-  //         </FormControl>
-  //         <FormMessage />
-  //       </FormItem>
-  //     )}
-  //   />
-  // ),
   content: ({ dic: { "post-form": c }, loading, form }: PostFormProps) => (
     <FormField
       control={form.control}

@@ -95,9 +95,10 @@ export function PropertyCreateButton({
         <>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-              <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center justify-between gap-2">
                 <Label>{c?.["type of assets"]}</Label>
                 <Button
+                  type="button"
                   size="icon"
                   onClick={() =>
                     // @ts-ignore
@@ -118,7 +119,7 @@ export function PropertyCreateButton({
               {fields?.map((field, i) => (
                 <Card key={i}>
                   <CardHeader>
-                    <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center justify-between gap-2">
                       <div className="w-full">
                         <PropertyForm.type
                           dic={dic}
@@ -131,12 +132,15 @@ export function PropertyCreateButton({
 
                       {form.watch(`types.${i}.value`) && (
                         <Button
+                          type="button"
                           size="icon"
                           onClick={() =>
-                            // @ts-ignore
-                            field?.properties?.push({
-                              projectId: project?.["id"],
-                            })
+                            form.setValue(`types.${i}.properties`, [
+                              // @ts-ignore
+                              ...form.getValues(`types.${i}.properties`),
+                              // @ts-ignore
+                              { projectId: project?.["id"] },
+                            ])
                           }
                         >
                           <Icons.add />
@@ -145,34 +149,34 @@ export function PropertyCreateButton({
                     </div>
                   </CardHeader>
 
-                  {field?.["properties"]?.["length"] ? (
+                  {form.watch(`types.${i}.properties`)?.["length"] ? (
                     <CardContent className="space-y-4">
-                      {field?.properties?.map((_, j) => (
+                      {form.getValues(`types.${i}.properties`)?.map((_, j) => (
                         <Card key={j} className="border-green-500">
                           <CardHeader>
-                            <div className="flex items-center justify-between gap-4">
+                            <div className="flex items-center justify-between gap-2">
                               <CardTitle>
                                 {c?.["unit"]} {j + 1}
                               </CardTitle>
 
-                              {/* <Button
-                                  size="icon"
-                                  onClick={() =>
-                                    // @ts-ignore
-                                    form.setValue(
-                                      `types.${i}.properties`,
-                                      field?.["properties"]?.filter(
-                                        (_, k) => k != j,
-                                      ) ?? [],
-                                    )
-                                  }
-                                >
-                                  <Icons.x />
-                                </Button> */}
+                              <Button
+                                type="button"
+                                size="icon"
+                                onClick={() =>
+                                  form.setValue(
+                                    `types.${i}.properties`,
+                                    form
+                                      .getValues(`types.${i}.properties`)
+                                      ?.filter((_, k) => k != j) ?? [],
+                                  )
+                                }
+                              >
+                                <Icons.x />
+                              </Button>
                             </div>
                           </CardHeader>
 
-                          <CardContent className="grid grid-cols-3 gap-4">
+                          <CardContent className="grid grid-cols-3 gap-2">
                             <PropertyForm.title
                               dic={dic}
                               typeIndex={i}
@@ -258,6 +262,7 @@ export function PropertyCreateButton({
                           </CardContent>
                           {/* <CardFooter>
                             <Button
+                              type='button'
                               size="icon"
                               onClick={() => {
                                 // @ts-ignore

@@ -21,14 +21,23 @@ import {
 } from "@/components/ui/card";
 import { BackButton } from "@/components/back-button";
 import { PostForm } from "@/components/post-form";
-import { Post } from "@prisma/client";
+import { Image as ImageType, Post } from "@prisma/client";
 import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
 import { useLocale } from "@/hooks/use-locale";
+import { cn } from "@/lib/utils";
+import { Image } from "./image";
+import { DialogResponsive } from "./dialog";
+import { DialogClose } from "./ui/dialog";
+import { DrawerClose } from "./ui/drawer";
+import { ImageForm } from "./image-form";
+import { ImageUpdateButton } from "./image-update-button";
 
 type PostUpdateFormProps = {
-  post: Post;
+  post: Post & { image: ImageType | null };
 } & Dictionary["post-update-form"] &
+  Dictionary["image-update-button"] &
+  Dictionary["image-form"] &
   Dictionary["post-form"] &
   Dictionary["dialog"] &
   Dictionary["back-button"];
@@ -46,7 +55,6 @@ export function PostUpdateForm({
     resolver: zodResolver(postUpdateSchema),
     defaultValues: {
       ...post,
-      imageId: post?.["imageId"] ?? undefined,
     },
   });
 
@@ -65,105 +73,70 @@ export function PostUpdateForm({
       },
     });
   }
+  function isValidUrl(url: string) {
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
   return (
-    <div className="space-y-4">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <BackButton dic={dic} type="button" variant="ghost" size="sm" />
+    <div>
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <BackButton dic={dic} type="button" variant="ghost" size="sm" />
 
-              {/*  type="button" variant="ghost" size="sm">
-                 <Icons.chevronLeft />
-                 {c?.["back"]}
-               </BackButton> */}
-              <h1 className="text-md font-semibold">{c?.["post details"]}</h1>
-            </div>
-            <div className="hidden items-center gap-2 md:ml-auto md:flex">
-              <Button
-                type="button"
-                onClick={() => form.reset()}
-                variant="outline"
-                size="sm"
-              >
-                {c?.["discard"]}
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                className="w-full"
-                disabled={loading}
-              >
-                {loading && <Icons.spinner />}
-                {c?.["save changes"]}
-              </Button>
-            </div>
-          </div>
-        </form>
-      </Form>
-      <div className="grid gap-4 md:grid-cols-[300px,1fr] lg:grid-cols-3">
-        {/* <div
+          <h1 className="text-md font-semibold">{c?.["post details"]}</h1>
+        </div>
+
+        <div className="hidden items-center gap-2 md:flex">
+          <Button
+            type="button"
+            onClick={() => form.reset()}
+            variant="outline"
+            size="sm"
+          >
+            {c?.["discard"]}
+          </Button>
+          <Button type="submit" size="sm" className="w-full" disabled={loading}>
+            {loading && <Icons.spinner />}
+            {c?.["save changes"]}
+          </Button>
+        </div>
+      </div>
+      <div className="grid gap-4 lg:grid-cols-[0.7fr,1fr]">
+        <div
           className={cn(
             "relative h-full min-h-60 flex-col overflow-hidden rounded text-primary-foreground dark:border-r lg:flex",
             // form.watch("image") && `bg-[url(${form.getValues("image")})]`,
           )}
         >
           <div className="absolute inset-0 bg-primary/30" />
-          {isValidUrl(form?.watch("image") ?? "") ? (
-            <Image src={form?.getValues("image")!} alt="" className="" />
-          ) : null}{" "}
+          {isValidUrl(post?.["image"]?.["src"] ?? "") ? (
+            <Image src={post?.["image"]?.["src"]!} alt="" className="" />
+          ) : null}
           <div className="absolute right-4 top-4 z-50 flex items-center text-lg font-medium">
-            <DialogResponsive
-              open={open}
-              setOpen={setOpen}
-              confirmButton={
-                <>
-                  <DialogClose asChild className="hidden md:block">
-                    <Button
-                      type="button"
-                      disabled={loading}
-                      className="w-full md:w-fit"
-                    >
-                      Confirm
-                    </Button>
-                  </DialogClose>
-
-                  <DrawerClose asChild type="button" className="md:hidden">
-                    <Button disabled={loading} className="w-full md:w-fit">
-                      Confirm
-                    </Button>
-                  </DrawerClose>
-                </>
-              }
-              content={
-                <Form {...form}>
-                  <form>
-                    <PostForm.image dic={dic} form={form } loading={loading} />
-                  </form>
-                </Form>
-              }
-              title="Update Image"
-              description="This step is essential for informing patients about the treatments available at your post."
-            >
+            <ImageUpdateButton dic={dic} image={post?.["image"]!}>
               <Button size="icon" variant="secondary">
                 <Icons.edit />
               </Button>
-            </DialogResponsive>
+            </ImageUpdateButton>
           </div>
-        </div> */}
-
+        </div>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="grid auto-rows-max items-start gap-4 space-y-2 lg:col-span-2 lg:gap-8"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <Card>
               <CardHeader>
                 <CardTitle>{c?.["post information"]}</CardTitle>
                 {/* <CardDescription>{post?.["description"]}</CardDescription> */}
               </CardHeader>
               <CardContent className="space-y-2">
-                <PostForm.title dic={dic} form={form as any} loading={loading} />
+                <PostForm.title
+                  dic={dic}
+                  form={form as any}
+                  loading={loading}
+                />
                 <PostForm.content
                   dic={dic}
                   form={form as any}
@@ -199,9 +172,8 @@ export function PostUpdateForm({
           </form>
         </Form>
       </div>
-
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="flex items-center justify-center gap-2 md:hidden">
             <Button
               type="button"

@@ -203,6 +203,25 @@
     "cancel": "Cancel"
   },
 
+  "image-update-button": {
+    "updated successfully.": "updated successfully.",
+    "submit": "Submit",
+    "update image": "Update Image",
+    "this step is essential for informing patients about the treatments available at your image.": "this step is essential for informing patients about the treatments available at your image."
+  },
+  "image-form": {
+    "src": {
+      "label": "Image Source",
+      "url": "url"
+    },
+    "prompt": {
+      "label": "Prompt",
+      "enhanced successfully.": "enhanced successfully.",
+      "generated successfully.": "generated successfully.",
+      "enhance prompt": "enhance prompt",
+      "new image": "new image"
+    }
+  },
   "locale-switcher": {
     "current locale of the website": "current locale of the website",
     "en": "English (EN)",

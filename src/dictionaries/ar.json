@@ -197,6 +197,26 @@
     "toggle columns": "تبديل الأعمدة"
   },
 
+  "image-update-button": {
+    "updated successfully.": "updated successfully.",
+    "submit": "Submit",
+    "update image": "Update Image",
+    "this step is essential for informing patients about the treatments available at your image.": "this step is essential for informing patients about the treatments available at your image."
+  },
+  "image-form": {
+    "src": {
+      "label": "Image Source",
+      "url": "url"
+    },
+    "prompt": {
+      "label": "Prompt",
+      "enhanced successfully.": "enhanced successfully.",
+      "generated successfully.": "generated successfully.",
+      "enhance prompt": "enhance prompt",
+      "new image": "new image"
+    }
+  },
+
   "dialog": {
     "are you sure you want to proceed?": "هل أنت متأكد أنك تريد المتابعة؟",
     "Please confirm that all the provided information is accurate. This action cannot be undone.": "يرجى تأكيد أن جميع المعلومات المقدمة دقيقة. لا يمكن التراجع عن هذا الإجراء.",

@@ -14,6 +14,7 @@ import {
   postUpdateContentSchema,
   postUpdateImageSchema,
   postUpdateScheduleSchema,
+  postUpdateSchema,
 } from "@/validations/posts";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -43,15 +44,15 @@ export async function createPost(
     let image_analyzer_response;
 
     console.log(caseStudy.refImages);
-    
-    if(caseStudy.refImages){
-      let image_anaylzer_prompt = {input:""};
-      
-      caseStudy.refImages.forEach((url)=>{
-        image_anaylzer_prompt.input += url + ', '
+
+    if (caseStudy.refImages) {
+      let image_anaylzer_prompt = { input: "" };
+
+      caseStudy.refImages.forEach((url) => {
+        image_anaylzer_prompt.input += url + ", ";
       });
 
-      const image_analyzer_endpoint = domain + '/en/image-analyzer';
+      const image_analyzer_endpoint = domain + "/en/image-analyzer";
       image_analyzer_response = await fetch(image_analyzer_endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -59,7 +60,7 @@ export async function createPost(
       }).then((r) => r?.json());
     }
 
-    console.log("image analyzer",image_analyzer_response);
+    console.log("image analyzer", image_analyzer_response);
 
     const prompt = {
       previousPrompt: caseStudy.prompt,
@@ -102,20 +103,29 @@ export async function createPost(
       let currentDate = new Date();
 
       for (let i = 0; i < accountPosts.length; i++) {
-
         const prompt_generator_endpoint = domain + "/en/prompt-generator";
 
-        const prompt_generator_prompt = {input: accountPosts[i][`Post${i + 1}`]}
+        const prompt_generator_prompt = {
+          input: accountPosts[i][`Post${i + 1}`],
+        };
 
-        const prompt_generator_response = await fetch(prompt_generator_endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(prompt_generator_prompt),
-        }).then((r) => r?.json());
+        const prompt_generator_response = await fetch(
+          prompt_generator_endpoint,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(prompt_generator_prompt),
+          },
+        ).then((r) => r?.json());
 
-        console.log("prompt generator ",prompt_generator_response);
+        console.log("prompt generator ", prompt_generator_response);
 
-        const imagePrompt = { input: image_analyzer_response?.prompt + ' ' + prompt_generator_response?.prompt };
+        const imagePrompt = {
+          input:
+            image_analyzer_response?.prompt +
+            " " +
+            prompt_generator_response?.prompt,
+        };
 
         console.log("image prompt: ", imagePrompt);
 
@@ -191,6 +201,31 @@ export async function createPost(
 }
 
 export async function updatePost({
+  id,
+  ...data
+}: z.infer<typeof postUpdateSchema> & Pick<z.infer<typeof postSchema>, "id">) {
+  try {
+    const user = await getAuth();
+    if (!user) throw new RequiresLoginError();
+
+    await db.post.update({
+      data,
+      where: {
+        id,
+      },
+    });
+
+    revalidatePath("/", "layout");
+  } catch (error: any) {
+    console.log(error?.["message"]);
+    if (error instanceof z.ZodError) return new ZodError(error);
+    throw Error(
+      error?.["message"] ?? "your post was not updated. Please try again.",
+    );
+  }
+}
+
+export async function updatePostFeature({
   id,
   ...data
 }: z.infer<

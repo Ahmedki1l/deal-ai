@@ -79,7 +79,7 @@ export function UserAuthLoginForm({
           </form>
         </Form>
 
-        <div className="relative">
+        {/* <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t" />
           </div>
@@ -127,7 +127,7 @@ export function UserAuthLoginForm({
             {isGoogleLoading ? <Icons.spinner /> : <Icons.google />}
             {c?.["sign in with google"]}
           </Button>
-        </div>
+        </div> */}
       </div>
     </>
   );

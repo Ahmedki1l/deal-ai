@@ -17,7 +17,7 @@ export function BackButton({
     <Button onClick={() => router.back()} {...props}>
       {children ?? (
         <>
-          <Icons.chevronLeft />
+          <Icons.chevronLeft className="rtl:rotate-180" />
           {c?.["back"]}
         </>
       )}

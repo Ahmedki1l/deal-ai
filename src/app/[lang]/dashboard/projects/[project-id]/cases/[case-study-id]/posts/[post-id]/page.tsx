@@ -46,7 +46,10 @@ export default async function CaseStudy({
     ...dic
   } = await getDictionary(lang);
   const post = await db.post.findFirst({
-    include: { caseStudy: { include: { project: true } } },
+    include: {
+      image: true,
+      caseStudy: { include: { project: true } },
+    },
     where: {
       id: postId,
     },

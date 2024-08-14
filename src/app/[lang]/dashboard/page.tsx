@@ -45,25 +45,23 @@ export default async function Dashboard({ params: { lang } }: DashboardProps) {
       </div>
 
       <div className="mx-auto mt-10 flex flex-col gap-10">
-        <section>
-          <div className="grid grid-cols-3 gap-4">
-            <Image
-              src={dailyProgress?.["src"]}
-              alt=""
-              className="aspect-video rounded border"
-            />
-            <Image
-              src={charts?.["src"]}
-              alt=""
-              className="aspect-video rounded border"
-            />
-            <Image
-              src={shutterstock?.["src"]}
-              alt=""
-              className="aspect-video rounded border"
-            />
-          </div>
-        </section>
+        <div className="grid grid-cols-3 gap-4">
+          <Image
+            src={dailyProgress?.["src"]}
+            alt=""
+            className="aspect-video rounded border"
+          />
+          <Image
+            src={charts?.["src"]}
+            alt=""
+            className="aspect-video rounded border"
+          />
+          <Image
+            src={shutterstock?.["src"]}
+            alt=""
+            className="aspect-video rounded border"
+          />
+        </div>
 
         <div className="flex flex-col gap-4">
           <CardTitle>{c?.["latest projects"]}</CardTitle>

@@ -60,9 +60,7 @@ export async function signUpWithPassword(
       sessionCookie.attributes,
     );
 
-    const currentUrl = new URL(window.location.href);
-    const lang = currentUrl.pathname.split("/")[1];
-    return redirect(`/${lang}/login`);
+    return redirect(`/login`);
   } catch (error: any) {
     if (isRedirectError(error)) throw error;
     throw Error(error?.["message"] ?? "an error occured, try again.");
@@ -105,9 +103,7 @@ export async function signInWithPassword(
       sessionCookie.attributes,
     );
 
-    const currentUrl = new URL(window.location.href);
-    const lang = currentUrl.pathname.split("/")[1];
-    return redirect(`/${lang}/dashboard`);
+    return redirect(`/dashboard`);
   } catch (error: any) {
     if (isRedirectError(error)) throw error;
 
@@ -155,7 +151,5 @@ export async function logout() {
     sessionCookie.attributes,
   );
 
-  const currentUrl = new URL(window.location.href);
-  const lang = currentUrl.pathname.split("/")[1];
-  return redirect(`/${lang}/login`);
+  return redirect(`/login`);
 }

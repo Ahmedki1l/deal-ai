@@ -76,7 +76,7 @@ export function UserAuthRegisterForm({
           </form>
         </Form>
 
-        <div className="relative">
+        {/* <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t" />
           </div>
@@ -124,7 +124,7 @@ export function UserAuthRegisterForm({
             {isGoogleLoading ? <Icons.spinner /> : <Icons.google />}
             {c?.["sign up with google"]}
           </Button>
-        </div>
+        </div> */}
       </div>
     </>
   );

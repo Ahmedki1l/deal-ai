@@ -11,7 +11,7 @@ import { Icons } from "@/components/icons";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { postUpdateContentSchema } from "@/validations/posts";
-import { updatePost } from "@/actions/posts";
+import { updatePostFeature } from "@/actions/posts";
 import { PostForm } from "@/components/post-form";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
 import { Post } from "@prisma/client";
@@ -43,7 +43,7 @@ export function PostUpdateContentButton({
 
   async function onSubmit(data: z.infer<typeof postUpdateContentSchema>) {
     setLoading(true);
-    toast.promise(updatePost(data), {
+    toast.promise(updatePostFeature(data), {
       finally: () => setLoading(false),
       error: async (err) => {
         const msg = await t(err?.["message"], lang);

@@ -4,6 +4,7 @@ import {
   postCampaignArr,
   postContentLengthArr,
 } from "@/db/enums";
+import { imageSchema } from "./images";
 
 export const postSchema = z.object({
   id: z.string("id"),
@@ -16,6 +17,9 @@ export const postSchema = z.object({
   contentLength: z.enum(postContentLengthArr),
   platform: z.enum(platformsArr),
   postAt: z.date("post at"),
+
+  // others
+  image: imageSchema,
 });
 
 export const postCreateSchema = postSchema.omit({
@@ -24,6 +28,7 @@ export const postCreateSchema = postSchema.omit({
 });
 export const postUpdateSchema = postSchema.omit({
   caseStudyId: true,
+  imageId: true,
 });
 
 export const postUpdateContentSchema = postSchema.pick({

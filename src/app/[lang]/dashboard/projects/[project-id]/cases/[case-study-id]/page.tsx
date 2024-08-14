@@ -175,7 +175,6 @@ export default async function CaseStudy({
               if (!posts?.["length"]) return null;
 
               const Icon = Icons?.[platform?.["icon"]] ?? null;
-
               return (
                 <div key={i}>
                   <div className="mb-4 space-y-0.5">
@@ -198,7 +197,7 @@ export default async function CaseStudy({
                               >
                                 <Image
                                   src={
-                                    e?.["image"]?.src ??
+                                    e?.["image"]?.["src"] ??
                                     "https://images.unsplash.com/photo-1692166623396-1a44298e22fe?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                                   }
                                   alt=""
@@ -212,10 +211,7 @@ export default async function CaseStudy({
                             <CardFooter className="flex flex-col gap-2 p-2">
                               <div className="flex w-full items-center justify-between">
                                 <div className="flex items-center">
-                                  <PostUpdateContentButton
-                                    dic={dic}
-                                    post={e as any}
-                                  >
+                                  <PostUpdateContentButton dic={dic} post={e}>
                                     <Button variant="ghost" size="icon">
                                       <Icons.edit />
                                     </Button>
@@ -224,10 +220,7 @@ export default async function CaseStudy({
                                   <Button variant="ghost" size="icon">
                                     <Icons.image />
                                   </Button>
-                                  <PostUpdateScheduleButton
-                                    dic={dic}
-                                    post={e as any}
-                                  >
+                                  <PostUpdateScheduleButton dic={dic} post={e}>
                                     <Button variant="ghost" size="icon">
                                       <Icons.calender />
                                     </Button>

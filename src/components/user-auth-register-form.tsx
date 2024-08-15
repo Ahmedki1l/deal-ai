@@ -34,15 +34,20 @@ export function UserAuthRegisterForm({
     resolver: zodResolver(userAuthRegisterSchema),
   });
 
-  function onSubmit(data: z.infer<typeof userAuthRegisterSchema>) {
-    setLoading(true);
-    toast.promise(signUpWithPassword(data), {
-      finally: () => setLoading(false),
-      error: async (err) => {
-        const msg = await t(err?.["message"], lang);
-        return msg;
-      },
-    });
+  async function onSubmit(data: z.infer<typeof userAuthRegisterSchema>) {
+    try {
+      setLoading(true);
+      const res = await signUpWithPassword(data);
+
+      if (res?.["error"]) {
+        const msg = await t(res?.["error"], lang);
+        toast.error(msg);
+        return;
+      }
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
   }
   return (
     <>
@@ -54,7 +59,6 @@ export function UserAuthRegisterForm({
               form={form}
               loading={loading || isGoogleLoading || isFacebookLoading}
             />
-
             <UserForm.email
               dic={dic}
               form={form}

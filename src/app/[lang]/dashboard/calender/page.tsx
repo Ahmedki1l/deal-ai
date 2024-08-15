@@ -47,7 +47,7 @@ export default async function Calender({ params: { lang } }: CalenderProps) {
             </ProjectCreateButton> */}
           </div>
         </div>
-        <Scheduler />
+        <Scheduler lang={lang} />
       </div>
     </div>
   );

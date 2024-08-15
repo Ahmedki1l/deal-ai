@@ -34,15 +34,20 @@ export function UserAuthLoginForm({
     resolver: zodResolver(userAuthLoginSchema),
   });
 
-  function onSubmit(data: z.infer<typeof userAuthLoginSchema>) {
-    setLoading(true);
-    toast.promise(signInWithPassword(data), {
-      finally: () => setLoading(false),
-      error: async (err) => {
-        const msg = await t(err?.["message"], lang);
-        return msg;
-      },
-    });
+  async function onSubmit(data: z.infer<typeof userAuthLoginSchema>) {
+    try {
+      setLoading(true);
+      const res = await signInWithPassword(data);
+
+      if (res?.["error"]) {
+        const msg = await t(res?.["error"], lang);
+        toast.error(msg);
+        return;
+      }
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
   }
   return (
     <>

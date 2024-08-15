@@ -39,7 +39,7 @@ export async function signUpWithPassword(
       },
     });
 
-    if (existingEmail) throw new Error("This email is already used.");
+    if (existingEmail) return { error: "This email is already used." };
 
     const userId = generateIdFromEntropySize(10);
     await db.user.create({
@@ -80,15 +80,20 @@ export async function signInWithPassword(
         },
       },
     });
-    if (!existingUser) throw new Error("No such a user.");
-    if (!existingUser?.["password"]) throw new Error("Incorrect password.");
+    if (!existingUser) return { error: "No such a user." };
+    if (!existingUser?.["password"]) return { error: "Incorrect password." };
+
     const validPassword = await verify(existingUser?.["password"], password, {
       memoryCost: 19456,
       timeCost: 2,
       outputLen: 32,
       parallelism: 1,
     });
-    if (!validPassword) throw new Error("Incorrect email or password");
+    if (!validPassword)
+      return {
+        error: "Incorrect email or password",
+      };
+
     const session = await lucia.createSession(existingUser?.["id"], {});
     const sessionCookie = lucia.createSessionCookie(session?.["id"]);
     cookies().set(
@@ -101,7 +106,6 @@ export async function signInWithPassword(
     return redirect(`/${locale}/dashboard`);
   } catch (error: any) {
     if (isRedirectError(error)) throw error;
-
     throw Error(error?.["message"] ?? "an error occured, try again.");
   }
 }

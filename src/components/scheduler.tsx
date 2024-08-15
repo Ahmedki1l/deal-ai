@@ -1,4 +1,6 @@
 "use client";
+import { useLocale } from "@/hooks/use-locale";
+import { LocaleProps } from "@/types/locale";
 import {
   Week,
   Month,
@@ -104,8 +106,8 @@ export const timelineResourceData: Object[] = [
   },
 ];
 
-type SchedulerProps = {};
-export function Scheduler({}: SchedulerProps) {
+type SchedulerProps = {} & LocaleProps;
+export function Scheduler({ lang }: SchedulerProps) {
   const eventSettings: EventSettingsModel = {
     dataSource: timelineResourceData,
   };
@@ -127,7 +129,6 @@ export function Scheduler({}: SchedulerProps) {
       eventSettings={eventSettings}
     >
       <ViewsDirective>
-        س
         <ViewDirective option="Day" />
         <ViewDirective option="Week" />
         <ViewDirective option="TimelineWorkWeek" />
@@ -143,7 +144,7 @@ export function Scheduler({}: SchedulerProps) {
           textField="text"
           idField="id"
           colorField="color"
-        />{" "}
+        />
       </ResourcesDirective>
 
       <Inject services={[Day, Week, Month, TimelineViews]} />

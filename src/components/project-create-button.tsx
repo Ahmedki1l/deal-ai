@@ -96,7 +96,7 @@ export function ProjectCreateButton({
         <div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-              <div className="grid gap-2 md:grid-cols-[1fr,0.75fr]">
+              <div className="grid gap-4 grid-cols-3">
                 <div className="space-y-2">
                   <ProjectForm.title
                     dic={dic}
@@ -109,7 +109,7 @@ export function ProjectCreateButton({
                     loading={loading}
                   />
                 </div>
-                <div className="grow bg-muted">
+                <div className="grow bg-muted col-span-2">
                   <ProjectForm.map
                     dic={dic}
                     form={form as any}
@@ -123,7 +123,7 @@ export function ProjectCreateButton({
                   dic={dic}
                   form={form as any}
                   loading={loading}
-                />
+                />  
                 <ProjectForm.city
                   dic={dic}
                   form={form as any}

@@ -33,7 +33,7 @@ export const projectCreateFormSchema = projectCreateSchema
           value: z.enum(platformsArr),
         }),
       ),
-      map: z.string("map"),
+      map: z.string("map").optional(),
     }),
   )
   .and(propertyCreateFormSchema);

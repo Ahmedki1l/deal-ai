@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/select";
 import { platforms } from "@/db/enums";
 import { Dictionary } from "@/types/locale";
+import { MapPicker } from "./map";
 
 type ProjectFormProps = {
   loading: boolean;
@@ -66,9 +67,9 @@ export const ProjectForm = {
         <FormItem>
           <FormLabel>{c?.["map"]?.["label"]}</FormLabel>
           <FormControl>
-            <Input type="text" disabled={loading} {...field} />
+            <MapPicker />
           </FormControl>
-          <FormMessage />
+          <FormMessage /> 
         </FormItem>
       )}
     />
@@ -103,7 +104,7 @@ export const ProjectForm = {
   }: ProjectFormProps) => (
     <FormField
       control={form.control}
-      name="distinct"
+      name="distinct" 
       render={({ field }) => (
         <FormItem>
           <FormLabel> {c?.["distinct"]?.["label"]}</FormLabel>
@@ -225,7 +226,7 @@ export const ProjectForm = {
     });
 
     return (
-      <div className="space-y-4">
+      <div className="space-y-4"> 
         <div className="flex items-center justify-between gap-4">
           <FormLabel>{c?.["platforms"]?.["label"]}</FormLabel>
           <Button

@@ -35,6 +35,12 @@
             "value": "/dashboard/projects",
             "label": "مشاريعي",
             "icon": "analytics"
+          },
+          {
+            "segment": "calender",
+            "value": "/dashboard/calender",
+            "label": "التسلسل الزمني",
+            "icon": "schedule"
           }
         ],
         "bottom": [
@@ -51,6 +57,10 @@
         "take a glance and manage your projects.": "ألقِ نظرة وقم بإدارة مشاريعك.",
         "create project": "إنشاء مشروع",
         "latest projects": "آخر المشاريع"
+      },
+      "calender": {
+        "calender": "Calender",
+        "timeline of your posts schedule.": "timeline of your posts schedule."
       },
       "projects": {
         "projects": "المشاريع",

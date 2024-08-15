@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Cairo, Inter } from "next/font/google";
 
 import "@/styles/globals.css";
+import "@/styles/syncfusion.css";
+
 import { getAuth } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { SessionProvider } from "@/components/session-provider";

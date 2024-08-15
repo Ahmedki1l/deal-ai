@@ -35,6 +35,12 @@
             "value": "/dashboard/projects",
             "label": "My Projects",
             "icon": "analytics"
+          },
+          {
+            "segment": "calender",
+            "value": "/dashboard/calender",
+            "label": "Calender",
+            "icon": "schedule"
           }
         ],
         "bottom": [
@@ -51,6 +57,10 @@
         "take a glance and manage your projects.": "Take a glance and manage your projects.",
         "create project": "Create Project",
         "latest projects": "Latest Projects"
+      },
+      "calender": {
+        "calender": "Calender",
+        "timeline of your posts schedule.": "timeline of your posts schedule."
       },
       "projects": {
         "projects": "Projects",

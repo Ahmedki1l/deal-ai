@@ -42,7 +42,6 @@ export async function signUpWithPassword(
     if (existingEmail) throw new Error("This email is already used.");
 
     const userId = generateIdFromEntropySize(10);
-
     await db.user.create({
       data: {
         id: userId,
@@ -60,7 +59,7 @@ export async function signUpWithPassword(
       sessionCookie.attributes,
     );
 
-    const locale = getLocale();
+    const locale = await getLocale();
     return redirect(`/${locale}/login`);
   } catch (error: any) {
     if (isRedirectError(error)) throw error;
@@ -97,7 +96,8 @@ export async function signInWithPassword(
       sessionCookie.value,
       sessionCookie.attributes,
     );
-    const locale = getLocale();
+
+    const locale = await getLocale();
     return redirect(`/${locale}/dashboard`);
   } catch (error: any) {
     if (isRedirectError(error)) throw error;
@@ -146,6 +146,6 @@ export async function logout() {
     sessionCookie.attributes,
   );
 
-  const locale = getLocale();
+  const locale = await getLocale();
   return redirect(`/${locale}/login`);
 }

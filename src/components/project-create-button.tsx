@@ -206,7 +206,7 @@ export function ProjectCreateButton({
                                 <CardTitle>
                                   {c?.["unit"]} {j + 1}
                                 </CardTitle>
-                                <Button
+                                {/* <Button
                                   variant="ghost"
                                   size="icon"
                                   onClick={() => {
@@ -222,7 +222,7 @@ export function ProjectCreateButton({
                                   }}
                                 >
                                   <Icons.x />
-                                </Button>
+                                </Button> */}
                               </div>
                             </CardHeader>
 

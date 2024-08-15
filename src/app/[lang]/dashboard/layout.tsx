@@ -36,8 +36,7 @@ export default async function DashboardLayout({
       defaultCollapsed={defaultCollapsed}
       navCollapsedSize={4}
       links={{
-        top: [c?.["main-nav"]?.["top"] as any],
-        bottom: [c?.["main-nav"]?.["bottom"] as any],
+        top: c?.["main-nav"]?.["top"] as any,
       }}
     >
       {children}

@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { i18n } from "@/lib/locale";
 import { LocaleProps } from "@/types/locale";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const cairo = Cairo({ subsets: ["arabic"] });
 const inter = Inter({ subsets: ["latin"] });
@@ -47,18 +48,20 @@ export default async function RootLayout({
     >
       <body suppressHydrationWarning>
         <SessionProvider value={session}>
-          <TooltipProvider delayDuration={0} disableHoverableContent={true}>
-            {/* eslint-disable-next-line react/no-unknown-property */}
-            <div
-              vaul-drawer-wrapper=""
-              className="flex h-screen flex-col overflow-hidden bg-background"
-            >
-              {children}
-            </div>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <TooltipProvider delayDuration={0} disableHoverableContent={true}>
+              {/* eslint-disable-next-line react/no-unknown-property */}
+              <div
+                vaul-drawer-wrapper=""
+                className="flex h-screen flex-col overflow-hidden bg-background"
+              >
+                {children}
+              </div>
 
-            <Toaster />
-            <TailwindIndicator />
-          </TooltipProvider>
+              <Toaster />
+              <TailwindIndicator />
+            </TooltipProvider>
+          </ThemeProvider>
         </SessionProvider>
       </body>
     </html>

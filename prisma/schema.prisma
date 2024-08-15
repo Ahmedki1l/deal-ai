@@ -59,8 +59,9 @@ model Project {
   distinct String
   spaces   String
 
-  createdAt DateTime @default(now())
-
+  createdAt DateTime @default(now()) 
+  deletedAt DateTime? @map("deleted-at")
+  
   propertyTypes  PROPERTY_TYPE[] @map("property-types")
   platforms      PLATFORM[]
 
@@ -68,7 +69,7 @@ model Project {
   caseStudy CaseStudy[]
   user      User        @relation(references: [id], fields: [userId], onDelete: Cascade)
 
-  @@map("projects")
+   @@map("projects")
 }
 
 model CaseStudy {
@@ -76,7 +77,9 @@ model CaseStudy {
   projectId   String   @map("project-id")
   title       String
   description String?
-  refImages   String[] @map("ref-images")
+  refImages   String[] @map("ref-images") 
+  deletedAt DateTime? @map("deleted-at")
+  
 
   content                 String
   targetAudience          String @map("target-audience")
@@ -114,6 +117,8 @@ model Property {
   pool       String?
   view       String?
 
+  deletedAt DateTime? @map("deleted-at")
+  
   project Project @relation(references: [id], fields: [projectId], onDelete: Cascade)
 
   @@map("properties")
@@ -136,6 +141,8 @@ model Image {
   src    String
   prompt String
 
+  deletedAt DateTime? @map("deleted-at")
+  
   posts Post[]
 
   @@map("images")
@@ -155,6 +162,8 @@ model Post {
   campaignType  POST_CAMPAIGN       @map("campaign-type")
 
   postAt DateTime @map("post-at")
+  deletedAt DateTime? @map("deleted-at")  
+  
 
   image     Image?    @relation(fields: [imageId], references: [id], onDelete: NoAction)
   caseStudy CaseStudy @relation(references: [id], fields: [caseStudyId], onDelete: Cascade)

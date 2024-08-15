@@ -56,17 +56,17 @@ export function UserAuthRegisterForm({
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <UserForm.name
               dic={dic}
-              form={form}
+              form={form as any}
               loading={loading || isGoogleLoading || isFacebookLoading}
             />
             <UserForm.email
               dic={dic}
-              form={form}
+              form={form as any}
               loading={loading || isGoogleLoading || isFacebookLoading}
             />
             <UserForm.password
               dic={dic}
-              form={form}
+              form={form as any}
               loading={loading || isGoogleLoading || isFacebookLoading}
             />
 

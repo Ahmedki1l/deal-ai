@@ -24,3 +24,21 @@ export const userAuthRegisterSchema = userSchema.pick({
   email: true,
   password: true,
 });
+
+export const userUpdateProfilePersonalSchema = userSchema.pick({
+  id: true,
+  name: true,
+  email: true,
+});
+export const userUpdateProfilePasswordSchema = userSchema.pick({
+  id: true,
+  password: true,
+});
+
+export const userUpdateProfilePasswordFormSchema =
+  userUpdateProfilePasswordSchema.omit({ password: true }).and(
+    z.object({
+      newPassword: z.string("new password"),
+      confirmNewPassword: z.string("confirm new password"),
+    }),
+  );

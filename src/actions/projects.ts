@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { getAuth } from "@/lib/auth";
 import { RequiresLoginError, ZodError } from "@/lib/exceptions";
 import {
+  projectBinSchema,
   projectCreateFormSchema,
   projectDeleteSchema,
   projectUpdateSchema,
@@ -100,7 +101,7 @@ export async function updateProject({
 
 export async function deleteProject({
   id,
-}: z.infer<typeof projectDeleteSchema>) {
+}: z.infer<typeof projectDeleteSchema | typeof projectBinSchema>) {
   try {
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();

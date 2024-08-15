@@ -24,32 +24,28 @@
     "user": {
       "main-nav": {
         "top": [
-          {
-            "segment": null,
-            "value": "/dashboard",
-            "label": "لوحة التحكم",
-            "icon": "home"
-          },
-          {
-            "segment": "projects",
-            "value": "/dashboard/projects",
-            "label": "مشاريعي",
-            "icon": "analytics"
-          },
-          {
-            "segment": "calender",
-            "value": "/dashboard/calender",
-            "label": "التسلسل الزمني",
-            "icon": "schedule"
-          }
-        ],
-        "bottom": [
-          {
-            "segment": "settings",
-            "value": "/dashboard/settings",
-            "label": "الإعدادات",
-            "icon": "settings"
-          }
+          [
+            {
+              "segment": null,
+              "value": "/dashboard",
+              "label": "لوحة التحكم",
+              "icon": "home"
+            },
+            {
+              "segment": "projects",
+              "value": "/dashboard/projects",
+              "label": "مشاريعي",
+              "icon": "analytics"
+            }
+          ],
+          [
+            {
+              "segment": "settings",
+              "value": "/dashboard/settings",
+              "label": "الإعدادات",
+              "icon": "settings"
+            }
+          ]
         ]
       },
       "dashboard": {
@@ -128,13 +124,39 @@
           }
         }
       },
+
       "settings": {
+        "main-nav": [
+          { "value": "/dashboard/settings", "label": "الصفحة الشخصية" },
+          { "value": "/dashboard/settings/appearance", "label": "الحساب" },
+          { "value": "/dashboard/settings/bin", "label": "سلة المهملات" }
+        ],
         "settings": "الإعدادات",
-        "Create and manage account.": "إنشاء وإدارة الحساب."
+
+        "appearance": {
+          "appearance": "Appearance",
+          "customize your appearance settings and preferences.": "Customize your appearance settings and preferences."
+        },
+        "profile": {
+          "profile": "الصفحة الشخصية",
+          "this is how others will see you on the site.": "this is how others will see you on the site."
+        },
+        "bin": {
+          "bin": "سلة المهملات",
+          "this is how others will see you on the site.": "this is how others will see you on the site."
+        }
       }
     }
   },
 
+  "appearance-form": {
+    "theme": "Theme",
+    "automatically switch between day and night themes.": "Automatically switch between day and night themes.",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "update preferences": "update preferences"
+  },
   "back-button": { "back": "رجوع" },
 
   "case-study-create-button": {
@@ -373,5 +395,22 @@
     "password": {
       "label": "كلمة المرور"
     }
+  },
+  "user-profile-password-form": {
+    "updated successfully.": "updated successfully.",
+    "reset password": "Reset Password?",
+    "new password": "New Password",
+    "confirm new password": "Confirm New Password",
+    "discard": "Discard",
+    "submit": "Submit",
+    "this information will be used to create your public profile and facilitate communication with patients and colleagues.": "this information will be used to create your public profile and facilitate communication with patients and colleagues."
+  },
+
+  "user-profile-personal-form": {
+    "updated successfully.": "updated successfully.",
+    "personal information": "Personal Information",
+    "discard": "Discard",
+    "save changes": "Save Changes",
+    "this information will be used to create your public profile and facilitate communication with patients and colleagues.": "this information will be used to create your public profile and facilitate communication with patients and colleagues."
   }
 }

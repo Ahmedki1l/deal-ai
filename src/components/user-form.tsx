@@ -14,6 +14,8 @@ import { Input } from "@/components/ui/input";
 import {
   userAuthLoginSchema,
   userAuthRegisterSchema,
+  userUpdateProfilePasswordFormSchema,
+  userUpdateProfilePersonalSchema,
 } from "@/validations/users";
 import { Dictionary } from "@/types/locale";
 
@@ -21,7 +23,9 @@ type UserFormProps = {
   loading: boolean;
   form: UseFormReturn<
     | z.infer<typeof userAuthRegisterSchema>
-    | z.infer<typeof userAuthLoginSchema>,
+    | z.infer<typeof userAuthLoginSchema>
+    | z.infer<typeof userUpdateProfilePersonalSchema>
+    | z.infer<typeof userUpdateProfilePasswordFormSchema>,
     any,
     undefined
   >;
@@ -90,14 +94,20 @@ export const UserForm = {
     dic: { "user-form": c },
     loading,
     form,
-  }: UserFormProps) {
+    field,
+    label,
+  }: UserFormProps & {
+    field?: string;
+    label?: string;
+  }) {
     return (
       <FormField
         control={form?.["control"]}
-        name="password"
+        // @ts-ignore
+        name={field ?? "password"}
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{c?.["password"]?.["label"]}</FormLabel>
+            <FormLabel>{label ?? c?.["password"]?.["label"]}</FormLabel>
             <FormControl>
               {/* @ts-ignore */}
               <Input

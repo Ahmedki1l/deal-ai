@@ -46,7 +46,7 @@ export const Icons = {
       alt=""
       className={cn(
         IconsVariants({}),
-        "mr-2 h-6 w-6 rounded-none border-none bg-background",
+        "flex h-6 w-6 items-center rounded-full border-none bg-background",
         className,
       )}
       // {...props}

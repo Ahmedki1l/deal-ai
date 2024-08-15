@@ -56,3 +56,8 @@ export const projectUpdateFormSchema = projectUpdateSchema
     }),
   );
 export const projectDeleteSchema = projectSchema.pick({ id: true });
+export const projectBinSchema = projectSchema.pick({ id: true }).and(
+  z.object({
+    deletedAt: z.date("deletedAt"),
+  }),
+);

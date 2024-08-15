@@ -5,32 +5,30 @@ import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { SelectItem } from "@/types";
 
-interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
-  items: {
-    href: string;
-    title: string;
-  }[];
-}
+type SidebarNavProps = React.HTMLAttributes<HTMLElement> & {
+  items: SelectItem[];
+};
 
 export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
   const pathname = usePathname();
 
   return (
-    <nav className={cn("flex flex-col gap-2", className)} {...props}>
-      {items.map((item) => (
+    <nav className={cn("flex flex-col gap-1", className)} {...props}>
+      {items.map((item, i) => (
         <Link
-          key={item.href}
-          href={item.href}
+          key={i}
+          href={item?.["value"]}
           className={cn(
             buttonVariants({ variant: "ghost" }),
-            pathname === item.href
+            pathname === item?.["value"]
               ? "bg-muted hover:bg-muted"
               : "hover:bg-transparent hover:underline",
             "justify-start",
           )}
         >
-          {item.title}
+          {item?.["label"]}
         </Link>
       ))}
     </nav>

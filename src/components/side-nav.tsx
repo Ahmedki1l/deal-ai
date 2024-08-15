@@ -2,15 +2,11 @@
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { SelectItem } from "@/types";
 import { Icons } from "@/components/icons";
 import { useSelectedLayoutSegment } from "next/navigation";
 import { Link } from "@/components/link";
+import { Tooltip } from "./tooltip";
 
 type SideNavProps = {
   isCollapsed: boolean;
@@ -30,34 +26,38 @@ export function SideNav({ links, isCollapsed }: SideNavProps) {
           const Icon = link?.["icon"] ? Icons?.[link?.["icon"]!] : null;
 
           return isCollapsed ? (
-            <Tooltip key={i} delayDuration={0}>
-              <TooltipTrigger asChild>
-                <Link
-                  href={link?.["value"]}
-                  className={cn(
-                    buttonVariants({
-                      variant:
-                        segment === link?.["segment"] ? "default" : "ghost",
-                      size: "icon",
-                    }),
-                    "h-9 w-9",
-
-                    segment === link?.["segment"] &&
-                      "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white",
+            <Tooltip
+              key={i}
+              side="right"
+              className="flex items-center gap-4"
+              text={
+                <>
+                  {link?.["label"]}
+                  {link?.["indicator"] && (
+                    <span className="ml-auto text-muted-foreground">
+                      {link?.["indicator"]}
+                    </span>
                   )}
-                >
-                  {Icon && <Icon />}
-                  <span className="sr-only">{link?.["label"]}</span>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent side="right" className="flex items-center gap-4">
-                {link?.["label"]}
-                {link?.["indicator"] && (
-                  <span className="ml-auto text-muted-foreground">
-                    {link?.["indicator"]}
-                  </span>
+                </>
+              }
+            >
+              <Link
+                href={link?.["value"]}
+                className={cn(
+                  buttonVariants({
+                    variant:
+                      segment === link?.["segment"] ? "default" : "ghost",
+                    size: "icon",
+                  }),
+                  "h-9 w-9",
+
+                  segment === link?.["segment"] &&
+                    "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white",
                 )}
-              </TooltipContent>
+              >
+                {Icon && <Icon />}
+                <span className="sr-only">{link?.["label"]}</span>
+              </Link>
             </Tooltip>
           ) : (
             <Link

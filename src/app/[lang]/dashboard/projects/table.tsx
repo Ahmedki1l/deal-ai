@@ -18,6 +18,7 @@ import { CardTitle } from "@/components/ui/card";
 import { platforms } from "@/db/enums";
 import { Dictionary } from "@/types/locale";
 import { DataTable } from "@/components/data-table";
+import { ProjectBinButton } from "@/components/project-bin-button";
 
 type ColumnType = Project & {
   caseStudy: (CaseStudy & { posts: Post[] })[];
@@ -32,7 +33,7 @@ type TableProps = {
   Dictionary["data-table-view-options"] &
   Dictionary["dialog"] &
   Dictionary["project-update-form"] &
-  Dictionary["project-delete-button"] &
+  Dictionary["project-bin-button"] &
   Dictionary["project-form"] &
   Dictionary["dashboard"];
 
@@ -222,7 +223,7 @@ export function Table({
                     </ProjectUpdateForm>
                     <DropdownMenuSeparator />
 
-                    <ProjectDeleteButton dic={dic} asChild project={r}>
+                    <ProjectBinButton dic={dic} asChild project={r}>
                       <Button
                         variant="ghost"
                         className="w-full justify-start px-2 text-start font-normal"
@@ -230,7 +231,7 @@ export function Table({
                         {c?.["delete"]}
                         <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                       </Button>
-                    </ProjectDeleteButton>
+                    </ProjectBinButton>
                   </DataTableRowActions>
                 </>
               );

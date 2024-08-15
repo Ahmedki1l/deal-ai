@@ -6,8 +6,8 @@ import { UserAuthLoginForm } from "@/components/user-auth-login-form";
 import { Link } from "@/components/link";
 import { getDictionary } from "@/lib/dictionaries";
 import { LocaleProps } from "@/types/locale";
-import takaml from "../../../../../public/images/Takaml.png";
 import { Image } from "@/components/image";
+import takaml from "../../../../../public/images/Takaml.png";
 
 type LoginProps = Readonly<{
   params: LocaleProps;
@@ -15,17 +15,17 @@ type LoginProps = Readonly<{
 
 export const metadata: Metadata = { title: "Login" };
 export default async function Login({ params: { lang } }: LoginProps) {
-  const dic = await getDictionary(lang);
+  const { site: c, ...dic } = await getDictionary(lang);
 
   return (
     <div className="grid min-h-[700px] flex-1 items-center justify-center overflow-auto lg:grid-cols-2">
       {/* <BackButton variant="ghost" className="absolute right-4 top-4 gap-2" /> */}
 
-      <section className="container relative hidden h-full flex-col bg-[url('/images/login.png')] p-10 text-primary-foreground dark:border-r lg:flex">
+      <section className="container relative hidden h-full flex-col bg-[url('https://unsplash.com/photos/a-couple-of-tall-buildings-sitting-next-to-each-other-g5d5J8hStio')] p-10 text-primary-foreground dark:border-r lg:flex">
         <div className="absolute inset-0 bg-primary/30" />
-        <p className="z-20 flex items-center text-lg font-medium">
+        <p className="z-20 flex items-center gap-2 text-lg font-medium">
           <Icons.logo />
-          Deal AI
+          {c?.["name"]}
         </p>
 
         <div className="z-20 mt-auto">
@@ -45,7 +45,11 @@ export default async function Login({ params: { lang } }: LoginProps) {
       <section className="container mx-auto flex w-full flex-col justify-center space-y-5 sm:w-[350px]">
         <div className="flex flex-col space-y-2 text-center">
           <div className="mb-10">
-            <Image src={takaml?.["src"]} alt="" />
+            <Image
+              src={takaml?.["src"]}
+              alt=""
+              className="border-none bg-transparent"
+            />
           </div>
           {/* <h1 className="text-2xl font-semibold tracking-tight">
             Welcome Back! 🎉

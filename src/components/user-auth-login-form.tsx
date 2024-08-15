@@ -56,23 +56,23 @@ export function UserAuthLoginForm({
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <UserForm.email
               dic={dic}
-              form={form}
+              form={form as any}
               loading={loading || isGoogleLoading || isFacebookLoading}
             />
             <UserForm.password
               dic={dic}
-              form={form}
+              form={form as any}
               loading={loading || isGoogleLoading || isFacebookLoading}
             />
 
-            <p className="text-end text-xs text-muted-foreground">
+            {/* <p className="text-end text-xs text-muted-foreground">
               <Link
                 href="/forgot-password"
                 className="underline underline-offset-4 hover:text-primary"
               >
                 {c?.["forgot password"]}
               </Link>
-            </p>
+            </p> */}
 
             <Button
               className="w-full"

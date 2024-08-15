@@ -200,6 +200,7 @@ export async function createPost(
             platform: acc,
             postAt: new Date(currentDate),
             imageId: imageData.id,
+            deletedAt: null,
           });
           indicator++;
         });

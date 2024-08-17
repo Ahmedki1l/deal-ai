@@ -9,15 +9,13 @@ import {
   DropdownMenuShortcut,
 } from "@/components/ui/dropdown-menu";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Icons } from "@/components/icons";
-import { CaseStudy, Post, Project, Property } from "@prisma/client";
-import { ProjectUpdateForm } from "@/components/project-update-form";
+import { Project } from "@prisma/client";
 import { Link } from "@/components/link";
 import { ProjectDeleteButton } from "@/components/project-delete-button";
 import { CardTitle } from "@/components/ui/card";
-import { platforms } from "@/db/enums";
 import { Dictionary } from "@/types/locale";
 import { DataTable } from "@/components/data-table";
+import { ProjectRestoreButton } from "./project-restore-button";
 
 type ColumnType = Project;
 
@@ -28,7 +26,7 @@ type BinProjectsTableProps = {
   Dictionary["data-table-pagination"] &
   Dictionary["data-table-view-options"] &
   Dictionary["dialog"] &
-  Dictionary["project-update-form"] &
+  Dictionary["project-restore-button"] &
   Dictionary["project-delete-button"] &
   Dictionary["project-form"] &
   Dictionary["dashboard"];
@@ -96,14 +94,14 @@ export function BinProjectsTable({
               return (
                 <>
                   <DataTableRowActions>
-                    <ProjectUpdateForm dic={dic} project={r}>
+                    <ProjectRestoreButton dic={dic} project={r}>
                       <Button
                         variant="ghost"
                         className="w-full justify-start px-2 text-start font-normal"
                       >
-                        {c?.["edit"]}
+                        {c?.["restore"]}
                       </Button>
-                    </ProjectUpdateForm>
+                    </ProjectRestoreButton>
                     <DropdownMenuSeparator />
 
                     <ProjectDeleteButton dic={dic} asChild project={r}>

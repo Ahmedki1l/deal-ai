@@ -77,19 +77,19 @@ export async function createProject({
 export async function updateProject({
   id,
   ...data
-}: z.infer<typeof projectUpdateSchema>) {
+}: z.infer<typeof projectUpdateSchema | typeof projectBinSchema>) {
   try {
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
 
-    // await db.project.update({
-    //   data,
-    //   where: {
-    //     id,
-    //   },
-    // });
+    await db.project.update({
+      data,
+      where: {
+        id,
+      },
+    });
 
-    // revalidatePath("/", "layout");
+    revalidatePath("/", "layout");
   } catch (error: any) {
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
@@ -101,7 +101,7 @@ export async function updateProject({
 
 export async function deleteProject({
   id,
-}: z.infer<typeof projectDeleteSchema | typeof projectBinSchema>) {
+}: z.infer<typeof projectDeleteSchema>) {
   try {
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();

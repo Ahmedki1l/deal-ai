@@ -44,6 +44,12 @@
               "value": "/dashboard/settings",
               "label": "الإعدادات",
               "icon": "settings"
+            },
+            {
+              "segment": "bin",
+              "value": "/dashboard/bin",
+              "label": "سلة المهملات",
+              "icon": "trash"
             }
           ]
         ]
@@ -70,6 +76,7 @@
           "posts": "المنشورات",
           "platforms": "المنصات",
           "edit": "تعديل",
+          "restore": "إعادة",
           "delete": "حذف"
         },
         "project": {
@@ -124,25 +131,42 @@
           }
         }
       },
+      "bin": {
+        "main-nav": [
+          { "value": "/dashboard/bin", "label": "المشاريع" },
+          { "value": "/dashboard/bin/cases", "label": "جداول الدراسة" },
+          { "value": "/dashboard/bin/properties", "label": "العقارات" },
+          { "value": "/dashboard/bin/posts", "label": "المنشورات" }
+        ],
+        "bin": "سلة مهملات",
 
+        "projects": "المشاريع",
+        "this is how others will see you on the site.": "this is how others will see you on the site.",
+        "cases": {
+          "study cases": "جداول الدراسة",
+          "this is how others will see you on the site.": "this is how others will see you on the site."
+        },
+        "properties": {
+          "properties": "العقارات",
+          "this is how others will see you on the site.": "this is how others will see you on the site."
+        },
+        "posts": {
+          "posts": "المنشورات",
+          "this is how others will see you on the site.": "this is how others will see you on the site."
+        }
+      },
       "settings": {
         "main-nav": [
           { "value": "/dashboard/settings", "label": "الصفحة الشخصية" },
-          { "value": "/dashboard/settings/appearance", "label": "الحساب" },
-          { "value": "/dashboard/settings/bin", "label": "سلة المهملات" }
+          { "value": "/dashboard/settings/appearance", "label": "الحساب" }
         ],
         "settings": "الإعدادات",
-
         "appearance": {
           "appearance": "Appearance",
           "customize your appearance settings and preferences.": "Customize your appearance settings and preferences."
         },
         "profile": {
           "profile": "الصفحة الشخصية",
-          "this is how others will see you on the site.": "this is how others will see you on the site."
-        },
-        "bin": {
-          "bin": "سلة المهملات",
           "this is how others will see you on the site.": "this is how others will see you on the site."
         }
       }
@@ -348,6 +372,12 @@
       "label": "المنصات",
       "select your platform": "إختر المنصة"
     }
+  },
+  "project-restore-button": {
+    "restored successfully.": "restored successfully.",
+    "restore": "Restore",
+    "restore project": "Restore Project",
+    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
   },
   "project-update-form": {
     "updated successfully.": "تم التحديث بنجاح",

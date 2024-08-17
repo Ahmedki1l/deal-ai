@@ -39,6 +39,7 @@ export default async function Project({
     },
     where: {
       id: projectId,
+      deletedAt: null,
     },
   });
 

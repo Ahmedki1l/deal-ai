@@ -10,7 +10,7 @@ import { Form } from "@/components/ui/form";
 import { Icons } from "@/components/icons";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { projectBinSchema } from "@/validations/projects";
+import { projectRestoreSchema } from "@/validations/projects";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
 import { Project } from "@prisma/client";
 import { useLocale } from "@/hooks/use-locale";
@@ -18,33 +18,33 @@ import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
 import { deleteProject, updateProject } from "@/actions/projects";
 
-type ProjectBinButtonProps = {
+type ProjectRestoreButtonProps = {
   project: Pick<Project, "id">;
 } & Omit<DialogResponsiveProps, "open" | "setOpen"> &
-  Dictionary["project-bin-button"] &
+  Dictionary["project-restore-button"] &
   Dictionary["dialog"];
 
-export function ProjectBinButton({
-  dic: { "project-bin-button": c, ...dic },
+export function ProjectRestoreButton({
+  dic: { "project-restore-button": c, ...dic },
   project,
   ...props
-}: ProjectBinButtonProps) {
+}: ProjectRestoreButtonProps) {
   const lang = useLocale();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
 
-  const form = useForm<z.infer<typeof projectBinSchema>>({
-    resolver: zodResolver(projectBinSchema),
+  const form = useForm<z.infer<typeof projectRestoreSchema>>({
+    resolver: zodResolver(projectRestoreSchema),
     defaultValues: {
       id: project?.["id"],
-      deletedAt: new Date(),
     },
   });
 
-  function onSubmit(data: z.infer<typeof projectBinSchema>) {
+  function onSubmit(data: z.infer<typeof projectRestoreSchema>) {
     setLoading(true);
-    toast.promise(updateProject({ ...data, deletedAt: new Date() }), {
+    // @ts-ignore
+    toast.promise(updateProject({ ...data, deletedAt: null }), {
       finally: () => setLoading(false),
       error: async (err) => {
         const msg = await t(err?.["message"], lang);
@@ -54,7 +54,7 @@ export function ProjectBinButton({
         router.refresh();
         form.reset();
         setOpen(false);
-        return c?.["deleted successfully."];
+        return c?.["restored successfully."];
       },
     });
   }
@@ -69,18 +69,18 @@ export function ProjectBinButton({
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <Button
-                variant="destructive"
+                variant="secondary"
                 disabled={loading}
                 className="w-full md:w-fit"
               >
                 {loading && <Icons.spinner />}
-                {c?.["delete"]}
+                {c?.["restore"]}
               </Button>
             </form>
           </Form>
         </>
       }
-      title={c?.["delete project"]}
+      title={c?.["restore project"]}
       description={
         c?.[
           "this step is essential for informing patients about the treatments available at your project."

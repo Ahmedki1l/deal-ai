@@ -32,6 +32,9 @@ export default async function CaseStudy({
     include: { project: true },
     where: {
       id: propertyId,
+      project: {
+        deletedAt: null,
+      },
     },
   });
 

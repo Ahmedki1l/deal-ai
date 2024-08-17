@@ -17,10 +17,15 @@ export const projectSchema = z.object(
 
     propertyTypes: z.array(z.enum(propertyTypesArr)),
     platforms: z.array(z.enum(platformsArr)),
+
+    deletedAt: z.date("deletedAt"),
   },
 );
 
-export const projectCreateSchema = projectSchema.omit({ id: true });
+export const projectCreateSchema = projectSchema.omit({
+  id: true,
+  deletedAt: true,
+});
 export const projectCreateFormSchema = projectCreateSchema
   .omit({
     platforms: true,
@@ -38,7 +43,10 @@ export const projectCreateFormSchema = projectCreateSchema
   )
   .and(propertyCreateFormSchema);
 
-export const projectUpdateSchema = projectSchema.omit({ userId: true });
+export const projectUpdateSchema = projectSchema.omit({
+  userId: true,
+  deletedAt: true,
+});
 export const projectUpdateFormSchema = projectUpdateSchema
   .omit({ platforms: true, propertyTypes: true })
   .and(
@@ -56,8 +64,10 @@ export const projectUpdateFormSchema = projectUpdateSchema
     }),
   );
 export const projectDeleteSchema = projectSchema.pick({ id: true });
-export const projectBinSchema = projectSchema.pick({ id: true }).and(
-  z.object({
-    deletedAt: z.date("deletedAt"),
-  }),
-);
+export const projectBinSchema = projectSchema.pick({
+  id: true,
+  deletedAt: true,
+});
+export const projectRestoreSchema = projectSchema.pick({
+  id: true,
+});

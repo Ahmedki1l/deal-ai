@@ -44,6 +44,12 @@
               "value": "/dashboard/settings",
               "label": "Settings",
               "icon": "settings"
+            },
+            {
+              "segment": "bin",
+              "value": "/dashboard/bin",
+              "label": "Bin",
+              "icon": "trash"
             }
           ]
         ]
@@ -70,6 +76,7 @@
           "posts": "Posts",
           "platforms": "Platforms",
           "edit": "Edit",
+          "restore": "Restore",
           "delete": "Delete",
           "deletedAt": "Deleted At"
         },
@@ -125,11 +132,34 @@
           }
         }
       },
+      "bin": {
+        "main-nav": [
+          { "value": "/dashboard/bin", "label": "Projects" },
+          { "value": "/dashboard/bin/cases", "label": "Study Cases" },
+          { "value": "/dashboard/bin/properties", "label": "Properties" },
+          { "value": "/dashboard/bin/posts", "label": "Posts" }
+        ],
+        "bin": "Bin",
+
+        "projects": "Projects",
+        "this is how others will see you on the site.": "this is how others will see you on the site.",
+        "cases": {
+          "study cases": "Study Cases",
+          "this is how others will see you on the site.": "this is how others will see you on the site."
+        },
+        "properties": {
+          "properties": "Properties",
+          "this is how others will see you on the site.": "this is how others will see you on the site."
+        },
+        "posts": {
+          "posts": "Posts",
+          "this is how others will see you on the site.": "this is how others will see you on the site."
+        }
+      },
       "settings": {
         "main-nav": [
           { "value": "/dashboard/settings", "label": "Profile" },
-          { "value": "/dashboard/settings/appearance", "label": "Appearance" },
-          { "value": "/dashboard/settings/bin", "label": "Bin" }
+          { "value": "/dashboard/settings/appearance", "label": "Appearance" }
         ],
         "settings": "Settings",
 
@@ -139,10 +169,6 @@
         },
         "profile": {
           "profile": "Profile",
-          "this is how others will see you on the site.": "this is how others will see you on the site."
-        },
-        "bin": {
-          "bin": "Bin",
           "this is how others will see you on the site.": "this is how others will see you on the site."
         }
       }
@@ -353,6 +379,12 @@
       "label": "Platforms",
       "select your platform": "Select your platform"
     }
+  },
+  "project-restore-button": {
+    "restored successfully.": "restored successfully.",
+    "restore": "Restore",
+    "restore project": "Restore Project",
+    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
   },
   "project-update-form": {
     "updated successfully.": "updated successfully.",

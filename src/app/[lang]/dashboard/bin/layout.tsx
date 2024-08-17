@@ -3,18 +3,18 @@ import { SidebarNav } from "@/components/sidebar-nav";
 import { getDictionary } from "@/lib/dictionaries";
 import { LocaleProps } from "@/types/locale";
 
-type SettingsLayoutProps = Readonly<{
+type BinLayoutProps = Readonly<{
   children: React.ReactNode;
   params: LocaleProps;
 }>;
 
-export default async function SettingsLayout({
+export default async function BinLayout({
   children,
   params: { lang },
-}: SettingsLayoutProps) {
+}: BinLayoutProps) {
   const {
     dashboard: {
-      user: { settings: c },
+      user: { bin: c },
     },
     ...dic
   } = await getDictionary(lang);
@@ -23,9 +23,10 @@ export default async function SettingsLayout({
       <div className="container flex max-w-screen-lg flex-1 flex-col gap-6 py-6">
         <div>
           <div className="space-y-0.5">
-            <h2 className="text-2xl font-bold tracking-tight">
-              {c?.["settings"]}
-            </h2>
+            <h2 className="text-2xl font-bold tracking-tight">{c?.["bin"]}</h2>
+            <p className="text-sm text-muted-foreground">
+              {c?.["this is how others will see you on the site."]}
+            </p>
           </div>
 
           <Separator className="my-6" />

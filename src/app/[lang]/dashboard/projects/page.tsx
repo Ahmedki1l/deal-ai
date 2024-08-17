@@ -20,9 +20,11 @@ export default async function Projects({ params: { lang } }: ProjectsProps) {
     include: { caseStudy: { include: { posts: true } }, properties: true },
     where: {
       userId: user?.["id"],
+      deletedAt: null,
     },
   });
 
+  console.log(projects);
   if (!projects?.["length"])
     return (
       <div className="container flex min-h-screen items-center justify-center py-6">

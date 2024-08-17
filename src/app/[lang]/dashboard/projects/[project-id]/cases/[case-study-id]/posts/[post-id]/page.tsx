@@ -52,6 +52,11 @@ export default async function CaseStudy({
     },
     where: {
       id: postId,
+      caseStudy: {
+        project: {
+          deletedAt: null,
+        },
+      },
     },
   });
 

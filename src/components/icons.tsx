@@ -28,6 +28,7 @@ import {
   Edit,
   Globe,
   ImagePlay,
+  Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { VariantProps, cva } from "class-variance-authority";
@@ -94,6 +95,9 @@ export const Icons = {
   ),
   calender: ({ className, ...props }: IconProps) => (
     <Calendar className={cn(IconsVariants({}), className)} {...props} />
+  ),
+  trash: ({ className, ...props }: IconProps) => (
+    <Trash2 className={cn(IconsVariants({}), className)} {...props} />
   ),
   image: ({ className, ...props }: IconProps) => (
     <Image className={cn(IconsVariants({}), className)} {...props} />

@@ -17,6 +17,8 @@ type SchedulerProps = {
   Dictionary["image-form"] &
   Dictionary["post-form"] &
   Dictionary["dialog"] &
+  Dictionary["post-bin-button"] &
+  Dictionary["post-restore-button"] &
   Dictionary["back-button"] &
   Dictionary["constants"];
 
@@ -78,6 +80,8 @@ export function Month({
   Dictionary["image-form"] &
   Dictionary["post-form"] &
   Dictionary["dialog"] &
+  Dictionary["post-bin-button"] &
+  Dictionary["post-restore-button"] &
   Dictionary["back-button"] &
   Dictionary["constants"]) {
   return (
@@ -106,6 +110,8 @@ export function Day({
   Dictionary["image-form"] &
   Dictionary["post-form"] &
   Dictionary["dialog"] &
+  Dictionary["post-bin-button"] &
+  Dictionary["post-restore-button"] &
   Dictionary["back-button"] &
   Dictionary["constants"]) {
   const [open, setOpen] = useState(false);

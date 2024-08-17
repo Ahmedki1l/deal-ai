@@ -13,6 +13,8 @@ import {
 import { PostUpdateForm } from "@/components/post-update-form";
 import { getDictionary } from "@/lib/dictionaries";
 import { LocaleProps } from "@/types/locale";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Icons } from "@/components/icons";
 
 type CaseStudyProps = Readonly<{
   params: {
@@ -31,23 +33,14 @@ export default async function CaseStudy({
     "post-id": postId,
   },
 }: CaseStudyProps) {
-  const {
-    dashboard: {
-      user: {
-        projects: {
-          project: {
-            cases: {
-              case: { posts: c },
-            },
-          },
-        },
-      },
-    },
-    ...dic
-  } = await getDictionary(lang);
+  const dic = await getDictionary(lang);
+  const c =
+    dic?.["dashboard"]?.["user"]?.["projects"]?.["project"]?.["cases"]?.[
+      "case"
+    ]?.["posts"]?.["post"];
   const post = await db.post.findFirst({
     include: {
-      image: true,
+      image: { where: { deletedAt: null } },
       caseStudy: { include: { project: true } },
     },
     where: {
@@ -61,15 +54,19 @@ export default async function CaseStudy({
         <EmptyPlaceholder className="border-none">
           <EmptyPlaceholder.Icon name="empty" />
           <EmptyPlaceholder.Title>
-            Oops, No Such Case Study.
+            {c?.["oops, no such post."]}
           </EmptyPlaceholder.Title>
           <EmptyPlaceholder.Description>
-            you have not created you case study yet. start working with us.
+            {c?.["you have not created you post yet."]}
           </EmptyPlaceholder.Description>
           <BackButton dic={dic} />
         </EmptyPlaceholder>
       </div>
     );
+
+  const projectDeleted = !!post?.["caseStudy"]?.["project"]?.["deletedAt"];
+  const caseStudyDeleted = !!post?.["caseStudy"]?.["deletedAt"];
+  const postDeleted = !!post?.["deletedAt"];
 
   return (
     <div className="min-h-screen flex-1 overflow-auto">
@@ -78,7 +75,7 @@ export default async function CaseStudy({
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href={`/${lang}/dashboard/projects`}>
-                Projects
+                {c?.["projects"]}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
@@ -104,8 +101,26 @@ export default async function CaseStudy({
           </BreadcrumbList>
         </Breadcrumb>
 
+        {projectDeleted ||
+          (caseStudyDeleted && (
+            <Alert variant="warning">
+              <Icons.exclamationTriangle />
+              <AlertTitle>{c?.["warning!"]}</AlertTitle>
+              <AlertDescription>
+                {
+                  c?.[
+                    "it's project or case study is deleted, once you restore it all will be editable."
+                  ]
+                }
+              </AlertDescription>
+            </Alert>
+          ))}
         <div className="flex max-w-screen-xl flex-1 flex-col gap-6 py-6">
-          <PostUpdateForm dic={dic} post={post} />
+          <PostUpdateForm
+            disabled={projectDeleted || caseStudyDeleted || postDeleted}
+            dic={dic}
+            post={post}
+          />
         </div>
       </div>
     </div>

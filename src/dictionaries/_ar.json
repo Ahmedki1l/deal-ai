@@ -67,8 +67,8 @@
         "latest projects": "آخر المشاريع"
       },
       "calender": {
-        "calender": "Calender",
-        "timeline of your posts schedule.": "timeline of your posts schedule."
+        "calender": "التقويم",
+        "timeline of your posts schedule.": "الجدول الزمني لجدول مشاركاتك."
       },
       "projects": {
         "projects": "المشاريع",
@@ -95,6 +95,14 @@
 
           "cases": {
             "case": {
+              "oops, no such case study.": "oops, no such case study.",
+              "you have not created you case study yet.": "you have not created you case study yet.",
+              "projects": "المشاريع",
+              "restore": "إعادة",
+              "delete": "حذف",
+              "oops, no posts.": "oops, no posts.",
+              "you have not created you posts yet.": "you have not created you posts yet.",
+
               "case study content": "محتوى دراسة الحالة",
               "target audience": "الجمهور المستهدف",
               "pros": "الإيجابيات",
@@ -344,7 +352,7 @@
     "discard": "إزالة",
     "save changes": "حفظ التغييرات",
     "post information": "تفاصيل البوست",
-    "update image": "Update Image",
+    "update image": "تحديث الصورة",
     "this step is essential for informing patients about the treatments available at your image.": "this step is essential for informing patients about the treatments available at your image."
   },
   "post-update-schedule-button": {
@@ -385,9 +393,9 @@
     }
   },
   "project-restore-button": {
-    "restored successfully.": "restored successfully.",
-    "restore": "Restore",
-    "restore project": "Restore Project",
+    "restored successfully.": "تم إعادتها بنجاح.",
+    "restore": "إعادة",
+    "restore project": "إعادة المشروع",
     "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
   },
   "project-update-form": {
@@ -438,20 +446,32 @@
     }
   },
   "user-profile-password-form": {
-    "updated successfully.": "updated successfully.",
+    "updated successfully.": "تم التحديث بنجاح.",
     "reset password": "Reset Password?",
-    "new password": "New Password",
-    "confirm new password": "Confirm New Password",
-    "discard": "Discard",
-    "submit": "Submit",
+    "new password": "كلمة مرور جديدة",
+    "confirm new password": "تأكيد كلمة المرور الجديدة",
+    "discard": "تجاهل التعديلات",
+    "submit": "حفظ",
     "this information will be used to create your public profile and facilitate communication with patients and colleagues.": "this information will be used to create your public profile and facilitate communication with patients and colleagues."
   },
 
   "user-profile-personal-form": {
-    "updated successfully.": "updated successfully.",
-    "personal information": "Personal Information",
-    "discard": "Discard",
-    "save changes": "Save Changes",
+    "updated successfully.": "تم التحديث بنجاح.",
+    "personal information": "بيانات شخصية",
+    "discard": "تجاهل التعديلات",
+    "save changes": "حفظ التعديلات",
     "this information will be used to create your public profile and facilitate communication with patients and colleagues.": "this information will be used to create your public profile and facilitate communication with patients and colleagues."
+  },
+
+  "constants": {
+    "days": [
+      { "value": "SUN", "label": "الأحد" },
+      { "value": "MON", "label": "الأثنين" },
+      { "value": "TUE", "label": "الثلاثاء" },
+      { "value": "WED", "label": "الأربعاء" },
+      { "value": "THU", "label": "الخميس" },
+      { "value": "FRI", "label": "الجمعة" },
+      { "value": "SAT", "label": "السبت" }
+    ]
   }
 }

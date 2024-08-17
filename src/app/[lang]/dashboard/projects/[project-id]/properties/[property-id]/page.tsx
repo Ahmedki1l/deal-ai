@@ -13,6 +13,11 @@ import {
 import { CardDescription } from "@/components/ui/card";
 import { LocaleProps } from "@/types/locale";
 import { getDictionary } from "@/lib/dictionaries";
+import { PropertyRestoreButton } from "@/components/property-restore-button";
+import { Button } from "@/components/ui/button";
+import { PropertyBinButton } from "@/components/property-bin-button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Icons } from "@/components/icons";
 
 type CaseStudyProps = Readonly<{
   params: { "project-id": string; "property-id": string } & LocaleProps;
@@ -24,7 +29,11 @@ export default async function CaseStudy({
 }: CaseStudyProps) {
   const {
     dashboard: {
-      user: { projects: c },
+      user: {
+        projects: {
+          project: { properties: c },
+        },
+      },
     },
     ...dic
   } = await getDictionary(lang);
@@ -41,15 +50,18 @@ export default async function CaseStudy({
         <EmptyPlaceholder className="border-none">
           <EmptyPlaceholder.Icon name="empty" />
           <EmptyPlaceholder.Title>
-            Oops, No Such Property.
+            {c?.["oops, no such property."]}
           </EmptyPlaceholder.Title>
           <EmptyPlaceholder.Description>
-            you have not created you property yet. start working with us.
+            {c?.["you have not created you property yet."]}
           </EmptyPlaceholder.Description>
           <BackButton dic={dic} />
         </EmptyPlaceholder>
       </div>
     );
+
+  const projectDeleted = !!property?.["project"]?.["deletedAt"];
+  const propertyDeleted = !!property?.["deletedAt"];
 
   return (
     <div className="container flex-1 py-6">
@@ -58,7 +70,7 @@ export default async function CaseStudy({
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href={`/${lang}/dashboard/projects`}>
-                Projects
+                {c?.["projects"]}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
@@ -74,13 +86,52 @@ export default async function CaseStudy({
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <div className="mb-4 flex flex-col">
-          <h2 className="text-2xl font-bold tracking-tight">
-            {property?.["title"]}
-          </h2>
-          <CardDescription>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-          </CardDescription>
+
+        {projectDeleted && (
+          <Alert variant="warning">
+            <Icons.exclamationTriangle />
+            <AlertTitle>{c?.["warning!"]}</AlertTitle>
+            <AlertDescription>
+              {
+                c?.[
+                  "it's project is deleted, once you restore it all will be editable."
+                ]
+              }
+            </AlertDescription>
+          </Alert>
+        )}
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <div className="flex flex-col">
+            <h2 className="text-2xl font-bold tracking-tight">
+              {property?.["title"]}
+            </h2>
+          </div>
+
+          <div>
+            {propertyDeleted ? (
+              <PropertyRestoreButton
+                disabled={projectDeleted}
+                dic={dic}
+                asChild
+                property={property}
+              >
+                <Button disabled={projectDeleted} variant="secondary">
+                  {c?.["restore"]}
+                </Button>
+              </PropertyRestoreButton>
+            ) : (
+              <PropertyBinButton
+                disabled={projectDeleted}
+                dic={dic}
+                asChild
+                property={property}
+              >
+                <Button disabled={projectDeleted} variant="destructive">
+                  {c?.["delete"]}
+                </Button>
+              </PropertyBinButton>
+            )}
+          </div>
         </div>
       </div>
     </div>

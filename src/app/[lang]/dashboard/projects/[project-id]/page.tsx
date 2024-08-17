@@ -21,6 +21,8 @@ import { PropertyTable } from "./properties-table";
 import { platforms } from "@/db/enums";
 import { Icons } from "@/components/icons";
 import { Map } from "@/components/map";
+import { ProjectRestoreButton } from "@/components/project-restore-button";
+import { ProjectBinButton } from "@/components/project-bin-button";
 
 type ProjectProps = Readonly<{
   params: { "project-id": string } & LocaleProps;
@@ -34,12 +36,13 @@ export default async function Project({
   const c = dic?.["dashboard"]?.["user"]?.["projects"]?.["project"];
   const project = await db.project.findFirst({
     include: {
-      caseStudy: { include: { posts: true } },
-      properties: true,
+      caseStudy: {
+        include: { posts: { where: { deletedAt: null } } },
+        where: { deletedAt: null },
+      },
+      properties: { where: { deletedAt: null } },
     },
-    where: {
-      id: projectId,
-    },
+    where: { id: projectId },
   });
 
   if (!project)
@@ -48,15 +51,17 @@ export default async function Project({
         <EmptyPlaceholder className="border-none">
           <EmptyPlaceholder.Icon name="empty" />
           <EmptyPlaceholder.Title>
-            Oops, No Such Project.
+            {c?.["oops, no such project."]}
           </EmptyPlaceholder.Title>
           <EmptyPlaceholder.Description>
-            you have not created you project yet. start working with us.
+            {c?.["you have not created you project yet."]}
           </EmptyPlaceholder.Description>
           <BackButton dic={dic} />
         </EmptyPlaceholder>
       </div>
     );
+
+  const projectDeleted = !!project?.["deletedAt"];
 
   return (
     <div className="container flex-1 py-6">
@@ -65,7 +70,7 @@ export default async function Project({
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href={`/${lang}/dashboard/projects`}>
-                Projects
+                {c?.["projects"]}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
@@ -85,21 +90,17 @@ export default async function Project({
                 {project?.["description"]}
               </p>
             </div>
+
             <div>
-              <div className="flex items-center gap-2">
-                {project?.["platforms"]?.map((e, i) => {
-                  const p = platforms.find((p) => p?.["value"] === e);
-                  if (!p) return "---";
-
-                  const Icon = Icons?.[p?.["icon"]] ?? null;
-
-                  return <Icon key={i} />;
-                })}
-              </div>
-
-              <p className="text-sm text-muted-foreground">
-                {new Date(project?.["createdAt"])?.toLocaleDateString()}
-              </p>
+              {projectDeleted ? (
+                <ProjectRestoreButton dic={dic} asChild project={project}>
+                  <Button variant="secondary">{c?.["restore"]}</Button>
+                </ProjectRestoreButton>
+              ) : (
+                <ProjectBinButton dic={dic} asChild project={project}>
+                  <Button variant="destructive">{c?.["delete"]}</Button>
+                </ProjectBinButton>
+              )}
             </div>
           </div>
 
@@ -107,31 +108,60 @@ export default async function Project({
             <div className="flex flex-col justify-center">
               <p className="text-muted-foreground">
                 <span className="font-semibold text-foreground">
-                  Distinct:{" "}
+                  {c?.["distinct"]}:{" "}
                 </span>
                 {project?.["distinct"]}
               </p>
 
               <p className="text-muted-foreground">
-                <span className="font-semibold text-foreground">City: </span>
+                <span className="font-semibold text-foreground">
+                  {c?.["city"]}:{" "}
+                </span>
                 {project?.["city"]}
               </p>
 
               <p className="text-muted-foreground">
-                <span className="font-semibold text-foreground">Country: </span>
+                <span className="font-semibold text-foreground">
+                  {c?.["country"]}:{" "}
+                </span>
                 {project?.["country"]}
               </p>
 
               <p className="text-muted-foreground">
-                <span className="font-semibold text-foreground">Spaces: </span>
+                <span className="font-semibold text-foreground">
+                  {c?.["spaces"]}:{" "}
+                </span>
                 {project?.["spaces"]}
               </p>
 
               <p className="text-muted-foreground">
                 <span className="font-semibold text-foreground">
-                  Property Types:{" "}
+                  {c?.["property types"]}:{" "}
                 </span>
                 {project?.["propertyTypes"].join(", ")}
+              </p>
+              <p className="flex items-center gap-2 text-muted-foreground">
+                <span className="font-semibold text-foreground">
+                  {c?.["platforms"]}:{" "}
+                </span>
+
+                <div className="flex items-center gap-2">
+                  {project?.["platforms"]?.map((e, i) => {
+                    const p = platforms.find((p) => p?.["value"] === e);
+                    if (!p) return "---";
+
+                    const Icon = Icons?.[p?.["icon"]] ?? null;
+
+                    return <Icon key={i} />;
+                  })}
+                </div>
+              </p>
+
+              <p className="text-muted-foreground">
+                <span className="font-semibold text-foreground">
+                  {c?.["created at"]}:{" "}
+                </span>
+                {new Date(project?.["createdAt"])?.toLocaleDateString()}
               </p>
             </div>
             <Map {...project} />
@@ -152,14 +182,24 @@ export default async function Project({
                 </p>
               </div>
               <div>
-                <CaseStudyCreateButton dic={dic} project={project}>
-                  <Button>{c?.["create case study"]}</Button>
+                <CaseStudyCreateButton
+                  disabled={projectDeleted}
+                  dic={dic}
+                  project={project}
+                >
+                  <Button disabled={projectDeleted}>
+                    {c?.["create case study"]}
+                  </Button>
                 </CaseStudyCreateButton>
               </div>
             </div>
           </div>
 
-          <CaseStudyTable dic={dic} data={project?.["caseStudy"]} />
+          <CaseStudyTable
+            disabled={projectDeleted}
+            dic={dic}
+            data={project?.["caseStudy"]}
+          />
         </div>
 
         <div className="flex flex-col gap-5">
@@ -173,13 +213,23 @@ export default async function Project({
               </p>
             </div>
             <div>
-              <PropertyCreateButton dic={dic} project={project}>
-                <Button> {c?.["create properties"]}</Button>
+              <PropertyCreateButton
+                disabled={projectDeleted}
+                dic={dic}
+                project={project}
+              >
+                <Button disabled={projectDeleted}>
+                  {c?.["create properties"]}
+                </Button>
               </PropertyCreateButton>
             </div>
           </div>
 
-          <PropertyTable dic={dic} data={project?.["properties"]} />
+          <PropertyTable
+            disabled={projectDeleted}
+            dic={dic}
+            data={project?.["properties"]}
+          />
         </div>
       </div>
     </div>

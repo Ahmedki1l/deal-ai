@@ -17,7 +17,8 @@ type SchedulerProps = {
   Dictionary["image-form"] &
   Dictionary["post-form"] &
   Dictionary["dialog"] &
-  Dictionary["back-button"];
+  Dictionary["back-button"] &
+  Dictionary["constants"];
 
 export function Scheduler({ dic, posts }: SchedulerProps) {
   const [currenMonth, setCurrentMonth] = useState(getMonth());
@@ -49,10 +50,10 @@ export function Scheduler({ dic, posts }: SchedulerProps) {
             Today
           </Button>
           <Button variant="ghost" size="icon" onClick={handlePrevMonth}>
-            <Icons.chevronLeft />
+            <Icons.chevronLeft className="rtl:rotate-180" />
           </Button>
           <Button variant="ghost" size="icon" onClick={handleNextMonth}>
-            <Icons.chevronRight />
+            <Icons.chevronRight className="rtl:rotate-180" />
           </Button>
         </div>
 
@@ -77,7 +78,8 @@ export function Month({
   Dictionary["image-form"] &
   Dictionary["post-form"] &
   Dictionary["dialog"] &
-  Dictionary["back-button"]) {
+  Dictionary["back-button"] &
+  Dictionary["constants"]) {
   return (
     <div className="grid flex-1 grid-cols-7 grid-rows-5">
       {month.map((row, i) => (
@@ -92,7 +94,7 @@ export function Month({
 }
 
 export function Day({
-  dic,
+  dic: { constants, ...dic },
   day,
   rowIdx,
   posts,
@@ -104,12 +106,15 @@ export function Day({
   Dictionary["image-form"] &
   Dictionary["post-form"] &
   Dictionary["dialog"] &
-  Dictionary["back-button"]) {
+  Dictionary["back-button"] &
+  Dictionary["constants"]) {
   const [open, setOpen] = useState(false);
   const filteredPosts = posts.filter(
     (p) => day.format("DD-MM-YY") === dayjs(p?.["postAt"]).format("DD-MM-YY"),
   );
 
+  const dayObj = constants?.days?.[day.day()] ?? null;
+  // day.format("ddd")
   return (
     <div
       className={cn(
@@ -118,7 +123,9 @@ export function Day({
     >
       <header className="flex flex-col items-center">
         {rowIdx === 0 && (
-          <p className="mt-1 text-sm">{day.format("ddd").toUpperCase()}</p>
+          <p className="mt-1 text-sm">
+            {dayObj?.["label"] ?? day.format("ddd")?.toUpperCase()}
+          </p>
         )}
         <p
           className={cn(

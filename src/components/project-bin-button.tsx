@@ -16,7 +16,7 @@ import { Project } from "@prisma/client";
 import { useLocale } from "@/hooks/use-locale";
 import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
-import { deleteProject, updateProject } from "@/actions/projects";
+import { updateProject } from "@/actions/projects";
 
 type ProjectBinButtonProps = {
   project: Pick<Project, "id">;

@@ -29,6 +29,7 @@ export async function createProperty(
           ...p,
           id: generateIdFromEntropySize(10),
           type: t?.["value"],
+          deletedAt: null,
         })),
       )
       .flat();

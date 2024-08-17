@@ -29,11 +29,12 @@ type PostUpdateContentButtonProps = {
 export function PostUpdateContentButton({
   dic: { "post-update-content-button": c, ...dic },
   post,
+  disabled,
   ...props
 }: PostUpdateContentButtonProps) {
   const lang = useLocale();
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const [open, setOpen] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof postUpdateContentSchema>>({
@@ -61,6 +62,7 @@ export function PostUpdateContentButton({
   return (
     <DialogResponsive
       dic={dic}
+      disabled={loading}
       confirmButton={
         <>
           <Form {...form}>

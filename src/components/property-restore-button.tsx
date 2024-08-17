@@ -20,7 +20,7 @@ import { updateProperty } from "@/actions/properties";
 
 type PropertyRestoreButtonProps = {
   property: Pick<Property, "id">;
-} & Omit<DialogResponsiveProps, "open" | "setOpen"> &
+} & Omit<DialogResponsiveProps, "open" | "setOpen" | "property"> &
   Dictionary["property-restore-button"] &
   Dictionary["dialog"];
 

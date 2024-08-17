@@ -32,22 +32,28 @@ import { DialogClose } from "./ui/dialog";
 import { DrawerClose } from "./ui/drawer";
 import { ImageForm } from "./image-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { PostRestoreButton } from "./post-restore-button";
+import { PostBinButton } from "./post-bin-button";
 
 type PostUpdateFormProps = {
   post: Post & { image: ImageType | null };
+  disabled?: boolean;
 } & Dictionary["post-update-form"] &
   Dictionary["image-form"] &
   Dictionary["post-form"] &
   Dictionary["dialog"] &
+  Dictionary["post-bin-button"] &
+  Dictionary["post-restore-button"] &
   Dictionary["back-button"];
 
 export function PostUpdateForm({
   dic: { "post-update-form": c, ...dic },
   post,
+  disabled,
 }: PostUpdateFormProps) {
   const lang = useLocale();
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const [open, setOpen] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof postUpdateSchema>>({
@@ -84,6 +90,7 @@ export function PostUpdateForm({
       return false;
     }
   }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -97,6 +104,7 @@ export function PostUpdateForm({
 
             <div className="hidden items-center gap-2 md:flex">
               <Button
+                disabled={loading}
                 type="button"
                 onClick={() => form.reset()}
                 variant="outline"
@@ -105,12 +113,12 @@ export function PostUpdateForm({
                 {c?.["discard"]}
               </Button>
               <Button
+                disabled={loading}
                 type="submit"
                 size="sm"
                 className="w-full"
-                disabled={loading}
               >
-                {loading && <Icons.spinner />}
+                {!disabled && loading && <Icons.spinner />}
                 {c?.["save changes"]}
               </Button>
             </div>
@@ -130,18 +138,27 @@ export function PostUpdateForm({
               <div className="absolute right-4 top-4 z-50 flex items-center text-lg font-medium">
                 <DialogResponsive
                   dic={dic}
+                  disabled={loading}
                   confirmButton={
                     <>
-                      <DialogClose asChild className="hidden md:flex">
+                      <DialogClose
+                        disabled={loading}
+                        asChild
+                        className="hidden md:flex"
+                      >
                         <Button disabled={loading} className="w-full md:w-fit">
-                          {loading && <Icons.spinner />}
+                          {!disabled && loading && <Icons.spinner />}
                           {c?.["submit"]}
                         </Button>
                       </DialogClose>
 
-                      <DrawerClose asChild className="md:hidden">
+                      <DrawerClose
+                        disabled={loading}
+                        asChild
+                        className="md:hidden"
+                      >
                         <Button disabled={loading} className="w-full md:w-fit">
-                          {loading && <Icons.spinner />}
+                          {!disabled && loading && <Icons.spinner />}
                           {c?.["submit"]}
                         </Button>
                       </DrawerClose>
@@ -182,7 +199,7 @@ export function PostUpdateForm({
                   open={open}
                   setOpen={setOpen}
                 >
-                  <Button size="icon" variant="secondary">
+                  <Button disabled={loading} size="icon" variant="secondary">
                     <Icons.edit />
                   </Button>
                 </DialogResponsive>
@@ -233,7 +250,30 @@ export function PostUpdateForm({
             </Card>
           </div>
           <div className="flex items-center justify-center gap-2 md:hidden">
+            {post?.["deletedAt"] ? (
+              <PostRestoreButton
+                disabled={post?.["deletedAt"] ? false : disabled}
+                dic={dic}
+                asChild
+                post={post}
+              >
+                <Button
+                  disabled={post?.["deletedAt"] ? false : disabled}
+                  variant="secondary"
+                >
+                  {c?.["restore"]}
+                </Button>
+              </PostRestoreButton>
+            ) : (
+              <PostBinButton disabled={disabled} dic={dic} asChild post={post}>
+                <Button disabled={disabled} variant="destructive">
+                  {c?.["delete"]}
+                </Button>
+              </PostBinButton>
+            )}
+
             <Button
+              disabled={loading}
               type="button"
               onClick={() => form.reset()}
               variant="outline"
@@ -243,12 +283,12 @@ export function PostUpdateForm({
             </Button>
 
             <Button
+              disabled={loading}
               type="submit"
               size="sm"
               className="w-full"
-              disabled={loading}
             >
-              {loading && <Icons.spinner />}
+              {!disabled && loading && <Icons.spinner />}
               {c?.["save changes"]}
             </Button>
           </div>

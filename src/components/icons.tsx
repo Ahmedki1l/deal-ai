@@ -35,7 +35,7 @@ import { VariantProps, cva } from "class-variance-authority";
 import icon from "../../public/icon.png";
 import logo from "../../public/logo.png";
 import { Image as CutomImage } from "./image";
-import { ReloadIcon } from "@radix-ui/react-icons";
+import { ExclamationTriangleIcon, ReloadIcon } from "@radix-ui/react-icons";
 export const IconsVariants = cva("w-4 h-4 shrink-0");
 export type IconProps = {} & LucideProps & VariantProps<typeof IconsVariants>;
 export type Icon = keyof typeof Icons;
@@ -74,6 +74,12 @@ export const Icons = {
   ),
   reload: ({ className, children, ...props }: IconProps) => (
     <ReloadIcon className={cn(IconsVariants({}), className)} {...props} />
+  ),
+  exclamationTriangle: ({ className, children, ...props }: IconProps) => (
+    <ExclamationTriangleIcon
+      className={cn(IconsVariants({}), className)}
+      {...props}
+    />
   ),
   home: ({ className, ...props }: IconProps) => (
     <Home className={cn(IconsVariants({}), className)} {...props} />

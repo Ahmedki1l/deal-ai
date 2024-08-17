@@ -172,6 +172,7 @@ export async function createPost(
                 id: generateIdFromEntropySize(10),
                 src: imageResponse.url,
                 prompt: adjusted_image.input,
+                deletedAt: null,
               },
             });
           });

@@ -53,6 +53,7 @@ export async function createProject({
       data: properties?.["length"]
         ? {
             ...project,
+            deletedAt: null,
             properties: {
               createMany: {
                 data: properties,
@@ -61,6 +62,7 @@ export async function createProject({
           }
         : {
             ...project,
+            deletedAt: null,
           },
     });
 

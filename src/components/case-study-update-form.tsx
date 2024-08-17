@@ -28,11 +28,12 @@ type CaseStudyUpdateFormProps = {
 export function CaseStudyUpdateForm({
   dic: { "case-study-update-form": c, ...dic },
   caseStudy,
+  disabled,
   ...props
 }: CaseStudyUpdateFormProps) {
   const lang = useLocale();
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const [open, setOpen] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof caseStudyUpdateSchema>>({
@@ -63,6 +64,7 @@ export function CaseStudyUpdateForm({
   return (
     <DialogResponsive
       dic={dic}
+      disabled={loading}
       confirmButton={
         <>
           <Form {...form}>

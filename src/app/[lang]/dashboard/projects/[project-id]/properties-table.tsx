@@ -5,9 +5,12 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Link } from "@/components/link";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { DataTableRowActions } from "@/components/data-table-row-actions";
-import { DropdownMenuShortcut } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+} from "@/components/ui/dropdown-menu";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { PropertyDeleteButton } from "@/components/property-delete-button";
+import { PropertyBinButton } from "@/components/property-bin-button";
 
 import { Property, Post } from "@prisma/client";
 import { CardDescription, CardTitle } from "@/components/ui/card";
@@ -17,11 +20,12 @@ import { DataTable } from "@/components/data-table";
 type PropertyColumnType = Property;
 type PropertyTableProps = {
   data: PropertyColumnType[];
+  disabled?: boolean;
 } & Dictionary["data-table"] &
   Dictionary["data-table-column-header"] &
   Dictionary["data-table-pagination"] &
   Dictionary["data-table-view-options"] &
-  Dictionary["property-delete-button"] &
+  Dictionary["property-bin-button"] &
   Dictionary["property-form"] &
   Dictionary["dialog"] &
   Dictionary["dashboard"];
@@ -40,6 +44,7 @@ export function PropertyTable({
     ...dic
   },
   data,
+  disabled,
 }: PropertyTableProps) {
   return (
     <DataTable
@@ -186,24 +191,31 @@ export function PropertyTable({
               return (
                 <>
                   <DataTableRowActions>
-                    {/* <PropertyUpdateForm property={r}>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start px-2 text-start font-normal"
-                    >
-                      Edit
-                    </Button>
-                  </PropertyUpdateForm> */}
+                    {/* <PropertyUpdateButton disabled={disabled} dic={dic} asChild caseStudy={r}>
+                      <Button disabled={disabled}
+                        variant="ghost"
+                        className="w-full justify-start px-2 text-start font-normal"
+                      >
+                        {c?.["edit"]}
+                      </Button>
+                    </PropertyUpdateButton> */}
+                    <DropdownMenuSeparator />
 
-                    <PropertyDeleteButton dic={dic} asChild property={r}>
+                    <PropertyBinButton
+                      disabled={disabled}
+                      dic={dic}
+                      asChild
+                      property={r}
+                    >
                       <Button
+                        disabled={disabled}
                         variant="ghost"
                         className="w-full justify-start px-2 text-start font-normal"
                       >
                         {c?.["delete"]}
                         <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                       </Button>
-                    </PropertyDeleteButton>
+                    </PropertyBinButton>
                   </DataTableRowActions>
                 </>
               );

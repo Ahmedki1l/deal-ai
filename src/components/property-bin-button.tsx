@@ -10,41 +10,42 @@ import { Form } from "@/components/ui/form";
 import { Icons } from "@/components/icons";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { postBinSchema } from "@/validations/posts";
+import { propertyBinSchema } from "@/validations/properties";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
-import { Post } from "@prisma/client";
+import { Property } from "@prisma/client";
 import { useLocale } from "@/hooks/use-locale";
 import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
-import { updatePostFeature } from "@/actions/posts";
+import { updateProperty } from "@/actions/properties";
 
-type PostBinButtonProps = {
-  post: Pick<Post, "id">;
-} & Omit<DialogResponsiveProps, "open" | "setOpen"> &
-  Dictionary["post-bin-button"] &
+type PropertyBinButtonProps = {
+  property: Pick<Property, "id">;
+} & Omit<DialogResponsiveProps, "open" | "setOpen" | "property"> &
+  Dictionary["property-bin-button"] &
   Dictionary["dialog"];
 
-export function PostBinButton({
-  dic: { "post-bin-button": c, ...dic },
-  post,
+export function PropertyBinButton({
+  dic: { "property-bin-button": c, ...dic },
+  property,
+  disabled,
   ...props
-}: PostBinButtonProps) {
+}: PropertyBinButtonProps) {
   const lang = useLocale();
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const [open, setOpen] = useState<boolean>(false);
 
-  const form = useForm<z.infer<typeof postBinSchema>>({
-    resolver: zodResolver(postBinSchema),
+  const form = useForm<z.infer<typeof propertyBinSchema>>({
+    resolver: zodResolver(propertyBinSchema),
     defaultValues: {
-      id: post?.["id"],
+      id: property?.["id"],
       deletedAt: new Date(),
     },
   });
 
-  function onSubmit(data: z.infer<typeof postBinSchema>) {
+  function onSubmit(data: z.infer<typeof propertyBinSchema>) {
     setLoading(true);
-    toast.promise(updatePostFeature({ ...data, deletedAt: new Date() }), {
+    toast.promise(updateProperty({ ...data, deletedAt: new Date() }), {
       finally: () => setLoading(false),
       error: async (err) => {
         const msg = await t(err?.["message"], lang);
@@ -64,6 +65,7 @@ export function PostBinButton({
       dic={dic}
       open={open}
       setOpen={setOpen}
+      disabled={loading}
       confirmButton={
         <>
           <Form {...form}>
@@ -80,10 +82,10 @@ export function PostBinButton({
           </Form>
         </>
       }
-      title={c?.["delete post"]}
+      title={c?.["delete property"]}
       description={
         c?.[
-          "this step is essential for informing patients about the treatments available at your post."
+          "this step is essential for informing patients about the treatments available at your property."
         ]
       }
       {...props}

@@ -40,6 +40,9 @@ import { Link } from "@/components/link";
 import { platforms } from "@/db/enums";
 import { LocaleProps } from "@/types/locale";
 import { getDictionary } from "@/lib/dictionaries";
+import { CaseStudyRestoreButton } from "@/components/case-study-restore-button";
+import { CaseStudyBinButton } from "@/components/case-study-bin-button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 type CaseStudyProps = Readonly<{
   params: { "project-id": string; "case-study-id": string } & LocaleProps;
@@ -49,23 +52,27 @@ export const metadata: Metadata = { title: "CaseStudy" };
 export default async function CaseStudy({
   params: { lang, "project-id": projectId, "case-study-id": caseStudyId },
 }: CaseStudyProps) {
-  const {
-    dashboard: {
-      user: {
-        projects: {
-          project: {
-            cases: { case: c },
+  const dic = await getDictionary(lang);
+  const c =
+    dic?.["dashboard"]?.["user"]?.["projects"]?.["project"]?.["cases"]?.[
+      "case"
+    ];
+
+  const caseStudy = await db.caseStudy.findFirst({
+    include: {
+      posts: {
+        include: {
+          image: {
+            where: {
+              deletedAt: null,
+            },
           },
         },
+        where: { deletedAt: null },
       },
+      project: true,
     },
-    ...dic
-  } = await getDictionary(lang);
-  const caseStudy = await db.caseStudy.findFirst({
-    include: { posts: { include: { image: true } }, project: true },
-    where: {
-      id: caseStudyId,
-    },
+    where: { id: caseStudyId },
   });
 
   if (!caseStudy)
@@ -74,10 +81,10 @@ export default async function CaseStudy({
         <EmptyPlaceholder className="border-none">
           <EmptyPlaceholder.Icon name="empty" />
           <EmptyPlaceholder.Title>
-            Oops, No Such Case Study.
+            {c?.["oops, no such case study."]}
           </EmptyPlaceholder.Title>
           <EmptyPlaceholder.Description>
-            you have not created you case study yet. start working with us.
+            {c?.["you have not created you case study yet."]}
           </EmptyPlaceholder.Description>
           <BackButton dic={dic} />
         </EmptyPlaceholder>
@@ -87,6 +94,9 @@ export default async function CaseStudy({
   const pros: string[] = Object.values(JSON.parse(caseStudy?.["pros"]));
   const cons: string[] = Object.values(JSON.parse(caseStudy?.["cons"]));
 
+  const projectDeleted = !!caseStudy?.["project"]?.["deletedAt"];
+  const caseStudyDeleted = !!caseStudy?.["deletedAt"];
+
   return (
     <div className="container flex-1 py-6">
       <div className="flex flex-col gap-5">
@@ -94,7 +104,7 @@ export default async function CaseStudy({
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href={`/${lang}/dashboard/projects`}>
-                Projects
+                {c?.["projects"]}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
@@ -110,11 +120,52 @@ export default async function CaseStudy({
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <div className="mb-4 flex flex-col">
-          <h2 className="text-2xl font-bold tracking-tight">
-            {caseStudy?.["title"]}
-          </h2>
-          <CardDescription>{caseStudy?.["description"]}</CardDescription>
+
+        {projectDeleted && (
+          <Alert variant="warning">
+            <Icons.exclamationTriangle />
+            <AlertTitle>{c?.["warning!"]}</AlertTitle>
+            <AlertDescription>
+              {
+                c?.[
+                  "it's project is deleted, once you restore it all will be editable."
+                ]
+              }
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <div className="flex flex-col">
+            <h2 className="text-2xl font-bold tracking-tight">
+              {caseStudy?.["title"]}
+            </h2>
+          </div>
+          <div>
+            {caseStudyDeleted ? (
+              <CaseStudyRestoreButton
+                disabled={projectDeleted}
+                dic={dic}
+                asChild
+                caseStudy={caseStudy}
+              >
+                <Button disabled={projectDeleted} variant="secondary">
+                  {c?.["restore"]}
+                </Button>
+              </CaseStudyRestoreButton>
+            ) : (
+              <CaseStudyBinButton
+                disabled={projectDeleted}
+                dic={dic}
+                asChild
+                caseStudy={caseStudy}
+              >
+                <Button disabled={projectDeleted} variant="destructive">
+                  {c?.["delete"]}
+                </Button>
+              </CaseStudyBinButton>
+            )}
+          </div>
         </div>
         <div>
           <Accordion type="multiple">
@@ -177,11 +228,14 @@ export default async function CaseStudy({
 
           <div>
             <PostCreateButton
+              disabled={projectDeleted || caseStudyDeleted}
               dic={dic}
               caseStudy={caseStudy}
               project={caseStudy.project}
             >
-              <Button>{c?.["create posts"]}</Button>
+              <Button disabled={projectDeleted || caseStudyDeleted}>
+                {c?.["create posts"]}
+              </Button>
             </PostCreateButton>
           </div>
         </div>
@@ -230,17 +284,47 @@ export default async function CaseStudy({
                             <CardFooter className="flex flex-col gap-2 p-2">
                               <div className="flex w-full items-center justify-between">
                                 <div className="flex items-center">
-                                  <PostUpdateContentButton dic={dic} post={e}>
-                                    <Button variant="ghost" size="icon">
+                                  <PostUpdateContentButton
+                                    disabled={
+                                      projectDeleted || caseStudyDeleted
+                                    }
+                                    dic={dic}
+                                    post={e}
+                                  >
+                                    <Button
+                                      disabled={
+                                        projectDeleted || caseStudyDeleted
+                                      }
+                                      variant="ghost"
+                                      size="icon"
+                                    >
                                       <Icons.edit />
                                     </Button>
                                   </PostUpdateContentButton>
 
-                                  <Button variant="ghost" size="icon">
+                                  <Button
+                                    disabled={
+                                      projectDeleted || caseStudyDeleted
+                                    }
+                                    variant="ghost"
+                                    size="icon"
+                                  >
                                     <Icons.image />
                                   </Button>
-                                  <PostUpdateScheduleButton dic={dic} post={e}>
-                                    <Button variant="ghost" size="icon">
+                                  <PostUpdateScheduleButton
+                                    disabled={
+                                      projectDeleted || caseStudyDeleted
+                                    }
+                                    dic={dic}
+                                    post={e}
+                                  >
+                                    <Button
+                                      disabled={
+                                        projectDeleted || caseStudyDeleted
+                                      }
+                                      variant="ghost"
+                                      size="icon"
+                                    >
                                       <Icons.calender />
                                     </Button>
                                   </PostUpdateScheduleButton>
@@ -299,17 +383,22 @@ export default async function CaseStudy({
         ) : (
           <EmptyPlaceholder>
             <EmptyPlaceholder.Icon name="empty" />
-            <EmptyPlaceholder.Title>Oops, No Posts.</EmptyPlaceholder.Title>
+            <EmptyPlaceholder.Title>
+              {c?.["oops, no posts."]}
+            </EmptyPlaceholder.Title>
             <EmptyPlaceholder.Description>
-              you have not created you posts yet.
+              {c?.["you have not created you posts yet."]}
             </EmptyPlaceholder.Description>
 
             <PostCreateButton
+              disabled={projectDeleted || caseStudyDeleted}
               dic={dic}
               caseStudy={caseStudy}
               project={caseStudy?.["project"]}
             >
-              <Button>{c?.["create posts"]}</Button>
+              <Button disabled={projectDeleted || caseStudyDeleted}>
+                {c?.["create posts"]}
+              </Button>
             </PostCreateButton>
           </EmptyPlaceholder>
         )}

@@ -20,18 +20,20 @@ export default async function Projects({ params: { lang } }: ProjectsProps) {
     include: { caseStudy: { include: { posts: true } }, properties: true },
     where: {
       userId: user?.["id"],
+      deletedAt: null,
     },
   });
 
-  console.log(projects);
   if (!projects?.["length"])
     return (
       <div className="container flex min-h-screen items-center justify-center py-6">
         <EmptyPlaceholder className="border-none">
           <EmptyPlaceholder.Icon name="empty" />
-          <EmptyPlaceholder.Title>Oops, No Projects.</EmptyPlaceholder.Title>
+          <EmptyPlaceholder.Title>
+            {c?.["oops, no projects."]}
+          </EmptyPlaceholder.Title>
           <EmptyPlaceholder.Description>
-            you have not created you project yet. start working with us.
+            {c?.["you have not created you project yet."]}
           </EmptyPlaceholder.Description>
 
           <ProjectCreateButton dic={dic} user={user}>

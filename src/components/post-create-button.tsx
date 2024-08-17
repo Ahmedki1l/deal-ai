@@ -32,11 +32,12 @@ export function PostCreateButton({
   dic: { "post-create-button": c, ...dic },
   caseStudy,
   project,
+  disabled,
   ...props
 }: PostCreateButtonProps) {
   const lang = useLocale();
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const [open, setOpen] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof postCreateSchema>>({
@@ -73,6 +74,7 @@ export function PostCreateButton({
   return (
     <DialogResponsive
       dic={dic}
+      disabled={loading}
       confirmButton={
         <>
           <Form {...form}>

@@ -105,6 +105,7 @@ export async function createCaseStudy(
       data: {
         id,
         ...data,
+        deletedAt: null,
       },
     });
 

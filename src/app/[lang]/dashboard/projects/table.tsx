@@ -213,7 +213,7 @@ export function Table({
               return (
                 <>
                   <DataTableRowActions>
-                    <ProjectUpdateForm dic={dic} project={r}>
+                    <ProjectUpdateForm dic={dic} asChild project={r}>
                       <Button
                         variant="ghost"
                         className="w-full justify-start px-2 text-start font-normal"

@@ -26,7 +26,7 @@ export async function createImage(data: z.infer<typeof imageCreateSchema>) {
 
     const id = generateIdFromEntropySize(10);
     await db.image.create({
-      data: { id, ...data },
+      data: { id, ...data, deletedAt: null },
     });
 
     revalidatePath("/", "layout");

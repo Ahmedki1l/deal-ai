@@ -23,6 +23,7 @@ export default async function Dashboard({ params: { lang } }: DashboardProps) {
     include: { caseStudy: { include: { posts: true } }, properties: true },
     where: {
       userId: user?.["id"],
+      deletedAt: null,
     },
   });
 

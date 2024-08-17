@@ -29,11 +29,12 @@ type PostUpdateScheduleButtonProps = {
 export function PostUpdateScheduleButton({
   dic: { "post-update-schedule-button": c, ...dic },
   post,
+  disabled,
   ...props
 }: PostUpdateScheduleButtonProps) {
   const lang = useLocale();
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const [open, setOpen] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof postUpdateScheduleSchema>>({
@@ -61,6 +62,7 @@ export function PostUpdateScheduleButton({
   return (
     <DialogResponsive
       dic={dic}
+      disabled={loading}
       open={open}
       setOpen={setOpen}
       confirmButton={

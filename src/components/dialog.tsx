@@ -44,6 +44,7 @@ export function DialogResponsive({
   description,
   setOpen,
   open,
+  disabled,
   ...props
 }: DialogResponsiveProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -70,8 +71,10 @@ export function DialogResponsive({
 
           <DialogFooter className="gap-2">
             {confirmButton}
-            <DialogClose asChild>
-              <Button variant="outline">{c?.["cancel"]}</Button>
+            <DialogClose disabled={disabled} asChild>
+              <Button disabled={disabled} variant="outline">
+                {c?.["cancel"]}
+              </Button>
             </DialogClose>
           </DialogFooter>
         </DialogContent>
@@ -97,8 +100,10 @@ export function DialogResponsive({
 
         <DrawerFooter className="gap-2">
           {confirmButton}
-          <DrawerClose asChild>
-            <Button variant="outline">{c?.["cancel"]}</Button>
+          <DrawerClose disabled={disabled} asChild>
+            <Button disabled={disabled} variant="outline">
+              {c?.["cancel"]}
+            </Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>

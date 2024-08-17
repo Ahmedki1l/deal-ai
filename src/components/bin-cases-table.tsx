@@ -2,8 +2,6 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { Link } from "@/components/link";
-import { Property } from "@prisma/client";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { DataTableRowActions } from "@/components/data-table-row-actions";
 import {
@@ -11,30 +9,29 @@ import {
   DropdownMenuShortcut,
 } from "@/components/ui/dropdown-menu";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { CaseStudy, Post } from "@prisma/client";
-import { CaseStudyUpdateForm } from "@/components/case-study-update-form";
+import { CaseStudy } from "@prisma/client";
+import { Link } from "@/components/link";
 import { CaseStudyDeleteButton } from "@/components/case-study-delete-button";
-import { Icons } from "@/components/icons";
-import { CardDescription, CardTitle } from "@/components/ui/card";
+import { CardTitle } from "@/components/ui/card";
 import { Dictionary } from "@/types/locale";
 import { DataTable } from "@/components/data-table";
-import { CaseStudyBinButton } from "@/components/case-study-bin-button";
+import { CaseStudyRestoreButton } from "@/components/case-study-restore-button";
 
-type CaseStudyColumnType = CaseStudy & { posts: Post[] };
-type CaseStudyTableProps = {
-  data: CaseStudyColumnType[];
-  disabled?: boolean;
+type ColumnType = Pick<CaseStudy, "id" | "projectId" | "title" | "deletedAt">;
+
+type BinCasesTableProps = {
+  data: ColumnType[];
 } & Dictionary["data-table"] &
   Dictionary["data-table-column-header"] &
   Dictionary["data-table-pagination"] &
   Dictionary["data-table-view-options"] &
-  Dictionary["case-study-update-form"] &
-  Dictionary["case-study-bin-button"] &
-  Dictionary["case-study-form"] &
   Dictionary["dialog"] &
+  Dictionary["case-study-restore-button"] &
+  Dictionary["case-study-delete-button"] &
+  Dictionary["case-study-form"] &
   Dictionary["dashboard"];
 
-export function CaseStudyTable({
+export function BinCasesTable({
   dic: {
     dashboard: {
       user: {
@@ -48,8 +45,7 @@ export function CaseStudyTable({
     ...dic
   },
   data,
-  disabled,
-}: CaseStudyTableProps) {
+}: BinCasesTableProps) {
   return (
     <DataTable
       dic={dic}
@@ -80,61 +76,18 @@ export function CaseStudyTable({
             enableHiding: false,
           },
           {
-            accessorKey: "name",
+            accessorKey: "deletedAt",
             header: ({ column }) => (
               <DataTableColumnHeader
                 dic={dic}
                 column={column}
-                title={c?.["case study"]}
+                title={c?.["deletedAt"]}
               />
             ),
             cell: ({ row: { original: r } }) => (
-              <Link
-                href={`/dashboard/projects/${r?.["id"]}`}
-                className={buttonVariants({ variant: "link" })}
-              >
-                {r?.["content"] ? <Icons.check /> : <Icons.x />}
-              </Link>
-            ),
-            enableSorting: false,
-            enableHiding: false,
-          },
-          {
-            accessorKey: "name",
-            header: ({ column }) => (
-              <DataTableColumnHeader
-                dic={dic}
-                column={column}
-                title={c?.["target audience"]}
-              />
-            ),
-            cell: ({ row: { original: r } }) => (
-              <Link
-                href={`/dashboard/projects/${r?.["id"]}`}
-                className={buttonVariants({ variant: "link" })}
-              >
-                {r?.["targetAudience"] ? <Icons.check /> : <Icons.x />}
-              </Link>
-            ),
-            enableSorting: false,
-            enableHiding: false,
-          },
-          {
-            accessorKey: "name",
-            header: ({ column }) => (
-              <DataTableColumnHeader
-                dic={dic}
-                column={column}
-                title={c?.["posts"]}
-              />
-            ),
-            cell: ({ row: { original: r } }) => (
-              <Link
-                href={`/dashboard/projects/${r?.["id"]}`}
-                className={buttonVariants({ variant: "link" })}
-              >
-                {r?.["posts"]?.["length"]}
-              </Link>
+              <div className="flex items-center gap-2">
+                {new Date(r?.["deletedAt"]!)?.toLocaleDateString()}
+              </div>
             ),
             enableSorting: false,
             enableHiding: false,
@@ -145,43 +98,31 @@ export function CaseStudyTable({
               return (
                 <>
                   <DataTableRowActions>
-                    <CaseStudyUpdateForm
-                      disabled={disabled}
-                      dic={dic}
-                      asChild
-                      caseStudy={r}
-                    >
+                    <CaseStudyRestoreButton dic={dic} caseStudy={r}>
                       <Button
-                        disabled={disabled}
                         variant="ghost"
                         className="w-full justify-start px-2 text-start font-normal"
                       >
-                        {c?.["edit"]}
+                        {c?.["restore"]}
                       </Button>
-                    </CaseStudyUpdateForm>
+                    </CaseStudyRestoreButton>
                     <DropdownMenuSeparator />
 
-                    <CaseStudyBinButton
-                      disabled={disabled}
-                      dic={dic}
-                      asChild
-                      caseStudy={r}
-                    >
+                    <CaseStudyDeleteButton dic={dic} asChild caseStudy={r}>
                       <Button
-                        disabled={disabled}
                         variant="ghost"
                         className="w-full justify-start px-2 text-start font-normal"
                       >
                         {c?.["delete"]}
                         <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                       </Button>
-                    </CaseStudyBinButton>
+                    </CaseStudyDeleteButton>
                   </DataTableRowActions>
                 </>
               );
             },
           },
-        ] as ColumnDef<CaseStudyColumnType>[]
+        ] as ColumnDef<ColumnType>[]
       }
     />
   );

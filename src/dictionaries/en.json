@@ -71,6 +71,8 @@
         "timeline of your posts schedule.": "timeline of your posts schedule."
       },
       "projects": {
+        "oops, no projects.": "oops, no projects.",
+        "you have not created you project yet.": "you have not created you project yet.",
         "projects": "Projects",
         "create and manage projects.": "Create and manage posts.",
         "create project": "Create Project",
@@ -87,6 +89,19 @@
           "deletedAt": "Deleted At"
         },
         "project": {
+          "oops, no such project.": "oops, no such project.",
+          "you have not created you project yet.": "you have not created you project yet.",
+          "projects": "projects",
+          "restore": "Restore",
+          "delete": "Delete",
+
+          "distinct": "distinct",
+          "city": "city",
+          "country": "country",
+          "spaces": "spaces",
+          "property types": "property types",
+          "platforms": "platforms",
+          "created at": "created at",
           "here's a list of your case studies.": "Here's a list of your case studies.",
           "case studies": "Case Studies",
           "create case study": "Create Case Study",
@@ -95,6 +110,15 @@
 
           "cases": {
             "case": {
+              "it's project is deleted, once you restore it all will be editable.": "it's project is deleted, once you restore it all will be editable.",
+              "oops, no such case study.": "oops, no such case study.",
+              "you have not created you case study yet.": "you have not created you case study yet.",
+              "projects": "projects",
+              "restore": "Restore",
+              "delete": "Delete",
+              "warning!": "warning!",
+              "oops, no posts.": "oops, no posts.",
+              "you have not created you posts yet.": "you have not created you posts yet.",
               "case study content": "Case Study Content",
               "target audience": "Target Audience",
               "pros": "Pros",
@@ -103,7 +127,18 @@
               "navigate to get what you want.": "Navigate to get what you want.",
               "create posts": "Create Posts",
               "posts": {
-                "posts": "Posts"
+                "posts": "Posts",
+                "oops, no posts.": "oops, no posts.",
+                "you have not created you posts yet.": "you have not created you posts yet.",
+                "post": {
+                  "it's project or case study is deleted, once you restore it all will be editable.": "it's project or case study is deleted, once you restore it all will be editable.",
+                  "oops, no such post.": "oops, no such post.",
+                  "you have not created you post yet.": "you have not created you post yet.",
+                  "projects": "projects",
+                  "restore": "Restore",
+                  "delete": "Delete",
+                  "warning!": "warning!"
+                }
               }
             },
             "table": {
@@ -121,6 +156,13 @@
           },
           "properties": {
             "properties": "Properties",
+            "oops, no such property.": "oops, no such property.",
+            "you have not created you property yet.": "you have not created you property yet.",
+            "projects": "projects",
+            "it's project is deleted, once you restore it all will be editable.": "it's project is deleted, once you restore it all will be editable.",
+            "warning!": "warning!",
+            "restore": "Restore",
+            "delete": "Delete",
             "table": {
               "name": "Name",
               "units": "Units",
@@ -369,6 +411,8 @@
     "save changes": "Save Changes",
     "post information": "Post Information",
     "update image": "Update Image",
+    "restore": "Restore",
+    "delete": "Delete",
     "this step is essential for informing patients about the treatments available at your image.": "this step is essential for informing patients about the treatments available at your image."
   },
   "post-update-schedule-button": {
@@ -493,5 +537,16 @@
     "discard": "Discard",
     "save changes": "Save Changes",
     "this information will be used to create your public profile and facilitate communication with patients and colleagues.": "this information will be used to create your public profile and facilitate communication with patients and colleagues."
+  },
+  "constants": {
+    "days": [
+      { "value": "SUN", "label": "SUN" },
+      { "value": "MON", "label": "MON" },
+      { "value": "TUE", "label": "TUE" },
+      { "value": "WED", "label": "WED" },
+      { "value": "THU", "label": "THU" },
+      { "value": "FRI", "label": "FRI" },
+      { "value": "SAT", "label": "SAT" }
+    ]
   }
 }

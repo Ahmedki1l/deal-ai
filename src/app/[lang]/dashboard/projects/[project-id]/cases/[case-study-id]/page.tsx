@@ -65,9 +65,6 @@ export default async function CaseStudy({
     include: { posts: { include: { image: true } }, project: true },
     where: {
       id: caseStudyId,
-      project: {
-        deletedAt: null,
-      },
     },
   });
 

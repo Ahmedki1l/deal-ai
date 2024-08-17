@@ -20,12 +20,9 @@ export default async function Calender({ params: { lang } }: CalenderProps) {
   const posts = await db.post.findMany({
     include: { image: true },
     where: {
-      deletedAt: null,
       caseStudy: {
-        deletedAt: null,
         project: {
           userId: user?.["id"],
-          deletedAt: null,
         },
       },
     },
@@ -52,7 +49,7 @@ export default async function Calender({ params: { lang } }: CalenderProps) {
         </div>
       </div>
 
-      <Scheduler lang={lang} posts={posts} />
+      <Scheduler dic={dic} posts={posts} />
     </div>
   );
 }

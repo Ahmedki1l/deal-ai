@@ -12,10 +12,13 @@ export const imageSchema = z.object({
   id: z.string("id"),
   src: z.string("src"),
   prompt: z.string("prompt"),
+
+  deletedAt: z.date("deletedAt"),
 });
 
 export const imageCreateSchema = imageSchema.omit({
   id: true,
+  deletedAt: true,
 });
 export const imageUpdateSchema = imageSchema;
 export const imageUpdateFormSchema = z
@@ -44,3 +47,10 @@ export const imageGenerateSchema = imageSchema.pick({
 });
 
 export const imageDeleteSchema = imageSchema.pick({ id: true });
+export const imageBinSchema = imageSchema.pick({
+  id: true,
+  deletedAt: true,
+});
+export const imageRestoreSchema = imageSchema.pick({
+  id: true,
+});

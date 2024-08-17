@@ -8,6 +8,7 @@ import {
   ZodError,
 } from "@/lib/exceptions";
 import {
+  postBinSchema,
   postCreateSchema,
   postDeleteSchema,
   postSchema,
@@ -230,7 +231,7 @@ export async function createPost(
 export async function updatePost({
   id,
   ...data
-}: z.infer<typeof postUpdateSchema> & Pick<z.infer<typeof postSchema>, "id">) {
+}: z.infer<typeof postUpdateSchema>) {
   try {
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
@@ -266,6 +267,7 @@ export async function updatePostFeature({
   | typeof postUpdateContentSchema
   | typeof postUpdateImageSchema
   | typeof postUpdateScheduleSchema
+  | typeof postBinSchema
 > &
   Pick<z.infer<typeof postSchema>, "id">) {
   try {

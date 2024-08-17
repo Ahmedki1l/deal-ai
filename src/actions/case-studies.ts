@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { getAuth } from "@/lib/auth";
 import { RequiresLoginError, ZodError } from "@/lib/exceptions";
 import {
+  caseStudyBinSchema,
   caseStudyCreateSchema,
   caseStudyDeleteSchema,
   caseStudyUpdateSchema,
@@ -121,7 +122,7 @@ export async function createCaseStudy(
 export async function updateCaseStudy({
   id,
   ...data
-}: z.infer<typeof caseStudyUpdateSchema>) {
+}: z.infer<typeof caseStudyUpdateSchema | typeof caseStudyBinSchema>) {
   try {
     const { user } = await getAuth();
 

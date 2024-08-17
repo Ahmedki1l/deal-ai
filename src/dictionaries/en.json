@@ -76,8 +76,8 @@
           "posts": "Posts",
           "platforms": "Platforms",
           "edit": "Edit",
-          "restore": "Restore",
           "delete": "Delete",
+          "restore": "Restore",
           "deletedAt": "Deleted At"
         },
         "project": {
@@ -108,7 +108,9 @@
               "posts": "Posts",
               "platforms": "Platforms",
               "edit": "Edit",
-              "delete": "Delete"
+              "delete": "Delete",
+              "restore": "Restore",
+              "deletedAt": "Deleted At"
             }
           },
           "properties": {
@@ -127,7 +129,9 @@
               "pool": "pool",
               "view": "view",
               "edit": "Edit",
-              "delete": "Delete"
+              "delete": "Delete",
+              "restore": "Restore",
+              "deletedAt": "Deleted At"
             }
           }
         }
@@ -185,6 +189,12 @@
   },
   "back-button": { "back": "back" },
 
+  "case-study-bin-button": {
+    "deleted successfully.": "deleted successfully.",
+    "delete": "Delete",
+    "delete case study": "Delete Case Study",
+    "this step is essential for informing patients about the treatments available at your case study.": "this step is essential for informing patients about the treatments available at your case study."
+  },
   "case-study-create-button": {
     "created successfully.": "created successfully.",
     "submit": "Submit",
@@ -220,6 +230,12 @@
       "label": "Cons",
       "describe your case study's cons": "describe your case study's cons"
     }
+  },
+  "case-study-restore-button": {
+    "restored successfully.": "restored successfully.",
+    "restore": "Restore",
+    "restore case study": "Restore Case Study",
+    "this step is essential for informing patients about the treatments available at your case study.": "this step is essential for informing patients about the treatments available at your case study."
   },
   "case-study-update-form": {
     "updated successfully.": "updated successfully.",
@@ -282,6 +298,12 @@
     "de": "Deautch (DE)"
   },
 
+  "post-bin-button": {
+    "deleted successfully.": "deleted successfully.",
+    "delete": "Delete",
+    "delete post": "Delete Post",
+    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your post."
+  },
   "post-create-button": {
     "created successfully.": "created successfully.",
     "submit": "Submit",
@@ -320,6 +342,12 @@
     "postAt": {
       "label": "Post At"
     }
+  },
+  "post-restore-button": {
+    "restored successfully.": "restored successfully.",
+    "restore": "Restore",
+    "restore post": "Restore Post",
+    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your post."
   },
   "post-update-content-button": {
     "content updated successfully.": "content updated successfully.",
@@ -393,6 +421,12 @@
     "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
   },
 
+  "property-bin-button": {
+    "deleted successfully.": "deleted successfully.",
+    "delete": "Delete",
+    "delete property": "Delete Property",
+    "this step is essential for informing patients about the treatments available at your property.": "this step is essential for informing patients about the treatments available at your property."
+  },
   "property-create-button": {
     "created successfully.": "created successfully.",
     "submit": "Submit",
@@ -421,7 +455,12 @@
     "pool": { "label": "Pool" },
     "view": { "label": "View" }
   },
-
+  "property-restore-button": {
+    "restored successfully.": "restored successfully.",
+    "restore": "Restore",
+    "restore property": "Restore Property",
+    "this step is essential for informing patients about the treatments available at your property.": "this step is essential for informing patients about the treatments available at your property."
+  },
   "user-form": {
     "name": {
       "label": "Full Name"

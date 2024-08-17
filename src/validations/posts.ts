@@ -18,6 +18,8 @@ export const postSchema = z.object({
   platform: z.enum(platformsArr),
   postAt: z.date("post at"),
 
+  deletedAt: z.date("deletedAt"),
+
   // others
   image: imageSchema,
 });
@@ -26,12 +28,14 @@ export const postCreateSchema = postSchema.omit({
   id: true,
   imageId: true,
   image: true,
+  deletedAt: true,
 });
 export const postUpdateSchema = postSchema
   .omit({
     caseStudyId: true,
     imageId: true,
     image: true,
+    deletedAt: true,
   })
   .and(
     z.object({
@@ -53,3 +57,10 @@ export const postUpdateScheduleSchema = postSchema.pick({
 });
 
 export const postDeleteSchema = postSchema.pick({ id: true });
+export const postBinSchema = postSchema.pick({
+  id: true,
+  deletedAt: true,
+});
+export const postRestoreSchema = postSchema.pick({
+  id: true,
+});

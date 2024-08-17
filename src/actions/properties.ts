@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { getAuth } from "@/lib/auth";
 import { RequiresLoginError, ZodError } from "@/lib/exceptions";
 import {
+  propertyBinSchema,
   propertyCreateFormSchema,
   propertyCreateSchema,
   propertyDeleteSchema,
@@ -50,7 +51,7 @@ export async function createProperty(
 export async function updateProperty({
   id,
   ...data
-}: z.infer<typeof propertyUpdateSchema>) {
+}: z.infer<typeof propertyUpdateSchema | typeof propertyBinSchema>) {
   try {
     const { user } = await getAuth();
 

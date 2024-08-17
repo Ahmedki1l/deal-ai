@@ -8,6 +8,7 @@ import {
   ZodError,
 } from "@/lib/exceptions";
 import {
+  imageBinSchema,
   imageCreateSchema,
   imageDeleteSchema,
   imageGenerateSchema,
@@ -41,7 +42,7 @@ export async function createImage(data: z.infer<typeof imageCreateSchema>) {
 export async function updateImage({
   id,
   ...data
-}: z.infer<typeof imageUpdateSchema>) {
+}: z.infer<typeof imageUpdateSchema | typeof imageBinSchema>) {
   try {
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
@@ -69,7 +70,7 @@ export async function regenerateImagePrompt({
   try {
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
-    
+
     //defaults
     const domain = process.env.NEXT_PUBLIC_AI_API;
 
@@ -77,9 +78,9 @@ export async function regenerateImagePrompt({
 
     const enhanced_prompt_response = await fetch(prompt_enhancer_endpoint, {
       method: "POST",
-      headers: {"content-Type": "application/json"},
-      body: JSON.stringify({input: data.prompt}),
-    }).then((r)=>r?.json());
+      headers: { "content-Type": "application/json" },
+      body: JSON.stringify({ input: data.prompt }),
+    }).then((r) => r?.json());
 
     console.log(enhanced_prompt_response);
 
@@ -87,7 +88,7 @@ export async function regenerateImagePrompt({
       input: `you must adjust this prompt to be only 1000 characters long at max: ${enhanced_prompt_response.prompt}`,
     };
 
-    console.log("adjusted image request: ", adjusted_image_prompt)
+    console.log("adjusted image request: ", adjusted_image_prompt);
 
     const prompt_generator_endpoint = domain + `/en/prompt-generator`;
     const adjusted_image_response = await fetch(prompt_generator_endpoint, {
@@ -115,7 +116,7 @@ export async function generateImage({
   try {
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
-    
+
     //defaults
     const domain = process.env.NEXT_PUBLIC_AI_API;
 
@@ -123,9 +124,9 @@ export async function generateImage({
 
     const image_generator_response = await fetch(image_generator_endpoint, {
       method: "POST",
-      headers: {"content-Type": "application/json"},
-      body: JSON.stringify({input: data.prompt}),
-    }).then((r)=>r?.json());
+      headers: { "content-Type": "application/json" },
+      body: JSON.stringify({ input: data.prompt }),
+    }).then((r) => r?.json());
 
     console.log(image_generator_response);
 

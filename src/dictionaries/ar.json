@@ -76,8 +76,9 @@
           "posts": "المنشورات",
           "platforms": "المنصات",
           "edit": "تعديل",
+          "delete": "حذف",
           "restore": "إعادة",
-          "delete": "حذف"
+          "deletedAt": "وقت الحذف"
         },
         "project": {
           "here's a list of your case studies.": "إليك قائمة بدراسات الحالة الخاصة بك.",
@@ -107,7 +108,9 @@
               "posts": "المنشورات",
               "platforms": "المنصات",
               "edit": "تعديل",
-              "delete": "حذف"
+              "delete": "حذف",
+              "restore": "إعادة",
+              "deletedAt": "وقت الحذف"
             }
           },
           "properties": {
@@ -126,7 +129,9 @@
               "pool": "مسبح",
               "view": "عرض",
               "edit": "تعديل",
-              "delete": "حذف"
+              "delete": "حذف",
+              "restore": "إعادة",
+              "deletedAt": "وقت الحذف"
             }
           }
         }

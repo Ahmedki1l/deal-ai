@@ -16,10 +16,15 @@ export const caseStudySchema = z.object(
     hashtags: z.string("hashtags"),
     prompt: z.string("prompt").nullable().optional(),
     caseStudyResponse: z.string("caseStudyResponse").nullable().optional(),
+
+    deletedAt: z.date("deletedAt"),
   },
 );
 
-export const caseStudyCreateSchema = caseStudySchema.omit({ id: true });
+export const caseStudyCreateSchema = caseStudySchema.omit({
+  id: true,
+  deletedAt: true,
+});
 export const caseStudyCreateFormSchema = caseStudyCreateSchema
   .omit({
     refImages: true,
@@ -42,7 +47,10 @@ export const caseStudyCreateFormSchema = caseStudyCreateSchema
     }),
   );
 
-export const caseStudyUpdateSchema = caseStudySchema.omit({ projectId: true });
+export const caseStudyUpdateSchema = caseStudySchema.omit({
+  projectId: true,
+  deletedAt: true,
+});
 export const caseStudyUpdateFormSchema = caseStudyUpdateSchema
   .omit({ refImages: true })
   .and(
@@ -64,3 +72,10 @@ export const caseStudyUpdateFormSchema = caseStudyUpdateSchema
   );
 
 export const caseStudyDeleteSchema = caseStudySchema.pick({ id: true });
+export const caseStudyBinSchema = caseStudySchema.pick({
+  id: true,
+  deletedAt: true,
+});
+export const caseStudyRestoreSchema = caseStudySchema.pick({
+  id: true,
+});

@@ -19,11 +19,14 @@ export const propertySchema = z.object(
     garden: z.string("garden").optional(),
     pool: z.string("hashtags").optional(),
     view: z.string("view").optional(),
+
+    deletedAt: z.date("deletedAt"),
   },
 );
 
 export const propertyCreateSchema = propertySchema.omit({
   id: true,
+  deletedAt: true,
 });
 export const propertyCreateFormSchema = z.object({
   types: z.array(
@@ -36,5 +39,13 @@ export const propertyCreateFormSchema = z.object({
 
 export const propertyUpdateSchema = propertySchema.omit({
   projectId: true,
+  deletedAt: true,
 });
 export const propertyDeleteSchema = propertySchema.pick({ id: true });
+export const propertyBinSchema = propertySchema.pick({
+  id: true,
+  deletedAt: true,
+});
+export const propertyRestoreSchema = propertySchema.pick({
+  id: true,
+});

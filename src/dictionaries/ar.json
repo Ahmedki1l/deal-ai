@@ -36,6 +36,12 @@
               "value": "/dashboard/projects",
               "label": "مشاريعي",
               "icon": "analytics"
+            },
+            {
+              "segment": "calender",
+              "value": "/dashboard/calender",
+              "label": "التقويم",
+              "icon": "calender"
             }
           ],
           [

@@ -20,16 +20,19 @@ export default async function Calender({ params: { lang } }: CalenderProps) {
   const posts = await db.post.findMany({
     include: { image: true },
     where: {
+      deletedAt: null,
       caseStudy: {
+        deletedAt: null,
         project: {
           userId: user?.["id"],
+          deletedAt: null,
         },
       },
     },
   });
 
   return (
-    <div className="container flex-1 py-6">
+    <div className="container flex min-h-screen flex-1 flex-col py-6">
       <div className="flex flex-col gap-5">
         <div className="mb-6 flex items-center justify-between">
           <div>
@@ -47,8 +50,9 @@ export default async function Calender({ params: { lang } }: CalenderProps) {
             </ProjectCreateButton> */}
           </div>
         </div>
-        <Scheduler lang={lang} />
       </div>
+
+      <Scheduler lang={lang} posts={posts} />
     </div>
   );
 }

@@ -36,6 +36,12 @@
               "value": "/dashboard/projects",
               "label": "My Projects",
               "icon": "analytics"
+            },
+            {
+              "segment": "calender",
+              "value": "/dashboard/calender",
+              "label": "Calender",
+              "icon": "calender"
             }
           ],
           [

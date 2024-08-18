@@ -17,12 +17,12 @@ model User {
   id       String    @id @map("_id")
   sessions Session[]
 
-  name     String
-  email    String  @unique
-  image    String?
-  password String? // creadentials
-  googleId String? @unique @map("google-id")
-
+  name      String
+  email     String   @unique
+  image     String?
+  password  String? // creadentials
+  googleId  String?  @map("google-id")
+  // @unique 
   createdAt DateTime @default(now())
 
   projects Project[]

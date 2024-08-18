@@ -51,8 +51,9 @@ model Platform {
   id        String @id @map("_id")
   projectId String @map("project-id")
 
-  value    PLATFORM
-  clientId String
+  value     PLATFORM
+  clientId  String
+  urn       String?
 
   project Project @relation(references: [id], fields: [projectId], onDelete: Cascade)
 

@@ -21,6 +21,7 @@ export const projectSchema = z.object(
         z.object({
           value: z.enum(platformsArr),
           clientId: z.string("client id"),
+          urn: z.string("urn").optional(),
         }),
       )
       .min(1, "choose one platform at least."),

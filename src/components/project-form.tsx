@@ -240,12 +240,12 @@ export const ProjectForm = {
     
       toast.promise(
         new Promise((resolve, reject) => {
+          let receiveMessage: (event: MessageEvent) => void;
           try {
             const platform = form.getValues(`platforms.${i}`);
             const domain = process.env.NEXT_PUBLIC_AI_API;
     
             let authWindow: Window | null = null;
-            let receiveMessage: (event: MessageEvent) => void;
     
             if (platform.value === "TWITTER") {
               console.log("Opening Twitter sign-in in a new window");
@@ -313,7 +313,9 @@ export const ProjectForm = {
               };
             } else {
               // Handle other platforms if needed
-              resolve({ clientId: "1" });
+              receiveMessage = (event: MessageEvent) => {
+                resolve({ clientId: "1" });
+              };
             }
     
             // Listen for the message event

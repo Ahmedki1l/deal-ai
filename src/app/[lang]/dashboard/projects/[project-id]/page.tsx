@@ -93,15 +93,10 @@ export default async function Project({
       <div className="flex flex-col gap-5">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <BackButton
-              dic={dic}
-              children={
-                <>
-                  <Icons.chevronLeft />
-                  back to all projects
-                </>
-              }
-            />
+            <BackButton dic={dic}>
+              <Icons.chevronLeft />
+              back to all projects
+            </BackButton>
           </div>
 
           <div>

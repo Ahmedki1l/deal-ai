@@ -70,7 +70,11 @@ export default async function CaseStudy({
         },
         where: { deletedAt: null },
       },
-      project: true,
+      project: {
+        include: {
+          platforms: true,
+        },
+      },
     },
     where: { id: caseStudyId },
   });

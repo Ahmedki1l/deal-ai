@@ -41,7 +41,11 @@ export default async function CaseStudy({
   const post = await db.post.findFirst({
     include: {
       image: { where: { deletedAt: null } },
-      caseStudy: { include: { project: true } },
+      caseStudy: {
+        include: {
+          project: true,
+        },
+      },
     },
     where: {
       id: postId,

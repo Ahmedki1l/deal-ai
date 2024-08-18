@@ -14,7 +14,7 @@ import { postCreateSchema } from "@/validations/posts";
 import { createPost } from "@/actions/posts";
 import { PostForm } from "@/components/post-form";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
-import { CaseStudy } from "@prisma/client";
+import { CaseStudy, Platform } from "@prisma/client";
 import { Project } from "@prisma/client";
 import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
@@ -22,7 +22,7 @@ import { useLocale } from "@/hooks/use-locale";
 
 type PostCreateButtonProps = {
   caseStudy: CaseStudy;
-  project: Project;
+  project: Project & { platforms: Platform[] };
 } & Omit<DialogResponsiveProps, "open" | "setOpen"> &
   Dictionary["post-create-button"] &
   Dictionary["post-form"] &

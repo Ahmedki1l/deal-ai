@@ -32,7 +32,6 @@ import { toast } from "sonner";
 import { t } from "@/lib/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { useRouter } from "next/navigation";
-import { connectSocialAccount } from "@/actions/projects";
 
 type ProjectFormProps = {
   loading: boolean;

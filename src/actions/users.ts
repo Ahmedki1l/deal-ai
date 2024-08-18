@@ -60,8 +60,8 @@ export async function signUpWithPassword(
     const locale = await getLocale();
     return redirect(`/${locale}/login`);
   } catch (error: any) {
-    if (isRedirectError(error)) throw error;
-    throw Error(error?.["message"] ?? "an error occured, try again.");
+    if (isRedirectError(error)) return { error };
+    return { error: error?.["message"] ?? "an error occured, try again." };
   }
 }
 
@@ -98,8 +98,8 @@ export async function signInWithPassword(
     const locale = await getLocale();
     return redirect(`/${locale}/dashboard`);
   } catch (error: any) {
-    if (isRedirectError(error)) throw error;
-    throw Error(error?.["message"] ?? "an error occured, try again.");
+    if (isRedirectError(error)) return { error };
+    return { error: error?.["message"] ?? "an error occured, try again." };
   }
 }
 

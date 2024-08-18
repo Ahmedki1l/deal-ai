@@ -230,16 +230,17 @@ export const ProjectForm = {
   }) {
     const lang = useLocale();
     const router = useRouter();
-    const [connectLoading, setConnectLoading] = useState<boolean>(false);
+    const [connectLoading, setConnectLoading] = useState<number | null>(null);
+
     const { fields, remove, append } = useFieldArray({
       name: "platforms",
       control: form?.["control"],
     });
 
     function connectSocial(i: number) {
-      setConnectLoading(true);
+      setConnectLoading(i);
       toast.promise(connectSocialAccount(), {
-        finally: () => setConnectLoading(false),
+        finally: () => setConnectLoading(null),
         error: async (err) => {
           const msg = await t(err?.["message"], lang);
           return msg;
@@ -282,7 +283,7 @@ export const ProjectForm = {
                         defaultValue={field.value}
                         disabled={
                           loading ||
-                          connectLoading ||
+                          connectLoading === i ||
                           !!form?.getValues(`platforms.${i}.clientId`)
                         }
                       >
@@ -328,11 +329,11 @@ export const ProjectForm = {
               onClick={() => connectSocial(i)}
               disabled={
                 loading ||
-                connectLoading ||
+                connectLoading === i ||
                 !!form?.getValues(`platforms.${i}.clientId`)
               }
             >
-              {connectLoading && <Icons.spinner />}
+              {connectLoading === i && <Icons.spinner />}
               {form?.getValues(`platforms.${i}.clientId`)
                 ? c?.["connected"]
                 : c?.["connect"]}
@@ -343,7 +344,7 @@ export const ProjectForm = {
               variant="outline"
               size="icon"
               onClick={() => remove(i)}
-              disabled={loading || connectLoading}
+              disabled={loading || connectLoading === i}
             >
               <Icons.x />
             </Button>

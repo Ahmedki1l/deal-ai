@@ -6,6 +6,7 @@ export const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
   "image/gif",
   "image/webp",
+  "image/avif",
 ];
 
 export const imageSchema = z.object({

@@ -12,6 +12,7 @@ import {
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
+import { endOfDay } from "date-fns";
 
 export async function createProject({
   types,
@@ -134,20 +135,58 @@ export async function deleteProject({
   }
 }
 
-export async function connectSocialAccount() {
-  try {
-    const user = await getAuth();
-    if (!user) throw new RequiresLoginError();
+// export async function connectSocialAccount(platform) {
+//   try {
+//     const user = await getAuth();
+//     if (!user) throw new RequiresLoginError();
+//     console.log("attempting to connect social media");
 
-    // Connection Logoic
+//     //defaults
+//     const domain = process.env.NEXT_PUBLIC_AI_API;
 
-    revalidatePath("/", "layout");
-    return { clientId: "1" };
-  } catch (error: any) {
-    console.log(error?.["message"]);
-    if (error instanceof z.ZodError) new ZodError(error);
-    throw Error(
-      error?.["message"] ?? "your project was not updated. Please try again.",
-    );
-  }
-}
+//     console.log(platform);
+
+//     if(platform.value == "TWITTER"){
+//       console.log("Opening Twitter sign-in in a new window");
+
+//       const width = 600;
+//       const height = 700;
+//       const left = window.screen.width / 2 - width / 2;
+//       const top = window.screen.height / 2 - height / 2;
+
+//       // Open the Twitter login page in a new window
+//       const authWindow = window.open(
+//         `${domain}/twitter-login`,
+//         'Twitter Login',
+//         `width=${width},height=${height},top=${top},left=${left}`
+//       );
+
+//       // Polling or listening to the message from the new window
+//       const receiveMessage = (event) => {
+//         if (event.origin !== domain) return; // Ensure the message comes from your domain
+//         if (event.data.type === 'TWITTER_AUTH_SUCCESS') {
+//           console.log("Twitter access token: ", event.data.accessToken);
+
+//           // You can now use the access token or store it as needed
+
+//           // Close the window after successful authentication
+//           authWindow.close();
+//         }
+//       };
+
+//       window.addEventListener('message', receiveMessage, false);
+
+//       return; // Prevent the function from proceeding further
+
+//     }
+
+
+//     return { clientId: "1" };
+//   } catch (error: any) {
+//     console.log(error?.["message"]);
+//     if (error instanceof z.ZodError) new ZodError(error);
+//     throw Error(
+//       error?.["message"] ?? "your project was not updated. Please try again.",
+//     );
+//   }
+// }

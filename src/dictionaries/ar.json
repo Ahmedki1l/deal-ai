@@ -1,16 +1,16 @@
 {
   "site": {
     "name": "Deal Ai",
-    "description": "Our platform offers advanced social media automation services using cutting-edge AI technology. We assist clients in executing fully integrated marketing campaigns tailored specifically for real estate projects. Through data analysis and market forecasting, we provide innovative solutions that enhance targeting, increase content engagement, and boost the performance of marketing campaigns. Our goal is to empower clients to reach their target audience more efficiently, increase real estate sales strategically, while reducing costs and accelerating the achievement of results."
+    "description": "موقعنا يقدم خدمات متقدمة لتشغيل الأتمتة على منصات التواصل الاجتماعي باستخدام تقنيات الذكاء الاصطناعي المتطورة. نحن نساعد العملاء في تنفيذ حملات تسويقية متكاملة وموجهة خصيصاً للمشاريع العقارية. من خلال تحليل البيانات وتوقعات السوق، نوفر حلولاً مبتكرة تساعد على تحسين الاستهداف، وزيادة نسبة التفاعل مع المحتوى، ورفع مستوى أداء الحملات التسويقية. هدفنا هو تمكين العملاء من الوصول إلى جمهورهم المستهدف بكفاءة أعلى، وزيادة مبيعات العقارات بشكل استراتيجي، مع تقليل التكاليف وتسريع عملية تحقيق النتائج."
   },
   "auth": {
     "login": {
-      "don't have an account? sign up now": "Don't have an account? Sign Up now",
-      "or continue with": "or continue with",
-      "sign in with email": "Sign In with Email",
-      "sign in with google": "Sign In with Google",
-      "sign in with facebook": "Sign In with Facebook",
-      "forgot password": "Forgot Password?"
+      "don't have an account? sign up now": "ليس لديك حساب؟ سجل الآن",
+      "or continue with": "أو تابع باستخدام",
+      "sign in with email": "تسجيل الدخول بالبريد الإلكتروني",
+      "sign in with google": "تسجيل الدخول بواسطة جوجل",
+      "sign in with facebook": "تسجيل الدخول بواسطة فيسبوك",
+      "forgot password": "هل نسيت كلمة المرور؟"
     },
     "register": {
       "already have an account? sign in.": "Already have an account? Sign In.",
@@ -455,10 +455,7 @@
     "spaces": { "label": "Spaces" },
     "platforms": {
       "label": "Platforms",
-      "select your platform": "Select your platform",
-      "connected successfully.": "connected successfully.",
-      "connect": "connect",
-      "connected": "connected"
+      "select your platform": "Select your platform"
     }
   },
   "project-restore-button": {

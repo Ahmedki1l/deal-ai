@@ -51,6 +51,7 @@ export function ProjectCreateButton({
   const [open, setOpen] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof projectCreateFormSchema>>({
+    mode: "onSubmit",
     resolver: zodResolver(projectCreateFormSchema),
     defaultValues: { userId: user?.["id"] },
   });
@@ -69,7 +70,6 @@ export function ProjectCreateButton({
       },
       success: () => {
         router.refresh();
-        console.log(data);
         form.reset();
         setOpen(false);
         return c?.["created successfully."];
@@ -96,26 +96,25 @@ export function ProjectCreateButton({
         <div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-              <div className="grid gap-4 grid-cols-3">
-                <div className="space-y-2">
-                  <ProjectForm.title
-                    dic={dic}
-                    form={form as any}
-                    loading={loading}
-                  />
-                  <ProjectForm.description
-                    dic={dic}
-                    form={form as any}
-                    loading={loading}
-                  />
-                </div>
-                <div className="grow bg-muted col-span-2">
-                  <ProjectForm.map
-                    dic={dic}
-                    form={form as any}
-                    loading={loading}
-                  />
-                </div>
+              <div className="space-y-2">
+                <ProjectForm.title
+                  dic={dic}
+                  form={form as any}
+                  loading={loading}
+                />
+                <ProjectForm.description
+                  dic={dic}
+                  form={form as any}
+                  loading={loading}
+                />
+              </div>
+
+              <div className="bg-muted">
+                <ProjectForm.map
+                  dic={dic}
+                  form={form as any}
+                  loading={loading}
+                />
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
@@ -123,7 +122,7 @@ export function ProjectCreateButton({
                   dic={dic}
                   form={form as any}
                   loading={loading}
-                />  
+                />
                 <ProjectForm.city
                   dic={dic}
                   form={form as any}
@@ -150,6 +149,7 @@ export function ProjectCreateButton({
                 <div className="flex items-center justify-between gap-4">
                   <Label>{c?.["type of assets"]}</Label>
                   <Button
+                    type="button"
                     size="icon"
                     onClick={() =>
                       // @ts-ignore
@@ -183,6 +183,7 @@ export function ProjectCreateButton({
 
                         {form.watch(`types.${i}.value`) && (
                           <Button
+                            type="button"
                             size="icon"
                             onClick={() =>
                               // @ts-ignore
@@ -207,6 +208,7 @@ export function ProjectCreateButton({
                                   {c?.["unit"]} {j + 1}
                                 </CardTitle>
                                 {/* <Button
+                  type="button"
                                   variant="ghost"
                                   size="icon"
                                   onClick={() => {
@@ -277,7 +279,7 @@ export function ProjectCreateButton({
                                 loading={loading}
                               />
 
-                              <PropertyForm.recipients
+                              <PropertyForm.receptions
                                 dic={dic}
                                 typeIndex={i}
                                 propertyIndex={j}
@@ -312,6 +314,7 @@ export function ProjectCreateButton({
                             </CardContent>
                             {/* <CardFooter>
                             <Button
+                  type="button"
                               size="icon"
                               onClick={() => {
                                 // @ts-ignore

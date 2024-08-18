@@ -41,11 +41,11 @@ export function ProjectUpdateForm({
     defaultValues: {
       ...project,
       description: project?.["description"] ?? undefined,
-      platforms: project?.["platforms"]
-        ? project?.["platforms"]?.map((p) => ({
-            value: p,
-          }))
-        : [],
+      // platforms: project?.["platforms"]
+      //   ? project?.["platforms"]?.map((p) => ({
+      //       value: p,
+      //     }))
+      //   : [],
       propertyTypes: project?.["propertyTypes"]
         ? project?.["propertyTypes"]?.map((p) => ({
             value: p,
@@ -59,7 +59,7 @@ export function ProjectUpdateForm({
     toast.promise(
       updateProject({
         ...data,
-        platforms: data?.["platforms"].map((e) => e?.["value"]),
+        // platforms: data?.["platforms"].map((e) => e?.["value"]),
         propertyTypes: data?.["propertyTypes"].map((e) => e?.["value"]),
       }),
       {
@@ -132,13 +132,11 @@ export function ProjectUpdateForm({
                   loading={loading}
                 />
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <ProjectForm.platforms
-                  dic={dic}
-                  form={form as any}
-                  loading={loading}
-                />
-              </div>
+              {/* <ProjectForm.platforms
+                dic={dic}
+                form={form as any}
+                loading={loading}
+              /> */}
             </form>
           </Form>
         </>

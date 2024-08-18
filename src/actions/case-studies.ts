@@ -12,7 +12,7 @@ import {
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
-import { Project } from "@prisma/client";
+import { Platform, Project } from "@prisma/client";
 
 // Function to check if a string contains Arabic characters
 function containsArabic(text: string) {
@@ -22,7 +22,7 @@ function containsArabic(text: string) {
 
 export async function createCaseStudy(
   data: z.infer<typeof caseStudyCreateSchema>,
-  project: Project,
+  project: Project & { platforms: Platform[] },
 ) {
   try {
     const { user } = await getAuth();
@@ -43,7 +43,7 @@ export async function createCaseStudy(
     let endpoint_language = "en";
 
     const prompt = {
-      input: `create a casestudy about ${actualProject?.title} ${actualProject?.["propertyTypes"]} located in: ${actualProject?.distinct}, ${actualProject?.city}, ${actualProject?.country}, which has a land space of: ${actualProject?.spaces}, ${actualProject?.description}. Create the Hashtags for ${project?.["platforms"]}. `,
+      input: `create a casestudy about ${actualProject?.title} ${actualProject?.["propertyTypes"]} located in: ${actualProject?.distinct}, ${actualProject?.city}, ${actualProject?.country}, which has a land space of: ${actualProject?.spaces}, ${actualProject?.description}. Create the Hashtags for ${project?.["platforms"]?.map((e) => e?.["value"])}. `,
     };
 
     if (containsArabic(prompt.input)) endpoint_language = "ar";
@@ -51,35 +51,33 @@ export async function createCaseStudy(
     actualProject?.properties.forEach((property) => {
       prompt.input +=
         "The availabel assets are: " +
-        property.units +
+        property?.units +
         ", assets type: " +
-        property.title +
+        property?.title +
         " " +
-        property.type +
+        property?.type +
         ", property spaces: " +
-        property.space +
+        property?.space +
         ", number of bedrooms: " +
-        property.rooms +
+        property?.rooms +
         ", number of bathrooms " +
-        property.bathrooms +
+        property?.bathrooms +
         ", number of Reception rooms: " +
-        property.recipients +
+        property?.receptions +
         ", finishing:  " +
-        property.finishing +
+        property?.finishing +
         ", floors: " +
-        property.floors;
-      prompt.input += property.garden
-        ? ", includes number of gardens: " + property.garden
+        property?.floors;
+      prompt.input += property?.garden
+        ? ", includes number of gardens: " + property?.garden
         : "";
-      prompt.input += property.pool
-        ? ", includes number of pools: " + property.pool
+      prompt.input += property?.pool
+        ? ", includes number of pools: " + property?.pool
         : "";
-      prompt.input += property.view
-        ? ", the view of the assets is: " + property.view
+      prompt.input += property?.view
+        ? ", the view of the assets is: " + property?.view
         : "";
     });
-
-    console.log(prompt);
 
     const endpoint =
       process.env.NEXT_PUBLIC_AI_API + `/${endpoint_language}/chat/casestudy`;

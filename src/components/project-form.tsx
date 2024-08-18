@@ -27,6 +27,12 @@ import {
 import { platforms } from "@/db/enums";
 import { Dictionary } from "@/types/locale";
 import { MapPicker } from "./map";
+import { useState } from "react";
+import { toast } from "sonner";
+import { t } from "@/lib/locale";
+import { useLocale } from "@/hooks/use-locale";
+import { useRouter } from "next/navigation";
+import { connectSocialAccount } from "@/actions/projects";
 
 type ProjectFormProps = {
   loading: boolean;
@@ -65,11 +71,11 @@ export const ProjectForm = {
       name="map"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{c?.["map"]?.["label"]}</FormLabel>
+          <FormLabel className="sr-only"> {c?.["map"]?.["label"]}</FormLabel>
           <FormControl>
             <MapPicker />
           </FormControl>
-          <FormMessage /> 
+          <FormMessage />
         </FormItem>
       )}
     />
@@ -104,7 +110,7 @@ export const ProjectForm = {
   }: ProjectFormProps) => (
     <FormField
       control={form.control}
-      name="distinct" 
+      name="distinct"
       render={({ field }) => (
         <FormItem>
           <FormLabel> {c?.["distinct"]?.["label"]}</FormLabel>
@@ -213,22 +219,45 @@ export const ProjectForm = {
   //   />
   // ),
   platforms: function Component({
-    dic: { "project-form": c },
+    dic: {
+      "project-form": { platforms: c },
+    },
     loading,
     form,
     limit,
   }: ProjectFormProps & {
     limit?: number;
   }) {
+    const lang = useLocale();
+    const router = useRouter();
+    const [connectLoading, setConnectLoading] = useState<boolean>(false);
     const { fields, remove, append } = useFieldArray({
       name: "platforms",
       control: form?.["control"],
     });
 
+    function connectSocial(i: number) {
+      setConnectLoading(true);
+      toast.promise(connectSocialAccount(), {
+        finally: () => setConnectLoading(false),
+        error: async (err) => {
+          const msg = await t(err?.["message"], lang);
+          return msg;
+        },
+        success: (data) => {
+          router.refresh();
+          console.log(data);
+          form.setValue(`platforms.${i}.clientId`, data?.["clientId"]);
+
+          return c?.["connected successfully."];
+        },
+      });
+    }
+
     return (
-      <div className="space-y-4"> 
+      <div className="space-y-4">
         <div className="flex items-center justify-between gap-4">
-          <FormLabel>{c?.["platforms"]?.["label"]}</FormLabel>
+          <FormLabel>{c?.["label"]}</FormLabel>
           <Button
             size="icon"
             // @ts-ignore
@@ -240,66 +269,85 @@ export const ProjectForm = {
         </div>
 
         {fields.map((field, i) => (
-          <FormField
-            control={form.control}
-            key={i}
-            name={`platforms.${i}.value`}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className="flex items-center justify-center gap-2">
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      disabled={loading}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder={
-                              c?.["platforms"]?.["select your platform"]
-                            }
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {platforms?.map((e, i) => {
-                          const Icon = Icons?.[e?.["icon"]] ?? null;
-                          return (
-                            <SelectItem
-                              key={i}
-                              value={e?.["value"]}
-                              disabled={
-                                !!form
-                                  ?.getValues("platforms")
-                                  ?.find((p) => p?.["value"] === e?.["value"])
-                              }
-                              className="flex flex-row items-center gap-2"
-                            >
-                              {Icon && (
-                                <Icon className="inline-flex ltr:mr-2 rtl:ml-2" />
-                              )}
-                              <span>{e?.["label"]}</span>
-                            </SelectItem>
-                          );
-                        })}
-                      </SelectContent>
-                    </Select>
+          <div key={i} className="flex items-start gap-2">
+            <FormField
+              control={form.control}
+              name={`platforms.${i}.value`}
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <div className="flex items-center justify-center gap-2">
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        disabled={
+                          loading ||
+                          connectLoading ||
+                          !!form?.getValues(`platforms.${i}.clientId`)
+                        }
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={c?.["select your platform"]}
+                            />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {platforms?.map((e, i) => {
+                            const Icon = Icons?.[e?.["icon"]] ?? null;
+                            return (
+                              <SelectItem
+                                key={i}
+                                value={e?.["value"]}
+                                disabled={
+                                  !!form
+                                    ?.getValues("platforms")
+                                    ?.find((p) => p?.["value"] === e?.["value"])
+                                }
+                                className="flex flex-row items-center gap-2"
+                              >
+                                {Icon && (
+                                  <Icon className="inline-flex ltr:mr-2 rtl:ml-2" />
+                                )}
+                                <span>{e?.["label"]}</span>
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => remove(i)}
-                    >
-                      <Icons.x />
-                    </Button>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <Button
+              type="button"
+              onClick={() => connectSocial(i)}
+              disabled={
+                loading ||
+                connectLoading ||
+                !!form?.getValues(`platforms.${i}.clientId`)
+              }
+            >
+              {connectLoading && <Icons.spinner />}
+              {form?.getValues(`platforms.${i}.clientId`)
+                ? c?.["connected"]
+                : c?.["connect"]}
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => remove(i)}
+              disabled={loading || connectLoading}
+            >
+              <Icons.x />
+            </Button>
+          </div>
         ))}
       </div>
     );

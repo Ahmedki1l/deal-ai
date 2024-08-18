@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
-import { CaseStudy, Post, Project, Property } from "@prisma/client";
+import { CaseStudy, Platform, Post, Project, Property } from "@prisma/client";
 import { ProjectUpdateForm } from "@/components/project-update-form";
 import { Link } from "@/components/link";
 import { ProjectDeleteButton } from "@/components/project-delete-button";
@@ -23,6 +23,7 @@ import { ProjectBinButton } from "@/components/project-bin-button";
 type ColumnType = Project & {
   caseStudy: (CaseStudy & { posts: Post[] })[];
   properties: Property[];
+  platforms: Platform[];
 };
 
 type TableProps = {
@@ -195,7 +196,9 @@ export function Table({
             cell: ({ row: { original: r } }) => (
               <div className="flex items-center gap-2">
                 {r?.["platforms"]?.map((e, i) => {
-                  const p = platforms.find((p) => p?.["value"] === e);
+                  const p = platforms.find(
+                    (p) => p?.["value"] === e?.["value"],
+                  );
                   if (!p) return "---";
 
                   const Icon = Icons?.[p?.["icon"]] ?? null;

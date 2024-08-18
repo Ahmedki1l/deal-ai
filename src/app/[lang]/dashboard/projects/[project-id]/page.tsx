@@ -23,6 +23,8 @@ import { Icons } from "@/components/icons";
 import { Map } from "@/components/map";
 import { ProjectRestoreButton } from "@/components/project-restore-button";
 import { ProjectBinButton } from "@/components/project-bin-button";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { Separator } from "@/components/ui/separator";
 
 type ProjectProps = Readonly<{
   params: { "project-id": string } & LocaleProps;
@@ -40,6 +42,7 @@ export default async function Project({
         include: { posts: { where: { deletedAt: null } } },
         where: { deletedAt: null },
       },
+      platforms: true,
       properties: { where: { deletedAt: null } },
     },
     where: { id: projectId },
@@ -62,11 +65,59 @@ export default async function Project({
     );
 
   const projectDeleted = !!project?.["deletedAt"];
+  const detailsTable = [
+    { label: "Distinct", value: project?.["distinct"] },
+    { label: "City", value: project?.["city"] },
+    { label: "Country", value: project?.["country"] },
+    { label: "Spaces", value: project?.["spaces"] },
+    { label: "Property Types", value: project?.["propertyTypes"] },
+    {
+      label: "Platforms",
+      value: (
+        <div className="flex flex-1 items-center justify-end gap-2">
+          {project?.["platforms"]?.map((e, i) => {
+            const p = platforms.find((p) => p?.["value"] === e?.["value"]);
+            if (!p) return "---";
+
+            const Icon = Icons?.[p?.["icon"]] ?? null;
+
+            return <Icon key={i} />;
+          })}
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="container flex-1 py-6">
       <div className="flex flex-col gap-5">
-        <Breadcrumb>
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <BackButton
+              dic={dic}
+              children={
+                <>
+                  <Icons.chevronLeft />
+                  back to all projects
+                </>
+              }
+            />
+          </div>
+
+          <div>
+            {projectDeleted ? (
+              <ProjectRestoreButton dic={dic} asChild project={project}>
+                <Button variant="secondary">{c?.["restore"]}</Button>
+              </ProjectRestoreButton>
+            ) : (
+              <ProjectBinButton dic={dic} asChild project={project}>
+                <Button variant="destructive">{c?.["delete"]}</Button>
+              </ProjectBinButton>
+            )}
+          </div>
+        </div>
+
+        {/* <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href={`/${lang}/dashboard/projects`}>
@@ -79,7 +130,7 @@ export default async function Project({
               <BreadcrumbPage>{project?.["title"]}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
-        </Breadcrumb>
+        </Breadcrumb> */}
         <div className="mb-6 space-y-4">
           <div className="flex items-center justify-between">
             <div>
@@ -92,84 +143,33 @@ export default async function Project({
             </div>
 
             <div>
-              {projectDeleted ? (
-                <ProjectRestoreButton dic={dic} asChild project={project}>
-                  <Button variant="secondary">{c?.["restore"]}</Button>
-                </ProjectRestoreButton>
-              ) : (
-                <ProjectBinButton dic={dic} asChild project={project}>
-                  <Button variant="destructive">{c?.["delete"]}</Button>
-                </ProjectBinButton>
-              )}
+              <p className="text-muted-foreground">
+                {new Date(project?.["createdAt"])?.toDateString()}
+              </p>
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="flex flex-col justify-center">
-              <p className="text-muted-foreground">
-                <span className="font-semibold text-foreground">
-                  {c?.["distinct"]}:{" "}
-                </span>
-                {project?.["distinct"]}
-              </p>
+          <div className="grid gap-4 md:grid-cols-[0.8fr,1fr]">
+            <Table>
+              <TableBody>
+                {detailsTable?.map((e, i) => (
+                  <TableRow key={i}>
+                    <TableCell className="font-medium">
+                      {e?.["label"]}
+                    </TableCell>
+                    <TableCell className="text-right">{e?.["value"]}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
 
-              <p className="text-muted-foreground">
-                <span className="font-semibold text-foreground">
-                  {c?.["city"]}:{" "}
-                </span>
-                {project?.["city"]}
-              </p>
-
-              <p className="text-muted-foreground">
-                <span className="font-semibold text-foreground">
-                  {c?.["country"]}:{" "}
-                </span>
-                {project?.["country"]}
-              </p>
-
-              <p className="text-muted-foreground">
-                <span className="font-semibold text-foreground">
-                  {c?.["spaces"]}:{" "}
-                </span>
-                {project?.["spaces"]}
-              </p>
-
-              <p className="text-muted-foreground">
-                <span className="font-semibold text-foreground">
-                  {c?.["property types"]}:{" "}
-                </span>
-                {project?.["propertyTypes"].join(", ")}
-              </p>
-              <p className="flex items-center gap-2 text-muted-foreground">
-                <span className="font-semibold text-foreground">
-                  {c?.["platforms"]}:{" "}
-                </span>
-
-                <div className="flex items-center gap-2">
-                  {project?.["platforms"]?.map((e, i) => {
-                    const p = platforms.find((p) => p?.["value"] === e);
-                    if (!p) return "---";
-
-                    const Icon = Icons?.[p?.["icon"]] ?? null;
-
-                    return <Icon key={i} />;
-                  })}
-                </div>
-              </p>
-
-              <p className="text-muted-foreground">
-                <span className="font-semibold text-foreground">
-                  {c?.["created at"]}:{" "}
-                </span>
-                {new Date(project?.["createdAt"])?.toLocaleDateString()}
-              </p>
-            </div>
             <Map {...project} />
           </div>
         </div>
       </div>
 
-      <div className="space-y-10">
+      <Separator className="mb-12 mt-6" />
+      <div className="space-y-12">
         <div>
           <div className="flex flex-col gap-5">
             <div className="mb-6 flex items-center justify-between">

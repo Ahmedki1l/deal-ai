@@ -227,7 +227,7 @@ export function PropertyCreateButton({
                               loading={loading}
                             />
 
-                            <PropertyForm.recipients
+                            <PropertyForm.receptions
                               dic={dic}
                               typeIndex={i}
                               propertyIndex={j}

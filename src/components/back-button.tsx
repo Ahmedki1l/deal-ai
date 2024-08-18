@@ -14,10 +14,10 @@ export function BackButton({
 }: BackButtonProps) {
   const router = useRouter();
   return (
-    <Button onClick={() => router.back()} {...props}>
+    <Button variant="ghost" onClick={() => router.back()} {...props}>
       {children ?? (
         <>
-          <Icons.chevronLeft className="rtl:rotate-180" />
+          <Icons.chevronLeft />
           {c?.["back"]}
         </>
       )}

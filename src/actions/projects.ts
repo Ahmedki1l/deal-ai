@@ -15,7 +15,7 @@ import { generateIdFromEntropySize } from "lucia";
 
 export async function createProject({
   types,
-  platforms,
+  platforms: plattformArr,
   map,
   ...data
 }: z.infer<typeof projectCreateFormSchema>) {
@@ -31,8 +31,17 @@ export async function createProject({
           ...p,
           id: generateIdFromEntropySize(10),
           type: t?.["value"],
+          deletedAt: null,
         })),
       )
+      .flat();
+
+    const platforms = plattformArr
+      .map((t) => ({
+        ...t,
+        id: generateIdFromEntropySize(10),
+      }))
+
       .flat();
 
     const id = generateIdFromEntropySize(10);
@@ -40,20 +49,25 @@ export async function createProject({
       ...data,
       id,
       userId: user?.["id"],
-      platforms: platforms.map((e) => e?.["value"]),
+      // platforms: platforms.map((e) => e?.["value"]),
       propertyTypes: types?.map((e) => e?.["value"]),
 
       // Google Map
       distinct: map ?? data?.["distinct"],
       city: map ?? data?.["city"],
       country: map ?? data?.["country"],
+      deletedAt: null,
+      platforms: {
+        createMany: {
+          data: platforms,
+        },
+      },
     };
 
     await db.project.create({
       data: properties?.["length"]
         ? {
             ...project,
-            deletedAt: null,
             properties: {
               createMany: {
                 data: properties,
@@ -62,7 +76,6 @@ export async function createProject({
           }
         : {
             ...project,
-            deletedAt: null,
           },
     });
 
@@ -78,6 +91,7 @@ export async function createProject({
 
 export async function updateProject({
   id,
+
   ...data
 }: z.infer<typeof projectUpdateSchema | typeof projectBinSchema>) {
   try {
@@ -116,6 +130,24 @@ export async function deleteProject({
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
       error?.["message"] ?? "your project was not deleted. Please try again.",
+    );
+  }
+}
+
+export async function connectSocialAccount() {
+  try {
+    const user = await getAuth();
+    if (!user) throw new RequiresLoginError();
+
+    // Connection Logoic
+
+    revalidatePath("/", "layout");
+    return { clientId: "1" };
+  } catch (error: any) {
+    console.log(error?.["message"]);
+    if (error instanceof z.ZodError) new ZodError(error);
+    throw Error(
+      error?.["message"] ?? "your project was not updated. Please try again.",
     );
   }
 }

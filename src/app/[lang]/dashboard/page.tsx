@@ -11,6 +11,9 @@ import { Image } from "@/components/image";
 import dailyProgress from "../../../../public/images/DailyProgress.png";
 import charts from "../../../../public/images/Charts.png";
 import shutterstock from "../../../../public/images/shutterstock_502875937.png";
+import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+import { Bar, BarChart } from "recharts";
+import { DashboardPostsBarChart } from "@/components/dashboard-posts-bar-char";
 
 type DashboardProps = Readonly<{ params: LocaleProps }>;
 
@@ -20,7 +23,11 @@ export default async function Dashboard({ params: { lang } }: DashboardProps) {
   const c = dic?.["dashboard"]?.["user"]?.["dashboard"];
   const user = (await getAuth())?.["user"]!;
   const projects = await db.project.findMany({
-    include: { caseStudy: { include: { posts: true } }, properties: true },
+    include: {
+      caseStudy: { include: { posts: true } },
+      properties: true,
+      platforms: true,
+    },
     where: {
       userId: user?.["id"],
       deletedAt: null,
@@ -46,12 +53,9 @@ export default async function Dashboard({ params: { lang } }: DashboardProps) {
       </div>
 
       <div className="mx-auto mt-10 flex flex-col gap-10">
-        <div className="grid grid-cols-3 gap-4">
-          <Image
-            src={dailyProgress?.["src"]}
-            alt=""
-            className="aspect-video rounded border"
-          />
+        <DashboardPostsBarChart />
+        {/* <div className="grid grid-cols-2 gap-4">
+          <DashboardPostsBarChart />
           <Image
             src={charts?.["src"]}
             alt=""
@@ -62,7 +66,7 @@ export default async function Dashboard({ params: { lang } }: DashboardProps) {
             alt=""
             className="aspect-video rounded border"
           />
-        </div>
+        </div> */}
 
         <div className="flex flex-col gap-4">
           <CardTitle>{c?.["latest projects"]}</CardTitle>

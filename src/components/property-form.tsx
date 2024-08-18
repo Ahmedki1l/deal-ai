@@ -256,7 +256,7 @@ export const PropertyForm = {
       )}
     />
   ),
-  recipients: ({
+  receptions: ({
     dic: { "property-form": c },
     loading,
     form,
@@ -265,10 +265,10 @@ export const PropertyForm = {
   }: PropertyFormProps & { typeIndex: number; propertyIndex: number }) => (
     <FormField
       control={form.control}
-      name={`types.${typeIndex}.properties.${propertyIndex}.recipients`}
+      name={`types.${typeIndex}.properties.${propertyIndex}.receptions`}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{c?.["recipients"]?.["label"]}</FormLabel>
+          <FormLabel>{c?.["receptions"]?.["label"]}</FormLabel>
           <FormControl>
             <Input type="text" disabled={loading} {...field} />
           </FormControl>

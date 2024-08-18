@@ -17,7 +17,11 @@ export default async function Projects({ params: { lang } }: ProjectsProps) {
   const c = dic?.["dashboard"]?.["user"]?.["projects"];
   const user = (await getAuth())?.["user"]!;
   const projects = await db.project.findMany({
-    include: { caseStudy: { include: { posts: true } }, properties: true },
+    include: {
+      caseStudy: { include: { posts: true } },
+      properties: true,
+      platforms: true,
+    },
     where: {
       userId: user?.["id"],
       deletedAt: null,

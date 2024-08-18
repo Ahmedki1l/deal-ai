@@ -20,7 +20,7 @@ import {
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
-import { CaseStudy, Post, Project } from "@prisma/client";
+import { CaseStudy, Platform, Post, Project } from "@prisma/client";
 import { platformsArr } from "@/db/enums";
 
 // Function to check if a string contains Arabic characters
@@ -31,7 +31,7 @@ function containsArabic(text: string | null) {
 
 export async function createPost(
   data: z.infer<typeof postCreateSchema>,
-  project: Project,
+  project: Project & { platforms: Platform[] },
   caseStudy: CaseStudy,
 ) {
   try {
@@ -78,7 +78,7 @@ export async function createPost(
     const prompt = {
       previousPrompt: caseStudy.prompt,
       history: caseStudy.caseStudyResponse,
-      input: `create a social media content plan that consists of ${noOfPostsPerWeek * weeks} posts for each platform for a period of ${data.noOfWeeks} weeks, for the platforms ${project?.["platforms"]}. The content should be long and includes hashtags and emojis.`,
+      input: `create a social media content plan that consists of ${noOfPostsPerWeek * weeks} posts for each platform for a period of ${data.noOfWeeks} weeks, for the platforms ${project?.["platforms"]?.map((e) => e?.["value"])}. The content should be long and includes hashtags and emojis.`,
     };
 
     console.log(prompt);

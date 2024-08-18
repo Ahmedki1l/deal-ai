@@ -40,7 +40,6 @@ export function CaseStudyUpdateForm({
     resolver: zodResolver(caseStudyUpdateSchema),
     defaultValues: {
       ...caseStudy,
-      description: caseStudy?.["description"] ?? undefined,
     },
   });
 
@@ -82,11 +81,6 @@ export function CaseStudyUpdateForm({
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
               <CaseStudyForm.title
-                dic={dic}
-                form={form as any}
-                loading={loading}
-              />
-              <CaseStudyForm.description
                 dic={dic}
                 form={form as any}
                 loading={loading}

@@ -148,10 +148,16 @@ export const Icons = {
     <Users className={cn(IconsVariants({}), className)} {...props} />
   ),
   chevronLeft: ({ className, ...props }: IconProps) => (
-    <ChevronLeft className={cn(IconsVariants({}), className)} {...props} />
+    <ChevronLeft
+      className={cn(IconsVariants({}), "rtl:rotate-180", className)}
+      {...props}
+    />
   ),
   chevronRight: ({ className, ...props }: IconProps) => (
-    <ChevronRight className={cn(IconsVariants({}), className)} {...props} />
+    <ChevronRight
+      className={cn(IconsVariants({}), "rtl:rotate-180", className)}
+      {...props}
+    />
   ),
   // SocialMedia Icons, keys must be lowercase -- used as lowercase another place in code
   facebook: ({ className, ...props }: IconProps) => (

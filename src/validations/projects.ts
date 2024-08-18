@@ -16,7 +16,14 @@ export const projectSchema = z.object(
     spaces: z.string("spaces"),
 
     propertyTypes: z.array(z.enum(propertyTypesArr)),
-    platforms: z.array(z.enum(platformsArr)),
+    platforms: z
+      .array(
+        z.object({
+          value: z.enum(platformsArr),
+          clientId: z.string("client id"),
+        }),
+      )
+      .min(1, "choose one platform at least."),
 
     deletedAt: z.date("deletedAt"),
   },
@@ -27,17 +34,9 @@ export const projectCreateSchema = projectSchema.omit({
   deletedAt: true,
 });
 export const projectCreateFormSchema = projectCreateSchema
-  .omit({
-    platforms: true,
-    propertyTypes: true,
-  })
+  .omit({ propertyTypes: true })
   .and(
     z.object({
-      platforms: z.array(
-        z.object({
-          value: z.enum(platformsArr),
-        }),
-      ),
       map: z.string("map").optional(),
     }),
   )
@@ -45,17 +44,13 @@ export const projectCreateFormSchema = projectCreateSchema
 
 export const projectUpdateSchema = projectSchema.omit({
   userId: true,
+  platforms: true,
   deletedAt: true,
 });
 export const projectUpdateFormSchema = projectUpdateSchema
-  .omit({ platforms: true, propertyTypes: true })
+  .omit({ propertyTypes: true })
   .and(
     z.object({
-      platforms: z.array(
-        z.object({
-          value: z.enum(platformsArr),
-        }),
-      ),
       propertyTypes: z.array(
         z.object({
           value: z.enum(propertyTypesArr),

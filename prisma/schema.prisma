@@ -46,7 +46,18 @@ enum PLATFORM {
   INSTAGRAM
   TWITTER
 }
- 
+
+model Platform {
+  id        String @id @map("_id")
+  projectId String @map("project-id")
+
+  value    PLATFORM
+  clientId String
+
+  project Project @relation(references: [id], fields: [projectId], onDelete: Cascade)
+
+  @@map("platforms")
+}
 
 model Project {
   id          String  @id @map("_id")
@@ -59,35 +70,33 @@ model Project {
   distinct String
   spaces   String
 
-  createdAt DateTime @default(now()) 
+  createdAt DateTime  @default(now())
   deletedAt DateTime? @map("deleted-at")
-  
-  propertyTypes  PROPERTY_TYPE[] @map("property-types")
-  platforms      PLATFORM[]
 
-  properties  Property[]
-  caseStudy CaseStudy[]
-  user      User        @relation(references: [id], fields: [userId], onDelete: Cascade)
+  propertyTypes PROPERTY_TYPE[] @map("property-types")
+  platforms     Platform[]
 
-   @@map("projects")
+  properties Property[]
+  caseStudy  CaseStudy[]
+  user       User        @relation(references: [id], fields: [userId], onDelete: Cascade)
+
+  @@map("projects")
 }
 
 model CaseStudy {
-  id          String   @id @map("_id")
-  projectId   String   @map("project-id")
-  title       String
-  description String?
-  refImages   String[] @map("ref-images") 
+  id        String    @id @map("_id")
+  projectId String    @map("project-id")
+  title     String
+  refImages String[]  @map("ref-images")
   deletedAt DateTime? @map("deleted-at")
-  
 
-  content                 String
-  targetAudience          String @map("target-audience")
-  pros                    String @map("pros")
-  cons                    String @map("cons")
-  hashtags                String
-  prompt                  String?
-  caseStudyResponse       String?
+  content           String
+  targetAudience    String  @map("target-audience")
+  pros              String  @map("pros")
+  cons              String  @map("cons")
+  hashtags          String
+  prompt            String?
+  caseStudyResponse String?
 
   posts   Post[]
   project Project @relation(references: [id], fields: [projectId], onDelete: Cascade)
@@ -112,13 +121,13 @@ model Property {
   floors     String
   rooms      String
   bathrooms  String
-  recipients String?
+  receptions String?
   garden     String?
   pool       String?
   view       String?
 
   deletedAt DateTime? @map("deleted-at")
-  
+
   project Project @relation(references: [id], fields: [projectId], onDelete: Cascade)
 
   @@map("properties")
@@ -142,7 +151,7 @@ model Image {
   prompt String
 
   deletedAt DateTime? @map("deleted-at")
-  
+
   posts Post[]
 
   @@map("images")
@@ -153,17 +162,16 @@ model Post {
   caseStudyId String  @map("case-study-id")
   imageId     String? @map("image-id")
 
-  title       String
-  noOfWeeks   String @map("no-of-weeks")
-  content     String
+  title     String
+  noOfWeeks String @map("no-of-weeks")
+  content   String
 
   platform      PLATFORM
   contentLength POST_CONTENT_LENGTH @map("content-length")
   campaignType  POST_CAMPAIGN       @map("campaign-type")
 
-  postAt DateTime @map("post-at")
-  deletedAt DateTime? @map("deleted-at")  
-  
+  postAt    DateTime  @map("post-at")
+  deletedAt DateTime? @map("deleted-at")
 
   image     Image?    @relation(fields: [imageId], references: [id], onDelete: NoAction)
   caseStudy CaseStudy @relation(references: [id], fields: [caseStudyId], onDelete: Cascade)

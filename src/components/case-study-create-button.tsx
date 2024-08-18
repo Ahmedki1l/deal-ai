@@ -14,16 +14,15 @@ import { caseStudyCreateFormSchema } from "@/validations/case-studies";
 import { createCaseStudy } from "@/actions/case-studies";
 import { CaseStudyForm } from "@/components/case-study-form";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
-import { Project } from "@prisma/client";
+import { Platform, Project } from "@prisma/client";
 import { convertBase64 } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { t } from "@/lib/locale";
 
-type CaseStudyCreateButtonProps = { project: Project } & Omit<
-  DialogResponsiveProps,
-  "open" | "setOpen"
-> &
+type CaseStudyCreateButtonProps = {
+  project: Project & { platforms: Platform[] };
+} & Omit<DialogResponsiveProps, "open" | "setOpen"> &
   Dictionary["case-study-create-button"] &
   Dictionary["case-study-form"] &
   Dictionary["dialog"];
@@ -31,11 +30,12 @@ type CaseStudyCreateButtonProps = { project: Project } & Omit<
 export function CaseStudyCreateButton({
   dic: { "case-study-create-button": c, ...dic },
   project,
+  disabled,
   ...props
 }: CaseStudyCreateButtonProps) {
   const lang = useLocale();
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const [open, setOpen] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof caseStudyCreateFormSchema>>({
@@ -80,12 +80,13 @@ export function CaseStudyCreateButton({
   return (
     <DialogResponsive
       dic={dic}
+      disabled={loading}
       confirmButton={
         <>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <Button disabled={loading} className="w-full md:w-fit">
-                {loading && <Icons.spinner />}
+                {!disabled && loading && <Icons.spinner />}
                 {c?.["submit"]}
               </Button>
             </form>
@@ -101,11 +102,6 @@ export function CaseStudyCreateButton({
                 form={form as any}
                 loading={loading}
               />
-              {/* <CaseStudyForm.description
-                dic={dic}
-                form={form as any}
-                loading={loading}
-              /> */}
               <CaseStudyForm.refImages
                 dic={dic}
                 form={form as any}

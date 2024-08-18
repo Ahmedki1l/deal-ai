@@ -15,7 +15,7 @@ export const propertySchema = z.object(
     floors: z.string("floors"),
     rooms: z.string("rooms"),
     bathrooms: z.string("bathrooms"),
-    recipients: z.string("recipients").optional(),
+    receptions: z.string("receptions").optional(),
     garden: z.string("garden").optional(),
     pool: z.string("hashtags").optional(),
     view: z.string("view").optional(),

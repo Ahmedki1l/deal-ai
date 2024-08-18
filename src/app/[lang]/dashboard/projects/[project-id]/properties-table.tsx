@@ -146,12 +146,12 @@ export function PropertyTable({
             ),
           },
           {
-            accessorKey: "recipients",
+            accessorKey: "receptions",
             header: ({ column }) => (
               <DataTableColumnHeader
                 dic={dic}
                 column={column}
-                title={c?.["recipients"]}
+                title={c?.["receptions"]}
               />
             ),
           },

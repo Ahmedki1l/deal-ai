@@ -63,29 +63,6 @@ export const CaseStudyForm = {
       )}
     />
   ),
-  description: ({
-    dic: { "case-study-form": c },
-    loading,
-    form,
-  }: CaseStudyFormProps) => (
-    <FormField
-      control={form.control}
-      name="description"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel> {c?.["description"]?.["label"]}</FormLabel>
-          <FormControl>
-            <Textarea
-              placeholder={c?.["description"]?.["describe your case study"]}
-              disabled={loading}
-              {...field}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  ),
   refImages: function Component({
     dic: { "case-study-form": c },
     loading,

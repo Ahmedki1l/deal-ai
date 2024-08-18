@@ -67,9 +67,12 @@ export function AppearanceForm({
               </FormDescription>
               <FormMessage />
               <RadioGroup
-                onValueChange={field.onChange}
+                onValueChange={(e) => {
+                  field.onChange(e);
+                  setTheme(e);
+                }}
                 defaultValue={field.value}
-                className="grid grid-cols-3 gap-8 pt-2"
+                className="grid gap-8 pt-2 sm:grid-cols-3"
               >
                 <FormItem>
                   <FormLabel className="[&:has([data-state=checked])>div]:border-primary">
@@ -155,7 +158,7 @@ export function AppearanceForm({
           )}
         />
 
-        <Button type="submit">{c?.["update preferences"]}</Button>
+        {/* <Button type="submit">{c?.["update preferences"]}</Button> */}
       </form>
     </Form>
   );

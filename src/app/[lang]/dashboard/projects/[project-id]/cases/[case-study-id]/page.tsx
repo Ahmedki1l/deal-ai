@@ -43,6 +43,7 @@ import { getDictionary } from "@/lib/dictionaries";
 import { CaseStudyRestoreButton } from "@/components/case-study-restore-button";
 import { CaseStudyBinButton } from "@/components/case-study-bin-button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 
 type CaseStudyProps = Readonly<{
   params: { "project-id": string; "case-study-id": string } & LocaleProps;
@@ -267,7 +268,18 @@ export default async function CaseStudy({
                           key={i}
                           className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5"
                         >
-                          <Card className="overview-hidden">
+                          <Card className="overview-hidden relative">
+                            <Badge
+                              variant={
+                                e?.["confirmedAt"] ? "default" : "highlight"
+                              }
+                              className="absolute right-2 top-2"
+                            >
+                              {e?.["confirmedAt"]
+                                ? "confirmed"
+                                : "pre scheduled"}
+                            </Badge>
+
                             <CardHeader className="rounded-none p-0">
                               <Link
                                 href={`/dashboard/projects/${projectId}/cases/${caseStudyId}/posts/${e?.["id"]}`}

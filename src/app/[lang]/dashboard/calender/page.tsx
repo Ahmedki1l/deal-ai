@@ -18,8 +18,9 @@ export default async function Calender({ params: { lang } }: CalenderProps) {
 
   const user = (await getAuth())?.["user"]!;
   const posts = await db.post.findMany({
-    include: { image: true },
+    include: { image: true, caseStudy: { include: { project: true } } },
     where: {
+      confirmedAt: { not: null },
       caseStudy: {
         project: {
           userId: user?.["id"],

@@ -4,6 +4,7 @@ import { UseFormReturn } from "react-hook-form";
 import * as z from "zod";
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,6 +23,8 @@ import {
 } from "@/components/ui/select";
 import { platforms, postCampaigns, postContentLengths } from "@/db/enums";
 import { Dictionary } from "@/types/locale";
+import { Checkbox } from "./ui/checkbox";
+import { Link } from "./link";
 
 type PostFormProps = {
   loading: boolean;
@@ -54,6 +57,27 @@ export const PostForm = {
       )}
     />
   ),
+  confirmedAt: ({ dic: { "post-form": c }, loading, form }: PostFormProps) => (
+    <FormField
+      control={form.control}
+      name="confirm"
+      render={({ field }) => (
+        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+          <FormControl>
+            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+          </FormControl>
+          <div className="space-y-1 leading-none">
+            <FormLabel>Confirm this post to be ready for publishing.</FormLabel>
+            <FormDescription>
+              You can manage your posts in the{" "}
+              <Link href="/dashboard/calender">Calender</Link> page.
+            </FormDescription>
+          </div>
+        </FormItem>
+      )}
+    />
+  ),
+
   content: ({ dic: { "post-form": c }, loading, form }: PostFormProps) => (
     <FormField
       control={form.control}

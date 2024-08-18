@@ -84,7 +84,7 @@ export const CaseStudyForm = {
             size="icon"
             // @ts-ignore
             onClick={() => append({})}
-            disabled={limit ? fields?.["length"] == limit : false}
+            disabled={limit ? fields?.["length"] == limit : loading}
           >
             <Icons.add />
           </Button>

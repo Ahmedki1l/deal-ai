@@ -1,7 +1,7 @@
 "use client";
 import { cn, getMonth } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
-import { Image as ImageType, Post } from "@prisma/client";
+import { CaseStudy, Image as ImageType, Post, Project } from "@prisma/client";
 import dayjs from "dayjs";
 import { Fragment, useEffect, useState } from "react";
 import { Icons } from "./icons";
@@ -12,7 +12,10 @@ import { DialogResponsive } from "./dialog";
 import { Image } from "./image";
 
 type SchedulerProps = {
-  posts: (Post & { image: ImageType | null })[];
+  posts: (Post & {
+    image: ImageType | null;
+    caseStudy: CaseStudy & { project: Project };
+  })[];
 } & Dictionary["post-update-form"] &
   Dictionary["image-form"] &
   Dictionary["post-form"] &
@@ -75,7 +78,10 @@ export function Month({
   posts,
 }: {
   month: dayjs.Dayjs[][];
-  posts: (Post & { image: ImageType | null })[];
+  posts: (Post & {
+    image: ImageType | null;
+    caseStudy: CaseStudy & { project: Project };
+  })[];
 } & Dictionary["post-update-form"] &
   Dictionary["image-form"] &
   Dictionary["post-form"] &
@@ -105,7 +111,10 @@ export function Day({
 }: {
   day: dayjs.Dayjs;
   rowIdx: number;
-  posts: (Post & { image: ImageType | null })[];
+  posts: (Post & {
+    image: ImageType | null;
+    caseStudy: CaseStudy & { project: Project };
+  })[];
 } & Dictionary["post-update-form"] &
   Dictionary["image-form"] &
   Dictionary["post-form"] &
@@ -165,23 +174,27 @@ export function Day({
               key={i}
               dic={dic}
               content={
-                <>
-                  <PostUpdateForm key={i} post={evt} dic={dic} />
-                </>
+                <PostUpdateForm
+                  key={i}
+                  disabled={evt?.["postAt"] < new Date()}
+                  post={evt}
+                  dic={dic}
+                />
               }
               title={""}
               description={""}
               open={open}
               setOpen={setOpen}
             >
-              <Button className="justify-between gap-2 px-1">
-                <div className="flex items-center">
-                  {/* <Image
-                    src={evt?.["image"]?.["src"]!}
-                    alt=""
-                    className="h-4 w-4"
-                  /> */}
-                  {evt?.["title"]}
+              <Button
+                disabled={evt?.["postAt"] < new Date()}
+                className="justify-between gap-2 px-1 text-xs"
+              >
+                <div className="flex flex-col items-start">
+                  <h6>{evt?.["caseStudy"]?.["project"]?.["title"]}</h6>
+                  <p className="text-[9px] text-muted-foreground">
+                    {evt?.["title"]}
+                  </p>
                 </div>
 
                 <div>{Icon && <Icon />}</div>

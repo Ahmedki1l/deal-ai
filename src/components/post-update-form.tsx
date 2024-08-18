@@ -57,6 +57,7 @@ export function PostUpdateForm({
   const [open, setOpen] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof postUpdateSchema>>({
+    mode: "onSubmit",
     resolver: zodResolver(postUpdateSchema),
     defaultValues: {
       ...post,
@@ -65,11 +66,13 @@ export function PostUpdateForm({
         src: post?.["image"]?.["src"],
         prompt: post?.["image"]?.["prompt"],
       },
+      confirm: !!post?.["confirmedAt"],
     },
   });
 
   function onSubmit(data: z.infer<typeof postUpdateSchema>) {
     setLoading(true);
+    console.log(data?.["confirm"]);
     toast.promise(updatePost(data), {
       finally: () => setLoading(false),
       error: async (err) => {
@@ -82,6 +85,7 @@ export function PostUpdateForm({
       },
     });
   }
+
   function isValidUrl(src: string) {
     try {
       new URL(src);
@@ -103,6 +107,33 @@ export function PostUpdateForm({
             </div>
 
             <div className="hidden items-center gap-2 md:flex">
+              {post?.["deletedAt"] ? (
+                <PostRestoreButton
+                  disabled={post?.["deletedAt"] ? false : disabled}
+                  dic={dic}
+                  asChild
+                  post={post}
+                >
+                  <Button
+                    disabled={post?.["deletedAt"] ? false : disabled}
+                    variant="secondary"
+                    size="sm"
+                  >
+                    {c?.["restore"]}
+                  </Button>
+                </PostRestoreButton>
+              ) : (
+                <PostBinButton
+                  disabled={disabled}
+                  dic={dic}
+                  asChild
+                  post={post}
+                >
+                  <Button disabled={disabled} size="sm" variant="destructive">
+                    {c?.["delete"]}
+                  </Button>
+                </PostBinButton>
+              )}
               <Button
                 disabled={loading}
                 type="button"
@@ -208,7 +239,6 @@ export function PostUpdateForm({
             <Card>
               <CardHeader>
                 <CardTitle>{c?.["post information"]}</CardTitle>
-                {/* <CardDescription>{post?.["description"]}</CardDescription> */}
               </CardHeader>
               <CardContent className="space-y-2">
                 <PostForm.title
@@ -246,6 +276,12 @@ export function PostUpdateForm({
                     loading={true}
                   />
                 </div>
+
+                <PostForm.confirmedAt
+                  dic={dic}
+                  form={form as any}
+                  loading={loading}
+                />
               </CardContent>
             </Card>
           </div>
@@ -258,6 +294,7 @@ export function PostUpdateForm({
                 post={post}
               >
                 <Button
+                  size="sm"
                   disabled={post?.["deletedAt"] ? false : disabled}
                   variant="secondary"
                 >
@@ -266,7 +303,7 @@ export function PostUpdateForm({
               </PostRestoreButton>
             ) : (
               <PostBinButton disabled={disabled} dic={dic} asChild post={post}>
-                <Button disabled={disabled} variant="destructive">
+                <Button size="sm" disabled={disabled} variant="destructive">
                   {c?.["delete"]}
                 </Button>
               </PostBinButton>

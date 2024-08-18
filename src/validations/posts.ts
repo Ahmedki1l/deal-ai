@@ -19,6 +19,7 @@ export const postSchema = z.object({
   postAt: z.date("post at"),
 
   deletedAt: z.date("deletedAt"),
+  confirmedAt: z.date("confirmedAt"),
 
   // others
   image: imageSchema,
@@ -29,6 +30,7 @@ export const postCreateSchema = postSchema.omit({
   imageId: true,
   image: true,
   deletedAt: true,
+  confirmedAt: true,
 });
 export const postUpdateSchema = postSchema
   .omit({
@@ -36,9 +38,11 @@ export const postUpdateSchema = postSchema
     imageId: true,
     image: true,
     deletedAt: true,
+    confirmedAt: true,
   })
   .and(
     z.object({
+      confirm: z.boolean("confirm"),
       image: imageUpdateFormSchema,
     }),
   );

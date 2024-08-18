@@ -170,8 +170,10 @@ model Post {
   contentLength POST_CONTENT_LENGTH @map("content-length")
   campaignType  POST_CAMPAIGN       @map("campaign-type")
 
-  postAt    DateTime  @map("post-at")
-  deletedAt DateTime? @map("deleted-at")
+  createdAt   DateTime  @default(now()) @map("created-at")
+  postAt      DateTime  @map("post-at")
+  confirmedAt DateTime? @map("confirmed-at")
+  deletedAt   DateTime? @map("deleted-at")
 
   image     Image?    @relation(fields: [imageId], references: [id], onDelete: NoAction)
   caseStudy CaseStudy @relation(references: [id], fields: [caseStudyId], onDelete: Cascade)

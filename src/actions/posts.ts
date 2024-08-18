@@ -20,7 +20,7 @@ import {
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
-import { CaseStudy, Platform, Post, Project } from "@prisma/client";
+import { CaseStudy, Image, Platform, Post, Project } from "@prisma/client";
 import { platformsArr } from "@/db/enums";
 
 // Function to check if a string contains Arabic characters
@@ -95,7 +95,7 @@ export async function createPost(
     const daysToPost = noOfPostsPerWeek === 3 ? [0, 2, 4] : [0, 1, 2, 3, 4];
     const imageApiEndpoint = domain + "/image";
     let imageFetchPromises = [];
-    let allPostDetails: Post[] = [];
+    let allPostDetails: Omit<Post, "createdAt">[] = [];
 
     // uppercasing key, to match platform
     const responseData = Object.keys(social_midea_response).reduce(
@@ -173,7 +173,7 @@ export async function createPost(
                 src: imageResponse.url,
                 prompt: adjusted_image.input,
                 deletedAt: null,
-              },
+              } as Image,
             });
           });
 
@@ -203,6 +203,7 @@ export async function createPost(
             postAt: new Date(currentDate),
             imageId: imageData.id,
             deletedAt: null,
+            confirmedAt: null,
           });
           indicator++;
         });
@@ -231,6 +232,7 @@ export async function createPost(
 
 export async function updatePost({
   id,
+  confirm,
   ...data
 }: z.infer<typeof postUpdateSchema>) {
   try {
@@ -245,6 +247,7 @@ export async function updatePost({
             ...data?.["image"],
           },
         },
+        confirmedAt: confirm ? new Date() : null,
       },
       where: {
         id,

@@ -41,6 +41,7 @@ export async function createProject({
       .map((t) => ({
         ...t,
         id: generateIdFromEntropySize(10),
+        urn: t?.["urn"] ?? null,
       }))
 
       .flat();
@@ -179,7 +180,6 @@ export async function deleteProject({
 //       return; // Prevent the function from proceeding further
 
 //     }
-
 
 //     return { clientId: "1" };
 //   } catch (error: any) {

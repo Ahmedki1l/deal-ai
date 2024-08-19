@@ -91,7 +91,7 @@ export function PostUpdateContentButton({
       title={c?.["update content"]}
       description={
         c?.[
-          "this step is essential for informing patients about the treatments available at your post."
+          "updating your post's content allows you to refine and enhance the details of your ongoing developments"
         ]
       }
       open={open}

@@ -5,6 +5,8 @@
   },
   "auth": {
     "login": {
+      "since collaborating with Deal Ai, our property sales have surged by 40%, and client satisfaction has reached new heights. their platform has optimized our operations, driving significant business growth.": "since collaborating with Deal Ai, our property sales have surged by 40%, and client satisfaction has reached new heights. their platform has optimized our operations, driving significant business growth.",
+      "Alex Thompson, CEO of Thompson Real Estate": "Alex Thompson, CEO of Thompson Real Estate",
       "don't have an account? sign up now": "Don't have an account? Sign Up now",
       "or continue with": "or continue with",
       "sign in with email": "Sign In with Email",
@@ -13,6 +15,8 @@
       "forgot password": "Forgot Password?"
     },
     "register": {
+      "since collaborating with Deal Ai, our property sales have surged by 40%, and client satisfaction has reached new heights. their platform has optimized our operations, driving significant business growth.": "since collaborating with Deal Ai, our property sales have surged by 40%, and client satisfaction has reached new heights. their platform has optimized our operations, driving significant business growth.",
+      "Alex Thompson, CEO of Thompson Real Estate": "Alex Thompson, CEO of Thompson Real Estate",
       "already have an account? sign in.": "Already have an account? Sign In.",
       "or continue with": "or continue with",
       "sign up with email": "Sign Up with Email",
@@ -94,8 +98,8 @@
           "projects": "projects",
           "restore": "Restore",
           "delete": "Delete",
-
-          "distinct": "distinct",
+          "back to all projects": "back to all projects",
+          "distinct": "Distinct",
           "city": "city",
           "country": "country",
           "spaces": "spaces",
@@ -126,6 +130,10 @@
               "reference images": "Reference Images",
               "navigate to get what you want.": "Navigate to get what you want.",
               "create posts": "Create Posts",
+              "campaign type": "Campaign Type",
+              "content length": "Content Length",
+              "confirmed": "confirmed",
+              "pre scheduled": "pre scheduled",
               "posts": {
                 "posts": "Posts",
                 "oops, no posts.": "oops, no posts.",
@@ -192,9 +200,9 @@
           { "value": "/dashboard/bin/posts", "label": "Posts" }
         ],
         "bin": "Bin",
+        "below is a list of your deleted items. you can restore them within 30 days before they are permanently removed.": "Below is a list of your deleted items. You can restore them within 30 days before they are permanently removed.",
 
         "projects": "Projects",
-        "this is how others will see you on the site.": "this is how others will see you on the site.",
         "cases": {
           "study cases": "Study Cases",
           "this is how others will see you on the site.": "this is how others will see you on the site."
@@ -214,6 +222,7 @@
           { "value": "/dashboard/settings/appearance", "label": "Appearance" }
         ],
         "settings": "Settings",
+        "manage your account details, privacy settings, and how others perceive you on the platform.": "manage your account details, privacy settings, and how others perceive you on the platform.",
 
         "appearance": {
           "appearance": "Appearance",
@@ -241,19 +250,19 @@
     "deleted successfully.": "deleted successfully.",
     "delete": "Delete",
     "delete case study": "Delete Case Study",
-    "this step is essential for informing patients about the treatments available at your case study.": "this step is essential for informing patients about the treatments available at your case study."
+    "once deleted, the case study will be moved to the bin. you can manually delete it or it will be automatically removed after 30 days. if restored, everything will be reinstated as if nothing happened.": "Once deleted, the case study will be moved to the bin. You can manually delete it or it will be automatically removed after 30 days. If restored, everything will be reinstated as if nothing happened."
   },
   "case-study-create-button": {
     "created successfully.": "created successfully.",
     "submit": "Submit",
     "create case study": "Create Case Study",
-    "this step is essential for informing patients about the treatments available at your case study.": "this step is essential for informing patients about the treatments available at your case study."
+    "create a A well-structured case study for your real estate project that helps highlight the unique features, target audience, market strategy, and performance metrics of your project. once created, these case studies can be used to inform potential buyers, partners, and stakeholders, demonstrating the value and potential of your real estate developments.": "Create a A well-structured case study for your real estate project that helps highlight the unique features, target audience, market strategy, and performance metrics of your project. Once created, these case studies can be used to inform potential buyers, partners, and stakeholders, demonstrating the value and potential of your real estate developments."
   },
   "case-study-delete-button": {
+    "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted.": "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted.",
     "deleted successfully.": "deleted successfully.",
     "delete": "Delete",
-    "delete case study": "delete case study",
-    "this step is essential for informing patients about the treatments available at your case study.": "this step is essential for informing patients about the treatments available at your case study."
+    "delete case study": "delete case study"
   },
   "case-study-form": {
     "title": { "label": "Title", "health center": "Health Center" },
@@ -261,7 +270,7 @@
       "label": "Description",
       "describe your case study": "Describe your case study"
     },
-    "reference image": { "label": "Reference Image" },
+    "refImages": { "label": "Reference Image" },
     "content": {
       "label": "Content",
       "describe your case study's content": "describe your case study's content"
@@ -280,16 +289,16 @@
     }
   },
   "case-study-restore-button": {
+    "restoring this case study will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off.": "Restoring this case study will bring back all its data and settings, making it appear as if it was never deleted. All related information will be fully reinstated, allowing you to pick up right where you left off.",
     "restored successfully.": "restored successfully.",
     "restore": "Restore",
-    "restore case study": "Restore Case Study",
-    "this step is essential for informing patients about the treatments available at your case study.": "this step is essential for informing patients about the treatments available at your case study."
+    "restore case study": "Restore Case Study"
   },
   "case-study-update-form": {
     "updated successfully.": "updated successfully.",
     "submit": "Submit",
     "update case study": "Update Case Study",
-    "this step is essential for informing patients about the treatments available at your case study.": "this step is essential for informing patients about the treatments available at your case study."
+    "updating a case study allows you to refine and enhance the details of your ongoing developments": "Updating a case study allows you to refine and enhance the details of your ongoing developments"
   },
 
   "dashboard-layout": {
@@ -321,7 +330,7 @@
 
   "dialog": {
     "are you sure you want to proceed?": "Are you sure you want to proceed?",
-    "Please confirm that all the provided information is accurate. This action cannot be undone.": "Please confirm that all the provided information is accurate. This action cannot be undone.",
+    "please confirm that all the provided information is accurate. This action cannot be undone.": "Please confirm that all the provided information is accurate. This action cannot be undone.",
     "cancel": "Cancel"
   },
 
@@ -350,22 +359,28 @@
     "deleted successfully.": "deleted successfully.",
     "delete": "Delete",
     "delete post": "Delete Post",
-    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your post."
+    "once deleted, the post will be moved to the bin. you can manually delete it or it will be automatically removed after 30 days. if restored, everything will be reinstated as if nothing happened.": "Once deleted, the post will be moved to the bin. You can manually delete it or it will be automatically removed after 30 days. If restored, everything will be reinstated as if nothing happened."
   },
   "post-create-button": {
     "created successfully.": "created successfully.",
     "submit": "Submit",
     "create posts": "Create Posts",
-    "this step is essential for informing patients about the treatments available at your posts.": "this step is essential for informing patients about the treatments available at your posts."
+    "streamline your marketing efforts by generating and scheduling posts across all your platforms using AI, and automatically publishes it at optimal times, maximizing reach and engagement.": "Streamline your marketing efforts by generating and scheduling posts across all your platforms using AI, and automatically publishes it at optimal times, maximizing reach and engagement."
   },
   "post-delete-button": {
+    "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted.": "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted.",
     "deleted successfully.": "deleted successfully.",
     "delete": "Delete",
-    "delete post": "Delete Post",
-    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your post."
+    "delete post": "Delete Post"
   },
   "post-form": {
     "title": { "label": "Title", "health center": "Health Center" },
+    "confirmedAt": {
+      "label": "Confirm this post to be ready for publishing",
+      "you can manage your posts in the": "You can manage your posts in the",
+      "calender": "Calender",
+      "page": "Page"
+    },
     "description": {
       "label": "Description",
       "describe your post": "Describe your post"
@@ -392,16 +407,16 @@
     }
   },
   "post-restore-button": {
+    "restoring this post will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off.": "Restoring this post will bring back all its data and settings, making it appear as if it was never deleted. All related information will be fully reinstated, allowing you to pick up right where you left off.",
     "restored successfully.": "restored successfully.",
     "restore": "Restore",
-    "restore post": "Restore Post",
-    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your post."
+    "restore post": "Restore Post"
   },
   "post-update-content-button": {
+    "updating your post's content allows you to refine and enhance the details of your ongoing developments": "Updating your post's content allows you to refine and enhance the details of your ongoing developments",
     "content updated successfully.": "content updated successfully.",
     "submit": "Submit",
-    "update content": "Update Content",
-    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your post."
+    "update content": "Update Content"
   },
   "post-update-form": {
     "updated successfully.": "updated successfully.",
@@ -413,20 +428,22 @@
     "update image": "Update Image",
     "restore": "Restore",
     "delete": "Delete",
-    "this step is essential for informing patients about the treatments available at your image.": "this step is essential for informing patients about the treatments available at your image."
+    "updating an image allows you to refine and enhance the details of your ongoing developments": "Updating an image allows you to refine and enhance the details of your ongoing developments",
+    "choose file": "choose file",
+    "generate using AI": "generate using AI+"
   },
   "post-update-schedule-button": {
     "scheduled successfully.": "scheduled successfully.",
     "submit": "Submit",
     "update schedule": "Update Schedule",
-    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your case study."
+    "updating your post's scheule allows you to refine and enhance the details of your ongoing developments": "Updating your post's scheule allows you to refine and enhance the details of your ongoing developments"
   },
 
   "project-bin-button": {
     "deleted successfully.": "deleted successfully.",
     "delete": "Delete",
     "delete project": "Delete Project",
-    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
+    "once deleted, the project will be moved to the bin. you can manually delete it or it will be automatically removed after 30 days. if restored, everything will be reinstated as if nothing happened.": "Once deleted, the project will be moved to the bin. You can manually delete it or it will be automatically removed after 30 days. If restored, everything will be reinstated as if nothing happened."
   },
   "project-create-button": {
     "created successfully.": "created successfully.",
@@ -434,13 +451,13 @@
     "type of assets": "Type of Assets",
     "unit": "unit",
     "create project": "Create Project",
-    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
+    "by providing detailed information about your project, you'll be able to streamline your operations, track progress, and ensure that all stakeholders are informed about the development's key aspects and milestones.": "By providing detailed information about your project, you'll be able to streamline your operations, track progress, and ensure that all stakeholders are informed about the development's key aspects and milestones."
   },
   "project-delete-button": {
+    "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted.": "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted.",
     "deleted successfully.": "deleted successfully.",
     "delete": "Delete",
-    "delete project": "Delete Project",
-    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
+    "delete project": "Delete Project"
   },
   "project-form": {
     "title": { "label": "Title", "health center": "health center" },
@@ -462,23 +479,23 @@
     }
   },
   "project-restore-button": {
+    "restoring this project will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off.": "Restoring this project will bring back all its data and settings, making it appear as if it was never deleted. All related information will be fully reinstated, allowing you to pick up right where you left off.",
     "restored successfully.": "restored successfully.",
     "restore": "Restore",
-    "restore project": "Restore Project",
-    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
+    "restore project": "Restore Project"
   },
   "project-update-form": {
     "updated successfully.": "updated successfully.",
     "submit": "Submit",
     "update project": "Update Project",
-    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
+    "updating a project allows you to refine and enhance the details of your ongoing developments": "Updating a project allows you to refine and enhance the details of your ongoing developments"
   },
 
   "property-bin-button": {
     "deleted successfully.": "deleted successfully.",
     "delete": "Delete",
     "delete property": "Delete Property",
-    "this step is essential for informing patients about the treatments available at your property.": "this step is essential for informing patients about the treatments available at your property."
+    "once deleted, the property will be moved to the bin. you can manually delete it or it will be automatically removed after 30 days. if restored, everything will be reinstated as if nothing happened.": "Once deleted, the property will be moved to the bin. You can manually delete it or it will be automatically removed after 30 days. If restored, everything will be reinstated as if nothing happened."
   },
   "property-create-button": {
     "created successfully.": "created successfully.",
@@ -486,13 +503,13 @@
     "type of assets": "Type of Assets",
     "unit": "unit",
     "create property": "Create Property",
-    "this step is essential for informing patients about the treatments available at your property.": "this step is essential for informing patients about the treatments available at your property."
+    "by detailing each property, including its features, layout, and amenities, you ensure that all relevant information is captured, enabling better organization and presentation to potential buyers or tenants.": "By detailing each property, including its features, layout, and amenities, you ensure that all relevant information is captured, enabling better organization and presentation to potential buyers or tenants."
   },
   "property-delete-button": {
+    "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted.": "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted.",
     "deleted successfully.": "deleted successfully.",
     "delete": "Delete",
-    "delete property": "Delete Property",
-    "this step is essential for informing patients about the treatments available at your property.": "this step is essential for informing patients about the treatments available at your property."
+    "delete property": "Delete Property"
   },
   "property-form": {
     "type": { "select your property type": "Select your property type" },
@@ -509,14 +526,16 @@
     "view": { "label": "View" }
   },
   "property-restore-button": {
+    "restoring this property will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off.": "Restoring this property will bring back all its data and settings, making it appear as if it was never deleted. All related information will be fully reinstated, allowing you to pick up right where you left off.",
     "restored successfully.": "restored successfully.",
     "restore": "Restore",
-    "restore property": "Restore Property",
-    "this step is essential for informing patients about the treatments available at your property.": "this step is essential for informing patients about the treatments available at your property."
+    "restore property": "Restore Property"
   },
+  "scheduler": { "today": "Today" },
   "user-form": {
     "name": {
-      "label": "Full Name"
+      "label": "Full Name",
+      "placeholder": "Joe Doe"
     },
     "email": {
       "label": "Email"
@@ -532,14 +551,14 @@
     "confirm new password": "Confirm New Password",
     "discard": "Discard",
     "submit": "Submit",
-    "this information will be used to create your public profile and facilitate communication with patients and colleagues.": "this information will be used to create your public profile and facilitate communication with patients and colleagues."
+    "this will update your password and help keep your account secure.": "this will update your password and help keep your account secure."
   },
   "user-profile-personal-form": {
     "updated successfully.": "updated successfully.",
     "personal information": "Personal Information",
     "discard": "Discard",
     "save changes": "Save Changes",
-    "this information will be used to create your public profile and facilitate communication with patients and colleagues.": "this information will be used to create your public profile and facilitate communication with patients and colleagues."
+    "this information will be used to create your public profile.": "this information will be used to create your public profile."
   },
   "constants": {
     "days": [

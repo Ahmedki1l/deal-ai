@@ -80,7 +80,7 @@ export function CaseStudyDeleteButton({
       title={c?.["delete case study"]}
       description={
         c?.[
-          "this step is essential for informing patients about the treatments available at your case study."
+          "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted."
         ]
       }
       open={open}

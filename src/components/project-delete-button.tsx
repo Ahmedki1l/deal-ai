@@ -82,7 +82,7 @@ export function ProjectDeleteButton({
       title={c?.["delete project"]}
       description={
         c?.[
-          "this step is essential for informing patients about the treatments available at your project."
+          "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted."
         ]
       }
       {...props}

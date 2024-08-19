@@ -102,7 +102,6 @@ export function PostUpdateForm({
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <BackButton dic={dic} type="button" variant="ghost" size="sm" />
-
               <h1 className="text-md font-semibold">{c?.["post details"]}</h1>
             </div>
 
@@ -199,9 +198,11 @@ export function PostUpdateForm({
                     <>
                       <Tabs defaultValue="choose">
                         <TabsList>
-                          <TabsTrigger value="choose">Choose</TabsTrigger>
+                          <TabsTrigger value="choose">
+                            {c?.["choose file"]}
+                          </TabsTrigger>
                           <TabsTrigger value="generate">
-                            Generate AI
+                            {c?.["generate using AI"]}
                           </TabsTrigger>
                         </TabsList>
                         <TabsContent value="choose">
@@ -224,7 +225,7 @@ export function PostUpdateForm({
                   title={c?.["update image"]}
                   description={
                     c?.[
-                      "this step is essential for informing patients about the treatments available at your image."
+                      "updating an image allows you to refine and enhance the details of your ongoing developments"
                     ]
                   }
                   open={open}

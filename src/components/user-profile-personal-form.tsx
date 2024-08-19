@@ -77,7 +77,7 @@ export function UserProfilePersonalForm({
               <CardDescription className="max-w-prose">
                 {
                   c?.[
-                    "this information will be used to create your public profile and facilitate communication with patients and colleagues."
+                    "this information will be used to create your public profile."
                   ]
                 }
               </CardDescription>

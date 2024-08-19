@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { PropertyBinButton } from "@/components/property-bin-button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Icons } from "@/components/icons";
+import { Link } from "@/components/link";
 
 type CaseStudyProps = Readonly<{
   params: { "project-id": string; "property-id": string } & LocaleProps;
@@ -66,45 +67,12 @@ export default async function CaseStudy({
   return (
     <div className="container flex-1 py-6">
       <div className="flex flex-col gap-5">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href={`/${lang}/dashboard/projects`}>
-                {c?.["projects"]}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href={`/${lang}/dashboard/projects/${projectId}`}>
-                {property?.["project"]?.["title"]}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{property?.["title"]}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-
-        {projectDeleted && (
-          <Alert variant="warning">
-            <Icons.exclamationTriangle />
-            <AlertTitle>{c?.["warning!"]}</AlertTitle>
-            <AlertDescription>
-              {
-                c?.[
-                  "it's project is deleted, once you restore it all will be editable."
-                ]
-              }
-            </AlertDescription>
-          </Alert>
-        )}
-        <div className="mb-4 flex items-center justify-between gap-4">
-          <div className="flex flex-col">
-            <h2 className="text-2xl font-bold tracking-tight">
-              {property?.["title"]}
-            </h2>
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <Link href={`/dashboard/projects/${projectId}`}>
+              <Icons.chevronLeft />
+              {property?.["project"]?.["title"]}
+            </Link>
           </div>
 
           <div>
@@ -131,6 +99,48 @@ export default async function CaseStudy({
                 </Button>
               </PropertyBinButton>
             )}
+          </div>
+        </div>
+
+        {/* <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href={`/${lang}/dashboard/projects`}>
+                {c?.["projects"]}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href={`/${lang}/dashboard/projects/${projectId}`}>
+                {property?.["project"]?.["title"]}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{property?.["title"]}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb> */}
+
+        {projectDeleted && (
+          <Alert variant="warning">
+            <Icons.exclamationTriangle />
+            <AlertTitle>{c?.["warning!"]}</AlertTitle>
+            <AlertDescription>
+              {
+                c?.[
+                  "it's project is deleted, once you restore it all will be editable."
+                ]
+              }
+            </AlertDescription>
+          </Alert>
+        )}
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <div className="flex flex-col">
+            <h2 className="text-2xl font-bold tracking-tight">
+              {property?.["title"]}
+            </h2>
           </div>
         </div>
       </div>

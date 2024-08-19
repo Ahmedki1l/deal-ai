@@ -80,7 +80,7 @@ export function PostDeleteButton({
       title={c?.["delete post"]}
       description={
         c?.[
-          "this step is essential for informing patients about the treatments available at your post."
+          "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted."
         ]
       }
       open={open}

@@ -83,7 +83,7 @@ export function PostRestoreButton({
       title={c?.["restore post"]}
       description={
         c?.[
-          "this step is essential for informing patients about the treatments available at your post."
+          "restoring this post will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off."
         ]
       }
       {...props}

@@ -118,7 +118,7 @@ export function PostCreateButton({
       title={c?.["create posts"]}
       description={
         c?.[
-          "this step is essential for informing patients about the treatments available at your posts."
+          "streamline your marketing efforts by generating and scheduling posts across all your platforms using AI, and automatically publishes it at optimal times, maximizing reach and engagement."
         ]
       }
       open={open}

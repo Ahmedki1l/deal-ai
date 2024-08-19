@@ -83,7 +83,7 @@ export function ProjectRestoreButton({
       title={c?.["restore project"]}
       description={
         c?.[
-          "this step is essential for informing patients about the treatments available at your project."
+          "restoring this project will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off."
         ]
       }
       {...props}

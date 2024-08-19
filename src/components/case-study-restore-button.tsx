@@ -83,7 +83,7 @@ export function CaseStudyRestoreButton({
       title={c?.["restore case study"]}
       description={
         c?.[
-          "this step is essential for informing patients about the treatments available at your case study."
+          "restoring this case study will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off."
         ]
       }
       {...props}

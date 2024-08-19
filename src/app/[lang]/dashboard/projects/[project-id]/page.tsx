@@ -36,6 +36,7 @@ export default async function Project({
 }: ProjectProps) {
   const dic = await getDictionary(lang);
   const c = dic?.["dashboard"]?.["user"]?.["projects"]?.["project"];
+
   const project = await db.project.findFirst({
     include: {
       caseStudy: {
@@ -66,13 +67,13 @@ export default async function Project({
 
   const projectDeleted = !!project?.["deletedAt"];
   const detailsTable = [
-    { label: "Distinct", value: project?.["distinct"] },
-    { label: "City", value: project?.["city"] },
-    { label: "Country", value: project?.["country"] },
-    { label: "Spaces", value: project?.["spaces"] },
-    { label: "Property Types", value: project?.["propertyTypes"] },
+    { label: c?.["distinct"], value: project?.["distinct"] },
+    { label: c?.["city"], value: project?.["city"] },
+    { label: c?.["country"], value: project?.["country"] },
+    { label: c?.["spaces"], value: project?.["spaces"] },
+    { label: c?.["property types"], value: project?.["propertyTypes"] },
     {
-      label: "Platforms",
+      label: c?.["platforms"],
       value: (
         <div className="flex flex-1 items-center justify-end gap-2">
           {project?.["platforms"]?.map((e, i) => {
@@ -95,7 +96,7 @@ export default async function Project({
           <div>
             <BackButton dic={dic}>
               <Icons.chevronLeft />
-              back to all projects
+              {c?.["back to all projects"]}
             </BackButton>
           </div>
 

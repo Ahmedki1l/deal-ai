@@ -287,7 +287,7 @@ export function PropertyCreateButton({
       title={c?.["create property"]}
       description={
         c?.[
-          "this step is essential for informing patients about the treatments available at your property."
+       "by detailing each property, including its features, layout, and amenities, you ensure that all relevant information is captured, enabling better organization and presentation to potential buyers or tenants."
         ]
       }
       open={open}

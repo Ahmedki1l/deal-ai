@@ -13,7 +13,8 @@ type RegisterProps = Readonly<{ params: LocaleProps }>;
 
 export const metadata: Metadata = { title: "Register" };
 export default async function Register({ params: { lang } }: RegisterProps) {
-  const { site: c, ...dic } = await getDictionary(lang);
+  const dic = await getDictionary(lang);
+  const c = dic?.["auth"]?.["register"];
 
   return (
     <div className="grid min-h-[700px] flex-1 items-center justify-center overflow-auto lg:grid-cols-2">
@@ -22,18 +23,20 @@ export default async function Register({ params: { lang } }: RegisterProps) {
       <section className="container relative hidden h-full flex-col bg-[url('https://unsplash.com/photos/a-couple-of-tall-buildings-sitting-next-to-each-other-g5d5J8hStio')] p-10 text-primary-foreground dark:border-r lg:flex">
         <div className="absolute inset-0 bg-primary/30" />
         <p className="z-20 flex items-center gap-2 text-lg font-medium">
-          <Icons.logo /> {c?.["name"]}
+          <Icons.logo /> {dic?.["site"]?.["name"]}
         </p>
 
         <div className="z-20 mt-auto">
           <blockquote className="space-y-2 italic">
             <p className="text-lg">
-              &ldquo;Since partnering with Acme Inc, our sales have increased by
-              40% and customer satisfaction has skyrocketed. Their platform has
-              streamlined our operations and boosted our business growth.&rdquo;
+              {
+                c?.[
+                  "since collaborating with Deal Ai, our property sales have surged by 40%, and client satisfaction has reached new heights. their platform has optimized our operations, driving significant business growth."
+                ]
+              }
             </p>
             <footer className="text-sm">
-              Alex Thompson, CEO of Thompson Enterprises
+              {c?.["Alex Thompson, CEO of Thompson Real Estate"]}
             </footer>
           </blockquote>
         </div>

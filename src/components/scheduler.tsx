@@ -16,7 +16,8 @@ type SchedulerProps = {
     image: ImageType | null;
     caseStudy: CaseStudy & { project: Project };
   })[];
-} & Dictionary["post-update-form"] &
+} & Dictionary["scheduler"] &
+  Dictionary["post-update-form"] &
   Dictionary["image-form"] &
   Dictionary["post-form"] &
   Dictionary["dialog"] &
@@ -25,7 +26,10 @@ type SchedulerProps = {
   Dictionary["back-button"] &
   Dictionary["constants"];
 
-export function Scheduler({ dic, posts }: SchedulerProps) {
+export function Scheduler({
+  dic: { scheduler: c, ...dic },
+  posts,
+}: SchedulerProps) {
   const [currenMonth, setCurrentMonth] = useState(getMonth());
   const [monthIndex, setMonthIndex] = useState(dayjs().month());
 
@@ -52,7 +56,7 @@ export function Scheduler({ dic, posts }: SchedulerProps) {
       <header className="flex items-center gap-4">
         <div className="flex items-center">
           <Button variant="ghost" onClick={handleReset}>
-            Today
+            {c?.["today"]}
           </Button>
           <Button variant="ghost" size="icon" onClick={handlePrevMonth}>
             <Icons.chevronLeft className="rtl:rotate-180" />

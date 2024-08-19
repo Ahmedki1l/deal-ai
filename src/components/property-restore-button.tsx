@@ -83,7 +83,7 @@ export function PropertyRestoreButton({
       title={c?.["restore property"]}
       description={
         c?.[
-          "this step is essential for informing patients about the treatments available at your property."
+          "restoring this property will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off."
         ]
       }
       {...props}

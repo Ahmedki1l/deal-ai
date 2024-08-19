@@ -23,9 +23,6 @@ export default async function BinPosts({ params: { lang } }: BinPostsProps) {
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-medium">{c?.["posts"]}</h3>
-        <p className="text-sm text-muted-foreground">
-          {c?.["this is how others will see you on the site."]}
-        </p>
       </div>
       <Separator />
 

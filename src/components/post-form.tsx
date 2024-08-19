@@ -25,6 +25,7 @@ import { platforms, postCampaigns, postContentLengths } from "@/db/enums";
 import { Dictionary } from "@/types/locale";
 import { Checkbox } from "./ui/checkbox";
 import { Link } from "./link";
+import { buttonVariants } from "./ui/button";
 
 type PostFormProps = {
   loading: boolean;
@@ -36,18 +37,24 @@ type PostFormProps = {
 } & Dictionary["post-form"];
 
 export const PostForm = {
-  title: ({ dic: { "post-form": c }, loading, form }: PostFormProps) => (
+  title: ({
+    dic: {
+      "post-form": { title: c },
+    },
+    loading,
+    form,
+  }: PostFormProps) => (
     <FormField
       control={form.control}
       name="title"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{c?.["title"]?.["label"]}</FormLabel>
+          <FormLabel>{c?.["label"]}</FormLabel>
           <FormControl>
             <Input
               type="text"
               className="w-full"
-              placeholder={c?.["title"]?.["health center"]}
+              placeholder={c?.["health center"]}
               disabled={loading}
               {...field}
             />
@@ -57,7 +64,13 @@ export const PostForm = {
       )}
     />
   ),
-  confirmedAt: ({ dic: { "post-form": c }, loading, form }: PostFormProps) => (
+  confirmedAt: ({
+    dic: {
+      "post-form": { confirmedAt: c },
+    },
+    loading,
+    form,
+  }: PostFormProps) => (
     <FormField
       control={form.control}
       name="confirm"
@@ -67,10 +80,16 @@ export const PostForm = {
             <Checkbox checked={field.value} onCheckedChange={field.onChange} />
           </FormControl>
           <div className="space-y-1 leading-none">
-            <FormLabel>Confirm this post to be ready for publishing.</FormLabel>
+            <FormLabel>{c?.["label"]}</FormLabel>
             <FormDescription>
-              You can manage your posts in the{" "}
-              <Link href="/dashboard/calender">Calender</Link> page.
+              {c?.["you can manage your posts in the"]}{" "}
+              <Link
+                href="/dashboard/calender"
+                className={buttonVariants({ variant: "link" })}
+              >
+                {c?.["calender"]}
+              </Link>{" "}
+              {c?.["page"]}.
             </FormDescription>
           </div>
         </FormItem>
@@ -78,17 +97,23 @@ export const PostForm = {
     />
   ),
 
-  content: ({ dic: { "post-form": c }, loading, form }: PostFormProps) => (
+  content: ({
+    dic: {
+      "post-form": { content: c },
+    },
+    loading,
+    form,
+  }: PostFormProps) => (
     <FormField
       control={form.control}
       name="content"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{c?.["content"]?.["label"]}</FormLabel>
+          <FormLabel>{c?.["label"]}</FormLabel>
           <FormControl>
             <Textarea
               className="min-h-56 w-full"
-              placeholder={c?.["content"]?.["describe your post's content"]}
+              placeholder={c?.["describe your post's content"]}
               disabled={loading}
               {...field}
             />
@@ -98,13 +123,19 @@ export const PostForm = {
       )}
     />
   ),
-  noOfWeeks: ({ dic: { "post-form": c }, loading, form }: PostFormProps) => (
+  noOfWeeks: ({
+    dic: {
+      "post-form": { noOfWeeks: c },
+    },
+    loading,
+    form,
+  }: PostFormProps) => (
     <FormField
       control={form.control}
       name="noOfWeeks"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{c?.["noOfWeeks"]?.["label"]}</FormLabel>
+          <FormLabel>{c?.["label"]}</FormLabel>
           <FormControl>
             <Input
               type="text"
@@ -119,13 +150,19 @@ export const PostForm = {
       )}
     />
   ),
-  campaignType: ({ dic: { "post-form": c }, loading, form }: PostFormProps) => (
+  campaignType: ({
+    dic: {
+      "post-form": { campaignType: c },
+    },
+    loading,
+    form,
+  }: PostFormProps) => (
     <FormField
       control={form.control}
       name="campaignType"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{c?.["campaignType"]?.["label"]}</FormLabel>
+          <FormLabel>{c?.["label"]}</FormLabel>
           <FormControl>
             <Select
               onValueChange={field.onChange}
@@ -134,9 +171,7 @@ export const PostForm = {
             >
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue
-                    placeholder={c?.["campaignType"]?.["select your campaign"]}
-                  />
+                  <SelectValue placeholder={c?.["select your campaign"]} />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
@@ -154,7 +189,9 @@ export const PostForm = {
     />
   ),
   contentLength: ({
-    dic: { "post-form": c },
+    dic: {
+      "post-form": { contentLength: c },
+    },
     loading,
     form,
   }: PostFormProps) => (
@@ -163,7 +200,7 @@ export const PostForm = {
       name="contentLength"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{c?.["contentLength"]?.["label"]}</FormLabel>
+          <FormLabel>{c?.["label"]}</FormLabel>
           <FormControl>
             <Select
               onValueChange={field.onChange}
@@ -173,9 +210,7 @@ export const PostForm = {
               <FormControl>
                 <SelectTrigger>
                   <SelectValue
-                    placeholder={
-                      c?.["contentLength"]?.["select your content length"]
-                    }
+                    placeholder={c?.["select your content length"]}
                   />
                 </SelectTrigger>
               </FormControl>
@@ -193,13 +228,19 @@ export const PostForm = {
       )}
     />
   ),
-  platform: ({ dic: { "post-form": c }, loading, form }: PostFormProps) => (
+  platform: ({
+    dic: {
+      "post-form": { platform: c },
+    },
+    loading,
+    form,
+  }: PostFormProps) => (
     <FormField
       control={form.control}
       name="platform"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{c?.["platform"]?.["label"]}</FormLabel>
+          <FormLabel>{c?.["label"]}</FormLabel>
           <FormControl>
             <Select
               onValueChange={field.onChange}
@@ -208,9 +249,7 @@ export const PostForm = {
             >
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue
-                    placeholder={c?.["platform"]?.["select your platform"]}
-                  />
+                  <SelectValue placeholder={c?.["select your platform"]} />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
@@ -227,13 +266,19 @@ export const PostForm = {
       )}
     />
   ),
-  postAt: ({ dic: { "post-form": c }, loading, form }: PostFormProps) => (
+  postAt: ({
+    dic: {
+      "post-form": { postAt: c },
+    },
+    loading,
+    form,
+  }: PostFormProps) => (
     <FormField
       control={form.control}
       name="postAt"
       render={({ field }) => (
         <FormItem className="flex flex-col">
-          <FormLabel>{c?.["postAt"]?.["label"]}</FormLabel>
+          <FormLabel>{c?.["label"]}</FormLabel>
           <FormControl className="w-full">
             <DateTimePicker
               // mode="single"

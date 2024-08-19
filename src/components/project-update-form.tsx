@@ -144,7 +144,7 @@ export function ProjectUpdateForm({
       title={c?.["update project"]}
       description={
         c?.[
-          "this step is essential for informing patients about the treatments available at your project."
+          "updating a project allows you to refine and enhance the details of your ongoing developments"
         ]
       }
       {...props}

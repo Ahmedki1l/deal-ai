@@ -14,6 +14,7 @@ export default async function BinProperties({
 }: BinPropertiesProps) {
   const dic = await getDictionary(lang);
   const c = dic?.["dashboard"]?.["user"]?.["bin"]?.["properties"];
+
   const properties = await db.property.findMany({
     where: {
       deletedAt: { not: null },
@@ -24,9 +25,6 @@ export default async function BinProperties({
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-medium">{c?.["properties"]}</h3>
-        <p className="text-sm text-muted-foreground">
-          {c?.["this is how others will see you on the site."]}
-        </p>
       </div>
       <Separator />
 

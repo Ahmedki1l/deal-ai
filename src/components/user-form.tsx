@@ -33,7 +33,9 @@ type UserFormProps = {
 
 export const UserForm = {
   name: function Component({
-    dic: { "user-form": c },
+    dic: {
+      "user-form": { name: c },
+    },
     loading,
     form,
   }: UserFormProps) {
@@ -43,13 +45,13 @@ export const UserForm = {
         name="name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{c?.["name"]?.["label"]}</FormLabel>
+            <FormLabel>{c?.["label"]}</FormLabel>
             <FormControl>
               {/* @ts-ignore */}
               <Input
                 type="text"
                 dir="ltr"
-                placeholder="Joe Doe"
+                placeholder={c?.["placeholder"]}
                 disabled={loading}
                 {...field}
               />
@@ -61,7 +63,9 @@ export const UserForm = {
     );
   },
   email: function Component({
-    dic: { "user-form": c },
+    dic: {
+      "user-form": { email: c },
+    },
     loading,
     form,
   }: UserFormProps) {
@@ -71,7 +75,7 @@ export const UserForm = {
         name="email"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{c?.["email"]?.["label"]}</FormLabel>
+            <FormLabel>{c?.["label"]}</FormLabel>
             <FormControl>
               <Input
                 type="email"
@@ -91,7 +95,9 @@ export const UserForm = {
     );
   },
   password: function Component({
-    dic: { "user-form": c },
+    dic: {
+      "user-form": { password: c },
+    },
     loading,
     form,
     field,
@@ -107,7 +113,7 @@ export const UserForm = {
         name={field ?? "password"}
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{label ?? c?.["password"]?.["label"]}</FormLabel>
+            <FormLabel>{label ?? c?.["label"]}</FormLabel>
             <FormControl>
               {/* @ts-ignore */}
               <Input

@@ -25,7 +25,11 @@ export default async function BinLayout({
           <div className="space-y-0.5">
             <h2 className="text-2xl font-bold tracking-tight">{c?.["bin"]}</h2>
             <p className="text-sm text-muted-foreground">
-              {c?.["this is how others will see you on the site."]}
+              {
+                c?.[
+                  "below is a list of your deleted items. you can restore them within 30 days before they are permanently removed."
+                ]
+              }
             </p>
           </div>
 

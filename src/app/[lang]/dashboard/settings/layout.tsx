@@ -26,6 +26,13 @@ export default async function SettingsLayout({
             <h2 className="text-2xl font-bold tracking-tight">
               {c?.["settings"]}
             </h2>
+            <p className="text-sm text-muted-foreground">
+              {
+                c?.[
+                  "manage your account details, privacy settings, and how others perceive you on the platform."
+                ]
+              }
+            </p>
           </div>
 
           <Separator className="my-6" />

@@ -340,7 +340,7 @@ export function ProjectCreateButton({
       title={c?.["create project"]}
       description={
         c?.[
-          "this step is essential for informing patients about the treatments available at your project."
+          "by providing detailed information about your project, you'll be able to streamline your operations, track progress, and ensure that all stakeholders are informed about the development's key aspects and milestones."
         ]
       }
       {...props}

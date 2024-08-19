@@ -114,7 +114,7 @@ export function CaseStudyCreateButton({
       title={c?.["create case study"]}
       description={
         c?.[
-          "this step is essential for informing patients about the treatments available at your case study."
+          "create a A well-structured case study for your real estate project that helps highlight the unique features, target audience, market strategy, and performance metrics of your project. once created, these case studies can be used to inform potential buyers, partners, and stakeholders, demonstrating the value and potential of your real estate developments."
         ]
       }
       open={open}

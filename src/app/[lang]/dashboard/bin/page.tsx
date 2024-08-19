@@ -24,9 +24,6 @@ export default async function BinProjects({
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-medium">{c?.["projects"]}</h3>
-        <p className="text-sm text-muted-foreground">
-          {c?.["this is how others will see you on the site."]}
-        </p>
       </div>
       <Separator />
 

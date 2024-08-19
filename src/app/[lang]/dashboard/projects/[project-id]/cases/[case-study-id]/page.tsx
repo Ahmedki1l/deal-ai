@@ -105,47 +105,14 @@ export default async function CaseStudy({
   return (
     <div className="container flex-1 py-6">
       <div className="flex flex-col gap-5">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href={`/${lang}/dashboard/projects`}>
-                {c?.["projects"]}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href={`/${lang}/dashboard/projects/${projectId}`}>
-                {caseStudy?.["project"]?.["title"]}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{caseStudy?.["title"]}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-
-        {projectDeleted && (
-          <Alert variant="warning">
-            <Icons.exclamationTriangle />
-            <AlertTitle>{c?.["warning!"]}</AlertTitle>
-            <AlertDescription>
-              {
-                c?.[
-                  "it's project is deleted, once you restore it all will be editable."
-                ]
-              }
-            </AlertDescription>
-          </Alert>
-        )}
-
-        <div className="mb-4 flex items-center justify-between gap-4">
-          <div className="flex flex-col">
-            <h2 className="text-2xl font-bold tracking-tight">
-              {caseStudy?.["title"]}
-            </h2>
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <Link href={`/dashboard/projects/${projectId}`}>
+              <Icons.chevronLeft />
+              {caseStudy?.["project"]?.["title"]}
+            </Link>
           </div>
+
           <div>
             {caseStudyDeleted ? (
               <CaseStudyRestoreButton
@@ -170,6 +137,49 @@ export default async function CaseStudy({
                 </Button>
               </CaseStudyBinButton>
             )}
+          </div>
+        </div>
+
+        {/* <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href={`/${lang}/dashboard/projects`}>
+                {c?.["projects"]}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href={`/${lang}/dashboard/projects/${projectId}`}>
+                {caseStudy?.["project"]?.["title"]}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{caseStudy?.["title"]}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb> */}
+
+        {projectDeleted && (
+          <Alert variant="warning">
+            <Icons.exclamationTriangle />
+            <AlertTitle>{c?.["warning!"]}</AlertTitle>
+            <AlertDescription>
+              {
+                c?.[
+                  "it's project is deleted, once you restore it all will be editable."
+                ]
+              }
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <div className="flex flex-col">
+            <h2 className="text-2xl font-bold tracking-tight">
+              {caseStudy?.["title"]}
+            </h2>
           </div>
         </div>
         <div>
@@ -276,8 +286,8 @@ export default async function CaseStudy({
                               className="absolute right-2 top-2"
                             >
                               {e?.["confirmedAt"]
-                                ? "confirmed"
-                                : "pre scheduled"}
+                                ? c?.["confirmed"]
+                                : c?.["pre scheduled"]}
                             </Badge>
 
                             <CardHeader className="rounded-none p-0">
@@ -359,7 +369,7 @@ export default async function CaseStudy({
                               <div className="w-full text-xs">
                                 <p className="text-muted-foreground">
                                   <span className="font-bold">
-                                    Campaign Type:{" "}
+                                    {c?.["campaign type"]}:{" "}
                                   </span>
                                   {e?.["campaignType"]
                                     ?.toLocaleLowerCase()
@@ -372,7 +382,7 @@ export default async function CaseStudy({
                                 </p>
                                 <p className="text-muted-foreground">
                                   <span className="font-bold">
-                                    Content Length:{" "}
+                                    {c?.["content length"]}:{" "}
                                   </span>
                                   {e?.["contentLength"]
                                     ?.split("_")

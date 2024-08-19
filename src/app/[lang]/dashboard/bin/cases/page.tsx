@@ -22,9 +22,6 @@ export default async function BinCases({ params: { lang } }: BinCasesProps) {
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-medium">{c?.["study cases"]}</h3>
-        <p className="text-sm text-muted-foreground">
-          {c?.["this is how others will see you on the site."]}
-        </p>
       </div>
       <Separator />
 

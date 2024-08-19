@@ -15,17 +15,10 @@ import {
   caseStudyUpdateFormSchema,
 } from "@/validations/case-studies";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Button } from "./ui/button";
-import { Icons } from "./icons";
+import { Button } from "@/components/ui/button";
+import { Icons } from "@/components/icons";
 import { convertBase64 } from "@/lib/utils";
-import { Image } from "./image";
+import { Image } from "@/components/image";
 import { Dictionary } from "@/types/locale";
 
 type CaseStudyFormProps = {
@@ -40,7 +33,9 @@ type CaseStudyFormProps = {
 
 export const CaseStudyForm = {
   title: ({
-    dic: { "case-study-form": c },
+    dic: {
+      "case-study-form": { title: c },
+    },
     loading,
     form,
   }: CaseStudyFormProps) => (
@@ -49,11 +44,11 @@ export const CaseStudyForm = {
       name="title"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{c?.["title"]?.["label"]}</FormLabel>
+          <FormLabel>{c?.["label"]}</FormLabel>
           <FormControl>
             <Input
               type="text"
-              placeholder={c?.["title"]?.["health center"]}
+              placeholder={c?.["health center"]}
               disabled={loading}
               {...field}
             />
@@ -64,7 +59,9 @@ export const CaseStudyForm = {
     />
   ),
   refImages: function Component({
-    dic: { "case-study-form": c },
+    dic: {
+      "case-study-form": { refImages: c },
+    },
     loading,
     form,
     limit,
@@ -79,7 +76,7 @@ export const CaseStudyForm = {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-4">
-          <FormLabel>{c?.["reference image"]?.["label"]}</FormLabel>
+          <FormLabel>{c?.["label"]}</FormLabel>
           <Button
             size="icon"
             // @ts-ignore
@@ -141,7 +138,9 @@ export const CaseStudyForm = {
     );
   },
   content: ({
-    dic: { "case-study-form": c },
+    dic: {
+      "case-study-form": { content: c },
+    },
     loading,
     form,
   }: CaseStudyFormProps) => (
@@ -150,12 +149,10 @@ export const CaseStudyForm = {
       name="content"
       render={({ field }) => (
         <FormItem>
-          <FormLabel> {c?.["content"]?.["label"]}</FormLabel>
+          <FormLabel> {c?.["label"]}</FormLabel>
           <FormControl>
             <Textarea
-              placeholder={
-                c?.["content"]?.["describe your case study's content"]
-              }
+              placeholder={c?.["describe your case study's content"]}
               disabled={loading}
               {...field}
             />
@@ -166,7 +163,9 @@ export const CaseStudyForm = {
     />
   ),
   targetAudience: ({
-    dic: { "case-study-form": c },
+    dic: {
+      "case-study-form": { targetAudience: c },
+    },
     loading,
     form,
   }: CaseStudyFormProps) => (
@@ -175,14 +174,10 @@ export const CaseStudyForm = {
       name="targetAudience"
       render={({ field }) => (
         <FormItem>
-          <FormLabel> {c?.["targetAudience"]?.["label"]}</FormLabel>
+          <FormLabel> {c?.["label"]}</FormLabel>
           <FormControl>
             <Textarea
-              placeholder={
-                c?.["targetAudience"]?.[
-                  "describe your case study's target audience"
-                ]
-              }
+              placeholder={c?.["describe your case study's target audience"]}
               disabled={loading}
               {...field}
             />
@@ -193,7 +188,9 @@ export const CaseStudyForm = {
     />
   ),
   pros: ({
-    dic: { "case-study-form": c },
+    dic: {
+      "case-study-form": { pros: c },
+    },
     loading,
     form,
   }: CaseStudyFormProps) => (
@@ -202,10 +199,10 @@ export const CaseStudyForm = {
       name="pros"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{c?.["pros"]?.["label"]}</FormLabel>
+          <FormLabel>{c?.["label"]}</FormLabel>
           <FormControl>
             <Textarea
-              placeholder={c?.["pros"]?.["describe your case study's pros"]}
+              placeholder={c?.["describe your case study's pros"]}
               disabled={loading}
               {...field}
             />
@@ -216,7 +213,9 @@ export const CaseStudyForm = {
     />
   ),
   cons: ({
-    dic: { "case-study-form": c },
+    dic: {
+      "case-study-form": { cons: c },
+    },
     loading,
     form,
   }: CaseStudyFormProps) => (
@@ -225,10 +224,10 @@ export const CaseStudyForm = {
       name="cons"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{c?.["cons"]?.["label"]}</FormLabel>
+          <FormLabel>{c?.["label"]}</FormLabel>
           <FormControl>
             <Textarea
-              placeholder={c?.["cons"]?.["describe your case study's cons"]}
+              placeholder={c?.["describe your case study's cons"]}
               disabled={loading}
               {...field}
             />

@@ -63,7 +63,7 @@ export function DialogResponsive({
             <DialogDescription className="max-w-prose">
               {description ??
                 c?.[
-                  "Please confirm that all the provided information is accurate. This action cannot be undone."
+                  "please confirm that all the provided information is accurate. This action cannot be undone."
                 ]}
             </DialogDescription>
           </DialogHeader>
@@ -92,7 +92,7 @@ export function DialogResponsive({
           <DrawerDescription className="max-w-prose">
             {description ??
               c?.[
-                "Please confirm that all the provided information is accurate. This action cannot be undone."
+                "please confirm that all the provided information is accurate. This action cannot be undone."
               ]}
           </DrawerDescription>
         </DrawerHeader>

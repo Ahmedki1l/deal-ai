@@ -83,7 +83,7 @@ export function PostBinButton({
       title={c?.["delete post"]}
       description={
         c?.[
-          "this step is essential for informing patients about the treatments available at your post."
+          "once deleted, the post will be moved to the bin. you can manually delete it or it will be automatically removed after 30 days. if restored, everything will be reinstated as if nothing happened."
         ]
       }
       {...props}

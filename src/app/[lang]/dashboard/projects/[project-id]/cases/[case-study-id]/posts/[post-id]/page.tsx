@@ -15,6 +15,7 @@ import { getDictionary } from "@/lib/dictionaries";
 import { LocaleProps } from "@/types/locale";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Icons } from "@/components/icons";
+import { Link } from "@/components/link";
 
 type CaseStudyProps = Readonly<{
   params: {
@@ -75,7 +76,18 @@ export default async function CaseStudy({
   return (
     <div className="min-h-screen flex-1 overflow-auto">
       <div className="container flex flex-col gap-5 py-6">
-        <Breadcrumb>
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <Link
+              href={`/${lang}/dashboard/projects/${projectId}/cases/${caseStudyId}`}
+            >
+              <Icons.chevronLeft />
+              {post?.["caseStudy"]?.["title"]}
+            </Link>
+          </div>
+        </div>
+
+        {/* <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href={`/${lang}/dashboard/projects`}>
@@ -103,7 +115,7 @@ export default async function CaseStudy({
               <BreadcrumbPage>{post?.["title"]}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
-        </Breadcrumb>
+        </Breadcrumb> */}
 
         {projectDeleted ||
           (caseStudyDeleted && (

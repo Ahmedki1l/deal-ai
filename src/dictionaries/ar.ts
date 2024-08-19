@@ -116,8 +116,8 @@ export default {
             "إليك قائمة بدراسات الحالة الخاصة بك.",
           "case studies": "دراسات الحالة",
           "create case study": "إنشاء دراسة حالة",
-          "here's a list of your properties.": "إليك قائمة بخصائصك.",
-          "create properties": "إنشاء خصائص",
+          "here's a list of your properties.": "إليك قائمة بوحداتك.",
+          "create properties": "إنشاء وحدات",
 
           cases: {
             case: {

@@ -51,9 +51,9 @@ model Platform {
   id        String @id @map("_id")
   projectId String @map("project-id")
 
-  value     PLATFORM
-  clientId  String
-  urn       String?
+  value    PLATFORM
+  clientId String?
+  urn      String?
 
   project Project @relation(references: [id], fields: [projectId], onDelete: Cascade)
 
@@ -91,18 +91,18 @@ model CaseStudy {
   refImages String[]  @map("ref-images")
   deletedAt DateTime? @map("deleted-at")
 
-  content           String
-  targetAudience    String  @map("target-audience")
-  pros              String  @map("pros")
-  cons              String  @map("cons")
-  hashtags          String?
-  Market_Strategy   String
+  content             String
+  targetAudience      String  @map("target-audience")
+  pros                String  @map("pros")
+  cons                String  @map("cons")
+  hashtags            String?
+  Market_Strategy     String
   Performance_Metrics String
-  ROI_Calculation   String
-  Strategic_Insights String
-  Recommendations   String
-  prompt            String?
-  caseStudyResponse String?
+  ROI_Calculation     String
+  Strategic_Insights  String
+  Recommendations     String
+  prompt              String?
+  caseStudyResponse   String?
 
   posts   Post[]
   project Project @relation(references: [id], fields: [projectId], onDelete: Cascade)

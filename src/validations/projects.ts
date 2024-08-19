@@ -20,7 +20,7 @@ export const projectSchema = z.object(
       .array(
         z.object({
           value: z.enum(platformsArr),
-          clientId: z.string("client id"),
+          clientId: z.string("client id").optional(),
           urn: z.string("urn").optional(),
         }),
       )

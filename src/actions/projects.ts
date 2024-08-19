@@ -42,6 +42,7 @@ export async function createProject({
         ...t,
         id: generateIdFromEntropySize(10),
         urn: t?.["urn"] ?? null,
+        clientId: t?.["clientId"] ?? null,
       }))
 
       .flat();

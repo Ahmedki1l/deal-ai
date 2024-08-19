@@ -84,10 +84,7 @@ export const PostForm = {
             <FormLabel>{c?.["label"]}</FormLabel>
             <FormDescription>
               {c?.["you can manage your posts in the"]}{" "}
-              <Link
-                href="/dashboard/calender"
-                className={buttonVariants({ variant: "link" })}
-              >
+              <Link href="/dashboard/calender" className="font-bold underline">
                 {c?.["calender"]}
               </Link>{" "}
               {c?.["page"]}.

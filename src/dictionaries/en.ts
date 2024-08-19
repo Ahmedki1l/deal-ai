@@ -178,7 +178,7 @@ export default {
               "campaign type": "Campaign Type",
               "content length": "Content Length",
               confirmed: "confirmed",
-              "pre scheduled": "pre scheduled",
+              "not confirmed": "not confirmed",
               posts: {
                 posts: "Posts",
                 "oops, no posts.": "oops, no posts.",
@@ -415,6 +415,8 @@ export default {
       "generated successfully.": "generated successfully.",
       "enhance prompt": "enhance prompt",
       "new image": "new image",
+      enhance: "enhance",
+      generate: "generate",
     },
   },
   "locale-switcher": {

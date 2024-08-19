@@ -419,8 +419,10 @@ export default async function CaseStudy({
                 <div key={i}>
                   <div className="mb-4 space-y-0.5">
                     <p className="flex items-center gap-2 text-sm">
-                      {Icon && <Icon />} {platform?.["label"]}{" "}
-                      {c?.["posts"]?.["posts"]}
+                      {Icon && <Icon />}{" "}
+                      <span className="flex rtl:flex-row-reverse">
+                        {platform?.["label"]} {c?.["posts"]?.["posts"]}
+                      </span>
                     </p>
                   </div>
                   <Carousel>
@@ -439,7 +441,7 @@ export default async function CaseStudy({
                             >
                               {e?.["confirmedAt"]
                                 ? c?.["confirmed"]
-                                : c?.["pre scheduled"]}
+                                : c?.["not confirmed"]}
                             </Badge>
 
                             <CardHeader className="rounded-none p-0">
@@ -523,26 +525,18 @@ export default async function CaseStudy({
                                   <span className="font-bold">
                                     {c?.["campaign type"]}:{" "}
                                   </span>
-                                  {e?.["campaignType"]
-                                    ?.toLocaleLowerCase()
-                                    .split("_")
-                                    .map(
-                                      (e) =>
-                                        `${e[0]?.toUpperCase()}${e?.slice(1).toLocaleLowerCase()}`,
-                                    )
-                                    .join(" ")}
+                                  {dic?.["db"]?.["campaignTypes"]?.find(
+                                    (x) => x?.["value"] === e?.["campaignType"],
+                                  )?.["label"] ?? ""}
                                 </p>
                                 <p className="text-muted-foreground">
                                   <span className="font-bold">
                                     {c?.["content length"]}:{" "}
                                   </span>
-                                  {e?.["contentLength"]
-                                    ?.split("_")
-                                    ?.map(
-                                      (e) =>
-                                        `${e[0]?.toUpperCase()}${e?.slice(1).toLocaleLowerCase()}`,
-                                    )
-                                    .join(" ")}
+                                  {dic?.["db"]?.["contentLength"]?.find(
+                                    (x) =>
+                                      x?.["value"] === e?.["contentLength"],
+                                  )?.["label"] ?? ""}
                                 </p>
                               </div>
                             </CardFooter>

@@ -183,7 +183,7 @@ export function ProjectCreateButton({
 
                         {form.watch(`types.${i}.value`) && (
                           <Button
-                            type="button"
+                            // type="button"
                             size="icon"
                             onClick={() =>
                               // @ts-ignore

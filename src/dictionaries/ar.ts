@@ -174,7 +174,7 @@ export default {
               "campaign type": "نوع الحملة",
               "content length": "طول المحتوى",
               confirmed: "مؤكد",
-              "pre scheduled": "مجدول مسبقًا",
+              "not confirmed": "غير مؤكد",
               posts: {
                 posts: "المنشورات",
                 "oops, no posts.": "عذرًا، لا توجد منشورات.",
@@ -406,11 +406,13 @@ export default {
       url: "الرابط",
     },
     prompt: {
-      label: "التنبيه",
+      label: "الوصف",
       "enhanced successfully.": "تم تحسينه بنجاح.",
       "generated successfully.": "تم إنشاؤه بنجاح.",
-      "enhance prompt": "تحسين التنبيه",
+      "enhance prompt": "تحسين الوصف",
       "new image": "صورة جديدة",
+      enhance: "تحسين الوصف",
+      generate: "إنشاء صورة",
     },
   },
   "locale-switcher": {

@@ -93,7 +93,9 @@ export const ImageForm = {
     />
   ),
   prompt: function Component({
-    dic: { "image-form": c },
+    dic: {
+      "image-form": { prompt: c },
+    },
     loading,
     form,
   }: ImageFormProps) {
@@ -115,7 +117,7 @@ export const ImageForm = {
           success: (newPrompt: string) => {
             form.setValue("image.prompt", newPrompt);
 
-            return c?.["prompt"]?.["enhanced successfully."];
+            return c?.["enhanced successfully."];
           },
         },
       );
@@ -144,7 +146,7 @@ export const ImageForm = {
 
             form?.setValue("image.src", src);
 
-            return c?.["prompt"]?.["generated successfully."];
+            return c?.["generated successfully."];
           },
         },
       );
@@ -153,13 +155,13 @@ export const ImageForm = {
       <div className="grid gap-2">
         <Tabs defaultValue="enhance">
           <TabsList>
-            <TabsTrigger value="enhance">Enhance</TabsTrigger>
-            <TabsTrigger value="generate">Generate Image </TabsTrigger>
+            <TabsTrigger value="enhance">{c?.["enhance"]}</TabsTrigger>
+            <TabsTrigger value="generate">{c?.["generate"]}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="enhance">
             <div className="flex items-center justify-end">
-              <Tooltip text={c?.["prompt"]?.["enhance prompt"]}>
+              <Tooltip text={c?.["enhance prompt"]}>
                 <Button
                   type="button"
                   size="icon"
@@ -176,7 +178,7 @@ export const ImageForm = {
               name="image.prompt"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{c?.["prompt"]?.["label"]}</FormLabel>
+                  <FormLabel>{c?.["label"]}</FormLabel>
 
                   <FormControl>
                     <Textarea
@@ -192,7 +194,7 @@ export const ImageForm = {
           </TabsContent>
           <TabsContent value="generate">
             <div className="flex items-center justify-end">
-              <Tooltip text={c?.["prompt"]?.["new image"]}>
+              <Tooltip text={c?.["new image"]}>
                 <Button
                   type="button"
                   size="icon"

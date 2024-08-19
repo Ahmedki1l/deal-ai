@@ -20,7 +20,7 @@ import { Image } from "./image";
 type SchedulerProps = {
   posts: (Post & {
     image: ImageType | null;
-    caseStudy: CaseStudy & { project: Project & { platforms: Platform } };
+    caseStudy: CaseStudy & { project: Project & { platforms: Platform[] } };
   })[];
 } & Dictionary["post-update-form"] &
   Dictionary["image-form"] &

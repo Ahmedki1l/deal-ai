@@ -207,7 +207,7 @@ export default {
             },
           },
           properties: {
-            properties: "الخصائص",
+            properties: "الوحدات",
             "oops, no such property.": "عذرًا، لا توجد خاصية بهذا الاسم.",
             "you have not created you property yet.":
               "لم تقم بإنشاء خاصيتك بعد.",
@@ -242,7 +242,7 @@ export default {
         "main-nav": [
           { value: "/dashboard/bin", label: "المشاريع" },
           { value: "/dashboard/bin/cases", label: "دراسات الحالة" },
-          { value: "/dashboard/bin/properties", label: "الخصائص" },
+          { value: "/dashboard/bin/properties", label: "الوحدات" },
           { value: "/dashboard/bin/posts", label: "المنشورات" },
         ],
         bin: "سلة المهملات",
@@ -253,7 +253,7 @@ export default {
           "study cases": "دراسات الحالة",
         },
         properties: {
-          properties: "الخصائص",
+          properties: "الوحدات",
         },
         posts: {
           posts: "المنشورات",

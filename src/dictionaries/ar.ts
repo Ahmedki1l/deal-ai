@@ -512,7 +512,7 @@ export default {
     "scheduled successfully.": "تم جدولته بنجاح.",
     submit: "إرسال",
     "update schedule": "تحديث الجدول",
-    "updating your post's schedule allows you to refine and enhance the details of your ongoing developments":
+    "updating your post's scheule allows you to refine and enhance the details of your ongoing developments":
       "تحديث جدول منشورك يتيح لك تحسين وتعزيز تفاصيل مشاريعك الحالية",
   },
   "project-bin-button": {

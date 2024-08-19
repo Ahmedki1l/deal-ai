@@ -209,7 +209,7 @@ export default async function CaseStudy({
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="Market_Strategy">
-              <AccordionTrigger>Market Strategy</AccordionTrigger>
+              <AccordionTrigger>{c?.["Market_Strategy"]}</AccordionTrigger>
               <AccordionContent>
                 {(() => {
                   try {
@@ -248,7 +248,7 @@ export default async function CaseStudy({
             </AccordionItem>
 
             <AccordionItem value="Performance_Metrics">
-              <AccordionTrigger>Performance Metrics</AccordionTrigger>
+              <AccordionTrigger>{c?.["Performance_Metrics"]}</AccordionTrigger>
               <AccordionContent>
                 {(() => {
                   try {
@@ -294,7 +294,7 @@ export default async function CaseStudy({
             </AccordionItem>
 
             <AccordionItem value="ROI_Calculation">
-              <AccordionTrigger>ROI Calculation</AccordionTrigger>
+              <AccordionTrigger>{c?.["ROI_Calculation"]}</AccordionTrigger>
               <AccordionContent>
                 {(() => {
                   try {
@@ -335,7 +335,7 @@ export default async function CaseStudy({
             </AccordionItem>
 
             <AccordionItem value="Strategic_Insights">
-              <AccordionTrigger>Strategic Insights</AccordionTrigger>
+              <AccordionTrigger>{c?.["Strategic_Insights"]}</AccordionTrigger>
               <AccordionContent>
                 {/* Remove quotes by directly rendering the content */}
                 {caseStudy?.["Strategic_Insights"]?.replace(/"/g, "")}
@@ -343,7 +343,7 @@ export default async function CaseStudy({
             </AccordionItem>
 
             <AccordionItem value="Recommendations">
-              <AccordionTrigger>Recommendations</AccordionTrigger>
+              <AccordionTrigger>{c?.["Recommendations"]}</AccordionTrigger>
               <AccordionContent>
                 {/* Remove quotes by directly rendering the content */}
                 {caseStudy?.["Recommendations"]?.replace(/"/g, "")}

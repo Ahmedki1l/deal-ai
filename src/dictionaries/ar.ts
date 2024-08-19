@@ -90,7 +90,7 @@ export default {
           project: "المشروع",
           "case study": "دراسة حالة",
           "target audience": "الجمهور المستهدف",
-          properties: "الخصائص",
+          properties: "الوحدات",
           posts: "المنشورات",
           platforms: "المنصات",
           edit: "تعديل",

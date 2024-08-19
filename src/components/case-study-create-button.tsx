@@ -47,8 +47,15 @@ export function CaseStudyCreateButton({
       pros: "x",
       cons: "x",
       hashtags: "x",
+      Market_Strategy: "x",
+      Performance_Metrics: "x",
+      ROI_Calculation: "x",
+      Strategic_Insights: "x",
+      Recommendations: "x",
     },
   });
+
+  console.log("in the create case study button")
 
   async function onSubmit(data: z.infer<typeof caseStudyCreateFormSchema>) {
     setLoading(true);

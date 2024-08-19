@@ -40,6 +40,7 @@ export function CaseStudyUpdateForm({
     resolver: zodResolver(caseStudyUpdateSchema),
     defaultValues: {
       ...caseStudy,
+      hashtags: caseStudy.hashtags ?? undefined, 
     },
   });
 

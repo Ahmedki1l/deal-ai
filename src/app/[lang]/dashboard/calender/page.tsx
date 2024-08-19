@@ -5,6 +5,7 @@ import { getAuth } from "@/lib/auth";
 import { getDictionary } from "@/lib/dictionaries";
 import { LocaleProps } from "@/types/locale";
 import { Scheduler } from "@/components/scheduler";
+import { platform } from "os";
 
 type CalenderProps = Readonly<{ params: LocaleProps }>;
 
@@ -15,7 +16,10 @@ export default async function Calender({ params: { lang } }: CalenderProps) {
 
   const user = (await getAuth())?.["user"]!;
   const posts = await db.post.findMany({
-    include: { image: true, caseStudy: { include: { project: true } } },
+    include: {
+      image: true,
+      caseStudy: { include: { project: { include: { platforms: true } } } },
+    },
     where: {
       confirmedAt: { not: null },
       caseStudy: {

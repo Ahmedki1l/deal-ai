@@ -1,7 +1,13 @@
 "use client";
 import { cn, getMonth } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
-import { CaseStudy, Image as ImageType, Post, Project } from "@prisma/client";
+import {
+  CaseStudy,
+  Image as ImageType,
+  Platform,
+  Post,
+  Project,
+} from "@prisma/client";
 import dayjs from "dayjs";
 import { Fragment, useEffect, useState } from "react";
 import { Icons } from "./icons";
@@ -14,7 +20,7 @@ import { Image } from "./image";
 type SchedulerProps = {
   posts: (Post & {
     image: ImageType | null;
-    caseStudy: CaseStudy & { project: Project };
+    caseStudy: CaseStudy & { project: Project & { platforms: Platform[] } };
   })[];
 } & Dictionary["scheduler"] &
   Dictionary["post-update-form"] &
@@ -49,6 +55,88 @@ export function Scheduler({
         ? monthIndex + Math.random()
         : dayjs().month(),
     );
+    publish();
+  }
+
+  function publish() {
+    console.log("attempting to publish");
+    const domain = process.env.NEXT_PUBLIC_AI_API;
+    posts.forEach(async (post) => {
+      console.log("in the posts array");
+      let currentDate = new Date();
+
+      // Extract platforms from posts
+      const platforms = posts.flatMap(
+        (post) => post.caseStudy?.project?.platforms ?? [],
+      );
+
+      if (post.platform === "LINKEDIN") {
+        const targetedPlatform = platforms.find((e) => e.value === "LINKEDIN");
+        console.log("targetedPlatform: ", targetedPlatform);
+
+        if (post.postAt < currentDate) {
+          const data = {
+            text: post.content,
+            access_token: targetedPlatform?.clientId,
+            urn: targetedPlatform?.urn,
+          };
+
+          console.log(data);
+
+          try {
+            const response = await fetch(domain + "/linkedin-post", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+              console.log("failed");
+              throw new Error("Network response was not ok");
+            }
+
+            const result = await response.json();
+            console.log("LinkedIn post result:", result);
+          } catch (error) {
+            console.error("Error posting to LinkedIn:", error);
+          }
+        }
+      } else if (post.platform === "TWITTER") {
+        const targetedPlatform = platforms.find((e) => e.value === "TWITTER");
+        console.log(platforms);
+
+        if (post.postAt < currentDate) {
+          const data = {
+            text: post.content,
+            access_token: targetedPlatform?.clientId,
+          };
+
+          console.log(data);
+
+          try {
+            const response = await fetch(domain + "/post-tweet", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+              console.log("failed");
+              throw new Error("Network response was not ok");
+            }
+
+            const result = await response.json();
+            console.log("Twitter post result:", result);
+          } catch (error) {
+            console.error("Error posting to Twitter:", error);
+          }
+        }
+      }
+    });
   }
 
   return (

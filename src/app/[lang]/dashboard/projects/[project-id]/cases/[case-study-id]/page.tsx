@@ -218,6 +218,158 @@ export default async function CaseStudy({
                 </ul>
               </AccordionContent>
             </AccordionItem>
+            <AccordionItem value="Market_Strategy">
+              <AccordionTrigger>{c?.["market strategy"]}</AccordionTrigger>
+              <AccordionContent>
+                {(() => {
+                  try {
+                    const marketStrategy = caseStudy?.["Market_Strategy"]
+                      ? JSON.parse(caseStudy["Market_Strategy"])
+                      : null;
+
+                    const renderKeyValuePairs = (data: Record<string, any>) => (
+                      <ul className="list-decimal ltr:pl-5 rtl:pr-5">
+                        {Object.entries(data).map(([key, value]) => (
+                          <li key={key} className="mb-1">
+                            <strong>{key}:</strong>{" "}
+                            {typeof value === "object" && value !== null
+                              ? renderKeyValuePairs(value)
+                              : value}
+                          </li>
+                        ))}
+                      </ul>
+                    );
+
+                    if (
+                      marketStrategy &&
+                      typeof marketStrategy === "object" &&
+                      !Array.isArray(marketStrategy)
+                    ) {
+                      return renderKeyValuePairs(marketStrategy);
+                    } else {
+                      return (
+                        <p>{c?.["no valid market strategy data available."]}</p>
+                      );
+                    }
+                  } catch (e) {
+                    console.error("Failed to parse Market_Strategy JSON", e);
+                    return <p>{c?.["error loading market strategy data."]}</p>;
+                  }
+                })()}
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="Performance_Metrics">
+              <AccordionTrigger>{c?.["performance metrics"]}</AccordionTrigger>
+              <AccordionContent>
+                {(() => {
+                  try {
+                    const performanceMetrics = caseStudy?.[
+                      "Performance_Metrics"
+                    ]
+                      ? JSON.parse(caseStudy["Performance_Metrics"])
+                      : null;
+
+                    const renderKeyValuePairs = (data: Record<string, any>) => (
+                      <ul className="list-decimal ltr:pl-5 rtl:pr-5">
+                        {Object.entries(data).map(([key, value]) => (
+                          <li key={key} className="mb-1">
+                            <strong>{key}:</strong>{" "}
+                            {typeof value === "object" && value !== null
+                              ? renderKeyValuePairs(value)
+                              : value}
+                          </li>
+                        ))}
+                      </ul>
+                    );
+
+                    if (
+                      performanceMetrics &&
+                      typeof performanceMetrics === "object" &&
+                      !Array.isArray(performanceMetrics)
+                    ) {
+                      return renderKeyValuePairs(performanceMetrics);
+                    } else {
+                      return (
+                        <p>
+                          {c?.["no valid performance metrics data available."]}
+                        </p>
+                      );
+                    }
+                  } catch (e) {
+                    console.error(
+                      "Failed to parse Performance_Metrics JSON",
+                      e,
+                    );
+                    return (
+                      <p>{c?.["error loading performance metrics data."]}</p>
+                    );
+                  }
+                })()}
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="ROI_Calculation">
+              <AccordionTrigger>{c?.["ROI calculation"]}</AccordionTrigger>
+              <AccordionContent>
+                {(() => {
+                  try {
+                    // Parse the JSON string into an object
+                    const roiCalculation = caseStudy?.["ROI_Calculation"]
+                      ? JSON.parse(caseStudy["ROI_Calculation"])
+                      : null;
+
+                    // Function to render key-value pairs
+                    const renderKeyValuePairs = (data: Record<string, any>) => (
+                      <ul className="list-decimal ltr:pl-5 rtl:pr-5">
+                        {Object.entries(data).map(([key, value]) => (
+                          <li key={key} className="mb-1">
+                            <strong>{key}:</strong>{" "}
+                            {typeof value === "object" && value !== null
+                              ? renderKeyValuePairs(value)
+                              : value}
+                          </li>
+                        ))}
+                      </ul>
+                    );
+
+                    if (
+                      roiCalculation &&
+                      typeof roiCalculation === "object" &&
+                      !Array.isArray(roiCalculation)
+                    ) {
+                      return renderKeyValuePairs(roiCalculation);
+                    } else {
+                      return (
+                        <p>
+                          {c?.["no valid ROI calculation data available."]}.
+                        </p>
+                      );
+                    }
+                  } catch (e) {
+                    console.error("Failed to parse ROI_Calculation JSON", e);
+                    return <p>{c?.["error loading ROI calculation data."]}</p>;
+                  }
+                })()}
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="Strategic_Insights">
+              <AccordionTrigger>{c?.["strategic insights"]}</AccordionTrigger>
+              <AccordionContent>
+                {/* Remove quotes by directly rendering the content */}
+                {caseStudy?.["Strategic_Insights"]?.replace(/"/g, "")}
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="Recommendations">
+              <AccordionTrigger>{c?.["recommendations"]}</AccordionTrigger>
+              <AccordionContent>
+                {/* Remove quotes by directly rendering the content */}
+                {caseStudy?.["Recommendations"]?.replace(/"/g, "")}
+              </AccordionContent>
+            </AccordionItem>
+
             <AccordionItem value="images">
               <AccordionTrigger>{c?.["reference images"]}</AccordionTrigger>
               <AccordionContent className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">

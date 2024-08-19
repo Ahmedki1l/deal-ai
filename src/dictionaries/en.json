@@ -114,6 +114,26 @@
 
           "cases": {
             "case": {
+              "market strategy": "market strategy",
+              "error loading market strategy data.": "error loading market strategy data.",
+              "no valid market strategy data available.": "no valid market strategy data available.",
+
+              "performance metrics": "performance metrics",
+              "error loading performance metrics data.": "error loading performance metrics data.",
+              "no valid performance metrics data available.": "no valid performance metrics data available.",
+
+              "ROI calculation": "ROI calculation",
+              "error loading ROI calculation data.": "error loading ROI calculation data.",
+              "no valid ROI calculation data available.": "no valid ROI calculation data available.",
+
+              "strategic insights": "strategic insights",
+              "error loading strategic insights data.": "error loading strategic insights data.",
+              "no valid strategic insights data available.": "no valid strategic insights data available.",
+
+              "recommendations": "recommendations",
+              "error loading recommendations data.": "error loading recommendations data.",
+              "no valid recommendations data available.": "no valid recommendations data available.",
+
               "it's project is deleted, once you restore it all will be editable.": "it's project is deleted, once you restore it all will be editable.",
               "oops, no such case study.": "oops, no such case study.",
               "you have not created you case study yet.": "you have not created you case study yet.",

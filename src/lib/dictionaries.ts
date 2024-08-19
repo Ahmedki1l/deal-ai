@@ -4,8 +4,8 @@ import { Locale } from "@/types/locale";
 import { translateObject } from "@/lib/locale";
 
 const site = {
-  ar: () => import("@/dictionaries/ar.json").then((module) => module.default),
-  en: () => import("@/dictionaries/en.json").then((module) => module.default),
+  ar: () => import("@/dictionaries/ar").then((module) => module.default),
+  en: () => import("@/dictionaries/en").then((module) => module.default),
 };
 
 export const getDictionary = cache(async (locale: Locale) => {

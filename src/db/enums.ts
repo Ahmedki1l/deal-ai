@@ -9,7 +9,8 @@ import {
 import { Icons } from "@/components/icons";
 import { Locale } from "@/types/locale";
 import { t } from "@/lib/locale";
-
+import ar from "@/dictionaries/ar";
+import en from "@/dictionaries/en";
 export const platformsArr = getEnumArray<PLATFORM>(PLATFORM);
 export const propertyTypesArr = getEnumArray<PROPERTY_TYPE>(PROPERTY_TYPE);
 export const postCampaignArr = getEnumArray<POST_CAMPAIGN>(POST_CAMPAIGN);
@@ -21,16 +22,14 @@ export const platforms = (locale: Locale) =>
     (e) =>
       ({
         value: e,
-        label: e
-          .split("_")
-          .map(async (e) => {
-            const label = await t(
-              `${e?.[0]?.toUpperCase()}${e?.slice(1)?.toLowerCase()}`,
-              locale,
-            );
-            return label;
-          })
-          .join(" "),
+        label:
+          locale === "ar"
+            ? (ar?.["db"]?.["platforms"]?.find((x) => x?.["value"] === e)?.[
+                "label"
+              ] ?? "")
+            : (en?.["db"]?.["platforms"]?.find((x) => x?.["value"] === e)?.[
+                "label"
+              ] ?? ""),
         icon: e?.toLowerCase() as keyof typeof Icons, // already satisfied
       }) satisfies SelectItem,
   );
@@ -40,16 +39,14 @@ export const propertyTypes = (locale: Locale) =>
     (e) =>
       ({
         value: e,
-        label: e
-          .split("_")
-          .map(async (e) => {
-            const label = await t(
-              `${e?.[0]?.toUpperCase()}${e?.slice(1)?.toLowerCase()}`,
-              locale,
-            );
-            return label;
-          })
-          .join(" "),
+        label:
+          locale === "ar"
+            ? (ar?.["db"]?.["propertyTypes"]?.find((x) => x?.["value"] === e)?.[
+                "label"
+              ] ?? "")
+            : (en?.["db"]?.["propertyTypes"]?.find((x) => x?.["value"] === e)?.[
+                "label"
+              ] ?? ""),
       }) satisfies SelectItem,
   );
 export const postCampaigns = (locale: Locale) =>
@@ -57,16 +54,14 @@ export const postCampaigns = (locale: Locale) =>
     (e) =>
       ({
         value: e,
-        label: e
-          .split("_")
-          .map(async (e) => {
-            const label = await t(
-              `${e?.[0]?.toUpperCase()}${e?.slice(1)?.toLowerCase()}`,
-              locale,
-            );
-            return label;
-          })
-          .join(" "),
+        label:
+          locale === "ar"
+            ? (ar?.["db"]?.["campaignTypes"]?.find((x) => x?.["value"] === e)?.[
+                "label"
+              ] ?? "")
+            : (en?.["db"]?.["campaignTypes"]?.find((x) => x?.["value"] === e)?.[
+                "label"
+              ] ?? ""),
       }) satisfies SelectItem,
   );
 export const postContentLengths = (locale: Locale) =>
@@ -74,15 +69,13 @@ export const postContentLengths = (locale: Locale) =>
     (e) =>
       ({
         value: e,
-        label: e
-          .split("_")
-          .map(async (e) => {
-            const label = await t(
-              `${e?.[0]?.toUpperCase()}${e?.slice(1)?.toLowerCase()}`,
-              locale,
-            );
-            return label;
-          })
-          .join(" "),
+        label:
+          locale === "ar"
+            ? (ar?.["db"]?.["contentLength"]?.find((x) => x?.["value"] === e)?.[
+                "label"
+              ] ?? "")
+            : (en?.["db"]?.["contentLength"]?.find((x) => x?.["value"] === e)?.[
+                "label"
+              ] ?? ""),
       }) satisfies SelectItem,
   );

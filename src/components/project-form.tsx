@@ -402,7 +402,7 @@ export const ProjectForm = {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {platforms?.map((e, i) => {
+                          {platforms(lang)?.map((e, i) => {
                             const Icon = Icons?.[e?.["icon"]] ?? null;
                             return (
                               <SelectItem

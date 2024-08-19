@@ -1,5 +1,5 @@
 import { i18n } from "@/lib/locale";
-import dictionary from "@/dictionaries/en.json";
+import dictionary from "@/dictionaries/en";
 
 export type Locale = (typeof i18n)["locales"][number];
 export type LocaleProps = { lang: Locale };

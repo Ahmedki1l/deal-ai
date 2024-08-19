@@ -53,7 +53,7 @@ export default async function Dashboard({ params: { lang } }: DashboardProps) {
       </div>
 
       <div className="mx-auto mt-10 flex flex-col gap-10">
-        <DashboardPostsBarChart />
+        <DashboardPostsBarChart dic={dic} />
         {/* <div className="grid grid-cols-2 gap-4">
           <DashboardPostsBarChart />
           <Image

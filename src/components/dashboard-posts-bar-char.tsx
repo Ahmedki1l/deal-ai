@@ -67,6 +67,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { Dictionary } from "@/types/locale";
 
 const chartData = [
   {
@@ -730,7 +731,10 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function DashboardPostsBarChart() {
+type DashboardPostsBarChartProps = {} & Dictionary["dashboard-posts-bar-chart"];
+export function DashboardPostsBarChart({
+  dic: { "dashboard-posts-bar-chart": c },
+}: DashboardPostsBarChartProps) {
   const [activeChart, setActiveChart] =
     React.useState<keyof typeof chartConfig>("facebook");
 
@@ -753,9 +757,9 @@ export function DashboardPostsBarChart() {
       </div> */}
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>Posts</CardTitle>
+          <CardTitle>{c?.["posts"]}</CardTitle>
           <CardDescription>
-            Showing total posts for the last 3 months
+            {c?.["showing total posts for the last 3 months."]}
           </CardDescription>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4">
@@ -770,7 +774,7 @@ export function DashboardPostsBarChart() {
                 onClick={() => setActiveChart(chart)}
               >
                 <span className="text-xs text-muted-foreground">
-                  {chartConfig?.[chart]?.label}
+                  {c?.[chart]}
                 </span>
                 <span className="text-lg font-bold leading-none sm:text-3xl">
                   {total?.[key as keyof typeof total]?.toLocaleString()}

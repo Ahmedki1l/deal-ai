@@ -1,10 +1,12 @@
 {
   "site": {
     "name": "Deal Ai",
-    "description": "موقعنا يقدم خدمات متقدمة لتشغيل الأتمتة على منصات التواصل الاجتماعي باستخدام تقنيات الذكاء الاصطناعي المتطورة. نحن نساعد العملاء في تنفيذ حملات تسويقية متكاملة وموجهة خصيصاً للمشاريع العقارية. من خلال تحليل البيانات وتوقعات السوق، نوفر حلولاً مبتكرة تساعد على تحسين الاستهداف، وزيادة نسبة التفاعل مع المحتوى، ورفع مستوى أداء الحملات التسويقية. هدفنا هو تمكين العملاء من الوصول إلى جمهورهم المستهدف بكفاءة أعلى، وزيادة مبيعات العقارات بشكل استراتيجي، مع تقليل التكاليف وتسريع عملية تحقيق النتائج."
+    "description": "Our platform offers advanced social media automation services using cutting-edge AI technology. We assist clients in executing fully integrated marketing campaigns tailored specifically for real estate projects. Through data analysis and market forecasting, we provide innovative solutions that enhance targeting, increase content engagement, and boost the performance of marketing campaigns. Our goal is to empower clients to reach their target audience more efficiently, increase real estate sales strategically, while reducing costs and accelerating the achievement of results."
   },
   "auth": {
     "login": {
+      "since collaborating with Deal Ai, our property sales have surged by 40%, and client satisfaction has reached new heights. their platform has optimized our operations, driving significant business growth.": "منذ التعاون مع Deal Ai، شهدت مبيعاتنا العقارية زيادة بنسبة 40%، وبلغت رضا العملاء مستويات جديدة. لقد قامت منصتهم بتحسين عملياتنا، مما دفع إلى نمو كبير في الأعمال.",
+      "Alex Thompson, CEO of Thompson Real Estate": "أليكس طومسون، الرئيس التنفيذي لشركة طومسون للعقارات",
       "don't have an account? sign up now": "ليس لديك حساب؟ سجل الآن",
       "or continue with": "أو تابع باستخدام",
       "sign in with email": "تسجيل الدخول بالبريد الإلكتروني",
@@ -13,11 +15,13 @@
       "forgot password": "هل نسيت كلمة المرور؟"
     },
     "register": {
-      "already have an account? sign in.": "Already have an account? Sign In.",
-      "or continue with": "or continue with",
-      "sign up with email": "Sign Up with Email",
-      "sign up with google": "Sign Up with Google",
-      "sign up with facebook": "Sign Up with Facebook"
+      "since collaborating with Deal Ai, our property sales have surged by 40%, and client satisfaction has reached new heights. their platform has optimized our operations, driving significant business growth.": "منذ التعاون مع Deal Ai، شهدت مبيعاتنا العقارية زيادة بنسبة 40%، وبلغت رضا العملاء مستويات جديدة. لقد قامت منصتهم بتحسين عملياتنا، مما دفع إلى نمو كبير في الأعمال.",
+      "Alex Thompson, CEO of Thompson Real Estate": "أليكس طومسون، الرئيس التنفيذي لشركة طومسون للعقارات",
+      "already have an account? sign in.": "هل لديك حساب بالفعل؟ تسجيل الدخول.",
+      "or continue with": "أو تابع باستخدام",
+      "sign up with email": "سجل باستخدام البريد الإلكتروني",
+      "sign up with google": "سجل باستخدام جوجل",
+      "sign up with facebook": "سجل باستخدام فيسبوك"
     }
   },
   "dashboard": {
@@ -28,19 +32,19 @@
             {
               "segment": null,
               "value": "/dashboard",
-              "label": "Dashboard",
+              "label": "الصفحة الرئيسية",
               "icon": "home"
             },
             {
               "segment": "projects",
               "value": "/dashboard/projects",
-              "label": "My Projects",
+              "label": "مشاريعي",
               "icon": "analytics"
             },
             {
               "segment": "calender",
               "value": "/dashboard/calender",
-              "label": "Calender",
+              "label": "التقويم",
               "icon": "calender"
             }
           ],
@@ -48,505 +52,595 @@
             {
               "segment": "settings",
               "value": "/dashboard/settings",
-              "label": "Settings",
+              "label": "الإعدادات",
               "icon": "settings"
             },
             {
               "segment": "bin",
               "value": "/dashboard/bin",
-              "label": "Bin",
+              "label": "سلة المهملات",
               "icon": "trash"
             }
           ]
         ]
       },
       "dashboard": {
-        "dashboard": "Dashboard",
-        "take a glance and manage your projects.": "Take a glance and manage your projects.",
-        "create project": "Create Project",
-        "latest projects": "Latest Projects"
+        "dashboard": "الصفحة الرئيسية",
+        "take a glance and manage your projects.": "اطّلع على لمحة عامة وادير مشاريعك.",
+        "create project": "إنشاء مشروع",
+        "latest projects": "أحدث المشاريع"
       },
       "calender": {
-        "calender": "Calender",
-        "timeline of your posts schedule.": "timeline of your posts schedule."
+        "calender": "التقويم",
+        "timeline of your posts schedule.": "جدول زمني لمواعيد منشوراتك."
       },
       "projects": {
-        "oops, no projects.": "oops, no projects.",
-        "you have not created you project yet.": "you have not created you project yet.",
-        "projects": "Projects",
-        "create and manage projects.": "Create and manage posts.",
-        "create project": "Create Project",
+        "oops, no projects.": "عذرًا، لا توجد مشاريع.",
+        "you have not created you project yet.": "لم تقم بإنشاء مشروعك بعد.",
+        "projects": "المشاريع",
+        "create and manage projects.": "إنشاء وإدارة المشاريع.",
+        "create project": "إنشاء مشروع",
         "table": {
-          "project": "Project",
-          "case study": "Case Study",
-          "target audience": "Target Audience",
-          "properties": "Properties",
-          "posts": "Posts",
-          "platforms": "Platforms",
-          "edit": "Edit",
-          "delete": "Delete",
-          "restore": "Restore",
-          "deletedAt": "Deleted At"
+          "project": "المشروع",
+          "case study": "دراسة حالة",
+          "target audience": "الجمهور المستهدف",
+          "properties": "الخصائص",
+          "posts": "المنشورات",
+          "platforms": "المنصات",
+          "edit": "تعديل",
+          "delete": "حذف",
+          "restore": "استعادة",
+          "deletedAt": "تاريخ الحذف"
         },
         "project": {
-          "oops, no such project.": "oops, no such project.",
-          "you have not created you project yet.": "you have not created you project yet.",
-          "projects": "projects",
-          "restore": "Restore",
-          "delete": "Delete",
-
-          "distinct": "distinct",
-          "city": "city",
-          "country": "country",
-          "spaces": "spaces",
-          "property types": "property types",
-          "platforms": "platforms",
-          "created at": "created at",
-          "here's a list of your case studies.": "Here's a list of your case studies.",
-          "case studies": "Case Studies",
-          "create case study": "Create Case Study",
-          "here's a list of your properties.": "Here's a list of your properties.",
-          "create properties": "Create Properties",
+          "oops, no such project.": "عذرًا، لا يوجد مشروع بهذا الاسم.",
+          "you have not created you project yet.": "لم تقم بإنشاء مشروعك بعد.",
+          "projects": "المشاريع",
+          "restore": "استعادة",
+          "delete": "حذف",
+          "back to all projects": "العودة إلى جميع المشاريع",
+          "distinct": "مميز",
+          "city": "المدينة",
+          "country": "البلد",
+          "spaces": "الأماكن",
+          "property types": "أنواع العقارات",
+          "platforms": "المنصات",
+          "created at": "تاريخ الإنشاء",
+          "here's a list of your case studies.": "إليك قائمة بدراسات الحالة الخاصة بك.",
+          "case studies": "دراسات الحالة",
+          "create case study": "إنشاء دراسة حالة",
+          "here's a list of your properties.": "إليك قائمة بخصائصك.",
+          "create properties": "إنشاء خصائص",
 
           "cases": {
             "case": {
-              "it's project is deleted, once you restore it all will be editable.": "it's project is deleted, once you restore it all will be editable.",
-              "oops, no such case study.": "oops, no such case study.",
-              "you have not created you case study yet.": "you have not created you case study yet.",
-              "projects": "projects",
-              "restore": "Restore",
-              "delete": "Delete",
-              "warning!": "warning!",
-              "oops, no posts.": "oops, no posts.",
-              "you have not created you posts yet.": "you have not created you posts yet.",
-              "case study content": "Case Study Content",
-              "target audience": "Target Audience",
-              "pros": "Pros",
-              "cons": "Cons",
-              "reference images": "Reference Images",
-              "navigate to get what you want.": "Navigate to get what you want.",
-              "create posts": "Create Posts",
+              "market strategy": "استراتيجية السوق",
+              "error loading market strategy data.": "خطأ في تحميل بيانات استراتيجية السوق.",
+              "no valid market strategy data available.": "لا توجد بيانات صالحة لاستراتيجية السوق.",
+
+              "performance metrics": "مؤشرات الأداء",
+              "error loading performance metrics data.": "خطأ في تحميل بيانات مؤشرات الأداء.",
+              "no valid performance metrics data available.": "لا توجد بيانات صالحة لمؤشرات الأداء.",
+
+              "ROI calculation": "حساب العائد على الاستثمار",
+              "error loading ROI calculation data.": "خطأ في تحميل بيانات حساب العائد على الاستثمار.",
+              "no valid ROI calculation data available.": "لا توجد بيانات صالحة لحساب العائد على الاستثمار.",
+
+              "strategic insights": "رؤى استراتيجية",
+              "error loading strategic insights data.": "خطأ في تحميل بيانات الرؤى الاستراتيجية.",
+              "no valid strategic insights data available.": "لا توجد بيانات صالحة للرؤى الاستراتيجية.",
+
+              "recommendations": "التوصيات",
+              "error loading recommendations data.": "خطأ في تحميل بيانات التوصيات.",
+              "no valid recommendations data available.": "لا توجد بيانات صالحة للتوصيات.",
+
+              "it's project is deleted, once you restore it all will be editable.": "تم حذف المشروع، بمجرد استعادته سيكون كل شيء قابلاً للتعديل.",
+              "oops, no such case study.": "عذرًا، لا توجد دراسة حالة بهذا الاسم.",
+              "you have not created you case study yet.": "لم تقم بإنشاء دراسة الحالة الخاصة بك بعد.",
+              "projects": "المشاريع",
+              "restore": "استعادة",
+              "delete": "حذف",
+              "warning!": "تحذير!",
+              "oops, no posts.": "عذرًا، لا توجد منشورات.",
+              "you have not created you posts yet.": "لم تقم بإنشاء منشوراتك بعد.",
+              "case study content": "محتوى دراسة الحالة",
+              "target audience": "الجمهور المستهدف",
+              "pros": "الإيجابيات",
+              "cons": "السلبيات",
+              "reference images": "صور مرجعية",
+              "navigate to get what you want.": "انتقل للحصول على ما تريده.",
+              "create posts": "إنشاء منشورات",
+              "campaign type": "نوع الحملة",
+              "content length": "طول المحتوى",
+              "confirmed": "مؤكد",
+              "pre scheduled": "مجدول مسبقًا",
               "posts": {
-                "posts": "Posts",
-                "oops, no posts.": "oops, no posts.",
-                "you have not created you posts yet.": "you have not created you posts yet.",
+                "posts": "المنشورات",
+                "oops, no posts.": "عذرًا، لا توجد منشورات.",
+                "you have not created you posts yet.": "لم تقم بإنشاء منشوراتك بعد.",
                 "post": {
-                  "it's project or case study is deleted, once you restore it all will be editable.": "it's project or case study is deleted, once you restore it all will be editable.",
-                  "oops, no such post.": "oops, no such post.",
-                  "you have not created you post yet.": "you have not created you post yet.",
-                  "projects": "projects",
-                  "restore": "Restore",
-                  "delete": "Delete",
-                  "warning!": "warning!"
+                  "it's project or case study is deleted, once you restore it all will be editable.": "تم حذف المشروع أو دراسة الحالة، بمجرد استعادته سيكون كل شيء قابلاً للتعديل.",
+                  "oops, no such post.": "عذرًا، لا توجد منشورة بهذا الاسم.",
+                  "you have not created you post yet.": "لم تقم بإنشاء منشورك بعد.",
+                  "projects": "المشاريع",
+                  "restore": "استعادة",
+                  "delete": "حذف",
+                  "warning!": "تحذير!"
                 }
               }
             },
             "table": {
-              "name": "Name",
-              "description": "Description",
-              "case study": "Case Study",
-              "target audience": "Target Audience",
-              "posts": "Posts",
-              "platforms": "Platforms",
-              "edit": "Edit",
-              "delete": "Delete",
-              "restore": "Restore",
-              "deletedAt": "Deleted At"
+              "name": "الاسم",
+              "description": "الوصف",
+              "case study": "دراسة حالة",
+              "target audience": "الجمهور المستهدف",
+              "posts": "المنشورات",
+              "platforms": "المنصات",
+              "edit": "تعديل",
+              "delete": "حذف",
+              "restore": "استعادة",
+              "deletedAt": "تاريخ الحذف"
             }
           },
           "properties": {
-            "properties": "Properties",
-            "oops, no such property.": "oops, no such property.",
-            "you have not created you property yet.": "you have not created you property yet.",
-            "projects": "projects",
-            "it's project is deleted, once you restore it all will be editable.": "it's project is deleted, once you restore it all will be editable.",
-            "warning!": "warning!",
-            "restore": "Restore",
-            "delete": "Delete",
+            "properties": "الخصائص",
+            "oops, no such property.": "عذرًا، لا توجد خاصية بهذا الاسم.",
+            "you have not created you property yet.": "لم تقم بإنشاء خاصيتك بعد.",
+            "projects": "المشاريع",
+            "it's project is deleted, once you restore it all will be editable.": "تم حذف المشروع، بمجرد استعادته سيكون كل شيء قابلاً للتعديل.",
+            "warning!": "تحذير!",
+            "restore": "استعادة",
+            "delete": "حذف",
             "table": {
-              "name": "Name",
-              "units": "Units",
-              "type": "Type",
-              "space": "space",
-              "finishing": "finishing",
-              "floors": "floors",
-              "rooms": "rooms",
-              "bathrooms": "bathrooms",
-              "receptions": "Receptions",
-              "garden": "garden",
-              "pool": "pool",
-              "view": "view",
-              "edit": "Edit",
-              "delete": "Delete",
-              "restore": "Restore",
-              "deletedAt": "Deleted At"
+              "name": "الاسم",
+              "units": "الوحدات",
+              "type": "النوع",
+              "space": "المساحة",
+              "finishing": "التشطيب",
+              "floors": "الطوابق",
+              "rooms": "الغرف",
+              "bathrooms": "الحمامات",
+              "receptions": "صالات الاستقبال",
+              "garden": "الحديقة",
+              "pool": "المسبح",
+              "view": "الإطلالة",
+              "edit": "تعديل",
+              "delete": "حذف",
+              "restore": "استعادة",
+              "deletedAt": "تاريخ الحذف"
             }
           }
         }
       },
       "bin": {
         "main-nav": [
-          { "value": "/dashboard/bin", "label": "Projects" },
-          { "value": "/dashboard/bin/cases", "label": "Study Cases" },
-          { "value": "/dashboard/bin/properties", "label": "Properties" },
-          { "value": "/dashboard/bin/posts", "label": "Posts" }
+          { "value": "/dashboard/bin", "label": "المشاريع" },
+          { "value": "/dashboard/bin/cases", "label": "دراسات الحالة" },
+          { "value": "/dashboard/bin/properties", "label": "الخصائص" },
+          { "value": "/dashboard/bin/posts", "label": "المنشورات" }
         ],
-        "bin": "Bin",
-
-        "projects": "Projects",
-        "this is how others will see you on the site.": "this is how others will see you on the site.",
+        "bin": "سلة المهملات",
+        "below is a list of your deleted items. you can restore them within 30 days before they are permanently removed.": "فيما يلي قائمة بالعناصر المحذوفة الخاصة بك. يمكنك استعادتها خلال 30 يومًا قبل إزالتها نهائيًا.",
+        "projects": "المشاريع",
         "cases": {
-          "study cases": "Study Cases",
-          "this is how others will see you on the site.": "this is how others will see you on the site."
+          "study cases": "دراسات الحالة"
         },
         "properties": {
-          "properties": "Properties",
-          "this is how others will see you on the site.": "this is how others will see you on the site."
+          "properties": "الخصائص"
         },
         "posts": {
-          "posts": "Posts",
-          "this is how others will see you on the site.": "this is how others will see you on the site."
+          "posts": "المنشورات"
         }
       },
       "settings": {
         "main-nav": [
-          { "value": "/dashboard/settings", "label": "Profile" },
-          { "value": "/dashboard/settings/appearance", "label": "Appearance" }
+          { "value": "/dashboard/settings", "label": "الملف الشخصي" },
+          { "value": "/dashboard/settings/appearance", "label": "المظهر" }
         ],
-        "settings": "Settings",
-
+        "settings": "الإعدادات",
+        "manage your account details, privacy settings, and how others perceive you on the platform.": "إدارة تفاصيل حسابك، إعدادات الخصوصية، وكيفية رؤية الآخرين لك على المنصة.",
         "appearance": {
-          "appearance": "Appearance",
-          "customize your appearance settings and preferences.": "Customize your appearance settings and preferences."
+          "appearance": "المظهر",
+          "customize your appearance settings and preferences.": "تخصيص إعدادات المظهر وتفضيلاتك."
         },
         "profile": {
-          "profile": "Profile",
-          "this is how others will see you on the site.": "this is how others will see you on the site."
+          "profile": "الملف الشخصي",
+          "this is how others will see you on the site.": "هذه هي الطريقة التي سيراك بها الآخرون على الموقع."
         }
       }
     }
   },
 
   "appearance-form": {
-    "theme": "Theme",
-    "automatically switch between day and night themes.": "Automatically switch between day and night themes.",
-    "light": "Light",
-    "dark": "Dark",
-    "system": "System",
-    "update preferences": "update preferences"
+    "theme": "الثيم",
+    "automatically switch between day and night themes.": "التبديل التلقائي بين الثيمات النهارية والليلية.",
+    "light": "فاتح",
+    "dark": "داكن",
+    "system": "نظام",
+    "update preferences": "تحديث التفضيلات"
   },
-  "back-button": { "back": "back" },
-
+  "back-button": {
+    "back": "رجوع"
+  },
   "case-study-bin-button": {
-    "deleted successfully.": "deleted successfully.",
-    "delete": "Delete",
-    "delete case study": "Delete Case Study",
-    "this step is essential for informing patients about the treatments available at your case study.": "this step is essential for informing patients about the treatments available at your case study."
+    "deleted successfully.": "تم الحذف بنجاح.",
+    "delete": "حذف",
+    "delete case study": "حذف دراسة حالة",
+    "once deleted, the case study will be moved to the bin. you can manually delete it or it will be automatically removed after 30 days. if restored, everything will be reinstated as if nothing happened.": "بمجرد حذفها، سيتم نقل دراسة الحالة إلى سلة المهملات. يمكنك حذفها يدويًا أو سيتم إزالتها تلقائيًا بعد 30 يومًا. إذا تم استعادتها، سيتم استعادة كل شيء كما لو لم يحدث شيء."
   },
   "case-study-create-button": {
-    "created successfully.": "created successfully.",
-    "submit": "Submit",
-    "create case study": "Create Case Study",
-    "this step is essential for informing patients about the treatments available at your case study.": "this step is essential for informing patients about the treatments available at your case study."
+    "created successfully.": "تم الإنشاء بنجاح.",
+    "submit": "إرسال",
+    "create case study": "إنشاء دراسة حالة",
+    "create a A well-structured case study for your real estate project that helps highlight the unique features, target audience, market strategy, and performance metrics of your project. once created, these case studies can be used to inform potential buyers, partners, and stakeholders, demonstrating the value and potential of your real estate developments.": "إنشاء دراسة حالة منظمة جيدًا لمشروعك العقاري تساعد في إبراز الميزات الفريدة، الجمهور المستهدف، استراتيجية السوق، ومقاييس الأداء لمشروعك. بمجرد إنشائها، يمكن استخدام هذه الدراسات لإبلاغ المشترين المحتملين والشركاء وأصحاب المصلحة، مما يظهر قيمة وإمكانات مشاريعك العقارية."
   },
   "case-study-delete-button": {
-    "deleted successfully.": "deleted successfully.",
-    "delete": "Delete",
-    "delete case study": "delete case study",
-    "this step is essential for informing patients about the treatments available at your case study.": "this step is essential for informing patients about the treatments available at your case study."
+    "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted.": "بمجرد حذفها، لا يمكن التراجع عن هذا الإجراء. يرجى التأكد، حيث سيتم حذف جميع البيانات ذات الصلة بشكل دائم.",
+    "deleted successfully.": "تم الحذف بنجاح.",
+    "delete": "حذف",
+    "delete case study": "حذف دراسة الحالة"
   },
   "case-study-form": {
-    "title": { "label": "Title", "health center": "Health Center" },
-    "description": {
-      "label": "Description",
-      "describe your case study": "Describe your case study"
+    "title": {
+      "label": "العنوان",
+      "health center": "مركز صحي"
     },
-    "reference image": { "label": "Reference Image" },
+    "description": {
+      "label": "الوصف",
+      "describe your case study": "وصف دراسة الحالة الخاصة بك"
+    },
+    "refImages": {
+      "label": "صورة مرجعية"
+    },
     "content": {
-      "label": "Content",
-      "describe your case study's content": "describe your case study's content"
+      "label": "المحتوى",
+      "describe your case study's content": "وصف محتوى دراسة الحالة الخاصة بك"
     },
     "targetAudience": {
-      "label": "Description",
-      "describe your case study's target audience": "describe your case study's target audience"
+      "label": "الجمهور المستهدف",
+      "describe your case study's target audience": "وصف الجمهور المستهدف لدراسة الحالة الخاصة بك"
     },
     "pros": {
-      "label": "Pros",
-      "describe your case study's pros": "describe your case study's pros"
+      "label": "الإيجابيات",
+      "describe your case study's pros": "وصف إيجابيات دراسة الحالة الخاصة بك"
     },
     "cons": {
-      "label": "Cons",
-      "describe your case study's cons": "describe your case study's cons"
+      "label": "السلبيات",
+      "describe your case study's cons": "وصف سلبيات دراسة الحالة الخاصة بك"
     }
   },
   "case-study-restore-button": {
-    "restored successfully.": "restored successfully.",
-    "restore": "Restore",
-    "restore case study": "Restore Case Study",
-    "this step is essential for informing patients about the treatments available at your case study.": "this step is essential for informing patients about the treatments available at your case study."
+    "restoring this case study will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off.": "استعادة دراسة الحالة هذه ستعيد جميع بياناتها وإعداداتها، مما يجعلها تظهر كما لو لم يتم حذفها أبدًا. سيتم استعادة جميع المعلومات ذات الصلة بشكل كامل، مما يسمح لك بالاستمرار من حيث توقفت.",
+    "restored successfully.": "تم الاستعادة بنجاح.",
+    "restore": "استعادة",
+    "restore case study": "استعادة دراسة الحالة"
   },
   "case-study-update-form": {
-    "updated successfully.": "updated successfully.",
-    "submit": "Submit",
-    "update case study": "Update Case Study",
-    "this step is essential for informing patients about the treatments available at your case study.": "this step is essential for informing patients about the treatments available at your case study."
+    "updated successfully.": "تم التحديث بنجاح.",
+    "submit": "إرسال",
+    "update case study": "تحديث دراسة حالة",
+    "updating a case study allows you to refine and enhance the details of your ongoing developments": "تحديث دراسة حالة يتيح لك تحسين وتعزيز تفاصيل مشاريعك الحالية"
   },
-
   "dashboard-layout": {
-    "logout": "Logout"
+    "logout": "تسجيل الخروج"
   },
 
+  "dashboard-posts-bar-chart": {
+    "posts": "المنشورات",
+    "showing total posts for the last 3 months.": "عرض إجمالي المنشورات لآخر 3 أشهر.",
+    "facebook": "فيسبوك",
+    "instagram": "إنستغرام",
+    "linkedin": "لينكد إن",
+    "twitter": "تويتر",
+    "views": "المشاهدات"
+  },
   "data-table": {
-    "no results.": "No Results."
+    "no results.": "لا توجد نتائج."
   },
   "data-table-column-header": {
-    "asc": "Asc",
-    "desc": "Desc",
-    "hide": "Hide"
+    "asc": "تصاعدي",
+    "desc": "تنازلي",
+    "hide": "إخفاء"
   },
   "data-table-pagination": {
-    "of": "of",
-    "row(s) selected.": "row(s) selected.",
-    "rows per page": "rows per page",
-    "go to first page": "Go to first page",
-    "go to previous page": "Go to previous page",
-    "go to next page": "Go to next page",
-    "go to last page": "Go to last page",
-    "page": "page"
+    "of": "من",
+    "row(s) selected.": "صف(وف) مختار(ة).",
+    "rows per page": "الصفوف لكل صفحة",
+    "go to first page": "انتقل إلى الصفحة الأولى",
+    "go to previous page": "انتقل إلى الصفحة السابقة",
+    "go to next page": "انتقل إلى الصفحة التالية",
+    "go to last page": "انتقل إلى الصفحة الأخيرة",
+    "page": "الصفحة"
   },
   "data-table-view-options": {
-    "view": "View",
-    "toggle columns": "Toggle columns"
+    "view": "عرض",
+    "toggle columns": "تبديل الأعمدة"
   },
-
   "dialog": {
-    "are you sure you want to proceed?": "Are you sure you want to proceed?",
-    "Please confirm that all the provided information is accurate. This action cannot be undone.": "Please confirm that all the provided information is accurate. This action cannot be undone.",
-    "cancel": "Cancel"
+    "are you sure you want to proceed?": "هل أنت متأكد أنك تريد المتابعة؟",
+    "please confirm that all the provided information is accurate. This action cannot be undone.": "يرجى تأكيد أن جميع المعلومات المقدمة دقيقة. لا يمكن التراجع عن هذا الإجراء.",
+    "cancel": "إلغاء"
   },
-
   "image-form": {
     "src": {
-      "label": "Image Source",
-      "url": "url"
+      "label": "مصدر الصورة",
+      "url": "الرابط"
     },
     "prompt": {
-      "label": "Prompt",
-      "enhanced successfully.": "enhanced successfully.",
-      "generated successfully.": "generated successfully.",
-      "enhance prompt": "enhance prompt",
-      "new image": "new image"
+      "label": "التنبيه",
+      "enhanced successfully.": "تم تحسينه بنجاح.",
+      "generated successfully.": "تم إنشاؤه بنجاح.",
+      "enhance prompt": "تحسين التنبيه",
+      "new image": "صورة جديدة"
     }
   },
   "locale-switcher": {
-    "current locale of the website": "current locale of the website",
-    "en": "English (EN)",
+    "current locale of the website": "اللغة الحالية للموقع",
+    "en": "الإنجليزية (EN)",
     "ar": "العربية (AR)",
-    "fr": "French (FR)",
-    "de": "Deautch (DE)"
+    "fr": "الفرنسية (FR)",
+    "de": "الألمانية (DE)"
   },
-
   "post-bin-button": {
-    "deleted successfully.": "deleted successfully.",
-    "delete": "Delete",
-    "delete post": "Delete Post",
-    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your post."
+    "deleted successfully.": "تم الحذف بنجاح.",
+    "delete": "حذف",
+    "delete post": "حذف المنشور",
+    "once deleted, the post will be moved to the bin. you can manually delete it or it will be automatically removed after 30 days. if restored, everything will be reinstated as if nothing happened.": "بمجرد حذفه، سيتم نقل المنشور إلى سلة المهملات. يمكنك حذفه يدويًا أو سيتم إزالته تلقائيًا بعد 30 يومًا. إذا تم استعادته، سيتم استعادة كل شيء كما لو لم يحدث شيء."
   },
   "post-create-button": {
-    "created successfully.": "created successfully.",
-    "submit": "Submit",
-    "create posts": "Create Posts",
-    "this step is essential for informing patients about the treatments available at your posts.": "this step is essential for informing patients about the treatments available at your posts."
+    "created successfully.": "تم الإنشاء بنجاح.",
+    "submit": "إرسال",
+    "create posts": "إنشاء منشورات",
+    "streamline your marketing efforts by generating and scheduling posts across all your platforms using AI, and automatically publishes it at optimal times, maximizing reach and engagement.": "تبسيط جهودك التسويقية من خلال إنشاء وجدولة المنشورات عبر جميع منصاتك باستخدام الذكاء الاصطناعي، ونشرها تلقائيًا في الأوقات المثلى، لزيادة الوصول والتفاعل."
   },
   "post-delete-button": {
-    "deleted successfully.": "deleted successfully.",
-    "delete": "Delete",
-    "delete post": "Delete Post",
-    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your post."
+    "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted.": "بمجرد حذفه، لا يمكن التراجع عن هذا الإجراء. يرجى التأكد، حيث سيتم حذف جميع البيانات ذات الصلة بشكل دائم.",
+    "deleted successfully.": "تم الحذف بنجاح.",
+    "delete": "حذف",
+    "delete post": "حذف المنشور"
   },
   "post-form": {
-    "title": { "label": "Title", "health center": "Health Center" },
+    "title": {
+      "label": "العنوان",
+      "health center": "مركز صحي"
+    },
+    "confirmedAt": {
+      "label": "تأكيد هذا المنشور ليكون جاهزًا للنشر",
+      "you can manage your posts in the": "يمكنك إدارة منشوراتك في",
+      "calender": "التقويم",
+      "page": "الصفحة"
+    },
     "description": {
-      "label": "Description",
-      "describe your post": "Describe your post"
+      "label": "الوصف",
+      "describe your post": "وصف المنشور الخاص بك"
     },
     "content": {
-      "label": "Content",
-      "describe your post's content": "Describe your post's content"
+      "label": "المحتوى",
+      "describe your post's content": "وصف محتوى منشورك"
     },
-    "noOfWeeks": { "label": "Number of Weeks" },
+    "noOfWeeks": {
+      "label": "عدد الأسابيع"
+    },
     "campaignType": {
-      "label": "Campaign Type",
-      "select your campaign": "Select your campaign"
+      "label": "نوع الحملة",
+      "select your campaign": "حدد حملتك"
     },
     "contentLength": {
-      "label": "Content Length",
-      "select your content length": "select your content length"
+      "label": "طول المحتوى",
+      "select your content length": "حدد طول المحتوى"
     },
     "platform": {
-      "label": "Platform",
-      "select your platform": "Select your platform"
+      "label": "المنصة",
+      "select your platform": "حدد منصتك"
     },
     "postAt": {
-      "label": "Post At"
+      "label": "نشر في"
     }
   },
   "post-restore-button": {
-    "restored successfully.": "restored successfully.",
-    "restore": "Restore",
-    "restore post": "Restore Post",
-    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your post."
+    "restoring this post will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off.": "استعادة هذا المنشور ستعيد جميع بياناته وإعداداته، مما يجعله يظهر كما لو لم يتم حذفه أبدًا. سيتم استعادة جميع المعلومات ذات الصلة بالكامل، مما يسمح لك بالاستمرار من حيث توقفت.",
+    "restored successfully.": "تم الاستعادة بنجاح.",
+    "restore": "استعادة",
+    "restore post": "استعادة المنشور"
   },
   "post-update-content-button": {
-    "content updated successfully.": "content updated successfully.",
-    "submit": "Submit",
-    "update content": "Update Content",
-    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your post."
+    "updating your post's content allows you to refine and enhance the details of your ongoing developments": "تحديث محتوى منشورك يتيح لك تحسين وتعزيز تفاصيل مشاريعك الحالية",
+    "content updated successfully.": "تم تحديث المحتوى بنجاح.",
+    "submit": "إرسال",
+    "update content": "تحديث المحتوى"
   },
   "post-update-form": {
-    "updated successfully.": "updated successfully.",
-    "submit": "Submit",
-    "post details": "Post Details",
-    "discard": "Discard",
-    "save changes": "Save Changes",
-    "post information": "Post Information",
-    "update image": "Update Image",
-    "restore": "Restore",
-    "delete": "Delete",
-    "this step is essential for informing patients about the treatments available at your image.": "this step is essential for informing patients about the treatments available at your image."
+    "updated successfully.": "تم التحديث بنجاح.",
+    "submit": "إرسال",
+    "post details": "تفاصيل المنشور",
+    "discard": "تجاهل",
+    "save changes": "حفظ التغييرات",
+    "post information": "معلومات المنشور",
+    "update image": "تحديث الصورة",
+    "restore": "استعادة",
+    "delete": "حذف",
+    "updating an image allows you to refine and enhance the details of your ongoing developments": "تحديث الصورة يتيح لك تحسين وتعزيز تفاصيل مشاريعك الحالية",
+    "choose file": "اختيار ملف",
+    "generate using AI": "إنشاء باستخدام الذكاء الاصطناعي"
   },
   "post-update-schedule-button": {
-    "scheduled successfully.": "scheduled successfully.",
-    "submit": "Submit",
-    "update schedule": "Update Schedule",
-    "this step is essential for informing patients about the treatments available at your post.": "this step is essential for informing patients about the treatments available at your case study."
+    "scheduled successfully.": "تم جدولته بنجاح.",
+    "submit": "إرسال",
+    "update schedule": "تحديث الجدول",
+    "updating your post's schedule allows you to refine and enhance the details of your ongoing developments": "تحديث جدول منشورك يتيح لك تحسين وتعزيز تفاصيل مشاريعك الحالية"
   },
-
   "project-bin-button": {
-    "deleted successfully.": "deleted successfully.",
-    "delete": "Delete",
-    "delete project": "Delete Project",
-    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
+    "deleted successfully.": "تم الحذف بنجاح.",
+    "delete": "حذف",
+    "delete project": "حذف المشروع",
+    "once deleted, the project will be moved to the bin. you can manually delete it or it will be automatically removed after 30 days. if restored, everything will be reinstated as if nothing happened.": "بمجرد حذفه، سيتم نقل المشروع إلى سلة المهملات. يمكنك حذفه يدويًا أو سيتم إزالته تلقائيًا بعد 30 يومًا. إذا تم استعادته، سيتم استعادة كل شيء كما لو لم يحدث شيء."
   },
   "project-create-button": {
-    "created successfully.": "created successfully.",
-    "submit": "Submit",
-    "type of assets": "Type of Assets",
-    "unit": "unit",
-    "create project": "Create Project",
-    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
+    "created successfully.": "تم الإنشاء بنجاح.",
+    "submit": "إرسال",
+    "type of assets": "نوع الأصول",
+    "unit": "وحدة",
+    "create project": "إنشاء مشروع",
+    "by providing detailed information about your project, you'll be able to streamline your operations, track progress, and ensure that all stakeholders are informed about the development's key aspects and milestones.": "من خلال توفير معلومات مفصلة عن مشروعك، ستتمكن من تبسيط عملياتك، وتتبع التقدم، وضمان اطلاع جميع المعنيين على الجوانب الرئيسية للمشروع والمعالم الهامة."
   },
   "project-delete-button": {
-    "deleted successfully.": "deleted successfully.",
-    "delete": "Delete",
-    "delete project": "Delete Project",
-    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
+    "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted.": "بمجرد حذفه، لا يمكن التراجع عن هذا الإجراء. يرجى التأكد، حيث سيتم حذف جميع البيانات ذات الصلة بشكل دائم.",
+    "deleted successfully.": "تم الحذف بنجاح.",
+    "delete": "حذف",
+    "delete project": "حذف المشروع"
   },
   "project-form": {
-    "title": { "label": "Title", "health center": "health center" },
-    "map": { "label": "Map" },
-    "description": {
-      "label": "Description",
-      "describe your project": "describe your project"
+    "title": {
+      "label": "العنوان",
+      "health center": "مركز صحي"
     },
-    "distinct": { "label": "Distinct", "nasr city": "Nasr City" },
-    "city": { "label": "City", "cairo": "Cairo" },
-    "country": { "label": "Country", "egypt": "Egypt" },
-    "spaces": { "label": "Spaces" },
+    "map": {
+      "label": "الخريطة"
+    },
+    "description": {
+      "label": "الوصف",
+      "describe your project": "وصف مشروعك"
+    },
+    "distinct": {
+      "label": "مميز",
+      "nasr city": "مدينة نصر"
+    },
+    "city": {
+      "label": "المدينة",
+      "cairo": "القاهرة"
+    },
+    "country": {
+      "label": "البلد",
+      "egypt": "مصر"
+    },
+    "spaces": {
+      "label": "الأماكن"
+    },
     "platforms": {
-      "label": "Platforms",
-      "select your platform": "Select your platform"
+      "label": "المنصات",
+      "select your platform": "حدد منصتك",
+      "connected successfully.": "تم الاتصال بنجاح.",
+      "connect": "اتصال",
+      "connected": "متصل"
     }
   },
   "project-restore-button": {
-    "restored successfully.": "restored successfully.",
-    "restore": "Restore",
-    "restore project": "Restore Project",
-    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
+    "restoring this project will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off.": "استعادة هذا المشروع ستعيد جميع بياناته وإعداداته، مما يجعله يظهر كما لو لم يتم حذفه أبدًا. سيتم استعادة جميع المعلومات ذات الصلة بالكامل، مما يسمح لك بالاستمرار من حيث توقفت.",
+    "restored successfully.": "تم الاستعادة بنجاح.",
+    "restore": "استعادة",
+    "restore project": "استعادة المشروع"
   },
   "project-update-form": {
-    "updated successfully.": "updated successfully.",
-    "submit": "Submit",
-    "update project": "Update Project",
-    "this step is essential for informing patients about the treatments available at your project.": "this step is essential for informing patients about the treatments available at your project."
+    "updated successfully.": "تم التحديث بنجاح.",
+    "submit": "إرسال",
+    "update project": "تحديث المشروع",
+    "updating a project allows you to refine and enhance the details of your ongoing developments": "تحديث المشروع يتيح لك تحسين وتعزيز تفاصيل مشاريعك الحالية"
   },
-
   "property-bin-button": {
-    "deleted successfully.": "deleted successfully.",
-    "delete": "Delete",
-    "delete property": "Delete Property",
-    "this step is essential for informing patients about the treatments available at your property.": "this step is essential for informing patients about the treatments available at your property."
+    "deleted successfully.": "تم الحذف بنجاح.",
+    "delete": "حذف",
+    "delete property": "حذف العقار",
+    "once deleted, the property will be moved to the bin. you can manually delete it or it will be automatically removed after 30 days. if restored, everything will be reinstated as if nothing happened.": "بمجرد حذفه، سيتم نقل العقار إلى سلة المهملات. يمكنك حذفه يدويًا أو سيتم إزالته تلقائيًا بعد 30 يومًا. إذا تم استعادته، سيتم استعادة كل شيء كما لو لم يحدث شيء."
   },
   "property-create-button": {
-    "created successfully.": "created successfully.",
-    "submit": "Submit",
-    "type of assets": "Type of Assets",
-    "unit": "unit",
-    "create property": "Create Property",
-    "this step is essential for informing patients about the treatments available at your property.": "this step is essential for informing patients about the treatments available at your property."
+    "created successfully.": "تم الإنشاء بنجاح.",
+    "submit": "إرسال",
+    "type of assets": "نوع الأصول",
+    "unit": "وحدة",
+    "create property": "إنشاء عقار",
+    "by detailing each property, including its features, layout, and amenities, you ensure that all relevant information is captured, enabling better organization and presentation to potential buyers or tenants.": "من خلال تفصيل كل عقار، بما في ذلك ميزاته، وتخطيطه، والمرافق المتوفرة، تضمن توثيق جميع المعلومات ذات الصلة، مما يتيح تنظيمًا وعرضًا أفضل للمشترين أو المستأجرين المحتملين."
   },
   "property-delete-button": {
-    "deleted successfully.": "deleted successfully.",
-    "delete": "Delete",
-    "delete property": "Delete Property",
-    "this step is essential for informing patients about the treatments available at your property.": "this step is essential for informing patients about the treatments available at your property."
+    "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted.": "بمجرد حذفه، لا يمكن التراجع عن هذا الإجراء. يرجى التأكد، حيث سيتم حذف جميع البيانات ذات الصلة بشكل دائم.",
+    "deleted successfully.": "تم الحذف بنجاح.",
+    "delete": "حذف",
+    "delete property": "حذف العقار"
   },
   "property-form": {
-    "type": { "select your property type": "Select your property type" },
-    "title": { "label": "Title", "health center": "health center" },
-    "units": { "label": "Units" },
-    "space": { "label": "Space" },
-    "finishing": { "label": "Finishing" },
-    "floors": { "label": "Floors" },
-    "rooms": { "label": "Rooms" },
-    "bathrooms": { "label": "Bathrooms" },
-    "receptions": { "label": "Receptions" },
-    "garden": { "label": "Garden" },
-    "pool": { "label": "Pool" },
-    "view": { "label": "View" }
+    "type": {
+      "select your property type": "حدد نوع العقار"
+    },
+    "title": {
+      "label": "العنوان",
+      "health center": "مركز صحي"
+    },
+    "units": {
+      "label": "الوحدات"
+    },
+    "space": {
+      "label": "المساحة"
+    },
+    "finishing": {
+      "label": "التشطيب"
+    },
+    "floors": {
+      "label": "الأدوار"
+    },
+    "rooms": {
+      "label": "الغرف"
+    },
+    "bathrooms": {
+      "label": "الحمامات"
+    },
+    "receptions": {
+      "label": "الاستقبالات"
+    },
+    "garden": {
+      "label": "الحديقة"
+    },
+    "pool": {
+      "label": "المسبح"
+    },
+    "view": {
+      "label": "الإطلالة"
+    }
   },
   "property-restore-button": {
-    "restored successfully.": "restored successfully.",
-    "restore": "Restore",
-    "restore property": "Restore Property",
-    "this step is essential for informing patients about the treatments available at your property.": "this step is essential for informing patients about the treatments available at your property."
+    "restoring this property will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off.": "استعادة هذا العقار ستعيد جميع بياناته وإعداداته، مما يجعله يظهر كما لو لم يتم حذفه أبدًا. سيتم استعادة جميع المعلومات ذات الصلة بالكامل، مما يسمح لك بالاستمرار من حيث توقفت.",
+    "restored successfully.": "تم الاستعادة بنجاح.",
+    "restore": "استعادة",
+    "restore property": "استعادة العقار"
+  },
+  "scheduler": {
+    "today": "اليوم"
   },
   "user-form": {
     "name": {
-      "label": "Full Name"
+      "label": "الاسم الكامل",
+      "placeholder": "جو دو"
     },
     "email": {
-      "label": "Email"
+      "label": "البريد الإلكتروني"
     },
     "password": {
-      "label": "Password"
+      "label": "كلمة المرور"
     }
   },
   "user-profile-password-form": {
-    "updated successfully.": "updated successfully.",
-    "reset password": "Reset Password?",
-    "new password": "New Password",
-    "confirm new password": "Confirm New Password",
-    "discard": "Discard",
-    "submit": "Submit",
-    "this information will be used to create your public profile and facilitate communication with patients and colleagues.": "this information will be used to create your public profile and facilitate communication with patients and colleagues."
+    "updated successfully.": "تم التحديث بنجاح.",
+    "reset password": "إعادة تعيين كلمة المرور؟",
+    "new password": "كلمة مرور جديدة",
+    "confirm new password": "تأكيد كلمة المرور الجديدة",
+    "discard": "تجاهل",
+    "submit": "إرسال",
+    "this will update your password and help keep your account secure.": "سيؤدي هذا إلى تحديث كلمة المرور الخاصة بك ومساعدة في تأمين حسابك."
   },
   "user-profile-personal-form": {
-    "updated successfully.": "updated successfully.",
-    "personal information": "Personal Information",
-    "discard": "Discard",
-    "save changes": "Save Changes",
-    "this information will be used to create your public profile and facilitate communication with patients and colleagues.": "this information will be used to create your public profile and facilitate communication with patients and colleagues."
+    "updated successfully.": "تم التحديث بنجاح.",
+    "personal information": "المعلومات الشخصية",
+    "discard": "تجاهل",
+    "save changes": "حفظ التغييرات",
+    "this information will be used to create your public profile.": "سيتم استخدام هذه المعلومات لإنشاء ملفك الشخصي العام."
   },
   "constants": {
     "days": [
-      { "value": "SUN", "label": "SUN" },
-      { "value": "MON", "label": "MON" },
-      { "value": "TUE", "label": "TUE" },
-      { "value": "WED", "label": "WED" },
-      { "value": "THU", "label": "THU" },
-      { "value": "FRI", "label": "FRI" },
-      { "value": "SAT", "label": "SAT" }
+      { "value": "SUN", "label": "الأحد" },
+      { "value": "MON", "label": "الاثنين" },
+      { "value": "TUE", "label": "الثلاثاء" },
+      { "value": "WED", "label": "الأربعاء" },
+      { "value": "THU", "label": "الخميس" },
+      { "value": "FRI", "label": "الجمعة" },
+      { "value": "SAT", "label": "السبت" }
     ]
   }
 }

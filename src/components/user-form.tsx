@@ -50,7 +50,6 @@ export const UserForm = {
               {/* @ts-ignore */}
               <Input
                 type="text"
-                dir="ltr"
                 placeholder={c?.["placeholder"]}
                 disabled={loading}
                 {...field}

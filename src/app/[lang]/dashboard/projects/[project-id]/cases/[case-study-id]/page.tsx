@@ -408,7 +408,7 @@ export default async function CaseStudy({
         </div>
         {caseStudy?.["posts"]?.["length"] ? (
           <section className="space-y-8">
-            {platforms.map((platform, i) => {
+            {platforms(lang).map((platform, i) => {
               const posts = caseStudy?.["posts"]?.filter(
                 (p) => p?.["platform"] === platform?.["value"],
               );

@@ -77,7 +77,9 @@ export default async function Project({
       value: (
         <div className="flex flex-1 items-center justify-end gap-2">
           {project?.["platforms"]?.map((e, i) => {
-            const p = platforms.find((p) => p?.["value"] === e?.["value"]);
+            const p = platforms(lang).find(
+              (p) => p?.["value"] === e?.["value"],
+            );
             if (!p) return "---";
 
             const Icon = Icons?.[p?.["icon"]] ?? null;

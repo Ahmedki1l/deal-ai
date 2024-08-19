@@ -26,6 +26,7 @@ import { Dictionary } from "@/types/locale";
 import { Checkbox } from "./ui/checkbox";
 import { Link } from "./link";
 import { buttonVariants } from "./ui/button";
+import { useLocale } from "@/hooks/use-locale";
 
 type PostFormProps = {
   loading: boolean;
@@ -150,122 +151,132 @@ export const PostForm = {
       )}
     />
   ),
-  campaignType: ({
+  campaignType: function Component({
     dic: {
       "post-form": { campaignType: c },
     },
     loading,
     form,
-  }: PostFormProps) => (
-    <FormField
-      control={form.control}
-      name="campaignType"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>{c?.["label"]}</FormLabel>
-          <FormControl>
-            <Select
-              onValueChange={field.onChange}
-              defaultValue={field.value}
-              disabled={loading}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder={c?.["select your campaign"]} />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {postCampaigns?.map((e, i) => (
-                  <SelectItem key={i} value={e?.["value"]}>
-                    {e?.["label"]}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  ),
-  contentLength: ({
+  }: PostFormProps) {
+    const lang = useLocale();
+
+    return (
+      <FormField
+        control={form.control}
+        name="campaignType"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{c?.["label"]}</FormLabel>
+            <FormControl>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={loading}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder={c?.["select your campaign"]} />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {postCampaigns(lang)?.map((e, i) => (
+                    <SelectItem key={i} value={e?.["value"]}>
+                      {e?.["label"]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  },
+  contentLength: function Component({
     dic: {
       "post-form": { contentLength: c },
     },
     loading,
     form,
-  }: PostFormProps) => (
-    <FormField
-      control={form.control}
-      name="contentLength"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>{c?.["label"]}</FormLabel>
-          <FormControl>
-            <Select
-              onValueChange={field.onChange}
-              defaultValue={field.value}
-              disabled={loading}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue
-                    placeholder={c?.["select your content length"]}
-                  />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {postContentLengths?.map((e, i) => (
-                  <SelectItem key={i} value={e?.["value"]}>
-                    {e?.["label"]}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  ),
-  platform: ({
+  }: PostFormProps) {
+    const lang = useLocale();
+    return (
+      <FormField
+        control={form.control}
+        name="contentLength"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{c?.["label"]}</FormLabel>
+            <FormControl>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={loading}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder={c?.["select your content length"]}
+                    />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {postContentLengths(lang)?.map((e, i) => (
+                    <SelectItem key={i} value={e?.["value"]}>
+                      {e?.["label"]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  },
+  platform: function Component({
     dic: {
       "post-form": { platform: c },
     },
     loading,
     form,
-  }: PostFormProps) => (
-    <FormField
-      control={form.control}
-      name="platform"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>{c?.["label"]}</FormLabel>
-          <FormControl>
-            <Select
-              onValueChange={field.onChange}
-              defaultValue={field.value}
-              disabled={loading}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder={c?.["select your platform"]} />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {platforms?.map((e, i) => (
-                  <SelectItem key={i} value={e?.["value"]}>
-                    {e?.["label"]}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  ),
+  }: PostFormProps) {
+    const lang = useLocale();
+    return (
+      <FormField
+        control={form.control}
+        name="platform"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{c?.["label"]}</FormLabel>
+            <FormControl>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={loading}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder={c?.["select your platform"]} />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {platforms(lang)?.map((e, i) => (
+                    <SelectItem key={i} value={e?.["value"]}>
+                      {e?.["label"]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  },
   postAt: ({
     dic: {
       "post-form": { postAt: c },

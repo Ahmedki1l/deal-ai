@@ -224,16 +224,13 @@
 
         "projects": "Projects",
         "cases": {
-          "study cases": "Study Cases",
-          "this is how others will see you on the site.": "this is how others will see you on the site."
+          "study cases": "Study Cases"
         },
         "properties": {
-          "properties": "Properties",
-          "this is how others will see you on the site.": "this is how others will see you on the site."
+          "properties": "Properties"
         },
         "posts": {
-          "posts": "Posts",
-          "this is how others will see you on the site.": "this is how others will see you on the site."
+          "posts": "Posts"
         }
       },
       "settings": {
@@ -323,6 +320,15 @@
 
   "dashboard-layout": {
     "logout": "Logout"
+  },
+  "dashboard-posts-bar-chart": {
+    "posts": "Posts",
+    "showing total posts for the last 3 months.": "Showing total posts for the last 3 months.",
+    "facebook": "Facebook",
+    "instagram": "Instagram",
+    "linkedin": "LinkedIn",
+    "twitter": "Twitter",
+    "views": "Views"
   },
 
   "data-table": {
@@ -450,7 +456,7 @@
     "delete": "Delete",
     "updating an image allows you to refine and enhance the details of your ongoing developments": "Updating an image allows you to refine and enhance the details of your ongoing developments",
     "choose file": "choose file",
-    "generate using AI": "generate using AI+"
+    "generate using AI": "generate using AI"
   },
   "post-update-schedule-button": {
     "scheduled successfully.": "scheduled successfully.",

@@ -16,6 +16,7 @@ import { platforms } from "@/db/enums";
 import { PostUpdateForm } from "./post-update-form";
 import { DialogResponsive } from "./dialog";
 import { Image } from "./image";
+import { useLocale } from "@/hooks/use-locale";
 
 type SchedulerProps = {
   posts: (Post & {
@@ -215,6 +216,7 @@ export function Day({
   Dictionary["post-restore-button"] &
   Dictionary["back-button"] &
   Dictionary["constants"]) {
+  const lang = useLocale();
   const [open, setOpen] = useState(false);
   const filteredPosts = posts.filter(
     (p) => day.format("DD-MM-YY") === dayjs(p?.["postAt"]).format("DD-MM-YY"),
@@ -258,7 +260,9 @@ export function Day({
         }}
       >
         {filteredPosts?.map((evt, i) => {
-          const p = platforms.find((p) => p?.["value"] === evt?.["platform"]);
+          const p = platforms(lang).find(
+            (p) => p?.["value"] === evt?.["platform"],
+          );
           const Icon = Icons?.[p?.["icon"]!] ?? null;
 
           return (

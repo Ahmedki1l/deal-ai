@@ -19,6 +19,7 @@ import { platforms } from "@/db/enums";
 import { Dictionary } from "@/types/locale";
 import { DataTable } from "@/components/data-table";
 import { ProjectBinButton } from "@/components/project-bin-button";
+import { useLocale } from "@/hooks/use-locale";
 
 type ColumnType = Project & {
   caseStudy: (CaseStudy & { posts: Post[] })[];
@@ -49,7 +50,7 @@ export function Table({
   },
   data,
 }: TableProps) {
-  //   const lang = useLocale();
+  const lang = useLocale();
   //   const router = useRouter();
   //   const [open, setOpen] = useState<boolean>(false);
 
@@ -196,7 +197,7 @@ export function Table({
             cell: ({ row: { original: r } }) => (
               <div className="flex items-center gap-2">
                 {r?.["platforms"]?.map((e, i) => {
-                  const p = platforms.find(
+                  const p = platforms(lang).find(
                     (p) => p?.["value"] === e?.["value"],
                   );
                   if (!p) return "---";

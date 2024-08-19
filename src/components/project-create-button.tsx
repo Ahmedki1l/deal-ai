@@ -158,7 +158,7 @@ export function ProjectCreateButton({
                       })
                     }
                     disabled={
-                      fields?.["length"] === propertyTypes?.["length"]
+                      fields?.["length"] === propertyTypes(lang)?.["length"]
                       // ||
                       // (limit ? fields?.["length"] == 4 : false)
                     }

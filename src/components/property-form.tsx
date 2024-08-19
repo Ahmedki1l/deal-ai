@@ -22,6 +22,7 @@ import { propertyTypes } from "@/db/enums";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import { Dictionary } from "@/types/locale";
+import { useLocale } from "@/hooks/use-locale";
 
 type PropertyFormProps = {
   loading: boolean;
@@ -45,6 +46,7 @@ export const PropertyForm = {
     typeIndex: number;
     remove: UseFieldArrayRemove;
   }) {
+    const lang = useLocale();
     return (
       <FormField
         control={form.control}
@@ -66,7 +68,7 @@ export const PropertyForm = {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {propertyTypes?.map((e, i) => {
+                    {propertyTypes(lang)?.map((e, i) => {
                       // const Icon = Icons?.[e?.["icon"]] ?? null;
                       return (
                         <SelectItem

@@ -553,7 +553,7 @@ export default {
       "describe your project": "وصف مشروعك",
     },
     distinct: {
-      label: "مميز",
+      label: "الحي",
       "nasr city": "مدينة نصر",
     },
     city: {
@@ -565,7 +565,7 @@ export default {
       egypt: "مصر",
     },
     spaces: {
-      label: "الأماكن",
+      label: "المساحة",
     },
     platforms: {
       label: "المنصات",
@@ -599,7 +599,7 @@ export default {
   "property-create-button": {
     "created successfully.": "تم الإنشاء بنجاح.",
     submit: "إرسال",
-    "type of assets": "نوع الأصول",
+    "type of assets": "نوع الوحدات",
     unit: "وحدة",
     "create property": "إنشاء عقار",
     "by detailing each property, including its features, layout, and amenities, you ensure that all relevant information is captured, enabling better organization and presentation to potential buyers or tenants.":

@@ -95,6 +95,11 @@ export async function createCaseStudy(
     data.targetAudience = response["Target_Audience"];
     data.pros = JSON.stringify(response["Pros"]);
     data.cons = JSON.stringify(response["Cons"]);
+    data.Market_Strategy = JSON.stringify(response["Market_Strategy"]);
+    data.Performance_Metrics = JSON.stringify(response["Performance_Metrics"]);
+    data.ROI_Calculation = JSON.stringify(response["ROI_Calculation"]);
+    data.Strategic_Insights = JSON.stringify(response["Strategic_Insights"]);
+    data.Recommendations = JSON.stringify(response["Recommendations"]);
     data.prompt = prompt.input;
     data.caseStudyResponse = JSON.stringify(response);
 

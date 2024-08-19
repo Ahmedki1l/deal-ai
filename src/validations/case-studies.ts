@@ -12,7 +12,12 @@ export const caseStudySchema = z.object(
     targetAudience: z.string("targetAudience"),
     pros: z.string("pros"),
     cons: z.string("cons"),
-    hashtags: z.string("hashtags"),
+    hashtags: z.string("hashtags").optional(),
+    Market_Strategy: z.string("hashtags"),
+    Performance_Metrics: z.string("hashtags"),
+    ROI_Calculation: z.string("hashtags"),
+    Strategic_Insights: z.string("hashtags"),
+    Recommendations: z.string("hashtags"),
     prompt: z.string("prompt").nullable().optional(),
     caseStudyResponse: z.string("caseStudyResponse").nullable().optional(),
 

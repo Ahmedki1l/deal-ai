@@ -95,7 +95,12 @@ model CaseStudy {
   targetAudience    String  @map("target-audience")
   pros              String  @map("pros")
   cons              String  @map("cons")
-  hashtags          String
+  hashtags          String?
+  Market_Strategy   String
+  Performance_Metrics String
+  ROI_Calculation   String
+  Strategic_Insights String
+  Recommendations   String
   prompt            String?
   caseStudyResponse String?
 

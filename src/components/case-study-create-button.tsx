@@ -53,6 +53,8 @@ export function CaseStudyCreateButton({
   async function onSubmit(data: z.infer<typeof caseStudyCreateFormSchema>) {
     setLoading(true);
 
+    console.log("creating case study");
+
     toast.promise(
       createCaseStudy(
         {

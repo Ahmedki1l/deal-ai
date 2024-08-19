@@ -105,10 +105,10 @@ export default {
           restore: "استعادة",
           delete: "حذف",
           "back to all projects": "العودة إلى جميع المشاريع",
-          distinct: "مميز",
+          distinct: "الحي",
           city: "المدينة",
           country: "البلد",
-          spaces: "الأماكن",
+          spaces: "المساحة",
           "property types": "أنواع العقارات",
           platforms: "المنصات",
           "created at": "تاريخ الإنشاء",
@@ -525,7 +525,7 @@ export default {
   "project-create-button": {
     "created successfully.": "تم الإنشاء بنجاح.",
     submit: "إرسال",
-    "type of assets": "نوع الأصول",
+    "type of assets": "نوع الوحدات",
     unit: "وحدة",
     "create project": "إنشاء مشروع",
     "by providing detailed information about your project, you'll be able to streamline your operations, track progress, and ensure that all stakeholders are informed about the development's key aspects and milestones.":

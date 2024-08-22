@@ -37,25 +37,28 @@ export async function GET(req: NextRequest) {
         id: string;
         name: string;
         email: string;
+        picture: string;
         verified_email: boolean;
         given_name: string;
         family_name: string;
-        picture: string;
       }>();
 
     const existingUser = await db.user.findUnique({
-      where: { email: googleUser?.email },
+      where: { email: googleUser?.["email"] },
     });
 
     if (existingUser) {
       if (!existingUser?.["googleId"] || !existingUser?.["image"])
         await db.user.update({
-          data: { image: googleUser?.picture, googleId: googleUser?.id },
-          where: { email: googleUser?.email },
+          data: {
+            image: googleUser?.["picture"],
+            googleId: googleUser?.["id"],
+          },
+          where: { email: googleUser?.["email"] },
         });
 
-      const session = await lucia.createSession(existingUser.id, {});
-      const sessionCookie = lucia.createSessionCookie(session.id);
+      const session = await lucia.createSession(existingUser?.["id"], {});
+      const sessionCookie = lucia.createSessionCookie(session?.["id"]);
       cookies().set(
         sessionCookie.name,
         sessionCookie.value,
@@ -74,15 +77,15 @@ export async function GET(req: NextRequest) {
     await db.user.create({
       data: {
         id: userId,
-        email: googleUser?.email,
-        name: googleUser?.name,
-        image: googleUser?.picture,
-        googleId: googleUser?.id,
+        name: googleUser?.["name"],
+        email: googleUser?.["email"],
+        image: googleUser?.["picture"],
+        googleId: googleUser?.["id"],
       },
     });
 
     const session = await lucia.createSession(userId, {});
-    const sessionCookie = lucia.createSessionCookie(session.id);
+    const sessionCookie = lucia.createSessionCookie(session?.["id"]);
     cookies().set(
       sessionCookie.name,
       sessionCookie.value,

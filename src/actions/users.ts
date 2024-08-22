@@ -43,8 +43,8 @@ export async function signUpWithPassword(
     await db.user.create({
       data: {
         id: userId,
-        email,
         name,
+        email,
         password: passwordHash,
       },
     });

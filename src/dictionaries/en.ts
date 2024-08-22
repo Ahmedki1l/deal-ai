@@ -1,3 +1,5 @@
+import { SelectItem } from "@/types";
+
 export default {
   site: {
     name: "Deal Ai",
@@ -68,7 +70,7 @@ export default {
               icon: "trash",
             },
           ],
-        ],
+        ] as SelectItem[][],
       },
       dashboard: {
         dashboard: "Dashboard",
@@ -248,7 +250,7 @@ export default {
           { value: "/dashboard/bin/cases", label: "Study Cases" },
           { value: "/dashboard/bin/properties", label: "Properties" },
           { value: "/dashboard/bin/posts", label: "Posts" },
-        ],
+        ] as SelectItem[],
         bin: "Bin",
         "below is a list of your deleted items. you can restore them within 30 days before they are permanently removed.":
           "Below is a list of your deleted items. You can restore them within 30 days before they are permanently removed.",
@@ -268,7 +270,7 @@ export default {
         "main-nav": [
           { value: "/dashboard/settings", label: "Profile" },
           { value: "/dashboard/settings/appearance", label: "Appearance" },
-        ],
+        ] as SelectItem[],
         settings: "Settings",
         "manage your account details, privacy settings, and how others perceive you on the platform.":
           "manage your account details, privacy settings, and how others perceive you on the platform.",
@@ -294,6 +296,9 @@ export default {
     light: "Light",
     dark: "Dark",
     system: "System",
+    language: "Language",
+    "automatically switch between languages.":
+      "Automatically switch between languages.",
     "update preferences": "update preferences",
   },
   "back-button": { back: "back" },
@@ -425,6 +430,14 @@ export default {
     ar: "العربية (AR)",
     fr: "French (FR)",
     de: "Deautch (DE)",
+  },
+  "mode-toggle": {
+    "toggle theme": "toggle theme",
+    modes: [
+      { value: "light", label: "Light", icon: "sun" },
+      { value: "dark", label: "Dark", icon: "moon" },
+      { value: "system", label: "System", icon: "laptop" },
+    ] as SelectItem[],
   },
 
   "post-bin-button": {
@@ -659,7 +672,7 @@ export default {
       { value: "THU", label: "THU" },
       { value: "FRI", label: "FRI" },
       { value: "SAT", label: "SAT" },
-    ],
+    ] as SelectItem[],
   },
   db: {
     platforms: [
@@ -667,20 +680,20 @@ export default {
       { value: "LINKEDIN", label: "LinkedIn" },
       { value: "INSTAGRAM", label: "Instagram" },
       { value: "TWITTER", label: "Twitter" },
-    ],
+    ] as SelectItem[],
     propertyTypes: [
       { value: "APARTMENT", label: "Apartment" },
       { value: "VILLA", label: "Villa" },
-    ],
+    ] as SelectItem[],
     campaignTypes: [
       { value: "BRANDING_AWARENESS", label: "Branding Awareness" },
       { value: "ENGAGEMENT", label: "Engagement" },
       { value: "SALES_CONVERSION", label: "Sales Conversion" },
-    ],
+    ] as SelectItem[],
     contentLength: [
       { value: "SHORT", label: "Short" },
       { value: "MEDIUM", label: "Medium" },
       { value: "LONG", label: "Long" },
-    ],
+    ] as SelectItem[],
   },
 };

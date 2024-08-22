@@ -49,13 +49,11 @@ export function DialogResponsive({
 }: DialogResponsiveProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const contentClassName = "overflow-auto max-h-[80vh]"; // 50% of viewport height and scrollable
-
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild {...props} />
-        <DialogContent className={`w-fit ${contentClassName}`}>
+        <DialogContent className="max-h-[95vh] overflow-auto">
           <DialogHeader>
             <DialogTitle>
               {title ?? c?.["are you sure you want to proceed?"]}
@@ -84,28 +82,30 @@ export function DialogResponsive({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild {...props} />
-      <DrawerContent className={contentClassName}>
-        <DrawerHeader>
-          <DrawerTitle>
-            {title ?? c?.["are you sure you want to proceed?"]}
-          </DrawerTitle>
-          <DrawerDescription className="max-w-prose">
-            {description ??
-              c?.[
-                "please confirm that all the provided information is accurate. This action cannot be undone."
-              ]}
-          </DrawerDescription>
-        </DrawerHeader>
-        <div className="px-4">{content}</div>
+      <DrawerContent className="max-h-[95vh]">
+        <div className="overflow-auto">
+          <DrawerHeader>
+            <DrawerTitle>
+              {title ?? c?.["are you sure you want to proceed?"]}
+            </DrawerTitle>
+            <DrawerDescription className="max-w-prose">
+              {description ??
+                c?.[
+                  "please confirm that all the provided information is accurate. This action cannot be undone."
+                ]}
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="px-4">{content}</div>
 
-        <DrawerFooter className="gap-2">
-          {confirmButton}
-          <DrawerClose disabled={disabled} asChild>
-            <Button disabled={disabled} variant="outline">
-              {c?.["cancel"]}
-            </Button>
-          </DrawerClose>
-        </DrawerFooter>
+          <DrawerFooter className="gap-2">
+            {confirmButton}
+            <DrawerClose disabled={disabled} asChild>
+              <Button disabled={disabled} variant="outline">
+                {c?.["cancel"]}
+              </Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </div>
       </DrawerContent>
     </Drawer>
   );

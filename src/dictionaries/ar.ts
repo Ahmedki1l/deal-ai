@@ -1,8 +1,10 @@
+import { SelectItem } from "@/types";
+
 export default {
   site: {
-    name: "Deal Ai",
+    name: "ديل ai",
     description:
-      "Our platform offers advanced social media automation services using cutting-edge AI technology. We assist clients in executing fully integrated marketing campaigns tailored specifically for real estate projects. Through data analysis and market forecasting, we provide innovative solutions that enhance targeting, increase content engagement, and boost the performance of marketing campaigns. Our goal is to empower clients to reach their target audience more efficiently, increase real estate sales strategically, while reducing costs and accelerating the achievement of results.",
+      "موقعنا يقدم خدمات متقدمة لتشغيل الأتمتة على منصات التواصل الاجتماعي باستخدام تقنيات الذكاء الاصطناعي المتطورة. نحن نساعد العملاء في تنفيذ حملات تسويقية متكاملة وموجهة خصيصاً للمشاريع العقارية. من خلال تحليل البيانات وتوقعات السوق، نوفر حلولاً مبتكرة تساعد على تحسين الاستهداف، وزيادة نسبة التفاعل مع المحتوى، ورفع مستوى أداء الحملات التسويقية. هدفنا هو تمكين العملاء من الوصول إلى جمهورهم المستهدف بكفاءة أعلى، وزيادة مبيعات العقارات بشكل استراتيجي، مع تقليل التكاليف وتسريع عملية تحقيق النتائج.",
   },
   auth: {
     login: {
@@ -67,7 +69,7 @@ export default {
               icon: "trash",
             },
           ],
-        ],
+        ] as SelectItem[][],
       },
       dashboard: {
         dashboard: "الصفحة الرئيسية",
@@ -244,7 +246,7 @@ export default {
           { value: "/dashboard/bin/cases", label: "دراسات الحالة" },
           { value: "/dashboard/bin/properties", label: "الوحدات" },
           { value: "/dashboard/bin/posts", label: "المنشورات" },
-        ],
+        ] as SelectItem[],
         bin: "سلة المهملات",
         "below is a list of your deleted items. you can restore them within 30 days before they are permanently removed.":
           "فيما يلي قائمة بالعناصر المحذوفة الخاصة بك. يمكنك استعادتها خلال 30 يومًا قبل إزالتها نهائيًا.",
@@ -263,7 +265,7 @@ export default {
         "main-nav": [
           { value: "/dashboard/settings", label: "الملف الشخصي" },
           { value: "/dashboard/settings/appearance", label: "المظهر" },
-        ],
+        ] as SelectItem[],
         settings: "الإعدادات",
         "manage your account details, privacy settings, and how others perceive you on the platform.":
           "إدارة تفاصيل حسابك، إعدادات الخصوصية، وكيفية رؤية الآخرين لك على المنصة.",
@@ -288,6 +290,8 @@ export default {
     light: "فاتح",
     dark: "داكن",
     system: "نظام",
+    language: "اللغة",
+    "automatically switch between languages.": "التبديل التلقائي بين اللغات.",
     "update preferences": "تحديث التفضيلات",
   },
   "back-button": {
@@ -421,6 +425,14 @@ export default {
     ar: "العربية (AR)",
     fr: "الفرنسية (FR)",
     de: "الألمانية (DE)",
+  },
+  "mode-toggle": {
+    "toggle theme": "تبديل النظام",
+    modes: [
+      { value: "light", label: "نهاري", icon: "sun" },
+      { value: "dark", label: "ليلي", icon: "moon" },
+      { value: "system", label: "النظام", icon: "laptop" },
+    ] as SelectItem[],
   },
   "post-bin-button": {
     "deleted successfully.": "تم الحذف بنجاح.",
@@ -700,7 +712,7 @@ export default {
       { value: "THU", label: "الخميس" },
       { value: "FRI", label: "الجمعة" },
       { value: "SAT", label: "السبت" },
-    ],
+    ] as SelectItem[],
   },
   db: {
     platforms: [
@@ -708,20 +720,20 @@ export default {
       { value: "LINKEDIN", label: "لينكد إن" },
       { value: "INSTAGRAM", label: "إنستغرام" },
       { value: "TWITTER", label: "تويتر" },
-    ],
+    ] as SelectItem[],
     propertyTypes: [
       { value: "APARTMENT", label: "شقة" },
       { value: "VILLA", label: "فيلا" },
-    ],
+    ] as SelectItem[],
     campaignTypes: [
       { value: "BRANDING_AWARENESS", label: "زيادة الوعي بالعلامة التجارية" },
       { value: "ENGAGEMENT", label: "التفاعل" },
       { value: "SALES_CONVERSION", label: "تحويل المبيعات" },
-    ],
+    ] as SelectItem[],
     contentLength: [
       { value: "SHORT", label: "قصير" },
       { value: "MEDIUM", label: "متوسط" },
       { value: "LONG", label: "طويل" },
-    ],
+    ] as SelectItem[],
   },
 };

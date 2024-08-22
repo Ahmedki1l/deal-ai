@@ -32,8 +32,9 @@ export function LocaleSwitcher({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="link" size="sm" className="underline gap-1">
-          <Icons.globe /> <span>{c?.[lang]}</span>
+        <Button variant="link" size="sm" className="gap-1 underline">
+          <Icons.globe />
+          {/* <span>{c?.[lang]}</span> */}
           <span className="sr-only">
             {c?.["current locale of the website"]!}
           </span>

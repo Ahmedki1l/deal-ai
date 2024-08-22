@@ -29,6 +29,9 @@ import {
   Globe,
   ImagePlay,
   Trash2,
+  Sun,
+  Moon,
+  Laptop,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { VariantProps, cva } from "class-variance-authority";
@@ -92,6 +95,15 @@ export const Icons = {
   ),
   timer: ({ className, ...props }: IconProps) => (
     <Timer className={cn(IconsVariants({}), className)} {...props} />
+  ),
+  sun: ({ className, ...props }: IconProps) => (
+    <Sun className={cn(IconsVariants({}), className)} {...props} />
+  ),
+  moon: ({ className, ...props }: IconProps) => (
+    <Moon className={cn(IconsVariants({}), className)} {...props} />
+  ),
+  laptop: ({ className, ...props }: IconProps) => (
+    <Laptop className={cn(IconsVariants({}), className)} {...props} />
   ),
   globe: ({ className, ...props }: IconProps) => (
     <Globe className={cn(IconsVariants({}), className)} {...props} />

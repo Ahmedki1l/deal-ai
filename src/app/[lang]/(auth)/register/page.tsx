@@ -20,8 +20,8 @@ export default async function Register({ params: { lang } }: RegisterProps) {
     <div className="grid min-h-[700px] flex-1 items-center justify-center overflow-auto lg:grid-cols-2">
       {/* <BackButton variant="ghost" className="absolute right-4 top-4 gap-2" /> */}
 
-      <section className="container relative hidden h-full flex-col bg-[url('https://unsplash.com/photos/a-couple-of-tall-buildings-sitting-next-to-each-other-g5d5J8hStio')] p-10 text-primary-foreground dark:border-r lg:flex">
-        <div className="absolute inset-0 bg-primary/30" />
+      <section className="container relative hidden h-full flex-col bg-[url('https://images.unsplash.com/photo-1649518325538-0e1a1e8c63db?q=80&w=1930&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover p-10 text-primary-foreground dark:border-r lg:flex">
+        <div className="absolute inset-0 bg-primary/50" />
         <p className="z-20 flex items-center gap-2 text-lg font-medium">
           <Icons.logo /> {dic?.["site"]?.["name"]}
         </p>
@@ -90,16 +90,10 @@ export default async function Register({ params: { lang } }: RegisterProps) {
             work and boost your productivity.
           </p>
         </div> */}
-        <div className="grid gap-6">
+        <div className="grid gap-4">
           <Suspense>
             <UserAuthRegisterForm dic={dic} />
           </Suspense>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-          </div>
 
           {/* <p className="text-center text-sm text-muted-foreground">
             By clicking continue, you agree to our{" "}

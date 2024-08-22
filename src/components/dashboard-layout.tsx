@@ -19,7 +19,9 @@ import { useRouter } from "next/navigation";
 import { logout } from "@/actions/users";
 import {
   Card,
+  CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -28,6 +30,7 @@ import { useLocale } from "@/hooks/use-locale";
 import { Dictionary } from "@/types/locale";
 import { LocaleSwitcher } from "./locale-switcher";
 import { Tooltip } from "./tooltip";
+import { ModeToggler } from "./mode-toggler";
 
 type DashboardLayoutProps = {
   user: User;
@@ -40,7 +43,8 @@ type DashboardLayoutProps = {
     bottom?: SelectItem[][];
   };
 } & Dictionary["dashboard-layout"] &
-  Dictionary["locale-switcher"];
+  Dictionary["locale-switcher"] &
+  Dictionary["mode-toggle"];
 
 export function DashboardLayout({
   dic: { "dashboard-layout": c, ...dic },
@@ -128,22 +132,24 @@ export function DashboardLayout({
             ))}
           </div>
 
-          <div className="flex flex-1 flex-col justify-end pb-4 pt-10">
-            <div
-              className={cn(
-                "container flex items-center justify-center px-4 py-5 transition-all duration-300 ease-in-out",
-                isCollapsed && "h-[55px] px-2",
-              )}
-            >
+          <div className="flex flex-1 flex-col justify-end gap-4 pb-4 pt-10">
+            {isCollapsed ? (
+              <Tooltip text={user?.["name"]} side="right">
+                <Card className="mx-auto flex w-fit items-center justify-center rounded-full">
+                  <Avatar
+                    user={user}
+                    className="aspect-square h-7 w-7"
+                    icon={{
+                      name: "user",
+                      className: "w-5 h-5",
+                    }}
+                  />
+                </Card>
+              </Tooltip>
+            ) : (
               <div
                 className={cn(
-                  "flex flex-col items-center justify-center gap-5 text-center",
-                  isCollapsed &&
-                    buttonVariants({
-                      variant: "outline",
-                      size: "icon",
-                      className: "h-9 w-9 shrink-0 rounded-full p-0",
-                    }),
+                  "container px-4 py-5 transition-all duration-300 ease-in-out",
                 )}
               >
                 <Card className="w-full">
@@ -151,31 +157,28 @@ export function DashboardLayout({
                     <div className="flex w-full items-center justify-center gap-3">
                       <Avatar
                         user={user}
-                        className={cn(
-                          "aspect-square h-12 w-12",
-                          isCollapsed && "h-7 w-7",
-                        )}
+                        className={cn("aspect-square h-12 w-12")}
                         icon={{
                           name: "user",
-                          className: isCollapsed ? "w-3 h-3" : "w-5 h-5",
+                          className: "w-5 h-5",
                         }}
                       />
                     </div>
-                    {!isCollapsed && (
-                      <div className="text-sm">
-                        {!isCollapsed && (
-                          <CardTitle>{user?.["name"]}</CardTitle>
-                        )}
-                        <CardDescription className="tuncate line-clamp-1">
-                          {user?.["email"]}
-                        </CardDescription>
-                        <LocaleSwitcher dic={dic} />
-                      </div>
-                    )}
                   </CardHeader>
+
+                  <CardContent className="flex flex-col items-center justify-center text-sm">
+                    <CardTitle>{user?.["name"]}</CardTitle>
+                    <CardDescription className="tuncate line-clamp-1">
+                      {user?.["email"]}
+                    </CardDescription>
+                  </CardContent>
+                  <CardFooter className="items-center justify-center gap-2">
+                    <LocaleSwitcher dic={dic} />
+                    <ModeToggler dic={dic} />
+                  </CardFooter>
                 </Card>
               </div>
-            </div>
+            )}
 
             {links?.["bottom"]?.map((links, i) => (
               <div key={i}>

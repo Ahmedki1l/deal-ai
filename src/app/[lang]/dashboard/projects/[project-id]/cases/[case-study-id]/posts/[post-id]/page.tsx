@@ -16,6 +16,7 @@ import { LocaleProps } from "@/types/locale";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Icons } from "@/components/icons";
 import { Link } from "@/components/link";
+import { buttonVariants } from "@/components/ui/button";
 
 type CaseStudyProps = Readonly<{
   params: {
@@ -79,9 +80,11 @@ export default async function CaseStudy({
         <div className="flex items-center justify-between gap-4">
           <div>
             <Link
-              href={`/${lang}/dashboard/projects/${projectId}/cases/${caseStudyId}`}
+              href={`/dashboard/projects/${projectId}/cases/${caseStudyId}`}
+              className={buttonVariants({ variant: "ghost" })}
             >
               <Icons.chevronLeft />
+
               {post?.["caseStudy"]?.["title"]}
             </Link>
           </div>

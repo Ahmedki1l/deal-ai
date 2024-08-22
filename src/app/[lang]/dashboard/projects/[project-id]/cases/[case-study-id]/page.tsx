@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { db } from "@/db";
 import { EmptyPlaceholder } from "@/components/empty-placeholder";
 import { BackButton } from "@/components/back-button";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { PostCreateButton } from "@/components/post-create-button";
 import {
   Breadcrumb,
@@ -107,8 +107,12 @@ export default async function CaseStudy({
       <div className="flex flex-col gap-5">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <Link href={`/dashboard/projects/${projectId}`}>
+            <Link
+              href={`/dashboard/projects/${projectId}`}
+              className={buttonVariants({ variant: "ghost" })}
+            >
               <Icons.chevronLeft />
+
               {caseStudy?.["project"]?.["title"]}
             </Link>
           </div>
@@ -394,16 +398,18 @@ export default async function CaseStudy({
           </div>
 
           <div>
-            <PostCreateButton
-              disabled={projectDeleted || caseStudyDeleted}
-              dic={dic}
-              caseStudy={caseStudy}
-              project={caseStudy.project}
-            >
-              <Button disabled={projectDeleted || caseStudyDeleted}>
-                {c?.["create posts"]}
-              </Button>
-            </PostCreateButton>
+            {caseStudy?.["posts"]?.["length"] ? (
+              <PostCreateButton
+                disabled={projectDeleted || caseStudyDeleted}
+                dic={dic}
+                caseStudy={caseStudy}
+                project={caseStudy.project}
+              >
+                <Button disabled={projectDeleted || caseStudyDeleted}>
+                  {c?.["create posts"]}
+                </Button>
+              </PostCreateButton>
+            ) : null}
           </div>
         </div>
         {caseStudy?.["posts"]?.["length"] ? (

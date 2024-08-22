@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { EmptyPlaceholder } from "@/components/empty-placeholder";
 import { BackButton } from "@/components/back-button";
 import { DataTable } from "@/components/data-table";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { CaseStudyCreateButton } from "@/components/case-study-create-button";
 import {
   Breadcrumb,
@@ -25,6 +25,8 @@ import { ProjectRestoreButton } from "@/components/project-restore-button";
 import { ProjectBinButton } from "@/components/project-bin-button";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Link } from "@/components/link";
 
 type ProjectProps = Readonly<{
   params: { "project-id": string } & LocaleProps;
@@ -96,10 +98,13 @@ export default async function Project({
       <div className="flex flex-col gap-5">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <BackButton dic={dic}>
+            <Link
+              href="/dashboard/projects"
+              className={buttonVariants({ variant: "ghost" })}
+            >
               <Icons.chevronLeft />
               {c?.["back to all projects"]}
-            </BackButton>
+            </Link>
           </div>
 
           <div>
@@ -167,8 +172,12 @@ export default async function Project({
       </div>
 
       <Separator className="mb-12 mt-6" />
-      <div className="space-y-12">
-        <div>
+      <Tabs defaultValue="cases" className="space-y-12">
+        <TabsList>
+          <TabsTrigger value="cases">Study Cases</TabsTrigger>
+          <TabsTrigger value="properties">Properties</TabsTrigger>
+        </TabsList>
+        <TabsContent value="cases">
           <div className="flex flex-col gap-5">
             <div className="mb-6 flex items-center justify-between">
               <div>
@@ -198,9 +207,9 @@ export default async function Project({
             dic={dic}
             data={project?.["caseStudy"]}
           />
-        </div>
+        </TabsContent>
 
-        <div className="flex flex-col gap-5">
+        <TabsContent value="properties" className="flex flex-col gap-5">
           <div className="mb-6 flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold tracking-tight">
@@ -228,8 +237,8 @@ export default async function Project({
             dic={dic}
             data={project?.["properties"]}
           />
-        </div>
-      </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

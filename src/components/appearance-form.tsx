@@ -20,15 +20,21 @@ import { toast } from "sonner";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useTheme } from "next-themes";
 import { Dictionary } from "@/types/locale";
+import { LocaleSwitcher } from "./locale-switcher";
+import { Label } from "./ui/label";
 
 const appearanceFormSchema = z.object({
   theme: z.enum(["light", "dark", "system"], {
     required_error: "Please select a theme.",
   }),
+  lang: z.string({
+    required_error: "Please select a theme.",
+  }),
 });
 
 type AppearanceFormValues = z.infer<typeof appearanceFormSchema>;
-type AppearanceFormProps = Dictionary["appearance-form"];
+type AppearanceFormProps = Dictionary["appearance-form"] &
+  Dictionary["locale-switcher"];
 
 export function AppearanceForm({
   dic: { "appearance-form": c, ...dic },
@@ -56,6 +62,15 @@ export function AppearanceForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <div className="space-y-1">
+          <Label>{c?.["language"]}</Label>
+          <p className="text-[0.8rem] text-muted-foreground">
+            {c?.["automatically switch between languages."]}
+          </p>
+
+          <LocaleSwitcher dic={dic} />
+        </div>
+
         <FormField
           control={form.control}
           name="theme"
@@ -66,6 +81,7 @@ export function AppearanceForm({
                 {c?.["automatically switch between day and night themes."]}
               </FormDescription>
               <FormMessage />
+
               <RadioGroup
                 onValueChange={(e) => {
                   field.onChange(e);

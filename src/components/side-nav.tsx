@@ -6,7 +6,7 @@ import { SelectItem } from "@/types";
 import { Icons } from "@/components/icons";
 import { useSelectedLayoutSegment } from "next/navigation";
 import { Link } from "@/components/link";
-import { Tooltip } from "./tooltip";
+import { Tooltip } from "@/components/tooltip";
 
 type SideNavProps = {
   isCollapsed: boolean;
@@ -41,23 +41,25 @@ export function SideNav({ links, isCollapsed }: SideNavProps) {
                 </>
               }
             >
-              <Link
-                href={link?.["value"]}
-                className={cn(
-                  buttonVariants({
-                    variant:
-                      segment === link?.["segment"] ? "default" : "ghost",
-                    size: "icon",
-                  }),
-                  "h-9 w-9",
+              <div>
+                <Link
+                  href={link?.["value"]}
+                  className={cn(
+                    buttonVariants({
+                      variant:
+                        segment === link?.["segment"] ? "default" : "ghost",
+                      size: "icon",
+                    }),
+                    "h-9 w-9",
 
-                  segment === link?.["segment"] &&
-                    "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white",
-                )}
-              >
-                {Icon && <Icon />}
-                <span className="sr-only">{link?.["label"]}</span>
-              </Link>
+                    segment === link?.["segment"] &&
+                      "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white",
+                  )}
+                >
+                  {Icon && <Icon />}
+                  <span className="sr-only">{link?.["label"]}</span>
+                </Link>
+              </div>
             </Tooltip>
           ) : (
             <Link

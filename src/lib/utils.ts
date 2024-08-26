@@ -36,3 +36,12 @@ export function getMonth(month = dayjs().month()) {
   });
   return daysMatrix;
 }
+
+export function isValidUrl(src: string) {
+  try {
+    new URL(src);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}

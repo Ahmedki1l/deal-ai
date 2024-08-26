@@ -25,7 +25,7 @@ import { Image as ImageType, Post } from "@prisma/client";
 import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
 import { useLocale } from "@/hooks/use-locale";
-import { cn } from "@/lib/utils";
+import { cn, isValidUrl } from "@/lib/utils";
 import { Image } from "./image";
 import { DialogResponsive } from "./dialog";
 import { DialogClose } from "./ui/dialog";
@@ -84,15 +84,6 @@ export function PostUpdateForm({
         return c?.["updated successfully."];
       },
     });
-  }
-
-  function isValidUrl(src: string) {
-    try {
-      new URL(src);
-      return true;
-    } catch (e) {
-      return false;
-    }
   }
 
   return (
@@ -165,7 +156,7 @@ export function PostUpdateForm({
               {isValidUrl(form.getValues("image.src") ?? "") ? (
                 <Image src={form.getValues("image.src")!} alt="" />
               ) : null}
-              <div className="absolute right-4 top-4 z-50 flex items-center text-lg font-medium">
+              <div className="absolute right-4 top-4 z-50 flex items-center gap-2 text-lg font-medium">
                 <DialogResponsive
                   dic={dic}
                   disabled={loading}
@@ -235,6 +226,8 @@ export function PostUpdateForm({
                     <Icons.edit />
                   </Button>
                 </DialogResponsive>
+
+                <ImageForm.watermark dic={dic} form={form} loading={loading} />
               </div>
             </div>
             <Card>

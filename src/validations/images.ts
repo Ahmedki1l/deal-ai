@@ -46,6 +46,9 @@ export const imageRegeneratePromptSchema = imageSchema.pick({
 export const imageGenerateSchema = imageSchema.pick({
   prompt: true,
 });
+export const imageWatermarkSchema = imageSchema.pick({
+  src: true,
+});
 
 export const imageDeleteSchema = imageSchema.pick({ id: true });
 export const imageBinSchema = imageSchema.pick({

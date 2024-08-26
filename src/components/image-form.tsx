@@ -17,11 +17,15 @@ import { Image as ImageType } from "@prisma/client";
 import { useLocale } from "@/hooks/use-locale";
 import { imageUpdateFormSchema } from "@/validations/images";
 import { Textarea } from "./ui/textarea";
-import { convertBase64 } from "@/lib/utils";
+import { convertBase64, isValidUrl } from "@/lib/utils";
 import { Image } from "./image";
 import { Icons } from "./icons";
 import { toast } from "sonner";
-import { generateImage, regenerateImagePrompt } from "@/actions/images";
+import {
+  generateImage,
+  regenerateImagePrompt,
+  watermarkImage,
+} from "@/actions/images";
 import { t } from "@/lib/locale";
 import { Tooltip } from "./tooltip";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
@@ -213,6 +217,55 @@ export const ImageForm = {
             />
           </TabsContent>
         </Tabs>
+      </div>
+    );
+  },
+  watermark: function Component({
+    dic: {
+      "image-form": { prompt: c },
+    },
+    loading,
+    form,
+  }: ImageFormProps) {
+    const lang = useLocale();
+    const [generating, setGenerating] = useState(false);
+
+    async function addWatermark() {
+      setGenerating(true);
+      toast.promise(
+        watermarkImage({
+          src: form?.getValues("image.src") ?? "",
+        }),
+        {
+          finally: () => setGenerating(false),
+          error: async (err) => {
+            const msg = await t(err?.["message"], lang);
+            return msg;
+          },
+          success: (url: string) => {
+            form?.resetField("image.base64");
+            form?.resetField("image.file");
+
+            // form?.setValue("image.src", url);
+            return `saved in /public/${url}`;
+          },
+        },
+      );
+    }
+    return (
+      <div className="grid gap-2">
+        <div className="flex items-center justify-end">
+          <Tooltip text="add watermark">
+            <Button
+              type="button"
+              size="icon"
+              onClick={addWatermark}
+              disabled={loading || generating}
+            >
+              <Icons.imageReload />
+            </Button>
+          </Tooltip>
+        </div>
       </div>
     );
   },

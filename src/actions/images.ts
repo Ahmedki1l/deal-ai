@@ -14,10 +14,16 @@ import {
   imageGenerateSchema,
   imageRegeneratePromptSchema,
   imageUpdateSchema,
+  imageWatermarkSchema,
 } from "@/validations/images";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
+
+import { readFile, writeFile } from "fs/promises";
+import { resolve } from "path";
+import Sharp from "sharp";
+import axios from "axios";
 
 export async function createImage(data: z.infer<typeof imageCreateSchema>) {
   try {
@@ -131,6 +137,55 @@ export async function generateImage({
     console.log(image_generator_response);
 
     return image_generator_response.url;
+  } catch (error: any) {
+    console.log(error?.["message"]);
+    if (error instanceof z.ZodError) throw new ZodError(error);
+    throw Error(
+      error?.["message"] ??
+        "your image url was not generated. Please try again.",
+    );
+  }
+}
+
+// Function to fetch an image from a remote URL
+async function fetchImage(url: string) {
+  const response = await axios({
+    url,
+    responseType: "arraybuffer",
+  });
+  return Buffer.from(response.data, "binary");
+}
+
+export async function watermarkImage({
+  ...data
+}: z.infer<typeof imageWatermarkSchema>) {
+  try {
+    const user = await getAuth();
+    if (!user) throw new RequiresLoginError();
+
+    const image = await fetchImage(
+      // data?.["src"]
+      "https://plus.unsplash.com/premium_photo-1680281937048-735543c5c0f7?q=80&w=1022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    );
+
+    const watermark = await Sharp(image)
+      .composite([
+        {
+          input: await readFile(resolve("./public/img-processing/logo.png")),
+          left: 50,
+          top: 50,
+        },
+      ])
+      .png()
+      .toBuffer();
+
+    // TODO: store it remotly
+    const fileName = `watermarked-${Date.now()}.png`;
+    await writeFile(resolve(`./public/img-processing/${fileName}`), watermark);
+    // // Return URL
+    return `/uploads/${fileName}`;
+
+    // return "https://plus.unsplash.com/premium_photo-1680281937048-735543c5c0f7?q=80&w=1022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
   } catch (error: any) {
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) throw new ZodError(error);

@@ -153,10 +153,6 @@ const FormMessage = React.forwardRef<
   const body = error?.message ? txt : children;
 
   if (!body) return null;
-  if (!body) {
-    return null;
-  }
-
   return (
     <p
       ref={ref}

@@ -23,6 +23,10 @@ import { generateIdFromEntropySize } from "lucia";
 import { CaseStudy, Image, Platform, Post, Project } from "@prisma/client";
 import { platformsArr } from "@/db/enums";
 
+function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Function to check if a string contains Arabic characters
 function containsArabic(text: string | null) {
   const arabicRegex = /[\u0600-\u06FF]/;
@@ -93,7 +97,7 @@ export async function createPost(
 
     console.log(social_midea_response);
     const daysToPost = noOfPostsPerWeek === 3 ? [0, 2, 4] : [0, 1, 2, 3, 4];
-    const imageApiEndpoint = domain + "/image";
+    const imageApiEndpoint = domain + "/image2";
     let imageFetchPromises = [];
     let allPostDetails: Omit<Post, "createdAt">[] = [];
 
@@ -117,6 +121,9 @@ export async function createPost(
       let currentDate = new Date();
 
       for (let i = 0; i < accountPosts.length; i++) {
+        if (i % 6 === 0 && i !== 0) {
+          await delay(60000); // Wait for 60 seconds after every 6 images
+        }
         const prompt_generator_endpoint = domain + `/en/prompt-generator`;
 
         const prompt_generator_prompt = {

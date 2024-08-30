@@ -247,7 +247,7 @@ export const ImageForm = {
             form?.resetField("image.file");
 
             // form?.setValue("image.src", url);
-            return `saved in /public/${url}`;
+            return `saved in /public${url}`;
           },
         },
       );

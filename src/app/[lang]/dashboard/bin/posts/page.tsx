@@ -19,16 +19,5 @@ export default async function BinPosts({ params: { lang } }: BinPostsProps) {
     },
   });
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium">{c?.["posts"]}</h3>
-      </div>
-      <Separator />
-
-      <div className="space-y-10">
-        <BinPostsTable dic={dic} data={posts} />
-      </div>
-    </div>
-  );
+  return <BinPostsTable dic={dic} data={posts} />;
 }

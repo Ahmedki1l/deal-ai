@@ -19,7 +19,7 @@ import { Dictionary } from "@/types/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { t } from "@/lib/locale";
 
-type ProjectUpdateFormProps = {
+export type ProjectUpdateFormProps = {
   project: Project;
 } & Omit<DialogResponsiveProps, "open" | "setOpen"> &
   Dictionary["project-update-form"] &

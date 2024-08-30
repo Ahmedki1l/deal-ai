@@ -14,10 +14,13 @@ import { i18n } from "@/lib/locale";
 import { Dictionary, Locale } from "@/types/locale";
 import { useLocale } from "@/hooks/use-locale";
 
-export type LocaleSwitcherProps = {} & Dictionary["locale-switcher"];
+export type LocaleSwitcherProps = {
+  isLabeled?: boolean;
+} & Dictionary["locale-switcher"];
 
 export function LocaleSwitcher({
   dic: { "locale-switcher": c },
+  isLabeled = false,
 }: LocaleSwitcherProps) {
   const lang = useLocale();
   const pathname = usePathname();
@@ -34,7 +37,7 @@ export function LocaleSwitcher({
       <DropdownMenuTrigger asChild>
         <Button variant="link" size="sm" className="gap-1 underline">
           <Icons.globe />
-          {/* <span>{c?.[lang]}</span> */}
+          {isLabeled && <span>{c?.[lang]}</span>}
           <span className="sr-only">
             {c?.["current locale of the website"]!}
           </span>

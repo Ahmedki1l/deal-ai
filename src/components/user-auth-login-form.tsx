@@ -17,7 +17,8 @@ import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
 import { useLocale } from "@/hooks/use-locale";
 
-type UserAuthLoginFormProps = {} & Dictionary["auth"] & Dictionary["user-form"];
+export type UserAuthLoginFormProps = {} & Dictionary["auth"] &
+  Dictionary["user-form"];
 
 export function UserAuthLoginForm({
   dic: {

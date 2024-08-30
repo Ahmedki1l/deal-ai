@@ -33,7 +33,8 @@ const appearanceFormSchema = z.object({
 });
 
 type AppearanceFormValues = z.infer<typeof appearanceFormSchema>;
-type AppearanceFormProps = Dictionary["appearance-form"] &
+
+export type AppearanceFormProps = Dictionary["appearance-form"] &
   Dictionary["locale-switcher"];
 
 export function AppearanceForm({
@@ -62,13 +63,15 @@ export function AppearanceForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="space-y-1">
-          <Label>{c?.["language"]}</Label>
-          <p className="text-[0.8rem] text-muted-foreground">
-            {c?.["automatically switch between languages."]}
-          </p>
+        <div className="flex items-center justify-between gap-4">
+          <div className="space-y-1">
+            <Label>{c?.["language"]}</Label>
+            <p className="text-[0.8rem] text-muted-foreground">
+              {c?.["automatically switch between languages."]}
+            </p>
+          </div>
 
-          <LocaleSwitcher dic={dic} />
+          <LocaleSwitcher dic={dic} isLabeled={true} />
         </div>
 
         <FormField

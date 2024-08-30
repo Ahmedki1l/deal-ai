@@ -18,7 +18,7 @@ import { useLocale } from "@/hooks/use-locale";
 import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
 
-type ProjectDeleteButtonProps = {
+export type ProjectDeleteButtonProps = {
   project: Pick<Project, "id">;
 } & Omit<DialogResponsiveProps, "open" | "setOpen"> &
   Dictionary["project-delete-button"] &

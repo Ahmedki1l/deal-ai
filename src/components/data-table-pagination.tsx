@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Dictionary } from "@/types/locale";
 
-type DataTablePaginationProps<TData> = {
+export type DataTablePaginationProps<TData> = {
   table: Table<TData>;
 } & Dictionary["data-table-pagination"];
 

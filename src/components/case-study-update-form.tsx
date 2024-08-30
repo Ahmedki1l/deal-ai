@@ -18,7 +18,7 @@ import { Dictionary } from "@/types/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { t } from "@/lib/locale";
 
-type CaseStudyUpdateFormProps = {
+export type CaseStudyUpdateFormProps = {
   caseStudy: CaseStudy;
 } & Omit<DialogResponsiveProps, "open" | "setOpen"> &
   Dictionary["case-study-update-form"] &
@@ -40,7 +40,7 @@ export function CaseStudyUpdateForm({
     resolver: zodResolver(caseStudyUpdateSchema),
     defaultValues: {
       ...caseStudy,
-      hashtags: caseStudy.hashtags ?? undefined, 
+      hashtags: caseStudy.hashtags ?? undefined,
     },
   });
 

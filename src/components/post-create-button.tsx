@@ -20,7 +20,7 @@ import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
 import { useLocale } from "@/hooks/use-locale";
 
-type PostCreateButtonProps = {
+export type PostCreateButtonProps = {
   caseStudy: CaseStudy;
   project: Project & { platforms: Platform[] };
 } & Omit<DialogResponsiveProps, "open" | "setOpen"> &

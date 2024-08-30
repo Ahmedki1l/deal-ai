@@ -11,24 +11,25 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { CaseStudy } from "@prisma/client";
 import { Link } from "@/components/link";
-import { CaseStudyDeleteButton } from "@/components/case-study-delete-button";
+import {
+  CaseStudyDeleteButton,
+  CaseStudyDeleteButtonProps,
+} from "@/components/case-study-delete-button";
 import { CardTitle } from "@/components/ui/card";
 import { Dictionary } from "@/types/locale";
-import { DataTable } from "@/components/data-table";
-import { CaseStudyRestoreButton } from "@/components/case-study-restore-button";
+import { DataTable, DataTableProps } from "@/components/data-table";
+import {
+  CaseStudyRestoreButton,
+  CaseStudyRestoreButtonProps,
+} from "@/components/case-study-restore-button";
 
 type ColumnType = Pick<CaseStudy, "id" | "projectId" | "title" | "deletedAt">;
 
 type BinCasesTableProps = {
   data: ColumnType[];
-} & Dictionary["data-table"] &
-  Dictionary["data-table-column-header"] &
-  Dictionary["data-table-pagination"] &
-  Dictionary["data-table-view-options"] &
-  Dictionary["dialog"] &
-  Dictionary["case-study-restore-button"] &
-  Dictionary["case-study-delete-button"] &
-  Dictionary["case-study-form"] &
+} & Pick<DataTableProps<any, any>, "dic"> &
+  Pick<CaseStudyDeleteButtonProps, "dic"> &
+  Pick<CaseStudyRestoreButtonProps, "dic"> &
   Dictionary["dashboard"];
 
 export function BinCasesTable({
@@ -97,7 +98,7 @@ export function BinCasesTable({
             cell: ({ row: { original: r } }) => {
               return (
                 <>
-                  <DataTableRowActions>
+                  <DataTableRowActions dic={dic}>
                     <CaseStudyRestoreButton dic={dic} caseStudy={r}>
                       <Button
                         variant="ghost"

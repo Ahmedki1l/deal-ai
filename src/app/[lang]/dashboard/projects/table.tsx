@@ -11,14 +11,20 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import { CaseStudy, Platform, Post, Project, Property } from "@prisma/client";
-import { ProjectUpdateForm } from "@/components/project-update-form";
+import {
+  ProjectUpdateForm,
+  ProjectUpdateFormProps,
+} from "@/components/project-update-form";
 import { Link } from "@/components/link";
 import { ProjectDeleteButton } from "@/components/project-delete-button";
 import { CardTitle } from "@/components/ui/card";
 import { platforms } from "@/db/enums";
 import { Dictionary } from "@/types/locale";
-import { DataTable } from "@/components/data-table";
-import { ProjectBinButton } from "@/components/project-bin-button";
+import { DataTable, DataTableProps } from "@/components/data-table";
+import {
+  ProjectBinButton,
+  ProjectBinButtonProps,
+} from "@/components/project-bin-button";
 import { useLocale } from "@/hooks/use-locale";
 
 type ColumnType = Project & {
@@ -29,14 +35,9 @@ type ColumnType = Project & {
 
 type TableProps = {
   data: ColumnType[];
-} & Dictionary["data-table"] &
-  Dictionary["data-table-column-header"] &
-  Dictionary["data-table-pagination"] &
-  Dictionary["data-table-view-options"] &
-  Dictionary["dialog"] &
-  Dictionary["project-update-form"] &
-  Dictionary["project-bin-button"] &
-  Dictionary["project-form"] &
+} & Pick<DataTableProps<any, any>, "dic"> &
+  Pick<ProjectBinButtonProps, "dic"> &
+  Pick<ProjectUpdateFormProps, "dic"> &
   Dictionary["dashboard"];
 
 export function Table({
@@ -108,7 +109,7 @@ export function Table({
               <DataTableColumnHeader
                 dic={dic}
                 column={column}
-                title={c?.["case study"]}
+                title={c?.["study case"]}
               />
             ),
             cell: ({ row: { original: r } }) => (
@@ -216,7 +217,7 @@ export function Table({
             cell: ({ row: { original: r } }) => {
               return (
                 <>
-                  <DataTableRowActions>
+                  <DataTableRowActions dic={dic}>
                     <ProjectUpdateForm dic={dic} asChild project={r}>
                       <Button
                         variant="ghost"

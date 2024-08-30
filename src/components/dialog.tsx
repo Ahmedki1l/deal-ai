@@ -5,16 +5,6 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   Drawer,
   DrawerClose,
   DrawerContent,
@@ -22,9 +12,21 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
+  DrawerTrigger,
 } from "@/components/ui/drawer";
-import { DialogTriggerProps } from "@radix-ui/react-dialog";
 import { Dictionary } from "@/types/locale";
+
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { AlertDialogTriggerProps } from "@radix-ui/react-alert-dialog";
 
 export type DialogResponsiveProps = {
   confirmButton?: React.ReactNode;
@@ -33,7 +35,7 @@ export type DialogResponsiveProps = {
   description?: string | React.ReactNode;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
-} & Omit<DialogTriggerProps, "content" | "open" | "setOpen"> &
+} & Omit<AlertDialogTriggerProps, "content" | "open" | "setOpen"> &
   Dictionary["dialog"];
 
 export function DialogResponsive({
@@ -51,37 +53,35 @@ export function DialogResponsive({
 
   if (isDesktop) {
     return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild {...props} />
-        <DialogContent className="max-h-[95vh] overflow-auto">
-          <DialogHeader>
-            <DialogTitle>
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogTrigger asChild {...props} />
+        <AlertDialogContent className="max-h-[95vh] overflow-auto">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="justify-start">
               {title ?? c?.["are you sure you want to proceed?"]}
-            </DialogTitle>
-            <DialogDescription className="max-w-prose">
+            </AlertDialogTitle>
+            <AlertDialogDescription className="max-w-prose">
               {description ??
                 c?.[
                   "please confirm that all the provided information is accurate. This action cannot be undone."
                 ]}
-            </DialogDescription>
-          </DialogHeader>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
           {content}
 
-          <DialogFooter className="gap-2">
+          <AlertDialogFooter className="gap-2">
             {confirmButton}
-            <DialogClose disabled={disabled} asChild>
-              <Button disabled={disabled} variant="outline">
-                {c?.["cancel"]}
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <AlertDialogCancel disabled={disabled}>
+              {c?.["cancel"]}
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     );
   }
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild {...props} />
+      <DrawerTrigger asChild {...props} />
       <DrawerContent className="max-h-[95vh]">
         <div className="overflow-auto">
           <DrawerHeader>

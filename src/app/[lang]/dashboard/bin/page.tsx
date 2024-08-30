@@ -20,16 +20,5 @@ export default async function BinProjects({
     },
   });
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium">{c?.["projects"]}</h3>
-      </div>
-      <Separator />
-
-      <div className="space-y-10">
-        <BinProjectsTable dic={dic} data={projects} />
-      </div>
-    </div>
-  );
+  return <BinProjectsTable dic={dic} data={projects} />;
 }

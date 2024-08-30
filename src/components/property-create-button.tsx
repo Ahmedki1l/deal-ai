@@ -32,7 +32,7 @@ import { Dictionary } from "@/types/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { t } from "@/lib/locale";
 
-type PropertyCreateButtonProps = { project: Pick<Project, "id"> } & Omit<
+export type PropertyCreateButtonProps = { project: Pick<Project, "id"> } & Omit<
   DialogResponsiveProps,
   "open" | "setOpen" | "property"
 > &
@@ -287,7 +287,7 @@ export function PropertyCreateButton({
       title={c?.["create property"]}
       description={
         c?.[
-       "by detailing each property, including its features, layout, and amenities, you ensure that all relevant information is captured, enabling better organization and presentation to potential buyers or tenants."
+          "by detailing each property, including its features, layout, and amenities, you ensure that all relevant information is captured, enabling better organization and presentation to potential buyers or tenants."
         ]
       }
       open={open}

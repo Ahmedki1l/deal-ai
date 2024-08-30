@@ -18,7 +18,7 @@ import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
 import { updateProject } from "@/actions/projects";
 
-type ProjectBinButtonProps = {
+export type ProjectBinButtonProps = {
   project: Pick<Project, "id">;
 } & Omit<DialogResponsiveProps, "open" | "setOpen"> &
   Dictionary["project-bin-button"] &

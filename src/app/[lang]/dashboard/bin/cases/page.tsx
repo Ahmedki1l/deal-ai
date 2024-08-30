@@ -18,16 +18,5 @@ export default async function BinCases({ params: { lang } }: BinCasesProps) {
     },
   });
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium">{c?.["study cases"]}</h3>
-      </div>
-      <Separator />
-
-      <div className="space-y-10">
-        <BinCasesTable dic={dic} data={cases} />
-      </div>
-    </div>
-  );
+  return <BinCasesTable dic={dic} data={cases} />;
 }

@@ -1,4 +1,4 @@
-import { SelectItem } from "@/types";
+import { NavItem, SelectItem } from "@/types";
 
 export default {
   site: {
@@ -44,13 +44,13 @@ export default {
               icon: "home",
             },
             {
-              segment: "projects",
+              segment: ["projects"],
               value: "/dashboard/projects",
               label: "My Projects",
               icon: "analytics",
             },
             {
-              segment: "calender",
+              segment: ["calender"],
               value: "/dashboard/calender",
               label: "Calender",
               icon: "calender",
@@ -58,19 +58,19 @@ export default {
           ],
           [
             {
-              segment: "settings",
+              segment: ["settings"],
               value: "/dashboard/settings",
               label: "Settings",
               icon: "settings",
             },
             {
-              segment: "bin",
+              segment: ["bin"],
               value: "/dashboard/bin",
               label: "Bin",
               icon: "trash",
             },
           ],
-        ] as SelectItem[][],
+        ] as NavItem[][],
       },
       dashboard: {
         dashboard: "Dashboard",
@@ -92,7 +92,7 @@ export default {
         "create project": "Create Project",
         table: {
           project: "Project",
-          "case study": "Case Study",
+          "study case": "Study Case",
           "target audience": "Target Audience",
           properties: "Properties",
           posts: "Posts",
@@ -112,15 +112,15 @@ export default {
           "back to all projects": "back to all projects",
           distinct: "Distinct",
           city: "city",
+          "study cases": "Study Cases",
           country: "country",
           spaces: "spaces",
           "property types": "property types",
           platforms: "platforms",
           "created at": "created at",
-          "here's a list of your case studies.":
-            "Here's a list of your case studies.",
-          "case studies": "Case Studies",
-          "create case study": "Create Case Study",
+          "here's a list of your study cases.":
+            "Here's a list of your study cases.",
+          "create study case": "Create Study Case",
           "here's a list of your properties.":
             "Here's a list of your properties.",
           "create properties": "Create Properties",
@@ -159,9 +159,9 @@ export default {
 
               "it's project is deleted, once you restore it all will be editable.":
                 "it's project is deleted, once you restore it all will be editable.",
-              "oops, no such case study.": "oops, no such case study.",
-              "you have not created you case study yet.":
-                "you have not created you case study yet.",
+              "oops, no such study case.": "oops, no such study case.",
+              "you have not created you study case yet.":
+                "you have not created you study case yet.",
               projects: "projects",
               restore: "Restore",
               delete: "Delete",
@@ -169,7 +169,7 @@ export default {
               "oops, no posts.": "oops, no posts.",
               "you have not created you posts yet.":
                 "you have not created you posts yet.",
-              "case study content": "Case Study Content",
+              "study case content": "Study Case Content",
               "target audience": "Target Audience",
               pros: "Pros",
               cons: "Cons",
@@ -187,8 +187,8 @@ export default {
                 "you have not created you posts yet.":
                   "you have not created you posts yet.",
                 post: {
-                  "it's project or case study is deleted, once you restore it all will be editable.":
-                    "it's project or case study is deleted, once you restore it all will be editable.",
+                  "it's project or study case is deleted, once you restore it all will be editable.":
+                    "it's project or study case is deleted, once you restore it all will be editable.",
                   "oops, no such post.": "oops, no such post.",
                   "you have not created you post yet.":
                     "you have not created you post yet.",
@@ -202,7 +202,7 @@ export default {
             table: {
               name: "Name",
               description: "Description",
-              "case study": "Case Study",
+              "study case": "Study Case",
               "target audience": "Target Audience",
               posts: "Posts",
               platforms: "Platforms",
@@ -250,7 +250,7 @@ export default {
           { value: "/dashboard/bin/cases", label: "Study Cases" },
           { value: "/dashboard/bin/properties", label: "Properties" },
           { value: "/dashboard/bin/posts", label: "Posts" },
-        ] as SelectItem[],
+        ] as NavItem[],
         bin: "Bin",
         "below is a list of your deleted items. you can restore them within 30 days before they are permanently removed.":
           "Below is a list of your deleted items. You can restore them within 30 days before they are permanently removed.",
@@ -270,7 +270,7 @@ export default {
         "main-nav": [
           { value: "/dashboard/settings", label: "Profile" },
           { value: "/dashboard/settings/appearance", label: "Appearance" },
-        ] as SelectItem[],
+        ] as NavItem[],
         settings: "Settings",
         "manage your account details, privacy settings, and how others perceive you on the platform.":
           "manage your account details, privacy settings, and how others perceive you on the platform.",
@@ -306,68 +306,66 @@ export default {
   "case-study-bin-button": {
     "deleted successfully.": "deleted successfully.",
     delete: "Delete",
-    "delete case study": "Delete Case Study",
-    "once deleted, the case study will be moved to the bin. you can manually delete it or it will be automatically removed after 30 days. if restored, everything will be reinstated as if nothing happened.":
-      "Once deleted, the case study will be moved to the bin. You can manually delete it or it will be automatically removed after 30 days. If restored, everything will be reinstated as if nothing happened.",
+    "delete study case": "Delete Study Case",
+    "once deleted, the study case will be moved to the bin. you can manually delete it or it will be automatically removed after 30 days. if restored, everything will be reinstated as if nothing happened.":
+      "Once deleted, the study case will be moved to the bin. You can manually delete it or it will be automatically removed after 30 days. If restored, everything will be reinstated as if nothing happened.",
   },
   "case-study-create-button": {
     "created successfully.": "created successfully.",
     submit: "Submit",
-    "create case study": "Create Case Study",
-    "create a A well-structured case study for your real estate project that helps highlight the unique features, target audience, market strategy, and performance metrics of your project. once created, these case studies can be used to inform potential buyers, partners, and stakeholders, demonstrating the value and potential of your real estate developments.":
-      "Create a A well-structured case study for your real estate project that helps highlight the unique features, target audience, market strategy, and performance metrics of your project. Once created, these case studies can be used to inform potential buyers, partners, and stakeholders, demonstrating the value and potential of your real estate developments.",
+    "create study case": "Create Study Case",
+    "create a A well-structured study case for your real estate project that helps highlight the unique features, target audience, market strategy, and performance metrics of your project. once created, these study cases can be used to inform potential buyers, partners, and stakeholders, demonstrating the value and potential of your real estate developments.":
+      "Create a A well-structured study case for your real estate project that helps highlight the unique features, target audience, market strategy, and performance metrics of your project. Once created, these study cases can be used to inform potential buyers, partners, and stakeholders, demonstrating the value and potential of your real estate developments.",
   },
   "case-study-delete-button": {
     "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted.":
       "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted.",
     "deleted successfully.": "deleted successfully.",
     delete: "Delete",
-    "delete case study": "delete case study",
+    "delete study case": "delete study case",
   },
   "case-study-form": {
     title: { label: "Title", "health center": "Health Center" },
     description: {
       label: "Description",
-      "describe your case study": "Describe your case study",
+      "describe your study case": "Describe your study case",
     },
     refImages: { label: "Reference Image" },
     content: {
       label: "Content",
-      "describe your case study's content":
-        "describe your case study's content",
+      "describe your study case's content":
+        "describe your study case's content",
     },
     targetAudience: {
       label: "Description",
-      "describe your case study's target audience":
-        "describe your case study's target audience",
+      "describe your study case's target audience":
+        "describe your study case's target audience",
     },
     pros: {
       label: "Pros",
-      "describe your case study's pros": "describe your case study's pros",
+      "describe your study case's pros": "describe your study case's pros",
     },
     cons: {
       label: "Cons",
-      "describe your case study's cons": "describe your case study's cons",
+      "describe your study case's cons": "describe your study case's cons",
     },
   },
   "case-study-restore-button": {
-    "restoring this case study will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off.":
-      "Restoring this case study will bring back all its data and settings, making it appear as if it was never deleted. All related information will be fully reinstated, allowing you to pick up right where you left off.",
+    "restoring this study case will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off.":
+      "Restoring this study case will bring back all its data and settings, making it appear as if it was never deleted. All related information will be fully reinstated, allowing you to pick up right where you left off.",
     "restored successfully.": "restored successfully.",
     restore: "Restore",
-    "restore case study": "Restore Case Study",
+    "restore study case": "Restore Study Case",
   },
   "case-study-update-form": {
     "updated successfully.": "updated successfully.",
     submit: "Submit",
-    "update case study": "Update Case Study",
-    "updating a case study allows you to refine and enhance the details of your ongoing developments":
-      "Updating a case study allows you to refine and enhance the details of your ongoing developments",
+    "update study case": "Update Study Case",
+    "updating a study case allows you to refine and enhance the details of your ongoing developments":
+      "Updating a study case allows you to refine and enhance the details of your ongoing developments",
   },
 
-  "dashboard-layout": {
-    logout: "Logout",
-  },
+  "resizeable-layout": { logout: "Logout" },
   "dashboard-posts-bar-chart": {
     posts: "Posts",
     "showing total posts for the last 3 months.":
@@ -396,6 +394,10 @@ export default {
     "go to next page": "Go to next page",
     "go to last page": "Go to last page",
     page: "page",
+  },
+  "data-table-row-actions": {
+    actions: "Actions",
+    "open menu": "Open menu",
   },
   "data-table-view-options": {
     view: "View",
@@ -437,7 +439,7 @@ export default {
       { value: "light", label: "Light", icon: "sun" },
       { value: "dark", label: "Dark", icon: "moon" },
       { value: "system", label: "System", icon: "laptop" },
-    ] as SelectItem[],
+    ] as NavItem[],
   },
 
   "post-bin-button": {
@@ -556,7 +558,7 @@ export default {
   },
   "project-form": {
     title: { label: "Title", "health center": "health center" },
-    map: { label: "Map" },
+    map: { label: "Map", "choose on map": "Choose on map" },
     description: {
       label: "Description",
       "describe your project": "describe your project",

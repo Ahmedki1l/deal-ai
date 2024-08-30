@@ -32,6 +32,7 @@ import {
   Sun,
   Moon,
   Laptop,
+  MapPin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { VariantProps, cva } from "class-variance-authority";
@@ -116,6 +117,9 @@ export const Icons = {
   ),
   trash: ({ className, ...props }: IconProps) => (
     <Trash2 className={cn(IconsVariants({}), className)} {...props} />
+  ),
+  mapPicker: ({ className, ...props }: IconProps) => (
+    <MapPin className={cn(IconsVariants({}), className)} {...props} />
   ),
   image: ({ className, ...props }: IconProps) => (
     <Image className={cn(IconsVariants({}), className)} {...props} />

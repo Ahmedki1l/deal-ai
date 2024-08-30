@@ -55,10 +55,6 @@ export async function createProject({
       // platforms: platforms.map((e) => e?.["value"]),
       propertyTypes: types?.map((e) => e?.["value"]),
 
-      // Google Map
-      distinct: map ?? data?.["distinct"],
-      city: map ?? data?.["city"],
-      country: map ?? data?.["country"],
       deletedAt: null,
       platforms: {
         createMany: {

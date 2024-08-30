@@ -2,15 +2,6 @@ import { Metadata } from "next";
 import { db } from "@/db";
 import { EmptyPlaceholder } from "@/components/empty-placeholder";
 import { BackButton } from "@/components/back-button";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { CardDescription } from "@/components/ui/card";
 import { LocaleProps } from "@/types/locale";
 import { getDictionary } from "@/lib/dictionaries";
 import { PropertyRestoreButton } from "@/components/property-restore-button";

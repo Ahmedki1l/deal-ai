@@ -1,6 +1,10 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import dayjs from "dayjs";
+import { Dispatch, SetStateAction } from "react";
+import { Locale } from "@/types/locale";
+import { toast } from "sonner";
+import { t } from "./locale";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -45,3 +49,27 @@ export function isValidUrl(src: string) {
     return false;
   }
 }
+
+export const toastPromise = async (
+  func: () => Promise<any>,
+  setLoading: Dispatch<SetStateAction<boolean>>,
+  locale: Locale,
+) => {
+  try {
+    setLoading(true);
+    const res = await func();
+
+    if (res?.["error"]) {
+      const msg = await t(res?.["error"], locale);
+      toast.error(msg);
+      return null;
+    }
+
+    return res?.["data"] ?? null;
+  } catch (err: any) {
+    toast.error(err?.["message"]);
+    return null;
+  } finally {
+    setLoading(false);
+  }
+};

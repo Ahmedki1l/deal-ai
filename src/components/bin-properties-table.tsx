@@ -11,24 +11,25 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Property } from "@prisma/client";
 import { Link } from "@/components/link";
-import { PropertyDeleteButton } from "@/components/property-delete-button";
+import {
+  PropertyDeleteButton,
+  PropertyDeleteButtonProps,
+} from "@/components/property-delete-button";
 import { CardTitle } from "@/components/ui/card";
 import { Dictionary } from "@/types/locale";
-import { DataTable } from "@/components/data-table";
-import { PropertyRestoreButton } from "./property-restore-button";
+import { DataTable, DataTableProps } from "@/components/data-table";
+import {
+  PropertyRestoreButton,
+  PropertyRestoreButtonProps,
+} from "./property-restore-button";
 
 type ColumnType = Property;
 
 type BinPropertiesTableProps = {
   data: ColumnType[];
-} & Dictionary["data-table"] &
-  Dictionary["data-table-column-header"] &
-  Dictionary["data-table-pagination"] &
-  Dictionary["data-table-view-options"] &
-  Dictionary["dialog"] &
-  Dictionary["property-restore-button"] &
-  Dictionary["property-delete-button"] &
-  Dictionary["property-form"] &
+} & Pick<DataTableProps<any, any>, "dic"> &
+  Pick<PropertyDeleteButtonProps, "dic"> &
+  Pick<PropertyRestoreButtonProps, "dic"> &
   Dictionary["dashboard"];
 
 export function BinPropertiesTable({
@@ -97,7 +98,7 @@ export function BinPropertiesTable({
             cell: ({ row: { original: r } }) => {
               return (
                 <>
-                  <DataTableRowActions>
+                  <DataTableRowActions dic={dic}>
                     <PropertyRestoreButton dic={dic} asChild property={r}>
                       <Button
                         variant="ghost"

@@ -32,8 +32,10 @@ import { toast } from "sonner";
 import { t } from "@/lib/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { useRouter } from "next/navigation";
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import { Tooltip } from "./tooltip";
 
-type ProjectFormProps = {
+export type ProjectFormProps = {
   loading: boolean;
   form: UseFormReturn<
     | z.infer<typeof projectCreateFormSchema>
@@ -64,15 +66,32 @@ export const ProjectForm = {
       )}
     />
   ),
-  map: ({ dic: { "project-form": c }, loading, form }: ProjectFormProps) => (
+  map: ({
+    dic: {
+      "project-form": { map: c },
+    },
+    loading,
+    form,
+  }: ProjectFormProps) => (
     <FormField
       control={form.control}
       name="map"
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="sr-only"> {c?.["map"]?.["label"]}</FormLabel>
+          <FormLabel className="sr-only">{c?.["label"]}</FormLabel>
           <FormControl>
-            <MapPicker />
+            <Dialog>
+              <DialogTrigger>
+                <Tooltip text={c?.["choose on map"]} align="end">
+                  <Button type="button" variant="ghost" size="icon">
+                    <Icons.mapPicker />
+                  </Button>
+                </Tooltip>
+              </DialogTrigger>
+              <DialogContent>
+                <MapPicker />
+              </DialogContent>
+            </Dialog>
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -111,7 +130,7 @@ export const ProjectForm = {
       control={form.control}
       name="distinct"
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="w-full">
           <FormLabel> {c?.["distinct"]?.["label"]}</FormLabel>
           <FormControl>
             <Input
@@ -131,7 +150,7 @@ export const ProjectForm = {
       control={form.control}
       name="city"
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="w-full">
           <FormLabel>{c?.["city"]?.["label"]}</FormLabel>
           <FormControl>
             <Input
@@ -155,7 +174,7 @@ export const ProjectForm = {
       control={form.control}
       name="country"
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="w-full">
           <FormLabel> {c?.["country"]?.["label"]}</FormLabel>
           <FormControl>
             <Input
@@ -413,12 +432,11 @@ export const ProjectForm = {
                                     ?.getValues("platforms")
                                     ?.find((p) => p?.["value"] === e?.["value"])
                                 }
-                                className="flex flex-row items-center gap-2"
                               >
-                                {Icon && (
-                                  <Icon className="inline-flex ltr:mr-2 rtl:ml-2" />
-                                )}
-                                <span>{e?.["label"]}</span>
+                                <div className="flex items-center gap-2 rtl:flex-row-reverse">
+                                  {Icon && <Icon />}
+                                  <span>{e?.["label"]}</span>
+                                </div>
                               </SelectItem>
                             );
                           })}

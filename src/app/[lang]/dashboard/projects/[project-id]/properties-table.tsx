@@ -10,24 +10,22 @@ import {
   DropdownMenuShortcut,
 } from "@/components/ui/dropdown-menu";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { PropertyBinButton } from "@/components/property-bin-button";
+import {
+  PropertyBinButton,
+  PropertyBinButtonProps,
+} from "@/components/property-bin-button";
 
 import { Property, Post } from "@prisma/client";
 import { CardDescription, CardTitle } from "@/components/ui/card";
 import { Dictionary } from "@/types/locale";
-import { DataTable } from "@/components/data-table";
+import { DataTable, DataTableProps } from "@/components/data-table";
 
 type PropertyColumnType = Property;
 type PropertyTableProps = {
   data: PropertyColumnType[];
   disabled?: boolean;
-} & Dictionary["data-table"] &
-  Dictionary["data-table-column-header"] &
-  Dictionary["data-table-pagination"] &
-  Dictionary["data-table-view-options"] &
-  Dictionary["property-bin-button"] &
-  Dictionary["property-form"] &
-  Dictionary["dialog"] &
+} & Pick<DataTableProps<any, any>, "dic"> &
+  Pick<PropertyBinButtonProps, "dic"> &
   Dictionary["dashboard"];
 
 export function PropertyTable({
@@ -190,7 +188,7 @@ export function PropertyTable({
             cell: ({ row: { original: r } }) => {
               return (
                 <>
-                  <DataTableRowActions>
+                  <DataTableRowActions dic={dic}>
                     {/* <PropertyUpdateButton disabled={disabled} dic={dic} asChild caseStudy={r}>
                       <Button disabled={disabled}
                         variant="ghost"

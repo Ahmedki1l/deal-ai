@@ -19,7 +19,7 @@ import {
 } from "@/validations/users";
 import { Dictionary } from "@/types/locale";
 
-type UserFormProps = {
+export type UserFormProps = {
   loading: boolean;
   form: UseFormReturn<
     | z.infer<typeof userAuthRegisterSchema>

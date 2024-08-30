@@ -31,7 +31,7 @@ import { useLocale } from "@/hooks/use-locale";
 import { t } from "@/lib/locale";
 import { Dictionary } from "@/types/locale";
 
-type ProjectCreateButtonProps = { user: User } & Omit<
+export type ProjectCreateButtonProps = { user: User } & Omit<
   DialogResponsiveProps,
   "open" | "setOpen"
 > &
@@ -109,7 +109,12 @@ export function ProjectCreateButton({
                 />
               </div>
 
-              <div className="bg-muted">
+              <div className="flex items-end gap-2">
+                <ProjectForm.distinct
+                  dic={dic}
+                  form={form as any}
+                  loading={loading}
+                />
                 <ProjectForm.map
                   dic={dic}
                   form={form as any}
@@ -117,12 +122,7 @@ export function ProjectCreateButton({
                 />
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <ProjectForm.distinct
-                  dic={dic}
-                  form={form as any}
-                  loading={loading}
-                />
+              <div className="grid grid-cols-2 gap-2">
                 <ProjectForm.city
                   dic={dic}
                   form={form as any}
@@ -133,18 +133,19 @@ export function ProjectCreateButton({
                   form={form as any}
                   loading={loading}
                 />
-                <ProjectForm.spaces
-                  dic={dic}
-                  form={form as any}
-                  loading={loading}
-                />
               </div>
 
+              <ProjectForm.spaces
+                dic={dic}
+                form={form as any}
+                loading={loading}
+              />
               <ProjectForm.platforms
                 dic={dic}
                 form={form as any}
                 loading={loading}
               />
+
               <div>
                 <div className="flex items-center justify-between gap-4">
                   <Label>{c?.["type of assets"]}</Label>

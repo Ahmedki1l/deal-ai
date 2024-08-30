@@ -128,7 +128,7 @@ export default async function CaseStudy({
               <AlertDescription>
                 {
                   c?.[
-                    "it's project or case study is deleted, once you restore it all will be editable."
+                    "it's project or study case is deleted, once you restore it all will be editable."
                   ]
                 }
               </AlertDescription>

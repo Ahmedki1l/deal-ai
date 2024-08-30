@@ -18,7 +18,7 @@ import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
 import { updateProperty } from "@/actions/properties";
 
-type PropertyBinButtonProps = {
+export type PropertyBinButtonProps = {
   property: Pick<Property, "id">;
 } & Omit<DialogResponsiveProps, "open" | "setOpen" | "property"> &
   Dictionary["property-bin-button"] &

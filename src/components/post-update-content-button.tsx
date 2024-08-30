@@ -19,7 +19,7 @@ import { Dictionary } from "@/types/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { t } from "@/lib/locale";
 
-type PostUpdateContentButtonProps = {
+export type PostUpdateContentButtonProps = {
   post: Post;
 } & Omit<DialogResponsiveProps, "open" | "setOpen"> &
   Dictionary["post-update-content-button"] &

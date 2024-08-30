@@ -41,7 +41,7 @@ import { updateUser } from "@/actions/users";
 import { UserForm } from "./user-form";
 import { Dictionary } from "@/types/locale";
 
-type UserProfilePersonalFormProps = {
+export type UserProfilePersonalFormProps = {
   user: User;
 } & Dictionary["user-profile-personal-form"] &
   Dictionary["user-form"];

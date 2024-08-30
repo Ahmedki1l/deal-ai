@@ -21,16 +21,5 @@ export default async function BinProperties({
     },
   });
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium">{c?.["properties"]}</h3>
-      </div>
-      <Separator />
-
-      <div className="space-y-10">
-        <BinPropertiesTable dic={dic} data={properties} />
-      </div>
-    </div>
-  );
+  return <BinPropertiesTable dic={dic} data={properties} />;
 }

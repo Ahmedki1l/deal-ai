@@ -1,17 +1,88 @@
+// import type { Metadata } from "next";
+// import { Cairo, Inter } from "next/font/google";
+
+// import "@/styles/globals.css";
+
+// import { getAuth } from "@/lib/auth";
+// import { Toaster } from "@/components/ui/sonner";
+// import { SessionProvider } from "@/components/session-provider";
+// import { TailwindIndicator } from "@/components/tailwind-indicator";
+// import { cn } from "@/lib/utils";
+// import { TooltipProvider } from "@/components/ui/tooltip";
+// import { i18n } from "@/lib/locale";
+// import { LocaleProps } from "@/types/locale";
+// import { ThemeProvider } from "@/components/theme-provider";
+
+// const cairo = Cairo({ subsets: ["arabic"] });
+// const inter = Inter({ subsets: ["latin"] });
+
+// type RootLayoutProps = Readonly<{
+//   children: React.ReactNode;
+//   params: LocaleProps;
+// }>;
+
+// export const metadata: Metadata = {
+//   title: { template: " %s | Deal 360° AI", default: "Deal 360° AI" },
+//   description: "an AI system app",
+// };
+// export async function generateStaticParams() {
+//   return i18n.locales.map((locale) => ({ lang: locale }));
+// }
+
+// export default async function RootLayout({
+//   children,
+//   params: { lang },
+// }: RootLayoutProps) {
+//   const session = await getAuth();
+
+//   return (
+//     <html
+//       lang={lang}
+//       dir={lang === "ar" ? "rtl" : "ltr"}
+//       className={cn(
+//         "leading-relaxed tracking-tight",
+//         lang === "ar" ? cairo?.["className"] : inter?.["className"],
+//       )}
+//       suppressHydrationWarning
+//     >
+//       <body suppressHydrationWarning>
+//         <SessionProvider value={session}>
+//           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+//             <TooltipProvider delayDuration={0} disableHoverableContent={true}>
+//               {/* eslint-disable-next-line react/no-unknown-property */}
+//               <div
+//                 vaul-drawer-wrapper=""
+//                 className="flex h-screen flex-col overflow-hidden bg-background"
+//               >
+//                 {children}
+//               </div>
+
+//               <Toaster />
+//               <TailwindIndicator />
+//             </TooltipProvider>
+//           </ThemeProvider>
+//         </SessionProvider>
+//       </body>
+//     </html>
+//   );
+// }
+
 import type { Metadata } from "next";
 import { Cairo, Inter } from "next/font/google";
 
 import "@/styles/globals.css";
 
 import { getAuth } from "@/lib/auth";
-import { Toaster } from "@/components/ui/sonner";
+import { getDictionary } from "@/lib/dictionaries";
+import { i18n } from "@/lib/locale";
+import { cn } from "@/lib/utils";
+import { LocaleProps } from "@/types/locale";
+
 import { SessionProvider } from "@/components/session-provider";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
-import { cn } from "@/lib/utils";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { i18n } from "@/lib/locale";
-import { LocaleProps } from "@/types/locale";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const cairo = Cairo({ subsets: ["arabic"] });
 const inter = Inter({ subsets: ["latin"] });
@@ -21,14 +92,21 @@ type RootLayoutProps = Readonly<{
   params: LocaleProps;
 }>;
 
-export const metadata: Metadata = {
-  title: { template: " %s | Deal 360° AI", default: "Deal 360° AI" },
-  description: "an AI system app",
-};
 export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));
 }
+export async function generateMetadata({
+  params: { lang },
+}: Readonly<{
+  params: LocaleProps;
+}>): Promise<Metadata> {
+  const { site: c } = await getDictionary(lang);
 
+  return {
+    title: { template: `%s | ${c?.["name"]}`, default: `${c?.["name"]}` },
+    description: c?.["description"],
+  };
+}
 export default async function RootLayout({
   children,
   params: { lang },
@@ -40,19 +118,19 @@ export default async function RootLayout({
       lang={lang}
       dir={lang === "ar" ? "rtl" : "ltr"}
       className={cn(
-        "leading-relaxed tracking-tight",
+        // "leading-relaxed tracking-tight",
         lang === "ar" ? cairo?.["className"] : inter?.["className"],
       )}
       suppressHydrationWarning
     >
-      <body suppressHydrationWarning>
+      <body suppressHydrationWarning className="h-screen overflow-hidden">
         <SessionProvider value={session}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <TooltipProvider delayDuration={0} disableHoverableContent={true}>
               {/* eslint-disable-next-line react/no-unknown-property */}
               <div
                 vaul-drawer-wrapper=""
-                className="flex h-screen flex-col overflow-hidden bg-background"
+                className="flex min-h-screen flex-col bg-background"
               >
                 {children}
               </div>

@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Dictionary } from "@/types/locale";
 
-type DataTableColumnHeaderProps<TData, TValue> = {
+export type DataTableColumnHeaderProps<TData, TValue> = {
   title: string;
   column: Column<TData, TValue>;
 } & React.DetailedHTMLProps<

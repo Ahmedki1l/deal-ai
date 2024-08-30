@@ -11,24 +11,25 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Project } from "@prisma/client";
 import { Link } from "@/components/link";
-import { ProjectDeleteButton } from "@/components/project-delete-button";
+import {
+  ProjectDeleteButton,
+  ProjectDeleteButtonProps,
+} from "@/components/project-delete-button";
 import { CardTitle } from "@/components/ui/card";
 import { Dictionary } from "@/types/locale";
-import { DataTable } from "@/components/data-table";
-import { ProjectRestoreButton } from "./project-restore-button";
+import { DataTable, DataTableProps } from "@/components/data-table";
+import {
+  ProjectRestoreButton,
+  ProjectRestoreButtonProps,
+} from "./project-restore-button";
 
 type ColumnType = Project;
 
 type BinProjectsTableProps = {
   data: ColumnType[];
-} & Dictionary["data-table"] &
-  Dictionary["data-table-column-header"] &
-  Dictionary["data-table-pagination"] &
-  Dictionary["data-table-view-options"] &
-  Dictionary["dialog"] &
-  Dictionary["project-restore-button"] &
-  Dictionary["project-delete-button"] &
-  Dictionary["project-form"] &
+} & Pick<DataTableProps<any, any>, "dic"> &
+  Pick<ProjectDeleteButtonProps, "dic"> &
+  Pick<ProjectRestoreButtonProps, "dic"> &
   Dictionary["dashboard"];
 
 export function BinProjectsTable({
@@ -93,7 +94,7 @@ export function BinProjectsTable({
             cell: ({ row: { original: r } }) => {
               return (
                 <>
-                  <DataTableRowActions>
+                  <DataTableRowActions dic={dic}>
                     <ProjectRestoreButton dic={dic} project={r}>
                       <Button
                         variant="ghost"

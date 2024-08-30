@@ -28,7 +28,7 @@ import { Link } from "./link";
 import { buttonVariants } from "./ui/button";
 import { useLocale } from "@/hooks/use-locale";
 
-type PostFormProps = {
+export type PostFormProps = {
   loading: boolean;
   form: UseFormReturn<
     z.infer<typeof postCreateSchema> | z.infer<typeof postUpdateSchema>,

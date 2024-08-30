@@ -12,26 +12,27 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { CaseStudy, Post } from "@prisma/client";
-import { CaseStudyUpdateForm } from "@/components/case-study-update-form";
+import {
+  CaseStudyUpdateForm,
+  CaseStudyUpdateFormProps,
+} from "@/components/case-study-update-form";
 import { CaseStudyDeleteButton } from "@/components/case-study-delete-button";
 import { Icons } from "@/components/icons";
 import { CardDescription, CardTitle } from "@/components/ui/card";
 import { Dictionary } from "@/types/locale";
-import { DataTable } from "@/components/data-table";
-import { CaseStudyBinButton } from "@/components/case-study-bin-button";
+import { DataTable, DataTableProps } from "@/components/data-table";
+import {
+  CaseStudyBinButton,
+  CaseStudyBinButtonProps,
+} from "@/components/case-study-bin-button";
 
 type CaseStudyColumnType = CaseStudy & { posts: Post[] };
 type CaseStudyTableProps = {
   data: CaseStudyColumnType[];
   disabled?: boolean;
-} & Dictionary["data-table"] &
-  Dictionary["data-table-column-header"] &
-  Dictionary["data-table-pagination"] &
-  Dictionary["data-table-view-options"] &
-  Dictionary["case-study-update-form"] &
-  Dictionary["case-study-bin-button"] &
-  Dictionary["case-study-form"] &
-  Dictionary["dialog"] &
+} & Pick<DataTableProps<any, any>, "dic"> &
+  Pick<CaseStudyUpdateFormProps, "dic"> &
+  Pick<CaseStudyBinButtonProps, "dic"> &
   Dictionary["dashboard"];
 
 export function CaseStudyTable({
@@ -85,7 +86,7 @@ export function CaseStudyTable({
               <DataTableColumnHeader
                 dic={dic}
                 column={column}
-                title={c?.["case study"]}
+                title={c?.["study case"]}
               />
             ),
             cell: ({ row: { original: r } }) => (
@@ -144,7 +145,7 @@ export function CaseStudyTable({
             cell: ({ row: { original: r } }) => {
               return (
                 <>
-                  <DataTableRowActions>
+                  <DataTableRowActions dic={dic}>
                     <CaseStudyUpdateForm
                       disabled={disabled}
                       dic={dic}

@@ -28,14 +28,14 @@ import { useLocale } from "@/hooks/use-locale";
 import { cn, isValidUrl } from "@/lib/utils";
 import { Image } from "./image";
 import { DialogResponsive } from "./dialog";
-import { DialogClose } from "./ui/dialog";
-import { DrawerClose } from "./ui/drawer";
 import { ImageForm } from "./image-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { PostRestoreButton } from "./post-restore-button";
 import { PostBinButton } from "./post-bin-button";
+import { AlertDialogCancel } from "./ui/alert-dialog";
+import { DrawerClose } from "./ui/drawer";
 
-type PostUpdateFormProps = {
+export type PostUpdateFormProps = {
   post: Post & { image: ImageType | null };
   disabled?: boolean;
 } & Dictionary["post-update-form"] &
@@ -162,27 +162,15 @@ export function PostUpdateForm({
                   disabled={loading}
                   confirmButton={
                     <>
-                      <DialogClose
+                      <Button
+                        type="button"
+                        onClick={() => setOpen(false)}
                         disabled={loading}
-                        asChild
-                        className="hidden md:flex"
+                        className="w-full md:w-fit"
                       >
-                        <Button disabled={loading} className="w-full md:w-fit">
-                          {!disabled && loading && <Icons.spinner />}
-                          {c?.["submit"]}
-                        </Button>
-                      </DialogClose>
-
-                      <DrawerClose
-                        disabled={loading}
-                        asChild
-                        className="md:hidden"
-                      >
-                        <Button disabled={loading} className="w-full md:w-fit">
-                          {!disabled && loading && <Icons.spinner />}
-                          {c?.["submit"]}
-                        </Button>
-                      </DrawerClose>
+                        {!disabled && loading && <Icons.spinner />}
+                        {c?.["submit"]}
+                      </Button>
                     </>
                   }
                   content={

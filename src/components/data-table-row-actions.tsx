@@ -8,14 +8,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Icons } from "@/components/icons";
+import { Dictionary } from "@/types/locale";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 
-type DataTableRowActionsProps = {
+export type DataTableRowActionsProps = {
   children?: React.ReactNode;
-};
+} & Dictionary["data-table-row-actions"];
 
-export function DataTableRowActions({ children }: DataTableRowActionsProps) {
+export function DataTableRowActions({
+  dic: { "data-table-row-actions": c },
+  children,
+}: DataTableRowActionsProps) {
   return (
     <div className="flex items-center justify-end">
       <DropdownMenu>
@@ -26,11 +29,11 @@ export function DataTableRowActions({ children }: DataTableRowActionsProps) {
             className="data-[state=open]:bg-muted"
           >
             <DotsHorizontalIcon className="h-4 w-4 shrink-0" />
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{c?.["open menu"]}</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-full min-w-40">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuLabel>{c?.["actions"]}</DropdownMenuLabel>
           <DropdownMenuSeparator />
 
           {children}

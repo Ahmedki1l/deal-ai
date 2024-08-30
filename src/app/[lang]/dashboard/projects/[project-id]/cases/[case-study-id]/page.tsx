@@ -86,10 +86,10 @@ export default async function CaseStudy({
         <EmptyPlaceholder className="border-none">
           <EmptyPlaceholder.Icon name="empty" />
           <EmptyPlaceholder.Title>
-            {c?.["oops, no such case study."]}
+            {c?.["oops, no such study case."]}
           </EmptyPlaceholder.Title>
           <EmptyPlaceholder.Description>
-            {c?.["you have not created you case study yet."]}
+            {c?.["you have not created you study case yet."]}
           </EmptyPlaceholder.Description>
           <BackButton dic={dic} />
         </EmptyPlaceholder>
@@ -144,27 +144,6 @@ export default async function CaseStudy({
           </div>
         </div>
 
-        {/* <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href={`/${lang}/dashboard/projects`}>
-                {c?.["projects"]}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href={`/${lang}/dashboard/projects/${projectId}`}>
-                {caseStudy?.["project"]?.["title"]}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{caseStudy?.["title"]}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb> */}
-
         {projectDeleted && (
           <Alert variant="warning">
             <Icons.exclamationTriangle />
@@ -189,7 +168,7 @@ export default async function CaseStudy({
         <div>
           <Accordion type="multiple">
             <AccordionItem value="content">
-              <AccordionTrigger>{c?.["case study content"]}</AccordionTrigger>
+              <AccordionTrigger>{c?.["study case content"]}</AccordionTrigger>
               <AccordionContent>{caseStudy?.["content"]}</AccordionContent>
             </AccordionItem>
             <AccordionItem value="target-audience">

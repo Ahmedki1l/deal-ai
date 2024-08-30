@@ -11,24 +11,25 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { CaseStudy, Post } from "@prisma/client";
 import { Link } from "@/components/link";
-import { PostDeleteButton } from "@/components/post-delete-button";
+import {
+  PostDeleteButton,
+  PostDeleteButtonProps,
+} from "@/components/post-delete-button";
 import { CardTitle } from "@/components/ui/card";
 import { Dictionary } from "@/types/locale";
-import { DataTable } from "@/components/data-table";
-import { PostRestoreButton } from "./post-restore-button";
+import { DataTable, DataTableProps } from "@/components/data-table";
+import {
+  PostRestoreButton,
+  PostRestoreButtonProps,
+} from "./post-restore-button";
 
 type ColumnType = Post & { caseStudy: CaseStudy };
 
 type BinPostsTableProps = {
   data: ColumnType[];
-} & Dictionary["data-table"] &
-  Dictionary["data-table-column-header"] &
-  Dictionary["data-table-pagination"] &
-  Dictionary["data-table-view-options"] &
-  Dictionary["dialog"] &
-  Dictionary["post-restore-button"] &
-  Dictionary["post-delete-button"] &
-  Dictionary["post-form"] &
+} & Pick<DataTableProps<any, any>, "dic"> &
+  Pick<PostDeleteButtonProps, "dic"> &
+  Pick<PostRestoreButtonProps, "dic"> &
   Dictionary["dashboard"];
 
 export function BinPostsTable({
@@ -97,7 +98,7 @@ export function BinPostsTable({
             cell: ({ row: { original: r } }) => {
               return (
                 <>
-                  <DataTableRowActions>
+                  <DataTableRowActions dic={dic}>
                     <PostRestoreButton dic={dic} asChild post={r}>
                       <Button
                         variant="ghost"

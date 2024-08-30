@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Dictionary } from "@/types/locale";
 
-type DataTableViewOptionsProps<TData> = {
+export type DataTableViewOptionsProps<TData> = {
   table: Table<TData>;
 } & Dictionary["data-table-view-options"];
 

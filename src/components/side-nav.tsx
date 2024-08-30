@@ -1,16 +1,16 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
-import { SelectItem } from "@/types";
 import { Icons } from "@/components/icons";
-import { useSelectedLayoutSegment } from "next/navigation";
 import { Link } from "@/components/link";
 import { Tooltip } from "@/components/tooltip";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { NavItem } from "@/types";
+import { useSelectedLayoutSegment } from "next/navigation";
 
 type SideNavProps = {
   isCollapsed: boolean;
-  links: SelectItem[];
+  links: NavItem[];
 };
 
 export function SideNav({ links, isCollapsed }: SideNavProps) {
@@ -29,31 +29,36 @@ export function SideNav({ links, isCollapsed }: SideNavProps) {
             <Tooltip
               key={i}
               side="right"
-              className="flex items-center gap-4"
+              className="flex items-center justify-between gap-4"
               text={
-                <>
-                  {link?.["label"]}
+                <div className="flex items-center justify-between gap-6">
+                  <span>{link?.["label"]}</span>
+
                   {link?.["indicator"] && (
-                    <span className="ml-auto text-muted-foreground">
+                    <span className="text-muted-foreground">
                       {link?.["indicator"]}
                     </span>
                   )}
-                </>
+                </div>
               }
             >
               <div>
                 <Link
                   href={link?.["value"]}
                   className={cn(
+                    "h-9 w-9",
                     buttonVariants({
                       variant:
-                        segment === link?.["segment"] ? "default" : "ghost",
+                        segment === link?.["segment"] ||
+                        link?.["segment"]?.some((e) => segment === e)
+                          ? "default"
+                          : "ghost",
                       size: "icon",
                     }),
-                    "h-9 w-9",
 
-                    segment === link?.["segment"] &&
-                      "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white",
+                    segment === link?.["segment"] ||
+                      (link?.["segment"]?.some((e) => segment === e) &&
+                        "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white")
                   )}
                 >
                   {Icon && <Icon />}
@@ -67,24 +72,29 @@ export function SideNav({ links, isCollapsed }: SideNavProps) {
               href={link?.["value"]}
               className={cn(
                 buttonVariants({
-                  variant: segment === link?.["segment"] ? "default" : "ghost",
+                  variant:
+                    segment === link?.["segment"] ||
+                    link?.["segment"]?.some((e) => segment === e)
+                      ? "default"
+                      : "ghost",
                   size: "sm",
                 }),
-
-                segment === link?.["segment"] &&
-                  "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
-                "justify-start",
+                segment === link?.["segment"] ||
+                  (link?.["segment"]?.some((e) => segment === e) &&
+                    "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white"),
+                "justify-between"
               )}
             >
-              {Icon && <Icon />}
-              {link?.["label"]}
+              <div className="flex items-center gap-2">
+                {Icon && <Icon />}
+                {link?.["label"]}
+              </div>
               {link?.["indicator"] && (
                 <span
                   className={cn(
-                    "ml-auto",
-
-                    segment === link?.["segment"] &&
-                      "text-background dark:text-white",
+                    segment === link?.["segment"] ||
+                      (link?.["segment"]?.some((e) => segment === e) &&
+                        "text-background dark:text-white")
                   )}
                 >
                   {link?.["indicator"]}

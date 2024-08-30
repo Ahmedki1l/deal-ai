@@ -1,4 +1,4 @@
-import { SelectItem } from "@/types";
+import { NavItem, SelectItem } from "@/types";
 
 export default {
   site: {
@@ -43,13 +43,13 @@ export default {
               icon: "home",
             },
             {
-              segment: "projects",
+              segment: ["projects"],
               value: "/dashboard/projects",
               label: "مشاريعي",
               icon: "analytics",
             },
             {
-              segment: "calender",
+              segment: ["calender"],
               value: "/dashboard/calender",
               label: "التقويم",
               icon: "calender",
@@ -57,19 +57,19 @@ export default {
           ],
           [
             {
-              segment: "settings",
+              segment: ["settings"],
               value: "/dashboard/settings",
               label: "الإعدادات",
               icon: "settings",
             },
             {
-              segment: "bin",
+              segment: ["bin"],
               value: "/dashboard/bin",
               label: "سلة المهملات",
               icon: "trash",
             },
           ],
-        ] as SelectItem[][],
+        ] as NavItem[][],
       },
       dashboard: {
         dashboard: "الصفحة الرئيسية",
@@ -90,7 +90,7 @@ export default {
         "create project": "إنشاء مشروع",
         table: {
           project: "المشروع",
-          "case study": "دراسة حالة",
+          "study case": "دراسة حالة",
           "target audience": "الجمهور المستهدف",
           properties: "الوحدات",
           posts: "المنشورات",
@@ -111,13 +111,13 @@ export default {
           city: "المدينة",
           country: "البلد",
           spaces: "المساحة",
+          "study cases": "دراسة الحالات",
           "property types": "أنواع العقارات",
           platforms: "المنصات",
           "created at": "تاريخ الإنشاء",
-          "here's a list of your case studies.":
+          "here's a list of your study cases.":
             "إليك قائمة بدراسات الحالة الخاصة بك.",
-          "case studies": "دراسات الحالة",
-          "create case study": "إنشاء دراسة حالة",
+          "create study case": "إنشاء دراسة حالة",
           "here's a list of your properties.": "إليك قائمة بوحداتك.",
           "create properties": "إنشاء وحدات",
 
@@ -155,9 +155,9 @@ export default {
 
               "it's project is deleted, once you restore it all will be editable.":
                 "تم حذف المشروع، بمجرد استعادته سيكون كل شيء قابلاً للتعديل.",
-              "oops, no such case study.":
+              "oops, no such study case.":
                 "عذرًا، لا توجد دراسة حالة بهذا الاسم.",
-              "you have not created you case study yet.":
+              "you have not created you study case yet.":
                 "لم تقم بإنشاء دراسة الحالة الخاصة بك بعد.",
               projects: "المشاريع",
               restore: "استعادة",
@@ -166,7 +166,7 @@ export default {
               "oops, no posts.": "عذرًا، لا توجد منشورات.",
               "you have not created you posts yet.":
                 "لم تقم بإنشاء منشوراتك بعد.",
-              "case study content": "محتوى دراسة الحالة",
+              "study case content": "محتوى دراسة الحالة",
               "target audience": "الجمهور المستهدف",
               pros: "الإيجابيات",
               cons: "السلبيات",
@@ -183,7 +183,7 @@ export default {
                 "you have not created you posts yet.":
                   "لم تقم بإنشاء منشوراتك بعد.",
                 post: {
-                  "it's project or case study is deleted, once you restore it all will be editable.":
+                  "it's project or study case is deleted, once you restore it all will be editable.":
                     "تم حذف المشروع أو دراسة الحالة، بمجرد استعادته سيكون كل شيء قابلاً للتعديل.",
                   "oops, no such post.": "عذرًا، لا توجد منشورة بهذا الاسم.",
                   "you have not created you post yet.":
@@ -198,7 +198,7 @@ export default {
             table: {
               name: "الاسم",
               description: "الوصف",
-              "case study": "دراسة حالة",
+              "study case": "دراسة حالة",
               "target audience": "الجمهور المستهدف",
               posts: "المنشورات",
               platforms: "المنصات",
@@ -246,7 +246,7 @@ export default {
           { value: "/dashboard/bin/cases", label: "دراسات الحالة" },
           { value: "/dashboard/bin/properties", label: "الوحدات" },
           { value: "/dashboard/bin/posts", label: "المنشورات" },
-        ] as SelectItem[],
+        ] as NavItem[],
         bin: "سلة المهملات",
         "below is a list of your deleted items. you can restore them within 30 days before they are permanently removed.":
           "فيما يلي قائمة بالعناصر المحذوفة الخاصة بك. يمكنك استعادتها خلال 30 يومًا قبل إزالتها نهائيًا.",
@@ -265,7 +265,7 @@ export default {
         "main-nav": [
           { value: "/dashboard/settings", label: "الملف الشخصي" },
           { value: "/dashboard/settings/appearance", label: "المظهر" },
-        ] as SelectItem[],
+        ] as NavItem[],
         settings: "الإعدادات",
         "manage your account details, privacy settings, and how others perceive you on the platform.":
           "إدارة تفاصيل حسابك، إعدادات الخصوصية، وكيفية رؤية الآخرين لك على المنصة.",
@@ -300,15 +300,15 @@ export default {
   "case-study-bin-button": {
     "deleted successfully.": "تم الحذف بنجاح.",
     delete: "حذف",
-    "delete case study": "حذف دراسة حالة",
-    "once deleted, the case study will be moved to the bin. you can manually delete it or it will be automatically removed after 30 days. if restored, everything will be reinstated as if nothing happened.":
+    "delete study case": "حذف دراسة حالة",
+    "once deleted, the study case will be moved to the bin. you can manually delete it or it will be automatically removed after 30 days. if restored, everything will be reinstated as if nothing happened.":
       "بمجرد حذفها، سيتم نقل دراسة الحالة إلى سلة المهملات. يمكنك حذفها يدويًا أو سيتم إزالتها تلقائيًا بعد 30 يومًا. إذا تم استعادتها، سيتم استعادة كل شيء كما لو لم يحدث شيء.",
   },
   "case-study-create-button": {
     "created successfully.": "تم الإنشاء بنجاح.",
     submit: "إرسال",
-    "create case study": "إنشاء دراسة حالة",
-    "create a A well-structured case study for your real estate project that helps highlight the unique features, target audience, market strategy, and performance metrics of your project. once created, these case studies can be used to inform potential buyers, partners, and stakeholders, demonstrating the value and potential of your real estate developments.":
+    "create study case": "إنشاء دراسة حالة",
+    "create a A well-structured study case for your real estate project that helps highlight the unique features, target audience, market strategy, and performance metrics of your project. once created, these study cases can be used to inform potential buyers, partners, and stakeholders, demonstrating the value and potential of your real estate developments.":
       "إنشاء دراسة حالة منظمة جيدًا لمشروعك العقاري تساعد في إبراز الميزات الفريدة، الجمهور المستهدف، استراتيجية السوق، ومقاييس الأداء لمشروعك. بمجرد إنشائها، يمكن استخدام هذه الدراسات لإبلاغ المشترين المحتملين والشركاء وأصحاب المصلحة، مما يظهر قيمة وإمكانات مشاريعك العقارية.",
   },
   "case-study-delete-button": {
@@ -316,7 +316,7 @@ export default {
       "بمجرد حذفها، لا يمكن التراجع عن هذا الإجراء. يرجى التأكد، حيث سيتم حذف جميع البيانات ذات الصلة بشكل دائم.",
     "deleted successfully.": "تم الحذف بنجاح.",
     delete: "حذف",
-    "delete case study": "حذف دراسة الحالة",
+    "delete study case": "حذف دراسة الحالة",
   },
   "case-study-form": {
     title: {
@@ -325,44 +325,45 @@ export default {
     },
     description: {
       label: "الوصف",
-      "describe your case study": "وصف دراسة الحالة الخاصة بك",
+      "describe your study case": "وصف دراسة الحالة الخاصة بك",
     },
     refImages: {
       label: "صورة مرجعية",
     },
     content: {
       label: "المحتوى",
-      "describe your case study's content": "وصف محتوى دراسة الحالة الخاصة بك",
+      "describe your study case's content": "وصف محتوى دراسة الحالة الخاصة بك",
     },
     targetAudience: {
       label: "الجمهور المستهدف",
-      "describe your case study's target audience":
+      "describe your study case's target audience":
         "وصف الجمهور المستهدف لدراسة الحالة الخاصة بك",
     },
     pros: {
       label: "الإيجابيات",
-      "describe your case study's pros": "وصف إيجابيات دراسة الحالة الخاصة بك",
+      "describe your study case's pros": "وصف إيجابيات دراسة الحالة الخاصة بك",
     },
     cons: {
       label: "السلبيات",
-      "describe your case study's cons": "وصف سلبيات دراسة الحالة الخاصة بك",
+      "describe your study case's cons": "وصف سلبيات دراسة الحالة الخاصة بك",
     },
   },
   "case-study-restore-button": {
-    "restoring this case study will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off.":
+    "restoring this study case will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off.":
       "استعادة دراسة الحالة هذه ستعيد جميع بياناتها وإعداداتها، مما يجعلها تظهر كما لو لم يتم حذفها أبدًا. سيتم استعادة جميع المعلومات ذات الصلة بشكل كامل، مما يسمح لك بالاستمرار من حيث توقفت.",
     "restored successfully.": "تم الاستعادة بنجاح.",
     restore: "استعادة",
-    "restore case study": "استعادة دراسة الحالة",
+    "restore study case": "استعادة دراسة الحالة",
   },
   "case-study-update-form": {
     "updated successfully.": "تم التحديث بنجاح.",
     submit: "إرسال",
-    "update case study": "تحديث دراسة حالة",
-    "updating a case study allows you to refine and enhance the details of your ongoing developments":
+    "update study case": "تحديث دراسة حالة",
+    "updating a study case allows you to refine and enhance the details of your ongoing developments":
       "تحديث دراسة حالة يتيح لك تحسين وتعزيز تفاصيل مشاريعك الحالية",
   },
-  "dashboard-layout": {
+
+  "resizeable-layout": {
     logout: "تسجيل الخروج",
   },
 
@@ -393,6 +394,10 @@ export default {
     "go to next page": "انتقل إلى الصفحة التالية",
     "go to last page": "انتقل إلى الصفحة الأخيرة",
     page: "الصفحة",
+  },
+  "data-table-row-actions": {
+    actions: "التحرير",
+    "open menu": "إفتح القائمة",
   },
   "data-table-view-options": {
     view: "عرض",
@@ -559,6 +564,7 @@ export default {
     },
     map: {
       label: "الخريطة",
+      "choose on map": "إختر علي الخريطة",
     },
     description: {
       label: "الوصف",

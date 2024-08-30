@@ -18,7 +18,7 @@ import { Dictionary } from "@/types/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { t } from "@/lib/locale";
 
-type PropertyDeleteButtonProps = {
+export type PropertyDeleteButtonProps = {
   property: Pick<Property, "id">;
 } & Omit<DialogResponsiveProps, "open" | "setOpen" | "property"> &
   Dictionary["property-delete-button"] &

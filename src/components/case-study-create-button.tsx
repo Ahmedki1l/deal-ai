@@ -20,7 +20,7 @@ import { Dictionary } from "@/types/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { t } from "@/lib/locale";
 
-type CaseStudyCreateButtonProps = {
+export type CaseStudyCreateButtonProps = {
   project: Project & { platforms: Platform[] };
 } & Omit<DialogResponsiveProps, "open" | "setOpen"> &
   Dictionary["case-study-create-button"] &
@@ -55,7 +55,7 @@ export function CaseStudyCreateButton({
     },
   });
 
-  console.log("in the create case study button")
+  console.log("in the create case study button");
 
   async function onSubmit(data: z.infer<typeof caseStudyCreateFormSchema>) {
     setLoading(true);

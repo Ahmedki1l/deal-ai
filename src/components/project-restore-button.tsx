@@ -18,7 +18,7 @@ import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
 import { deleteProject, updateProject } from "@/actions/projects";
 
-type ProjectRestoreButtonProps = {
+export type ProjectRestoreButtonProps = {
   project: Pick<Project, "id">;
 } & Omit<DialogResponsiveProps, "open" | "setOpen"> &
   Dictionary["project-restore-button"] &

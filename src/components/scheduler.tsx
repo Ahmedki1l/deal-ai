@@ -18,7 +18,7 @@ import { DialogResponsive } from "./dialog";
 import { Image } from "./image";
 import { useLocale } from "@/hooks/use-locale";
 
-type SchedulerProps = {
+export type SchedulerProps = {
   posts: (Post & {
     image: ImageType | null;
     caseStudy: CaseStudy & { project: Project & { platforms: Platform[] } };

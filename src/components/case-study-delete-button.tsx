@@ -18,7 +18,7 @@ import { Dictionary } from "@/types/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { t } from "@/lib/locale";
 
-type CaseStudyDeleteButtonProps = {
+export type CaseStudyDeleteButtonProps = {
   caseStudy: Pick<CaseStudy, "id">;
 } & Omit<DialogResponsiveProps, "open" | "setOpen"> &
   Dictionary["case-study-delete-button"] &

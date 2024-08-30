@@ -24,7 +24,7 @@ import { Icons } from "@/components/icons";
 import { Dictionary } from "@/types/locale";
 import { useLocale } from "@/hooks/use-locale";
 
-type PropertyFormProps = {
+export type PropertyFormProps = {
   loading: boolean;
   form: UseFormReturn<
     z.infer<typeof propertyCreateFormSchema>,

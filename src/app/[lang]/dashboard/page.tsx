@@ -7,13 +7,8 @@ import { LocaleProps } from "@/types/locale";
 import { ProjectCreateButton } from "@/components/project-create-button";
 import { Button } from "@/components/ui/button";
 import { Table } from "./projects/table";
-import { Image } from "@/components/image";
-import dailyProgress from "../../../../public/images/DailyProgress.png";
-import charts from "../../../../public/images/Charts.png";
-import shutterstock from "../../../../public/images/shutterstock_502875937.png";
-import { ChartConfig, ChartContainer } from "@/components/ui/chart";
-import { Bar, BarChart } from "recharts";
 import { DashboardPostsBarChart } from "@/components/dashboard-posts-bar-char";
+import { DashboardLayout } from "@/components/dashboard-layout";
 
 type DashboardProps = Readonly<{ params: LocaleProps }>;
 
@@ -35,44 +30,30 @@ export default async function Dashboard({ params: { lang } }: DashboardProps) {
   });
 
   return (
-    <div className="container flex-1 py-6">
-      <div className="mb-6 flex items-center justify-between">
+    <DashboardLayout>
+      <DashboardLayout.Header>
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">
-            {c?.["dashboard"]}
-          </h2>
-          <p className="text-muted-foreground">
+          <DashboardLayout.Title>{c?.["dashboard"]}</DashboardLayout.Title>
+          <DashboardLayout.Description>
             {c?.["take a glance and manage your projects."]}
-          </p>
+          </DashboardLayout.Description>
         </div>
+
         <div>
           <ProjectCreateButton dic={dic} user={user}>
             <Button>{c?.["create project"]}</Button>
           </ProjectCreateButton>
         </div>
-      </div>
+      </DashboardLayout.Header>
 
-      <div className="mx-auto mt-10 flex flex-col gap-10">
+      <div className="mt-10 space-y-10">
         <DashboardPostsBarChart dic={dic} />
-        {/* <div className="grid grid-cols-2 gap-4">
-          <DashboardPostsBarChart />
-          <Image
-            src={charts?.["src"]}
-            alt=""
-            className="aspect-video rounded border"
-          />
-          <Image
-            src={shutterstock?.["src"]}
-            alt=""
-            className="aspect-video rounded border"
-          />
-        </div> */}
 
         <div className="flex flex-col gap-4">
           <CardTitle>{c?.["latest projects"]}</CardTitle>
           <Table dic={dic} data={projects} />
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }

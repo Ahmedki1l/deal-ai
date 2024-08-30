@@ -18,7 +18,7 @@ import { t } from "@/lib/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { Dictionary } from "@/types/locale";
 
-type PostDeleteButtonProps = {
+export type PostDeleteButtonProps = {
   post: Pick<Post, "id">;
 } & Omit<DialogResponsiveProps, "open" | "setOpen"> &
   Dictionary["post-delete-button"] &

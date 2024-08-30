@@ -120,20 +120,6 @@ export default async function Project({
           </div>
         </div>
 
-        {/* <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href={`/${lang}/dashboard/projects`}>
-                {c?.["projects"]}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-
-            <BreadcrumbItem>
-              <BreadcrumbPage>{project?.["title"]}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb> */}
         <div className="mb-6 space-y-4">
           <div className="flex items-center justify-between">
             <div>
@@ -174,18 +160,20 @@ export default async function Project({
       <Separator className="mb-12 mt-6" />
       <Tabs defaultValue="cases" className="space-y-12">
         <TabsList>
-          <TabsTrigger value="cases">Study Cases</TabsTrigger>
-          <TabsTrigger value="properties">Properties</TabsTrigger>
+          <TabsTrigger value="cases">{c?.["study cases"]}</TabsTrigger>
+          <TabsTrigger value="properties">
+            {c?.["properties"]?.["properties"]}
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="cases">
           <div className="flex flex-col gap-5">
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-bold tracking-tight">
-                  {c?.["case studies"]}
+                  {c?.["study cases"]}
                 </h2>
                 <p className="text-muted-foreground">
-                  {c?.["here's a list of your case studies."]}
+                  {c?.["here's a list of your study cases."]}
                 </p>
               </div>
               <div>
@@ -195,7 +183,7 @@ export default async function Project({
                   project={project}
                 >
                   <Button disabled={projectDeleted}>
-                    {c?.["create case study"]}
+                    {c?.["create study case"]}
                   </Button>
                 </CaseStudyCreateButton>
               </div>

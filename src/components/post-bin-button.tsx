@@ -18,7 +18,7 @@ import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
 import { updatePostFeature } from "@/actions/posts";
 
-type PostBinButtonProps = {
+export type PostBinButtonProps = {
   post: Pick<Post, "id">;
 } & Omit<DialogResponsiveProps, "open" | "setOpen"> &
   Dictionary["post-bin-button"] &

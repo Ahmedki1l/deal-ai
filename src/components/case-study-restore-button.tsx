@@ -18,7 +18,7 @@ import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
 import { updateCaseStudy } from "@/actions/case-studies";
 
-type CaseStudyRestoreButtonProps = {
+export type CaseStudyRestoreButtonProps = {
   caseStudy: Pick<CaseStudy, "id">;
 } & Omit<DialogResponsiveProps, "open" | "setOpen"> &
   Dictionary["case-study-restore-button"] &

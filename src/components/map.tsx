@@ -52,7 +52,7 @@ export const MapPicker = () => {
   const { loader } = useGoogleMaps();
   const mapRef = React.useRef<HTMLDivElement>(null);
   const markerRef = React.useRef<google.maps.Marker | null>(null);
-  const { setValue, clearErrors } = useFormContext();
+  const { setValue, clearErrors, getValues } = useFormContext();
 
   React.useEffect(() => {
     if (loader) {
@@ -64,6 +64,16 @@ export const MapPicker = () => {
             center,
             zoom: 12,
           });
+
+          if (getValues("map")) {
+            // Set a new marker
+            const marker = new google.maps.Marker({
+              position: JSON.parse(getValues("map")),
+              map,
+              title: "Selected Location",
+            });
+            markerRef.current = marker;
+          }
 
           map.addListener("click", (mapsMouseEvent: { latLng: any }) => {
             // Remove the existing marker
@@ -99,6 +109,10 @@ export const MapPicker = () => {
                     setValue("distinct", district ?? "");
                     setValue("city", city ?? "");
                     setValue("country", country ?? "");
+                    setValue(
+                      "map",
+                      JSON.stringify(mapsMouseEvent.latLng ?? ""),
+                    );
 
                     // Set a new marker
                     const marker = new google.maps.Marker({

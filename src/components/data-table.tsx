@@ -23,21 +23,30 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTablePagination } from "@/components/data-table-pagination";
+import {
+  DataTablePagination,
+  DataTablePaginationProps,
+} from "@/components/data-table-pagination";
 import {
   DataTableToolbar,
   DataTableToolbarProps,
 } from "@/components/data-table-toolbar";
 import { EmptyPlaceholder } from "@/components/empty-placeholder";
 import { Dictionary } from "@/types/locale";
+import { DataTableColumnHeaderProps } from "./data-table-column-header";
+import { DataTableViewOptionsProps } from "./data-table-view-options";
+import { DataTableRowActionsProps } from "./data-table-row-actions";
 
-type DataTableProps<TData, TValue> = {
+export type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 } & Pick<DataTableToolbarProps<TData>, "filterBy" | "filterOptions" | "view"> &
   Dictionary["data-table"] &
-  Dictionary["data-table-pagination"] &
-  Dictionary["data-table-view-options"];
+  Pick<DataTablePaginationProps<TData>, "dic"> &
+  Pick<DataTableViewOptionsProps<TData>, "dic"> &
+  // optional
+  Pick<DataTableRowActionsProps, "dic"> &
+  Pick<DataTableColumnHeaderProps<TData, TValue>, "dic">;
 
 export function DataTable<TData, TValue>({
   dic: { "data-table": c, ...dic },

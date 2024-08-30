@@ -21,7 +21,7 @@ import { convertBase64 } from "@/lib/utils";
 import { Image } from "@/components/image";
 import { Dictionary } from "@/types/locale";
 
-type CaseStudyFormProps = {
+export type CaseStudyFormProps = {
   loading: boolean;
   form: UseFormReturn<
     | z.infer<typeof caseStudyCreateFormSchema>

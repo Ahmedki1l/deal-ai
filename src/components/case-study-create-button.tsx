@@ -55,12 +55,8 @@ export function CaseStudyCreateButton({
     },
   });
 
-  console.log("in the create case study button");
-
   async function onSubmit(data: z.infer<typeof caseStudyCreateFormSchema>) {
     setLoading(true);
-
-    console.log("creating case study");
 
     toast.promise(
       createCaseStudy(
@@ -120,10 +116,10 @@ export function CaseStudyCreateButton({
           </Form>
         </>
       }
-      title={c?.["create case study"]}
+      title={c?.["create study case"]}
       description={
         c?.[
-          "create a A well-structured case study for your real estate project that helps highlight the unique features, target audience, market strategy, and performance metrics of your project. once created, these case studies can be used to inform potential buyers, partners, and stakeholders, demonstrating the value and potential of your real estate developments."
+          "create a A well-structured study case for your real estate project that helps highlight the unique features, target audience, market strategy, and performance metrics of your project. once created, these study cases can be used to inform potential buyers, partners, and stakeholders, demonstrating the value and potential of your real estate developments."
         ]
       }
       open={open}

@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { SelectItem } from "@/types";
+import { NavItem, SelectItem } from "@/types";
 
 type SidebarNavProps = React.HTMLAttributes<HTMLElement> & {
-  items: SelectItem[];
+  items: NavItem[];
 };
 
 export function SidebarNav({ className, items, ...props }: SidebarNavProps) {

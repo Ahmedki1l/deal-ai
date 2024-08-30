@@ -90,10 +90,10 @@ export function CaseStudyUpdateForm({
           </Form>
         </>
       }
-      title={c?.["update case study"]}
+      title={c?.["update study case"]}
       description={
         c?.[
-          "updating a case study allows you to refine and enhance the details of your ongoing developments"
+          "updating a study case allows you to refine and enhance the details of your ongoing developments"
         ]
       }
       open={open}

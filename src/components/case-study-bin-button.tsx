@@ -80,10 +80,10 @@ export function CaseStudyBinButton({
           </Form>
         </>
       }
-      title={c?.["delete case study"]}
+      title={c?.["delete study case"]}
       description={
         c?.[
-          "once deleted, the case study will be moved to the bin. you can manually delete it or it will be automatically removed after 30 days. if restored, everything will be reinstated as if nothing happened."
+          "once deleted, the study case will be moved to the bin. you can manually delete it or it will be automatically removed after 30 days. if restored, everything will be reinstated as if nothing happened."
         ]
       }
       {...props}

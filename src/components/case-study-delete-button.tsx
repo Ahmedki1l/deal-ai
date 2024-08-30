@@ -77,7 +77,7 @@ export function CaseStudyDeleteButton({
           </Form>
         </>
       }
-      title={c?.["delete case study"]}
+      title={c?.["delete study case"]}
       description={
         c?.[
           "once deleted, this action cannot be undone. please be certain, as all relevant data will be permanently deleted."

@@ -80,10 +80,10 @@ export function CaseStudyRestoreButton({
           </Form>
         </>
       }
-      title={c?.["restore case study"]}
+      title={c?.["restore study case"]}
       description={
         c?.[
-          "restoring this case study will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off."
+          "restoring this study case will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off."
         ]
       }
       {...props}

@@ -152,7 +152,7 @@ export const CaseStudyForm = {
           <FormLabel> {c?.["label"]}</FormLabel>
           <FormControl>
             <Textarea
-              placeholder={c?.["describe your case study's content"]}
+              placeholder={c?.["describe your study case's content"]}
               disabled={loading}
               {...field}
             />
@@ -177,7 +177,7 @@ export const CaseStudyForm = {
           <FormLabel> {c?.["label"]}</FormLabel>
           <FormControl>
             <Textarea
-              placeholder={c?.["describe your case study's target audience"]}
+              placeholder={c?.["describe your study case's target audience"]}
               disabled={loading}
               {...field}
             />
@@ -202,7 +202,7 @@ export const CaseStudyForm = {
           <FormLabel>{c?.["label"]}</FormLabel>
           <FormControl>
             <Textarea
-              placeholder={c?.["describe your case study's pros"]}
+              placeholder={c?.["describe your study case's pros"]}
               disabled={loading}
               {...field}
             />
@@ -227,7 +227,7 @@ export const CaseStudyForm = {
           <FormLabel>{c?.["label"]}</FormLabel>
           <FormControl>
             <Textarea
-              placeholder={c?.["describe your case study's cons"]}
+              placeholder={c?.["describe your study case's cons"]}
               disabled={loading}
               {...field}
             />

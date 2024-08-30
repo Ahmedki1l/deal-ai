@@ -2,7 +2,7 @@
 
 import { Icons } from "@/components/icons";
 import { SideNav } from "@/components/side-nav";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -17,6 +17,17 @@ import { Dictionary } from "@/types/locale";
 import { User } from "lucia";
 import { useState } from "react";
 import { Tooltip } from "./tooltip";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import { Avatar } from "./avatar";
+import { LocaleSwitcher, LocaleSwitcherProps } from "./locale-switcher";
+import { ModeToggler, ModeTogglerProps } from "./mode-toggler";
 
 type ResizableLayoutProps = {
   user: User;
@@ -28,7 +39,9 @@ type ResizableLayoutProps = {
     top?: NavItem[][];
     bottom?: NavItem[][];
   };
-} & Dictionary["resizeable-layout"];
+} & Dictionary["resizeable-layout"] &
+  Pick<LocaleSwitcherProps, "dic"> &
+  Pick<ModeTogglerProps, "dic">;
 
 export function ResizableLayout({
   dic: { "resizeable-layout": c, ...dic },
@@ -88,9 +101,20 @@ export function ResizableLayout({
           <div
             className={cn(
               "container flex flex-col items-center justify-center py-4",
+              isCollapsed &&
+                buttonVariants({
+                  variant: "outline",
+                  size: "icon",
+                  className:
+                    "h-9 w-9 shrink-0 rounded-none border-none p-0 shadow-none",
+                }),
             )}
           >
-            <Icons.logo />
+            {isCollapsed ? (
+              <Icons.logo />
+            ) : (
+              <Icons.fullLogo className="h-auto w-auto" />
+            )}
           </div>
 
           {/* Nav Links */}
@@ -104,7 +128,53 @@ export function ResizableLayout({
               ))}
             </div>
 
-            <div>
+            <div className="flex flex-1 flex-col justify-end gap-4 pb-4 pt-10">
+              {isCollapsed ? (
+                <Tooltip text={user?.["name"]} side="right">
+                  <Card className="mx-auto flex w-fit items-center justify-center rounded-full">
+                    <Avatar
+                      user={user}
+                      className="aspect-square h-7 w-7"
+                      icon={{
+                        name: "user",
+                        className: "w-5 h-5",
+                      }}
+                    />
+                  </Card>
+                </Tooltip>
+              ) : (
+                <div
+                  className={cn(
+                    "container px-4 py-5 transition-all duration-300 ease-in-out",
+                  )}
+                >
+                  <Card className="w-full">
+                    <CardHeader className="flex w-full flex-col items-center justify-center gap-4">
+                      <div className="flex w-full items-center justify-center gap-3">
+                        <Avatar
+                          user={user}
+                          className={cn("aspect-square h-12 w-12")}
+                          icon={{
+                            name: "user",
+                            className: "w-5 h-5",
+                          }}
+                        />
+                      </div>
+                    </CardHeader>
+                    <CardContent className="flex flex-col items-center justify-center text-sm">
+                      <CardTitle>{user?.["name"]}</CardTitle>
+                      <CardDescription className="tuncate line-clamp-1">
+                        {user?.["email"]}
+                      </CardDescription>
+                    </CardContent>
+                    <CardFooter className="items-center justify-center gap-2">
+                      <LocaleSwitcher dic={dic} />
+                      <ModeToggler dic={dic} />
+                    </CardFooter>
+                  </Card>
+                </div>
+              )}
+
               {links?.["bottom"]?.map((links, i) => (
                 <div key={i}>
                   <Separator />

@@ -13,7 +13,7 @@ export class ZodErrorResponse extends Response {
 
       // TODO: try to send all, and handle then in frontend
       errors?.["issues"]?.pop()?.["message"],
-      { status: 422 }
+      { status: 422 },
     );
   }
 }

@@ -23,7 +23,7 @@ export function ModeToggler({ dic: { "mode-toggle": c } }: ModeTogglerProps) {
         <Button
           variant="link"
           size="icon"
-          className="px-0 h-8 w-8 rounded-full"
+          className="h-8 w-8 rounded-full px-0"
         >
           <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
           <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />

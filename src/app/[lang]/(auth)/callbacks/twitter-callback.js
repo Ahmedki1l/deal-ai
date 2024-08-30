@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 export default function TwitterCallback() {
   const router = useRouter();
@@ -11,10 +11,13 @@ export default function TwitterCallback() {
       if (code && state) {
         try {
           const domain = process.env.NEXT_PUBLIC_AI_API;
-          const response = await fetch(`${domain}/twitter-callback?code=${code}&state=${state}`, {
-            method: 'GET',
-            headers: {"Content-Type": "application/json"},
-          });
+          const response = await fetch(
+            `${domain}/twitter-callback?code=${code}&state=${state}`,
+            {
+              method: "GET",
+              headers: { "Content-Type": "application/json" },
+            },
+          );
 
           if (response.ok) {
             const data = await response.json();

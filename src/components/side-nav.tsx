@@ -58,7 +58,7 @@ export function SideNav({ links, isCollapsed }: SideNavProps) {
 
                     segment === link?.["segment"] ||
                       (link?.["segment"]?.some((e) => segment === e) &&
-                        "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white")
+                        "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"),
                   )}
                 >
                   {Icon && <Icon />}
@@ -82,7 +82,7 @@ export function SideNav({ links, isCollapsed }: SideNavProps) {
                 segment === link?.["segment"] ||
                   (link?.["segment"]?.some((e) => segment === e) &&
                     "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white"),
-                "justify-between"
+                "justify-between",
               )}
             >
               <div className="flex items-center gap-2">
@@ -94,7 +94,7 @@ export function SideNav({ links, isCollapsed }: SideNavProps) {
                   className={cn(
                     segment === link?.["segment"] ||
                       (link?.["segment"]?.some((e) => segment === e) &&
-                        "text-background dark:text-white")
+                        "text-background dark:text-white"),
                   )}
                 >
                   {link?.["indicator"]}

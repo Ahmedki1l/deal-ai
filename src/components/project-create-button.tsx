@@ -199,136 +199,121 @@ export function ProjectCreateButton({
                       </div>
                     </CardHeader>
 
-                    {field?.["properties"]?.["length"] ? (
+                    {form.watch(`types.${i}.properties`)?.["length"] ? (
                       <CardContent className="space-y-4">
-                        {field?.properties?.map((_, j) => (
-                          <Card key={j} className="border-green-500">
-                            <CardHeader>
-                              <div className="flex items-center justify-between gap-4">
-                                <CardTitle>
-                                  {c?.["unit"]} {j + 1}
-                                </CardTitle>
-                                {/* <Button
-                  type="button"
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => {
-                                    field.properties = field.properties.filter(
-                                      (property, index) => {
-                                        console.log("card ", property);
-                                        console.log("card index ", j);
-                                        console.log("item index ", index);
-                                        return index !== j;
-                                      },
-                                    );
-                                    console.log(field.properties);
-                                  }}
-                                >
-                                  <Icons.x />
-                                </Button> */}
-                              </div>
-                            </CardHeader>
+                        {form
+                          .getValues(`types.${i}.properties`)
+                          ?.map((_, j) => (
+                            <Card key={j} className="border-green-500">
+                              <CardHeader>
+                                <div className="flex items-center justify-between gap-4">
+                                  <CardTitle>
+                                    {c?.["unit"]} {j + 1}
+                                  </CardTitle>
 
-                            <CardContent className="grid grid-cols-3 gap-4">
-                              <PropertyForm.title
-                                dic={dic}
-                                typeIndex={i}
-                                propertyIndex={j}
-                                form={form as any}
-                                loading={loading}
-                              />
-                              <PropertyForm.units
-                                dic={dic}
-                                typeIndex={i}
-                                propertyIndex={j}
-                                form={form as any}
-                                loading={loading}
-                              />
-                              <PropertyForm.space
-                                dic={dic}
-                                typeIndex={i}
-                                propertyIndex={j}
-                                form={form as any}
-                                loading={loading}
-                              />
-                              <PropertyForm.finishing
-                                dic={dic}
-                                typeIndex={i}
-                                propertyIndex={j}
-                                form={form as any}
-                                loading={loading}
-                              />
-                              <PropertyForm.floors
-                                dic={dic}
-                                typeIndex={i}
-                                propertyIndex={j}
-                                form={form as any}
-                                loading={loading}
-                              />
-                              <PropertyForm.rooms
-                                dic={dic}
-                                typeIndex={i}
-                                propertyIndex={j}
-                                form={form as any}
-                                loading={loading}
-                              />
-                              <PropertyForm.bathrooms
-                                dic={dic}
-                                typeIndex={i}
-                                propertyIndex={j}
-                                form={form as any}
-                                loading={loading}
-                              />
+                                  <Button
+                                    type="button"
+                                    size="icon"
+                                    onClick={() =>
+                                      form.setValue(
+                                        `types.${i}.properties`,
+                                        form
+                                          .getValues(`types.${i}.properties`)
+                                          ?.filter((_, k) => k != j) ?? [],
+                                      )
+                                    }
+                                  >
+                                    <Icons.x />
+                                  </Button>
+                                </div>
+                              </CardHeader>
 
-                              <PropertyForm.receptions
-                                dic={dic}
-                                typeIndex={i}
-                                propertyIndex={j}
-                                form={form as any}
-                                loading={loading}
-                              />
-                              {form.watch(`types.${i}.value`) === "VILLA" ? (
-                                <>
-                                  <PropertyForm.garden
-                                    dic={dic}
-                                    typeIndex={i}
-                                    propertyIndex={j}
-                                    form={form as any}
-                                    loading={loading}
-                                  />
-                                  <PropertyForm.pool
-                                    dic={dic}
-                                    typeIndex={i}
-                                    propertyIndex={j}
-                                    form={form as any}
-                                    loading={loading}
-                                  />
-                                  <PropertyForm.view
-                                    dic={dic}
-                                    typeIndex={i}
-                                    propertyIndex={j}
-                                    form={form as any}
-                                    loading={loading}
-                                  />
-                                </>
-                              ) : null}
-                            </CardContent>
-                            {/* <CardFooter>
-                            <Button
-                  type="button"
-                              size="icon"
-                              onClick={() => {
-                                // @ts-ignore
-                                field["properties"] =
-                                  field?.properties?.filter((_, i) => i != j) ??
-                                  [];
-                              }}
-                            >
-                              <Icons.x />
-                            </Button>
-                          </CardFooter> */}
-                          </Card>
-                        ))}
+                              <CardContent className="grid grid-cols-3 gap-4">
+                                <PropertyForm.title
+                                  dic={dic}
+                                  typeIndex={i}
+                                  propertyIndex={j}
+                                  form={form as any}
+                                  loading={loading}
+                                />
+                                <PropertyForm.units
+                                  dic={dic}
+                                  typeIndex={i}
+                                  propertyIndex={j}
+                                  form={form as any}
+                                  loading={loading}
+                                />
+                                <PropertyForm.space
+                                  dic={dic}
+                                  typeIndex={i}
+                                  propertyIndex={j}
+                                  form={form as any}
+                                  loading={loading}
+                                />
+                                <PropertyForm.finishing
+                                  dic={dic}
+                                  typeIndex={i}
+                                  propertyIndex={j}
+                                  form={form as any}
+                                  loading={loading}
+                                />
+                                <PropertyForm.floors
+                                  dic={dic}
+                                  typeIndex={i}
+                                  propertyIndex={j}
+                                  form={form as any}
+                                  loading={loading}
+                                />
+                                <PropertyForm.rooms
+                                  dic={dic}
+                                  typeIndex={i}
+                                  propertyIndex={j}
+                                  form={form as any}
+                                  loading={loading}
+                                />
+                                <PropertyForm.bathrooms
+                                  dic={dic}
+                                  typeIndex={i}
+                                  propertyIndex={j}
+                                  form={form as any}
+                                  loading={loading}
+                                />
+
+                                <PropertyForm.receptions
+                                  dic={dic}
+                                  typeIndex={i}
+                                  propertyIndex={j}
+                                  form={form as any}
+                                  loading={loading}
+                                />
+                                {form.watch(`types.${i}.value`) === "VILLA" ? (
+                                  <>
+                                    <PropertyForm.garden
+                                      dic={dic}
+                                      typeIndex={i}
+                                      propertyIndex={j}
+                                      form={form as any}
+                                      loading={loading}
+                                    />
+                                    <PropertyForm.pool
+                                      dic={dic}
+                                      typeIndex={i}
+                                      propertyIndex={j}
+                                      form={form as any}
+                                      loading={loading}
+                                    />
+                                    <PropertyForm.view
+                                      dic={dic}
+                                      typeIndex={i}
+                                      propertyIndex={j}
+                                      form={form as any}
+                                      loading={loading}
+                                    />
+                                  </>
+                                ) : null}
+                              </CardContent>
+                            </Card>
+                          ))}
                       </CardContent>
                     ) : null}
                   </Card>

@@ -11,6 +11,10 @@ const nextConfig = {
   },
   images: {
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "takamolspace.lon1.digitaloceanspaces.com",
+      },
       { protocol: "https", hostname: "images.unsplash.com" },
       {
         protocol: "https",

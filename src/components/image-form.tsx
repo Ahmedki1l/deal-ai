@@ -242,12 +242,13 @@ export const ImageForm = {
             const msg = await t(err?.["message"], lang);
             return msg;
           },
-          success: (url: string) => {
+          success: async (url) => {
             form?.resetField("image.base64");
             form?.resetField("image.file");
 
-            // form?.setValue("image.src", url);
-            return `saved in /public${url}`;
+            form?.setValue("image.src", url);
+
+            return url;
           },
         },
       );

@@ -155,6 +155,36 @@ async function fetchImage(url: string) {
   });
   return Buffer.from(response.data, "binary");
 }
+import fs from "fs";
+import { s3Client } from "@/lib/uploader"; // Ensure s3Client is properly set up
+import { Body, ObjectKey } from "aws-sdk/clients/s3";
+
+export async function uploadIntoSpace(name: ObjectKey, body: Body) {
+  try {
+    // // Read the file from the local file system
+    // const fileContent = fs.readFileSync(
+    //   "./public/img-processing/filled-frame.png",
+    // );
+
+    // Set up S3 upload parameters
+    const params = {
+      Bucket: process.env.DO_SPACE_BUCKET!,
+      Key: name, // Unique key for the file
+      Body: body,
+      ACL: "public-read", // Make the file publicly accessible
+    };
+
+    // Uploading files to the bucket using a promise
+    await s3Client.upload(params).promise();
+
+    // Return the uploaded file URL
+    const location = `https://${process.env.DO_SPACE_BUCKET}.${process.env.DO_SPACE_URL!.split("//")[1]}/${params.Key}`;
+    return location;
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    throw error;
+  }
+}
 
 export async function watermarkImage({
   ...data
@@ -163,54 +193,98 @@ export async function watermarkImage({
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
 
+    // Fetch the image
     const image = await fetchImage(
-      // data?.["src"]
       "https://plus.unsplash.com/premium_photo-1680281937048-735543c5c0f7?q=80&w=1022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     );
 
-    const watermark = await Sharp(image)
-      .composite([
-        {
-          input: await readFile(resolve("./public/img-processing/logo.png")),
-          left: 50,
-          top: 50,
-        },
-      ])
-      .png()
+    // Load the frame from the PSD file or PNG file
+    const frame = await Sharp(resolve("./public/img-processing/frame.png"))
+      .ensureAlpha() // Ensure the frame has an alpha channel
       .toBuffer();
 
-    const watermarkImage = Sharp(watermark);
-    const { width, height } = await watermarkImage.metadata();
+    const { width, height } = await Sharp(frame).metadata();
 
-    const frame = await watermarkImage
+    // Create the final image by combining the frame and the fetched image
+    const finalImage = await Sharp(image)
+      .resize(width, height) // Resize the image to match the frame size if necessary
       .composite([
         {
-          input: await Sharp(resolve("./public/img-processing/frame-1.png"))
-            .resize(width, height)
-            .toBuffer(),
-          gravity: "center",
+          input: frame, // Use the frame as a composite input
+          blend: "over", // Overlay the frame over the image
+          gravity: "west", // Center the frame over the image
         },
       ])
-      .png()
+      .png() // Output as PNG to maintain transparency
       .toBuffer();
 
-    // TODO: store it remotly
-    const fileName = `framed-${Date.now()}.png`;
-    await writeFile(resolve(`./public/img-processing/${fileName}`), frame);
-
-    // Return URL
-    return `/uploads/${fileName}`;
-
-    // return "https://plus.unsplash.com/premium_photo-1680281937048-735543c5c0f7?q=80&w=1022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+    //  Store it remotely
+    return await uploadIntoSpace(`frame-${Date.now()}.png`, finalImage);
   } catch (error: any) {
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) throw new ZodError(error);
     throw Error(
       error?.["message"] ??
-        "your image url was not generated. Please try again.",
+        "Your image URL was not generated. Please try again.",
     );
   }
 }
+
+// export async function watermarkImage({
+//   ...data
+// }: z.infer<typeof imageWatermarkSchema>) {
+//   try {
+//     const user = await getAuth();
+//     if (!user) throw new RequiresLoginError();
+
+//     const image = await fetchImage(
+//       // data?.["src"]
+//       "https://plus.unsplash.com/premium_photo-1680281937048-735543c5c0f7?q=80&w=1022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+//     );
+
+//     const watermark = await Sharp(image)
+//       .composite([
+//         {
+//           input: await readFile(resolve("./public/img-processing/logo.png")),
+//           left: 50,
+//           top: 50,
+//         },
+//       ])
+//       .png()
+//       .toBuffer();
+
+//     const watermarkImage = Sharp(watermark);
+//     const { width, height } = await watermarkImage.metadata();
+
+//     const frame = await watermarkImage
+//       .composite([
+//         {
+//           input: await Sharp(resolve("./public/img-processing/frame-1.png"))
+//             .resize(width, height)
+//             .toBuffer(),
+//           gravity: "center",
+//         },
+//       ])
+//       .png()
+//       .toBuffer();
+
+//     // TODO: store it remotly
+//     const fileName = `framed-${Date.now()}.png`;
+//     await writeFile(resolve(`./public/img-processing/${fileName}`), frame);
+
+//     // Return URL
+//     return `/uploads/${fileName}`;
+
+//     // return "https://plus.unsplash.com/premium_photo-1680281937048-735543c5c0f7?q=80&w=1022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+//   } catch (error: any) {
+//     console.log(error?.["message"]);
+//     if (error instanceof z.ZodError) throw new ZodError(error);
+//     throw Error(
+//       error?.["message"] ??
+//         "your image url was not generated. Please try again.",
+//     );
+//   }
+// }
 
 export async function deleteImage({ id }: z.infer<typeof imageDeleteSchema>) {
   try {

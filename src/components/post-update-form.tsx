@@ -153,7 +153,7 @@ export function PostUpdateForm({
               )}
             >
               <div className="absolute inset-0 bg-primary/30" />
-              {isValidUrl(form.getValues("image.src") ?? "") ? (
+              {isValidUrl(form.watch("image.src") ?? "") ? (
                 <Image src={form.getValues("image.src")!} alt="" />
               ) : null}
               <div className="absolute right-4 top-4 z-50 flex items-center gap-2 text-lg font-medium">

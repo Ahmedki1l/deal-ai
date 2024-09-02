@@ -12,24 +12,29 @@ import {
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
-import { endOfDay } from "date-fns";
+import { sendEvent } from "@/lib/stream";
 
-export async function createProject({
-  types,
-  platforms: plattformArr,
-  map,
-  ...data
-}: z.infer<typeof projectCreateFormSchema>) {
+export async function createProject(
+  controller: ReadableStreamDefaultController<any>,
+  {
+    types,
+    platforms: plattformArr,
+    map,
+    ...data
+  }: z.infer<typeof projectCreateFormSchema>,
+) {
   try {
     const { user } = await getAuth();
 
     if (!user) throw new RequiresLoginError();
     // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
 
+    const projectId = generateIdFromEntropySize(10);
     const properties = types
       .map((t) =>
         t.properties.map(({ projectId, ...p }) => ({
           ...p,
+          projectId,
           id: generateIdFromEntropySize(10),
           type: t?.["value"],
           deletedAt: null,
@@ -40,43 +45,42 @@ export async function createProject({
     const platforms = plattformArr
       .map((t) => ({
         ...t,
+        projectId,
         id: generateIdFromEntropySize(10),
         urn: t?.["urn"] ?? null,
         clientId: t?.["clientId"] ?? null,
       }))
 
       .flat();
-
-    const id = generateIdFromEntropySize(10);
     const project = {
       ...data,
-      id,
+      id: projectId,
       userId: user?.["id"],
-      // platforms: platforms.map((e) => e?.["value"]),
       propertyTypes: types?.map((e) => e?.["value"]),
 
       deletedAt: null,
-      platforms: {
-        createMany: {
-          data: platforms,
-        },
-      },
     };
 
-    await db.project.create({
-      data: properties?.["length"]
-        ? {
-            ...project,
-            properties: {
-              createMany: {
-                data: properties,
-              },
-            },
-          }
-        : {
-            ...project,
-          },
+    await db.$transaction(async (tx) => {
+      if (properties?.["length"]) {
+        sendEvent(controller, "status", "creating properties...");
+        await tx.property.createMany({
+          data: properties,
+        });
+      }
+
+      if (platforms?.["length"]) {
+        sendEvent(controller, "status", "creating platforms...");
+        await tx.platform.createMany({
+          data: platforms,
+        });
+      }
+
+      sendEvent(controller, "status", "creating project...");
+      await tx.project.create({ data: project });
     });
+
+    sendEvent(controller, "completed", "project created successfully.");
 
     revalidatePath("/", "layout");
   } catch (error: any) {
@@ -85,12 +89,13 @@ export async function createProject({
     throw Error(
       error?.["message"] ?? "your project was not created. Please try again.",
     );
+  } finally {
+    controller.close();
   }
 }
 
 export async function updateProject({
   id,
-
   ...data
 }: z.infer<typeof projectUpdateSchema | typeof projectBinSchema>) {
   try {

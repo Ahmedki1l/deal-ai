@@ -1,7 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState, useEffect } from "react";
 
 const CheckIcon = ({ className }: { className?: string }) => {
   return (
@@ -35,9 +34,7 @@ const CheckFilled = ({ className }: { className?: string }) => {
   );
 };
 
-type LoadingState = {
-  text: string;
-};
+type LoadingState = { text: string };
 
 const LoaderCore = ({
   loadingStates,
@@ -92,37 +89,13 @@ type MultiStepLoaderProps = {
   currentState: number;
   loadingStates: LoadingState[];
   loading?: boolean;
-  duration?: number;
-  loop?: boolean;
 };
 
 export const MultiStepLoader = ({
   currentState,
   loadingStates,
   loading,
-  duration = 2000,
-  loop = true,
 }: MultiStepLoaderProps) => {
-  //   const [currentState, setCurrentState] = useState(0);
-
-  //   useEffect(() => {
-  //     if (!loading) {
-  //       setCurrentState(0);
-  //       return;
-  //     }
-  //     const timeout = setTimeout(() => {
-  //       setCurrentState((prevState) =>
-  //         loop
-  //           ? prevState === loadingStates.length - 1
-  //             ? 0
-  //             : prevState + 1
-  //           : Math.min(prevState + 1, loadingStates.length - 1),
-  //       );
-  //     }, duration);
-
-  //     // return () => clearTimeout(timeout);
-  //   }, [currentState, loading, loop, loadingStates.length, duration]);
-
   return (
     <AnimatePresence mode="wait">
       {loading && (

@@ -11,7 +11,6 @@ import { Icons } from "@/components/icons";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { projectCreateFormSchema } from "@/validations/projects";
-import { createProject } from "@/actions/projects";
 import { User } from "@/types/db";
 import { ProjectForm } from "@/components/project-form";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
@@ -59,22 +58,60 @@ export function ProjectCreateButton({
     name: "types",
     control: form?.["control"],
   });
-
   async function onSubmit(data: z.infer<typeof projectCreateFormSchema>) {
-    setLoading(true);
-    toast.promise(createProject(data), {
-      finally: () => setLoading(false),
-      error: async (err) => {
-        const msg = await t(err?.["message"], lang);
-        return msg;
-      },
-      success: () => {
+    const toastId = toast.loading("Initializing project...");
+
+    try {
+      setLoading(true);
+
+      // Create a POST request with the data
+      const response = await fetch("/api/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) throw new Error("Network response was not ok");
+
+      const { projectId } = await response.json();
+
+      // Start the EventSource after getting the projectId from the POST request
+      const eventSource = new EventSource(
+        `/api/projects?projectId=${projectId}`,
+      );
+
+      eventSource.addEventListener("status", (event) => {
+        toast.loading(event.data, {
+          id: toastId,
+        });
+      });
+
+      eventSource.addEventListener("completed", (event) => {
+        toast.dismiss(toastId);
+        eventSource.close();
+        toast.success(event.data);
+
         router.refresh();
-        form.reset();
         setOpen(false);
-        return c?.["created successfully."];
-      },
-    });
+        form.reset();
+      });
+
+      eventSource.addEventListener("error", (event) => {
+        console.error("Error occurred:", event);
+        toast.dismiss(toastId);
+        eventSource.close();
+      });
+
+      eventSource.addEventListener("close", () => {
+        toast.dismiss(toastId);
+        eventSource.close();
+      });
+    } catch (err: any) {
+      console.error(err?.message);
+    } finally {
+      // toast.dismiss(toastId);
+      setLoading(false);
+    }
   }
 
   return (

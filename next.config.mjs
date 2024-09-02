@@ -6,7 +6,7 @@ const nextConfig = {
     },
     serverComponentsExternalPackages: ["@node-rs/argon2"],
     serverActions: {
-      bodySizeLimit: "5mb",
+      bodySizeLimit: "20mb",
     },
   },
   images: {

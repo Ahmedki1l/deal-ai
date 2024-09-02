@@ -59,7 +59,7 @@ export function CaseStudyCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof caseStudyCreateFormSchema>) {
-    const toastId = toast.loading("Initializing case...");
+    const toastId = toast.loading(c?.["initializing case..."]);
 
     try {
       setLoading(true);
@@ -70,9 +70,7 @@ export function CaseStudyCreateButton({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...data,
-          // TODO: gives too long
-          refImages: [],
-          // data?.refImages?.map((e) => e?.base64),
+          refImages: data?.refImages?.map((e) => e?.base64),
         } satisfies z.infer<typeof caseStudyCreateSchema>),
       });
 

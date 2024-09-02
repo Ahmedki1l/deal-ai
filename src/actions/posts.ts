@@ -40,8 +40,10 @@ export async function createPost(
   controller: ReadableStreamDefaultController<any>,
   data: z.infer<typeof postCreateSchema>,
 ) {
+  const { actions: c } = await getDictionary(await getLocale());
+
   try {
-    sendEvent(controller, "status", "getting info...");
+    sendEvent(controller, "status", c?.["getting info..."]);
 
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
@@ -81,7 +83,7 @@ export async function createPost(
         image_anaylzer_prompt.input += url + ", ";
       });
 
-      sendEvent(controller, "status", "generating images...");
+      sendEvent(controller, "status", c?.["generating images..."]);
       const image_analyzer_endpoint = domain + `/en/image-analyzer`;
       image_analyzer_response = await fetch(image_analyzer_endpoint, {
         method: "POST",
@@ -99,7 +101,11 @@ export async function createPost(
     const social_media_endpoint =
       domain + `/${endpoint_language}/chat/socialmediaplan`;
 
-    sendEvent(controller, "status", "generating AI prompt for social media...");
+    sendEvent(
+      controller,
+      "status",
+      c?.["generating AI prompt for social media..."],
+    );
     const social_midea_response = await fetch(social_media_endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -140,7 +146,11 @@ export async function createPost(
           input: accountPosts[i][`Post${i + 1}`],
         };
 
-        sendEvent(controller, "status", "generating social media content...");
+        sendEvent(
+          controller,
+          "status",
+          c?.["generating social media content..."],
+        );
         const prompt_generator_response = await fetch(
           prompt_generator_endpoint,
           {
@@ -161,7 +171,7 @@ export async function createPost(
           input: `you must adjust this prompt to be only 1000 characters long at max: ${imagePrompt.input}`,
         };
 
-        sendEvent(controller, "status", "generating AI images...");
+        sendEvent(controller, "status", c?.["generating AI images..."]);
         const adjusted_image_response = await fetch(prompt_generator_endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -227,11 +237,11 @@ export async function createPost(
       }
     }
 
-    sendEvent(controller, "status", "adusting posts together...");
+    sendEvent(controller, "status", c?.["adusting posts together..."]);
     await Promise.all(imageFetchPromises);
 
     if (allPostDetails.length > 0) {
-      sendEvent(controller, "status", "saving posts...");
+      sendEvent(controller, "status", c?.["saving posts..."]);
       await db.post.createMany({
         data: allPostDetails,
       });
@@ -239,17 +249,17 @@ export async function createPost(
       sendEvent(
         controller,
         "completed",
-        `${allPostDetails?.["length"]} posts were created.`,
+        `${allPostDetails?.["length"]} ${c?.["posts were created."]}`,
       );
       revalidatePath("/", "layout");
     } else {
-      sendEvent(controller, "completed", "No posts to create.");
+      sendEvent(controller, "completed", c?.["No posts to create."]);
     }
   } catch (error: any) {
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
-      error?.["message"] ?? "your post was not deleted. please try again.",
+      error?.["message"] ?? c?.["your post was not deleted. please try again."],
     );
   } finally {
     controller.close();

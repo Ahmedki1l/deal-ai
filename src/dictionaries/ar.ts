@@ -305,6 +305,7 @@ export default {
       "بمجرد حذفها، سيتم نقل دراسة الحالة إلى سلة المهملات. يمكنك حذفها يدويًا أو سيتم إزالتها تلقائيًا بعد 30 يومًا. إذا تم استعادتها، سيتم استعادة كل شيء كما لو لم يحدث شيء.",
   },
   "case-study-create-button": {
+    "initializing case...": "تحضير إنشاء دراسة الحالة...",
     "created successfully.": "تم الإنشاء بنجاح.",
     submit: "إرسال",
     "create study case": "إنشاء دراسة حالة",
@@ -447,6 +448,7 @@ export default {
       "بمجرد حذفه، سيتم نقل المنشور إلى سلة المهملات. يمكنك حذفه يدويًا أو سيتم إزالته تلقائيًا بعد 30 يومًا. إذا تم استعادته، سيتم استعادة كل شيء كما لو لم يحدث شيء.",
   },
   "post-create-button": {
+    "initializing posts...": "تحضير إنشاء المنشورات...",
     "created successfully.": "تم الإنشاء بنجاح.",
     submit: "إرسال",
     "create posts": "إنشاء منشورات",
@@ -542,6 +544,7 @@ export default {
       "بمجرد حذفه، سيتم نقل المشروع إلى سلة المهملات. يمكنك حذفه يدويًا أو سيتم إزالته تلقائيًا بعد 30 يومًا. إذا تم استعادته، سيتم استعادة كل شيء كما لو لم يحدث شيء.",
   },
   "project-create-button": {
+    "initializing project...": "تحضير إنشاء المشروع...",
     "created successfully.": "تم الإنشاء بنجاح.",
     submit: "إرسال",
     "type of assets": "نوع الوحدات",
@@ -615,6 +618,7 @@ export default {
       "بمجرد حذفه، سيتم نقل العقار إلى سلة المهملات. يمكنك حذفه يدويًا أو سيتم إزالته تلقائيًا بعد 30 يومًا. إذا تم استعادته، سيتم استعادة كل شيء كما لو لم يحدث شيء.",
   },
   "property-create-button": {
+    "initializing property...": "تحضير إنشاء الوحدة...",
     "created successfully.": "تم الإنشاء بنجاح.",
     submit: "إرسال",
     "type of assets": "نوع الوحدات",
@@ -743,37 +747,36 @@ export default {
     ] as SelectItem[],
   },
   actions: {
-    "getting info...": "getting info...",
-    "generating using AI...": "generating using AI...",
-    "saving study case...": "saving study case...",
-    "created study case...": "created study case...",
+    "getting info...": "جارٍ الحصول على المعلومات...",
+    "generating using AI...": "جارٍ الإنشاء باستخدام الذكاء الاصطناعي...",
+    "saving study case...": "جارٍ حفظ دراسة الحالة...",
+    "created study case...": "تم إنشاء دراسة الحالة...",
     "your study case was not created. please try again.":
-      "your study case was not created. Please try again.",
-    "deleted successfully.": "deleted successfully.",
+      "لم يتم إنشاء دراسة الحالة الخاصة بك. الرجاء المحاولة مرة أخرى.",
+    "deleted successfully.": "تم الحذف بنجاح.",
     "your study case was not deleted. please try again.":
-      "your study case was not deleted. Please try again.",
-    "updated successfully.": "updated successfully.",
+      "لم يتم حذف دراسة الحالة الخاصة بك. الرجاء المحاولة مرة أخرى.",
+    "updated successfully.": "تم التحديث بنجاح.",
     "your study case was not updated. please try again.":
-      "your study case was not updated. please try again.",
-    "non existing study case.": "non existing study case.",
-    "generating images...": "generating images...",
+      "لم يتم تحديث دراسة الحالة الخاصة بك. الرجاء المحاولة مرة أخرى.",
+    "non existing study case.": "دراسة حالة غير موجودة.",
+    "generating images...": "جارٍ إنشاء الصور...",
     "generating AI prompt for social media...":
-      "generating AI prompt for social media...",
-    "generating social media content...": "generating social media content...",
-    "generating AI images...": "generating AI images...",
-    "adusting posts together...": "adusting posts together...",
-    "saving posts...": "saving posts...",
-    "posts were created.": "posts were created.",
-    "No posts to create.": "No posts to create.",
+      "جارٍ إنشاء النصوص للذكاء الاصطناعي لوسائل التواصل الاجتماعي...",
+    "generating social media content...":
+      "جارٍ إنشاء محتوى لوسائل التواصل الاجتماعي...",
+    "generating AI images...": "جارٍ إنشاء صور بالذكاء الاصطناعي...",
+    "adusting posts together...": "جارٍ تعديل المنشورات معًا...",
+    "saving posts...": "جارٍ حفظ المنشورات...",
+    "posts were created.": "تم إنشاء المنشورات.",
+    "No posts to create.": "لا توجد منشورات لإنشائها.",
     "your post was not deleted. please try again.":
-      "your post was not deleted. Please try again.",
-
-    "creating properties...": "creating properties...",
-    "creating platforms...": "creating platforms...",
-    "creating project...": "creating project...",
-    "created successfully.": "created successfully.",
-
-    "one property was created.": "one property was created.",
-    "properties were created.": "properties were created.",
+      "لم يتم حذف المنشور الخاص بك. الرجاء المحاولة مرة أخرى.",
+    "creating properties...": "جارٍ إنشاء الوحدات...",
+    "creating platforms...": "جارٍ إنشاء المنصات...",
+    "creating project...": "جارٍ إنشاء المشروع...",
+    "created successfully.": "تم الإنشاء بنجاح.",
+    "one property was created.": "تم إنشاء وحدة واحدة.",
+    "properties were created.": "وحدات تم إنشاؤها.",
   },
 };

@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
 
   const id = generateIdFromEntropySize(10);
   cookies().set(`create-${id}`, JSON.stringify(parsedData.data));
-
+  console.log(parsedData?.["data"]);
   return new NextResponse(JSON.stringify({ id }), {
     status: 200,
     headers: { "Content-Type": "application/json" },

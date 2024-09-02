@@ -62,7 +62,7 @@ export function ProjectCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof projectCreateFormSchema>) {
-    const toastId = toast.loading("Initializing case...");
+    const toastId = toast.loading(c?.["initializing project..."]);
 
     try {
       setLoading(true);

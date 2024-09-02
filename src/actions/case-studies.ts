@@ -26,15 +26,16 @@ function containsArabic(text: string) {
 export async function createCaseStudy(
   controller: ReadableStreamDefaultController<any>,
   data: z.infer<typeof caseStudyCreateSchema>,
-  // project: Project & { platforms: Platform[] },
 ) {
+  const { actions: c } = await getDictionary(await getLocale());
+
   try {
     const { user } = await getAuth();
 
     if (!user) throw new RequiresLoginError();
     // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
 
-    sendEvent(controller, "status", "getting info...");
+    sendEvent(controller, "status", c?.["getting info..."]);
     const actualProject = await db.project.findFirst({
       include: {
         caseStudy: { include: { posts: true } },
@@ -88,7 +89,7 @@ export async function createCaseStudy(
     const endpoint =
       process.env.NEXT_PUBLIC_AI_API + `/${endpoint_language}/chat/casestudy`;
 
-    sendEvent(controller, "status", "generating using AI...");
+    sendEvent(controller, "status", c?.["generating using AI..."]);
     // Send data to the server
     const response = await fetch(endpoint, {
       method: "POST",
@@ -110,7 +111,7 @@ export async function createCaseStudy(
     data.prompt = prompt.input;
     data.caseStudyResponse = JSON.stringify(response);
 
-    sendEvent(controller, "status", "saving study case...");
+    sendEvent(controller, "status", c?.["saving study case..."]);
     const id = generateIdFromEntropySize(10);
     await db.caseStudy.create({
       data: {
@@ -120,14 +121,14 @@ export async function createCaseStudy(
       },
     });
 
-    sendEvent(controller, "completed", "created study case...");
+    sendEvent(controller, "completed", c?.["created study case..."]);
     revalidatePath("/", "layout");
   } catch (error: any) {
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
       error?.["message"] ??
-        "your study case was not created. please try again.",
+        c?.["your study case was not created. please try again."],
     );
   } finally {
     controller.close();
@@ -138,8 +139,7 @@ export async function updateCaseStudy({
   id,
   ...data
 }: z.infer<typeof caseStudyUpdateSchema | typeof caseStudyBinSchema>) {
-  const lang = await getLocale();
-  const { actions: c } = await getDictionary(lang);
+  const { actions: c } = await getDictionary(await getLocale());
 
   try {
     const { user } = await getAuth();
@@ -155,13 +155,13 @@ export async function updateCaseStudy({
 
     revalidatePath("/", "layout");
 
-    return "updated successfully.";
+    return c?.["updated successfully."];
   } catch (error: any) {
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
       error?.["message"] ??
-        "your study case was not updated. please try again.",
+        c?.["your study case was not updated. please try again."],
     );
   }
 }
@@ -169,6 +169,7 @@ export async function updateCaseStudy({
 export async function deleteCaseStudy({
   id,
 }: z.infer<typeof caseStudyDeleteSchema>) {
+  const { actions: c } = await getDictionary(await getLocale());
   try {
     const { user } = await getAuth();
 
@@ -177,13 +178,13 @@ export async function deleteCaseStudy({
     await db.caseStudy.delete({ where: { id } });
 
     revalidatePath("/", "layout");
-    return "deleted successfully.";
+    return c?.["deleted successfully."];
   } catch (error: any) {
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
       error?.["message"] ??
-        "your study case was not deleted. please try again.",
+        c?.["your study case was not deleted. please try again."],
     );
   }
 }

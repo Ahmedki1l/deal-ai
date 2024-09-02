@@ -311,6 +311,7 @@ export default {
       "Once deleted, the study case will be moved to the bin. You can manually delete it or it will be automatically removed after 30 days. If restored, everything will be reinstated as if nothing happened.",
   },
   "case-study-create-button": {
+    "initializing case...": "initializing case...",
     "created successfully.": "created successfully.",
     submit: "Submit",
     "create study case": "Create Study Case",
@@ -450,6 +451,7 @@ export default {
       "Once deleted, the post will be moved to the bin. You can manually delete it or it will be automatically removed after 30 days. If restored, everything will be reinstated as if nothing happened.",
   },
   "post-create-button": {
+    "initializing posts...": "initializing posts...",
     "created successfully.": "created successfully.",
     submit: "Submit",
     "create posts": "Create Posts",
@@ -541,6 +543,7 @@ export default {
       "Once deleted, the project will be moved to the bin. You can manually delete it or it will be automatically removed after 30 days. If restored, everything will be reinstated as if nothing happened.",
   },
   "project-create-button": {
+    "initializing project...": "initializing project...",
     "created successfully.": "created successfully.",
     submit: "Submit",
     "type of assets": "Type of Assets",
@@ -598,6 +601,7 @@ export default {
       "Once deleted, the property will be moved to the bin. You can manually delete it or it will be automatically removed after 30 days. If restored, everything will be reinstated as if nothing happened.",
   },
   "property-create-button": {
+    "initializing property...": "initializing property...",
     "created successfully.": "created successfully.",
     submit: "Submit",
     "type of assets": "Type of Assets",

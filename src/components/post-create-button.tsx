@@ -51,7 +51,7 @@ export function PostCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof postCreateSchema>) {
-    const toastId = toast.loading("Initializing posts...");
+    const toastId = toast.loading(c?.["initializing posts..."]);
 
     try {
       setLoading(true);

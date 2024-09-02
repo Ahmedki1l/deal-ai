@@ -25,6 +25,7 @@ export async function createProject(
     ...data
   }: z.infer<typeof projectCreateFormSchema>,
 ) {
+  const { actions: c } = await getDictionary(await getLocale());
   try {
     const { user } = await getAuth();
 
@@ -66,24 +67,24 @@ export async function createProject(
     await db.$transaction(async (tx) => {
       if (properties?.["length"]) {
         console.log(properties);
-        sendEvent(controller, "status", "creating properties...");
+        sendEvent(controller, "status", c?.["creating properties..."]);
         await tx.property.createMany({
           data: properties,
         });
       }
 
       if (platforms?.["length"]) {
-        sendEvent(controller, "status", "creating platforms...");
+        sendEvent(controller, "status", c?.["creating platforms..."]);
         await tx.platform.createMany({
           data: platforms,
         });
       }
 
-      sendEvent(controller, "status", "creating project...");
+      sendEvent(controller, "status", c?.["creating project..."]);
       await tx.project.create({ data: project });
     });
 
-    sendEvent(controller, "completed", "created successfully.");
+    sendEvent(controller, "completed", c?.["created successfully."]);
 
     revalidatePath("/", "layout");
   } catch (error: any) {

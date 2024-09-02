@@ -60,7 +60,7 @@ export function PropertyCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof propertyCreateFormSchema>) {
-    const toastId = toast.loading("Initializing case...");
+    const toastId = toast.loading(c?.["initializing property..."]);
 
     try {
       setLoading(true);

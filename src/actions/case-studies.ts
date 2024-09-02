@@ -14,6 +14,8 @@ import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
 import { Platform, Project } from "@prisma/client";
 import { sendEvent } from "@/lib/stream";
+import { getLocale } from "./helpers";
+import { getDictionary } from "@/lib/dictionaries";
 
 // Function to check if a string contains Arabic characters
 function containsArabic(text: string) {
@@ -125,7 +127,7 @@ export async function createCaseStudy(
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
       error?.["message"] ??
-        "your case study was not created. Please try again.",
+        "your study case was not created. please try again.",
     );
   } finally {
     controller.close();
@@ -136,6 +138,9 @@ export async function updateCaseStudy({
   id,
   ...data
 }: z.infer<typeof caseStudyUpdateSchema | typeof caseStudyBinSchema>) {
+  const lang = await getLocale();
+  const { actions: c } = await getDictionary(lang);
+
   try {
     const { user } = await getAuth();
 
@@ -149,12 +154,14 @@ export async function updateCaseStudy({
     });
 
     revalidatePath("/", "layout");
+
+    return "updated successfully.";
   } catch (error: any) {
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
       error?.["message"] ??
-        "your case study was not updated. Please try again.",
+        "your study case was not updated. please try again.",
     );
   }
 }
@@ -170,12 +177,13 @@ export async function deleteCaseStudy({
     await db.caseStudy.delete({ where: { id } });
 
     revalidatePath("/", "layout");
+    return "deleted successfully.";
   } catch (error: any) {
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
       error?.["message"] ??
-        "your case study was not deleted. Please try again.",
+        "your study case was not deleted. please try again.",
     );
   }
 }

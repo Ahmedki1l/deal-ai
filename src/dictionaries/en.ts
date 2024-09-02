@@ -698,4 +698,39 @@ export default {
       { value: "LONG", label: "Long" },
     ] as SelectItem[],
   },
+
+  actions: {
+    "getting info...": "getting info...",
+    "generating using AI...": "generating using AI...",
+    "saving study case...": "saving study case...",
+    "created study case...": "created study case...",
+    "your study case was not created. please try again.":
+      "your study case was not created. Please try again.",
+    "deleted successfully.": "deleted successfully.",
+    "your study case was not deleted. please try again.":
+      "your study case was not deleted. Please try again.",
+    "updated successfully.": "updated successfully.",
+    "your study case was not updated. please try again.":
+      "your study case was not updated. please try again.",
+    "non existing study case.": "non existing study case.",
+    "generating images...": "generating images...",
+    "generating AI prompt for social media...":
+      "generating AI prompt for social media...",
+    "generating social media content...": "generating social media content...",
+    "generating AI images...": "generating AI images...",
+    "adusting posts together...": "adusting posts together...",
+    "saving posts...": "saving posts...",
+    "posts were created.": "posts were created.",
+    "No posts to create.": "No posts to create.",
+    "your post was not deleted. please try again.":
+      "your post was not deleted. Please try again.",
+
+    "creating properties...": "creating properties...",
+    "creating platforms...": "creating platforms...",
+    "creating project...": "creating project...",
+    "created successfully.": "created successfully.",
+
+    "one property was created.": "one property was created.",
+    "properties were created.": "properties were created.",
+  },
 };

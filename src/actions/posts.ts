@@ -23,6 +23,8 @@ import { generateIdFromEntropySize } from "lucia";
 import { CaseStudy, Image, Platform, Post, Project } from "@prisma/client";
 import { platformsArr } from "@/db/enums";
 import { sendEvent } from "@/lib/stream";
+import { getLocale } from "./helpers";
+import { getDictionary } from "@/lib/dictionaries";
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -247,7 +249,7 @@ export async function createPost(
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
-      error?.["message"] ?? "your post was not deleted. Please try again.",
+      error?.["message"] ?? "your post was not deleted. please try again.",
     );
   } finally {
     controller.close();

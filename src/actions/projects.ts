@@ -13,6 +13,8 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
 import { sendEvent } from "@/lib/stream";
+import { getLocale } from "./helpers";
+import { getDictionary } from "@/lib/dictionaries";
 
 export async function createProject(
   controller: ReadableStreamDefaultController<any>,
@@ -29,12 +31,12 @@ export async function createProject(
     if (!user) throw new RequiresLoginError();
     // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
 
-    const projectId = generateIdFromEntropySize(10);
+    const id = generateIdFromEntropySize(10);
     const properties = types
       .map((t) =>
         t.properties.map(({ projectId, ...p }) => ({
           ...p,
-          projectId,
+          projectId: id,
           id: generateIdFromEntropySize(10),
           type: t?.["value"],
           deletedAt: null,
@@ -45,7 +47,7 @@ export async function createProject(
     const platforms = plattformArr
       .map((t) => ({
         ...t,
-        projectId,
+        projectId: id,
         id: generateIdFromEntropySize(10),
         urn: t?.["urn"] ?? null,
         clientId: t?.["clientId"] ?? null,
@@ -54,7 +56,7 @@ export async function createProject(
       .flat();
     const project = {
       ...data,
-      id: projectId,
+      id,
       userId: user?.["id"],
       propertyTypes: types?.map((e) => e?.["value"]),
 
@@ -63,6 +65,7 @@ export async function createProject(
 
     await db.$transaction(async (tx) => {
       if (properties?.["length"]) {
+        console.log(properties);
         sendEvent(controller, "status", "creating properties...");
         await tx.property.createMany({
           data: properties,
@@ -80,7 +83,7 @@ export async function createProject(
       await tx.project.create({ data: project });
     });
 
-    sendEvent(controller, "completed", "project created successfully.");
+    sendEvent(controller, "completed", "created successfully.");
 
     revalidatePath("/", "layout");
   } catch (error: any) {

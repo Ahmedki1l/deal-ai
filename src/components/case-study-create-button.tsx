@@ -10,7 +10,10 @@ import { Form } from "@/components/ui/form";
 import { Icons } from "@/components/icons";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { caseStudyCreateFormSchema } from "@/validations/case-studies";
+import {
+  caseStudyCreateFormSchema,
+  caseStudyCreateSchema,
+} from "@/validations/case-studies";
 import { createCaseStudy } from "@/actions/case-studies";
 import { CaseStudyForm } from "@/components/case-study-form";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
@@ -56,30 +59,73 @@ export function CaseStudyCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof caseStudyCreateFormSchema>) {
-    setLoading(true);
+    const toastId = toast.loading("Initializing case...");
 
-    toast.promise(
-      createCaseStudy(
-        {
+    try {
+      setLoading(true);
+
+      // Create a POST request with the data
+      const response = await fetch("/api/cases", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           ...data,
-          refImages: data?.refImages?.map((e) => e?.base64),
-        },
-        project,
-      ),
-      {
-        finally: () => setLoading(false),
-        error: async (err) => {
-          const msg = await t(err?.["message"], lang);
-          return msg;
-        },
-        success: () => {
-          router.refresh();
-          form.reset();
-          setOpen(false);
-          return c?.["created successfully."];
-        },
-      },
-    );
+          // TODO: gives too long
+          refImages: [],
+          // data?.refImages?.map((e) => e?.base64),
+        } satisfies z.infer<typeof caseStudyCreateSchema>),
+      });
+
+      if (!response.ok) {
+        setLoading(false);
+        throw new Error("Network response was not ok");
+      }
+
+      const { id } = await response.json().catch((err) => {
+        setLoading(false);
+        throw err;
+      });
+
+      // Start the EventSource after getting the id from the POST request
+      const eventSource = new EventSource(`/api/cases?id=${id}`);
+
+      eventSource.addEventListener("status", (event) => {
+        toast.loading(event.data?.replaceAll('"', ""), {
+          id: toastId,
+        });
+      });
+
+      eventSource.addEventListener("completed", (event) => {
+        toast.dismiss(toastId);
+        eventSource.close();
+        toast.success(event.data?.replaceAll('"', ""));
+
+        router.refresh();
+        setOpen(false);
+        form.reset();
+        setLoading(false);
+      });
+
+      eventSource.addEventListener("error", (event) => {
+        console.error("Error occurred:", event);
+        toast.dismiss(toastId);
+        eventSource.close();
+
+        setLoading(false);
+      });
+
+      eventSource.addEventListener("close", () => {
+        toast.dismiss(toastId);
+        eventSource.close();
+
+        setLoading(false);
+      });
+    } catch (err: any) {
+      toast.dismiss(toastId);
+      setLoading(false);
+
+      toast.error(err?.message);
+    }
   }
 
   return (

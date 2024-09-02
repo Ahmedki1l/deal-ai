@@ -10,7 +10,10 @@ import { Form } from "@/components/ui/form";
 import { Icons } from "@/components/icons";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { projectCreateFormSchema } from "@/validations/projects";
+import {
+  projectCreateFormSchema,
+  projectCreateSchema,
+} from "@/validations/projects";
 import { User } from "@/types/db";
 import { ProjectForm } from "@/components/project-form";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
@@ -27,7 +30,6 @@ import {
 import { Label } from "./ui/label";
 import { propertyTypes } from "@/db/enums";
 import { useLocale } from "@/hooks/use-locale";
-import { t } from "@/lib/locale";
 import { Dictionary } from "@/types/locale";
 
 export type ProjectCreateButtonProps = { user: User } & Omit<
@@ -58,8 +60,9 @@ export function ProjectCreateButton({
     name: "types",
     control: form?.["control"],
   });
+
   async function onSubmit(data: z.infer<typeof projectCreateFormSchema>) {
-    const toastId = toast.loading("Initializing project...");
+    const toastId = toast.loading("Initializing case...");
 
     try {
       setLoading(true);
@@ -71,17 +74,21 @@ export function ProjectCreateButton({
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) throw new Error("Network response was not ok");
+      if (!response.ok) {
+        setLoading(false);
+        throw new Error("Network response was not ok");
+      }
 
-      const { projectId } = await response.json();
+      const { id } = await response.json().catch((err) => {
+        setLoading(false);
+        throw err;
+      });
 
-      // Start the EventSource after getting the projectId from the POST request
-      const eventSource = new EventSource(
-        `/api/projects?projectId=${projectId}`,
-      );
+      // Start the EventSource after getting the id from the POST request
+      const eventSource = new EventSource(`/api/projects?id=${id}`);
 
       eventSource.addEventListener("status", (event) => {
-        toast.loading(event.data, {
+        toast.loading(event.data?.replaceAll('"', ""), {
           id: toastId,
         });
       });
@@ -89,28 +96,33 @@ export function ProjectCreateButton({
       eventSource.addEventListener("completed", (event) => {
         toast.dismiss(toastId);
         eventSource.close();
-        toast.success(event.data);
+        toast.success(event.data?.replaceAll('"', ""));
 
         router.refresh();
         setOpen(false);
         form.reset();
+        setLoading(false);
       });
 
       eventSource.addEventListener("error", (event) => {
         console.error("Error occurred:", event);
         toast.dismiss(toastId);
         eventSource.close();
+
+        setLoading(false);
       });
 
       eventSource.addEventListener("close", () => {
         toast.dismiss(toastId);
         eventSource.close();
+
+        setLoading(false);
       });
     } catch (err: any) {
-      console.error(err?.message);
-    } finally {
-      // toast.dismiss(toastId);
+      toast.dismiss(toastId);
       setLoading(false);
+
+      toast.error(err?.message);
     }
   }
 

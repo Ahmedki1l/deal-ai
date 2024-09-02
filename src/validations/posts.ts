@@ -31,6 +31,7 @@ export const postCreateSchema = postSchema.omit({
   image: true,
   deletedAt: true,
   confirmedAt: true,
+  postAt: true,
 });
 export const postUpdateSchema = postSchema
   .omit({

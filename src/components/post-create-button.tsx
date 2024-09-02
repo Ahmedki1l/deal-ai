@@ -47,28 +47,79 @@ export function PostCreateButton({
       title: "x",
       content: "x",
       platform: "FACEBOOK",
-      postAt: new Date(),
     },
   });
 
   async function onSubmit(data: z.infer<typeof postCreateSchema>) {
-    setLoading(true);
+    const toastId = toast.loading("Initializing posts...");
 
-    // Schedule the post and handle the promise
-    toast.promise(createPost(data, project, caseStudy), {
-      finally: () => setLoading(false),
-      error: async (err) => {
-        const msg = await t(err?.["message"], lang);
-        return msg;
-      },
-      success: () => {
+    try {
+      setLoading(true);
+
+      // Create a POST request with the data
+      const response = await fetch("/api/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          project,
+          caseStudy,
+          ...data,
+        } satisfies z.infer<typeof postCreateSchema> & {
+          project: Project & { platforms: Platform[] };
+          caseStudy: CaseStudy;
+        }),
+      });
+
+      if (!response.ok) {
+        setLoading(false);
+        throw new Error("Network response was not ok");
+      }
+
+      const { id } = await response.json().catch((err) => {
+        setLoading(false);
+        throw err;
+      });
+
+      // Start the EventSource after getting the id from the POST request
+      const eventSource = new EventSource(`/api/posts?id=${id}`);
+
+      eventSource.addEventListener("status", (event) => {
+        toast.loading(event.data?.replaceAll('"', ""), {
+          id: toastId,
+        });
+      });
+
+      eventSource.addEventListener("completed", (event) => {
+        toast.dismiss(toastId);
+        eventSource.close();
+        toast.success(event.data?.replaceAll('"', ""));
+
         router.refresh();
-        form.reset();
         setOpen(false);
+        form.reset();
+        setLoading(false);
+      });
 
-        return c?.["created successfully."];
-      },
-    });
+      eventSource.addEventListener("error", (event) => {
+        console.error("Error occurred:", event);
+        toast.dismiss(toastId);
+        eventSource.close();
+
+        setLoading(false);
+      });
+
+      eventSource.addEventListener("close", () => {
+        toast.dismiss(toastId);
+        eventSource.close();
+
+        setLoading(false);
+      });
+    } catch (err: any) {
+      toast.dismiss(toastId);
+      setLoading(false);
+
+      toast.error(err?.message);
+    }
   }
 
   return (

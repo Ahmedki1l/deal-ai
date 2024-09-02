@@ -13,6 +13,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
 import { Platform, Project } from "@prisma/client";
+import { sendEvent } from "@/lib/stream";
 
 // Function to check if a string contains Arabic characters
 function containsArabic(text: string) {
@@ -21,8 +22,9 @@ function containsArabic(text: string) {
 }
 
 export async function createCaseStudy(
+  controller: ReadableStreamDefaultController<any>,
   data: z.infer<typeof caseStudyCreateSchema>,
-  project: Project & { platforms: Platform[] },
+  // project: Project & { platforms: Platform[] },
 ) {
   try {
     const { user } = await getAuth();
@@ -30,20 +32,22 @@ export async function createCaseStudy(
     if (!user) throw new RequiresLoginError();
     // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
 
+    sendEvent(controller, "status", "getting info...");
     const actualProject = await db.project.findFirst({
       include: {
         caseStudy: { include: { posts: true } },
         properties: true,
+        platforms: true,
       },
       where: {
-        id: project.id,
+        id: data?.["projectId"],
       },
     });
 
     let endpoint_language = "en";
 
     const prompt = {
-      input: `create a casestudy about ${actualProject?.title} ${actualProject?.["propertyTypes"]} located in: ${actualProject?.distinct}, ${actualProject?.city}, ${actualProject?.country}, which has a land space of: ${actualProject?.spaces}, ${actualProject?.description}. Create the Hashtags for ${project?.["platforms"]?.map((e) => e?.["value"])}. `,
+      input: `create a casestudy about ${actualProject?.title} ${actualProject?.["propertyTypes"]} located in: ${actualProject?.distinct}, ${actualProject?.city}, ${actualProject?.country}, which has a land space of: ${actualProject?.spaces}, ${actualProject?.description}. Create the Hashtags for ${actualProject?.["platforms"]?.map((e) => e?.["value"])}. `,
     };
 
     if (containsArabic(prompt.input)) endpoint_language = "ar";
@@ -82,6 +86,7 @@ export async function createCaseStudy(
     const endpoint =
       process.env.NEXT_PUBLIC_AI_API + `/${endpoint_language}/chat/casestudy`;
 
+    sendEvent(controller, "status", "generating using AI...");
     // Send data to the server
     const response = await fetch(endpoint, {
       method: "POST",
@@ -103,6 +108,7 @@ export async function createCaseStudy(
     data.prompt = prompt.input;
     data.caseStudyResponse = JSON.stringify(response);
 
+    sendEvent(controller, "status", "saving study case...");
     const id = generateIdFromEntropySize(10);
     await db.caseStudy.create({
       data: {
@@ -112,6 +118,7 @@ export async function createCaseStudy(
       },
     });
 
+    sendEvent(controller, "completed", "created study case...");
     revalidatePath("/", "layout");
   } catch (error: any) {
     console.log(error?.["message"]);
@@ -120,6 +127,8 @@ export async function createCaseStudy(
       error?.["message"] ??
         "your case study was not created. Please try again.",
     );
+  } finally {
+    controller.close();
   }
 }
 

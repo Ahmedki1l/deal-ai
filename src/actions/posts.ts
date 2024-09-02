@@ -22,9 +22,10 @@ import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
 import { CaseStudy, Image, Platform, Post, Project } from "@prisma/client";
 import { platformsArr } from "@/db/enums";
+import { sendEvent } from "@/lib/stream";
 
 function delay(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // Function to check if a string contains Arabic characters
@@ -34,20 +35,27 @@ function containsArabic(text: string | null) {
 }
 
 export async function createPost(
+  controller: ReadableStreamDefaultController<any>,
   data: z.infer<typeof postCreateSchema>,
-  project: Project & { platforms: Platform[] },
-  caseStudy: CaseStudy,
 ) {
   try {
-    console.log("starting to make posts");
+    sendEvent(controller, "status", "getting info...");
+
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
+
+    const caseStudy = await db.caseStudy.findFirst({
+      include: { project: { include: { platforms: true } } },
+      where: { id: data?.["caseStudyId"] },
+    });
+    if (!caseStudy) throw new Error("non existing study case.");
+    const project = caseStudy?.["project"];
 
     let endpoint_language = "en";
 
     if (
-      containsArabic(caseStudy.prompt) ||
-      containsArabic(caseStudy.caseStudyResponse)
+      containsArabic(caseStudy?.["prompt"]) ||
+      containsArabic(caseStudy?.["caseStudyResponse"])
     ) {
       endpoint_language = "ar";
     }
@@ -71,6 +79,7 @@ export async function createPost(
         image_anaylzer_prompt.input += url + ", ";
       });
 
+      sendEvent(controller, "status", "generating images...");
       const image_analyzer_endpoint = domain + `/en/image-analyzer`;
       image_analyzer_response = await fetch(image_analyzer_endpoint, {
         method: "POST",
@@ -85,17 +94,16 @@ export async function createPost(
       input: `create a social media content plan that consists of ${noOfPostsPerWeek * weeks} posts for each platform for a period of ${data.noOfWeeks} weeks, for the platforms ${project?.["platforms"]?.map((e) => e?.["value"])}. The content should be long and includes hashtags and emojis.`,
     };
 
-    console.log(prompt);
     const social_media_endpoint =
       domain + `/${endpoint_language}/chat/socialmediaplan`;
 
+    sendEvent(controller, "status", "generating AI prompt for social media...");
     const social_midea_response = await fetch(social_media_endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(prompt),
     }).then((r) => r?.json());
 
-    console.log(social_midea_response);
     const daysToPost = noOfPostsPerWeek === 3 ? [0, 2, 4] : [0, 1, 2, 3, 4];
     const imageApiEndpoint = domain + "/image2";
     let imageFetchPromises = [];
@@ -130,6 +138,7 @@ export async function createPost(
           input: accountPosts[i][`Post${i + 1}`],
         };
 
+        sendEvent(controller, "status", "generating social media content...");
         const prompt_generator_response = await fetch(
           prompt_generator_endpoint,
           {
@@ -138,9 +147,6 @@ export async function createPost(
             body: JSON.stringify(prompt_generator_prompt),
           },
         ).then((r) => r?.json());
-
-        console.log("prompt generator ", prompt_generator_response);
-        console.log("image analyzer", image_analyzer_response);
 
         const imagePrompt = {
           input:
@@ -153,6 +159,7 @@ export async function createPost(
           input: `you must adjust this prompt to be only 1000 characters long at max: ${imagePrompt.input}`,
         };
 
+        sendEvent(controller, "status", "generating AI images...");
         const adjusted_image_response = await fetch(prompt_generator_endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -162,6 +169,7 @@ export async function createPost(
         let imageResponse;
 
         const adjusted_image = { input: adjusted_image_response?.prompt };
+
         const fetchPromise = fetch(imageApiEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -217,16 +225,23 @@ export async function createPost(
       }
     }
 
+    sendEvent(controller, "status", "adusting posts together...");
     await Promise.all(imageFetchPromises);
 
     if (allPostDetails.length > 0) {
-      let createdPosts = await db.post.createMany({
+      sendEvent(controller, "status", "saving posts...");
+      await db.post.createMany({
         data: allPostDetails,
       });
-      console.log("created Posts: ", createdPosts);
+
+      sendEvent(
+        controller,
+        "completed",
+        `${allPostDetails?.["length"]} posts were created.`,
+      );
       revalidatePath("/", "layout");
     } else {
-      console.log("No posts to create.");
+      sendEvent(controller, "completed", "No posts to create.");
     }
   } catch (error: any) {
     console.log(error?.["message"]);
@@ -234,6 +249,8 @@ export async function createPost(
     throw Error(
       error?.["message"] ?? "your post was not deleted. Please try again.",
     );
+  } finally {
+    controller.close();
   }
 }
 

@@ -22,6 +22,8 @@ import { convertBase64 } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { t } from "@/lib/locale";
+import { deleteCookie, setCookie } from "@/actions/helpers";
+import { ID } from "@/lib/constants";
 
 export type CaseStudyCreateButtonProps = {
   project: Project & { platforms: Platform[] };
@@ -59,34 +61,18 @@ export function CaseStudyCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof caseStudyCreateFormSchema>) {
+    const id = ID.generate();
+    const key = `create-${id}`;
     const toastId = toast.loading(c?.["initializing case..."]);
 
     try {
       setLoading(true);
+      await setCookie(key, {
+        ...data,
+        refImages: data?.refImages?.map((e) => e?.base64),
+      } satisfies z.infer<typeof caseStudyCreateSchema>);
 
-      // Create a POST request with the data
-      const response = await fetch("/api/cases", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...data,
-          refImages: data?.refImages?.map((e) => e?.base64),
-        } satisfies z.infer<typeof caseStudyCreateSchema>),
-      });
-
-      if (!response.ok) {
-        setLoading(false);
-        throw new Error("Network response was not ok");
-      }
-
-      const { id } = await response.json().catch((err) => {
-        setLoading(false);
-        throw err;
-      });
-
-      // Start the EventSource after getting the id from the POST request
-      const eventSource = new EventSource(`/api/cases?id=${id}`);
-
+      const eventSource = new EventSource(`/api/cases?key=${key}`);
       eventSource.addEventListener("status", (event) => {
         toast.loading(event.data?.replaceAll('"', ""), {
           id: toastId,
@@ -123,6 +109,8 @@ export function CaseStudyCreateButton({
       setLoading(false);
 
       toast.error(err?.message);
+    } finally {
+      await deleteCookie(key);
     }
   }
 

@@ -31,6 +31,8 @@ import { Label } from "./ui/label";
 import { propertyTypes } from "@/db/enums";
 import { useLocale } from "@/hooks/use-locale";
 import { Dictionary } from "@/types/locale";
+import { deleteCookie, getCookie, setCookie } from "@/actions/helpers";
+import { ID } from "@/lib/constants";
 
 export type ProjectCreateButtonProps = { user: User } & Omit<
   DialogResponsiveProps,
@@ -62,31 +64,15 @@ export function ProjectCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof projectCreateFormSchema>) {
+    const id = ID.generate();
+    const key = `create-${id}`;
     const toastId = toast.loading(c?.["initializing project..."]);
 
     try {
       setLoading(true);
+      await setCookie(key, data);
 
-      // Create a POST request with the data
-      const response = await fetch("/api/projects", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        setLoading(false);
-        throw new Error("Network response was not ok");
-      }
-
-      const { id } = await response.json().catch((err) => {
-        setLoading(false);
-        throw err;
-      });
-
-      // Start the EventSource after getting the id from the POST request
-      const eventSource = new EventSource(`/api/projects?id=${id}`);
-
+      const eventSource = new EventSource(`/api/projects?key=${key}`);
       eventSource.addEventListener("status", (event) => {
         toast.loading(event.data?.replaceAll('"', ""), {
           id: toastId,
@@ -123,6 +109,8 @@ export function ProjectCreateButton({
       setLoading(false);
 
       toast.error(err?.message);
+    } finally {
+      await deleteCookie(key);
     }
   }
 
@@ -135,7 +123,6 @@ export function ProjectCreateButton({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Button disabled={loading} className="w-full md:w-fit">
-              {loading && <Icons.spinner />}
               {c?.["submit"]}
             </Button>
           </form>

@@ -13,80 +13,88 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
 import { sendEvent } from "@/lib/stream";
-import { getLocale } from "./helpers";
+import { getCookie, getLocale } from "./helpers";
 import { getDictionary } from "@/lib/dictionaries";
+import { ID } from "@/lib/constants";
 
 export async function createProject(
   controller: ReadableStreamDefaultController<any>,
-  {
-    types,
-    platforms: plattformArr,
-    map,
-    ...data
-  }: z.infer<typeof projectCreateFormSchema>,
+  key: string,
 ) {
   const { actions: c } = await getDictionary(await getLocale());
   try {
     const { user } = await getAuth();
-
     if (!user) throw new RequiresLoginError();
     // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
 
-    const id = generateIdFromEntropySize(10);
-    const properties = types
-      .map((t) =>
-        t.properties.map(({ projectId, ...p }) => ({
-          ...p,
+    const body = await getCookie<z.infer<typeof projectCreateFormSchema>>(key);
+    if (body) {
+      const parsedData = projectCreateFormSchema.safeParse(body);
+      if (!parsedData.success) throw new Error("Invalid data");
+
+      const {
+        types,
+        platforms: plattformArr,
+        map,
+        ...data
+      } = parsedData?.["data"];
+
+      const id = ID.generate();
+      const properties = types
+        .map((t) =>
+          t.properties.map(({ projectId, ...p }) => ({
+            ...p,
+            projectId: id,
+            id: generateIdFromEntropySize(10),
+            type: t?.["value"],
+            deletedAt: null,
+          })),
+        )
+        .flat();
+
+      const platforms = plattformArr
+        .map((t) => ({
+          ...t,
           projectId: id,
           id: generateIdFromEntropySize(10),
-          type: t?.["value"],
-          deletedAt: null,
-        })),
-      )
-      .flat();
+          urn: t?.["urn"] ?? null,
+          clientId: t?.["clientId"] ?? null,
+        }))
 
-    const platforms = plattformArr
-      .map((t) => ({
-        ...t,
-        projectId: id,
-        id: generateIdFromEntropySize(10),
-        urn: t?.["urn"] ?? null,
-        clientId: t?.["clientId"] ?? null,
-      }))
+        .flat();
+      const project = {
+        ...data,
+        id,
+        userId: user?.["id"],
+        propertyTypes: types?.map((e) => e?.["value"]),
 
-      .flat();
-    const project = {
-      ...data,
-      id,
-      userId: user?.["id"],
-      propertyTypes: types?.map((e) => e?.["value"]),
+        deletedAt: null,
+      };
 
-      deletedAt: null,
-    };
+      await db.$transaction(async (tx) => {
+        if (properties?.["length"]) {
+          console.log(properties);
+          sendEvent(controller, "status", c?.["creating properties..."]);
+          await tx.property.createMany({
+            data: properties,
+          });
+        }
 
-    await db.$transaction(async (tx) => {
-      if (properties?.["length"]) {
-        console.log(properties);
-        sendEvent(controller, "status", c?.["creating properties..."]);
-        await tx.property.createMany({
-          data: properties,
-        });
-      }
+        if (platforms?.["length"]) {
+          sendEvent(controller, "status", c?.["creating platforms..."]);
+          await tx.platform.createMany({
+            data: platforms,
+          });
+        }
 
-      if (platforms?.["length"]) {
-        sendEvent(controller, "status", c?.["creating platforms..."]);
-        await tx.platform.createMany({
-          data: platforms,
-        });
-      }
+        sendEvent(controller, "status", c?.["creating project..."]);
+        await tx.project.create({ data: project });
+      });
 
-      sendEvent(controller, "status", c?.["creating project..."]);
-      await tx.project.create({ data: project });
-    });
+      sendEvent(controller, "completed", c?.["created successfully."]);
 
-    sendEvent(controller, "completed", c?.["created successfully."]);
-
-    revalidatePath("/", "layout");
+      revalidatePath("/", "layout");
+    }
   } catch (error: any) {
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);

@@ -19,6 +19,8 @@ import { Project } from "@prisma/client";
 import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
 import { useLocale } from "@/hooks/use-locale";
+import { ID } from "@/lib/constants";
+import { deleteCookie, setCookie } from "@/actions/helpers";
 
 export type PostCreateButtonProps = {
   caseStudy: CaseStudy;
@@ -51,38 +53,22 @@ export function PostCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof postCreateSchema>) {
+    const id = ID.generate();
+    const key = `create-${id}`;
     const toastId = toast.loading(c?.["initializing posts..."]);
 
     try {
       setLoading(true);
-
-      // Create a POST request with the data
-      const response = await fetch("/api/posts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          project,
-          caseStudy,
-          ...data,
-        } satisfies z.infer<typeof postCreateSchema> & {
-          project: Project & { platforms: Platform[] };
-          caseStudy: CaseStudy;
-        }),
+      await setCookie(key, {
+        project,
+        caseStudy,
+        ...data,
+      } satisfies z.infer<typeof postCreateSchema> & {
+        project: Project & { platforms: Platform[] };
+        caseStudy: CaseStudy;
       });
 
-      if (!response.ok) {
-        setLoading(false);
-        throw new Error("Network response was not ok");
-      }
-
-      const { id } = await response.json().catch((err) => {
-        setLoading(false);
-        throw err;
-      });
-
-      // Start the EventSource after getting the id from the POST request
-      const eventSource = new EventSource(`/api/posts?id=${id}`);
-
+      const eventSource = new EventSource(`/api/posts?key=${key}`);
       eventSource.addEventListener("status", (event) => {
         toast.loading(event.data?.replaceAll('"', ""), {
           id: toastId,
@@ -119,6 +105,8 @@ export function PostCreateButton({
       setLoading(false);
 
       toast.error(err?.message);
+    } finally {
+      await deleteCookie(key);
     }
   }
 

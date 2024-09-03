@@ -14,7 +14,7 @@ import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
 import { Platform, Project } from "@prisma/client";
 import { sendEvent } from "@/lib/stream";
-import { getLocale } from "./helpers";
+import { getCookie, getLocale } from "./helpers";
 import { getDictionary } from "@/lib/dictionaries";
 
 // Function to check if a string contains Arabic characters
@@ -25,7 +25,7 @@ function containsArabic(text: string) {
 
 export async function createCaseStudy(
   controller: ReadableStreamDefaultController<any>,
-  data: z.infer<typeof caseStudyCreateSchema>,
+  key: string,
 ) {
   const { actions: c } = await getDictionary(await getLocale());
 
@@ -35,94 +35,104 @@ export async function createCaseStudy(
     if (!user) throw new RequiresLoginError();
     // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
 
-    sendEvent(controller, "status", c?.["getting info..."]);
-    const actualProject = await db.project.findFirst({
-      include: {
-        caseStudy: { include: { posts: true } },
-        properties: true,
-        platforms: true,
-      },
-      where: {
-        id: data?.["projectId"],
-      },
-    });
+    const body = await getCookie<z.infer<typeof caseStudyCreateSchema>>(key);
+    if (body) {
+      const parsedData = caseStudyCreateSchema.safeParse(body);
+      if (!parsedData.success) throw new Error("Invalid data");
 
-    let endpoint_language = "en";
+      const data = parsedData?.["data"];
 
-    const prompt = {
-      input: `create a casestudy about ${actualProject?.title} ${actualProject?.["propertyTypes"]} located in: ${actualProject?.distinct}, ${actualProject?.city}, ${actualProject?.country}, which has a land space of: ${actualProject?.spaces}, ${actualProject?.description}. Create the Hashtags for ${actualProject?.["platforms"]?.map((e) => e?.["value"])}. `,
-    };
+      sendEvent(controller, "status", c?.["getting info..."]);
+      const actualProject = await db.project.findFirst({
+        include: {
+          caseStudy: { include: { posts: true } },
+          properties: true,
+          platforms: true,
+        },
+        where: {
+          id: data?.["projectId"],
+        },
+      });
 
-    if (containsArabic(prompt.input)) endpoint_language = "ar";
+      let endpoint_language = "en";
 
-    actualProject?.properties.forEach((property) => {
-      prompt.input +=
-        "The availabel assets are: " +
-        property?.units +
-        ", assets type: " +
-        property?.title +
-        " " +
-        property?.type +
-        ", property spaces: " +
-        property?.space +
-        ", number of bedrooms: " +
-        property?.rooms +
-        ", number of bathrooms " +
-        property?.bathrooms +
-        ", number of Reception rooms: " +
-        property?.receptions +
-        ", finishing:  " +
-        property?.finishing +
-        ", floors: " +
-        property?.floors;
-      prompt.input += property?.garden
-        ? ", includes number of gardens: " + property?.garden
-        : "";
-      prompt.input += property?.pool
-        ? ", includes number of pools: " + property?.pool
-        : "";
-      prompt.input += property?.view
-        ? ", the view of the assets is: " + property?.view
-        : "";
-    });
+      const prompt = {
+        input: `create a casestudy about ${actualProject?.title} ${actualProject?.["propertyTypes"]} located in: ${actualProject?.distinct}, ${actualProject?.city}, ${actualProject?.country}, which has a land space of: ${actualProject?.spaces}, ${actualProject?.description}. Create the Hashtags for ${actualProject?.["platforms"]?.map((e) => e?.["value"])}. `,
+      };
 
-    const endpoint =
-      process.env.NEXT_PUBLIC_AI_API + `/${endpoint_language}/chat/casestudy`;
+      if (containsArabic(prompt.input)) endpoint_language = "ar";
 
-    sendEvent(controller, "status", c?.["generating using AI..."]);
-    // Send data to the server
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(prompt),
-    }).then((r) => r?.json());
+      actualProject?.properties.forEach((property) => {
+        prompt.input +=
+          "The availabel assets are: " +
+          property?.units +
+          ", assets type: " +
+          property?.title +
+          " " +
+          property?.type +
+          ", property spaces: " +
+          property?.space +
+          ", number of bedrooms: " +
+          property?.rooms +
+          ", number of bathrooms " +
+          property?.bathrooms +
+          ", number of Reception rooms: " +
+          property?.receptions +
+          ", finishing:  " +
+          property?.finishing +
+          ", floors: " +
+          property?.floors;
+        prompt.input += property?.garden
+          ? ", includes number of gardens: " + property?.garden
+          : "";
+        prompt.input += property?.pool
+          ? ", includes number of pools: " + property?.pool
+          : "";
+        prompt.input += property?.view
+          ? ", the view of the assets is: " + property?.view
+          : "";
+      });
 
-    data.content = response["Case_Study"];
-    data.targetAudience = response["Target_Audience"];
-    data.pros = JSON.stringify(response["Pros"]);
-    data.cons = JSON.stringify(response["Cons"]);
-    data.Market_Strategy = JSON.stringify(response["Market_Strategy"]);
-    data.Performance_Metrics = JSON.stringify(response["Performance_Metrics"]);
-    data.ROI_Calculation = JSON.stringify(response["ROI_Calculation"]);
-    data.Strategic_Insights = JSON.stringify(response["Strategic_Insights"]);
-    data.Recommendations = JSON.stringify(response["Recommendations"]);
-    data.prompt = prompt.input;
-    data.caseStudyResponse = JSON.stringify(response);
+      const endpoint =
+        process.env.NEXT_PUBLIC_AI_API + `/${endpoint_language}/chat/casestudy`;
 
-    sendEvent(controller, "status", c?.["saving study case..."]);
-    const id = generateIdFromEntropySize(10);
-    await db.caseStudy.create({
-      data: {
-        id,
-        ...data,
-        deletedAt: null,
-      },
-    });
+      sendEvent(controller, "status", c?.["generating using AI..."]);
+      // Send data to the server
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(prompt),
+      }).then((r) => r?.json());
 
-    sendEvent(controller, "completed", c?.["created study case..."]);
-    revalidatePath("/", "layout");
+      data.content = response["Case_Study"];
+      data.targetAudience = response["Target_Audience"];
+      data.pros = JSON.stringify(response["Pros"]);
+      data.cons = JSON.stringify(response["Cons"]);
+      data.Market_Strategy = JSON.stringify(response["Market_Strategy"]);
+      data.Performance_Metrics = JSON.stringify(
+        response["Performance_Metrics"],
+      );
+      data.ROI_Calculation = JSON.stringify(response["ROI_Calculation"]);
+      data.Strategic_Insights = JSON.stringify(response["Strategic_Insights"]);
+      data.Recommendations = JSON.stringify(response["Recommendations"]);
+      data.prompt = prompt.input;
+      data.caseStudyResponse = JSON.stringify(response);
+
+      sendEvent(controller, "status", c?.["saving study case..."]);
+      const id = generateIdFromEntropySize(10);
+      await db.caseStudy.create({
+        data: {
+          id,
+          ...data,
+          deletedAt: null,
+        },
+      });
+
+      sendEvent(controller, "completed", c?.["created study case..."]);
+      revalidatePath("/", "layout");
+    }
   } catch (error: any) {
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);

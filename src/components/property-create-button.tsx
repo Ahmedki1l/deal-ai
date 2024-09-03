@@ -31,6 +31,8 @@ import { propertyTypes } from "@/db/enums";
 import { Dictionary } from "@/types/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { t } from "@/lib/locale";
+import { deleteCookie, setCookie } from "@/actions/helpers";
+import { ID } from "@/lib/constants";
 
 export type PropertyCreateButtonProps = { project: Pick<Project, "id"> } & Omit<
   DialogResponsiveProps,
@@ -60,31 +62,15 @@ export function PropertyCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof propertyCreateFormSchema>) {
+    const id = ID.generate();
+    const key = `create-${id}`;
     const toastId = toast.loading(c?.["initializing property..."]);
 
     try {
       setLoading(true);
+      await setCookie(key, data);
 
-      // Create a POST request with the data
-      const response = await fetch("/api/properties", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        setLoading(false);
-        throw new Error("Network response was not ok");
-      }
-
-      const { id } = await response.json().catch((err) => {
-        setLoading(false);
-        throw err;
-      });
-
-      // Start the EventSource after getting the id from the POST request
-      const eventSource = new EventSource(`/api/properties?id=${id}`);
-
+      const eventSource = new EventSource(`/api/properties?key=${key}`);
       eventSource.addEventListener("status", (event) => {
         toast.loading(event.data?.replaceAll('"', ""), {
           id: toastId,
@@ -121,6 +107,8 @@ export function PropertyCreateButton({
       setLoading(false);
 
       toast.error(err?.message);
+    } finally {
+      await deleteCookie(key);
     }
   }
 

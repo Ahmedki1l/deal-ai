@@ -14,12 +14,13 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
 import { sendEvent } from "@/lib/stream";
-import { getLocale } from "./helpers";
+import { getCookie, getLocale } from "./helpers";
 import { getDictionary } from "@/lib/dictionaries";
+import { ID } from "@/lib/constants";
 
 export async function createProperty(
   controller: ReadableStreamDefaultController<any>,
-  data: z.infer<typeof propertyCreateFormSchema>,
+  key: string,
 ) {
   const { actions: c } = await getDictionary(await getLocale());
   try {
@@ -27,30 +28,39 @@ export async function createProperty(
     if (!user) throw new RequiresLoginError();
     // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
 
-    sendEvent(controller, "status", c?.["creating properties..."]);
-    const properties = data.types
-      .map((t) =>
-        t.properties.map((p) => ({
-          ...p,
-          id: generateIdFromEntropySize(10),
-          type: t?.["value"],
-          deletedAt: null,
-        })),
-      )
-      .flat();
+    const body = await getCookie<z.infer<typeof propertyCreateFormSchema>>(key);
+    if (body) {
+      const parsedData = propertyCreateFormSchema.safeParse(body);
+      if (!parsedData.success) throw new Error("Invalid data");
 
-    await db.property.createMany({
-      data: properties,
-    });
-    sendEvent(
-      controller,
-      "completed",
-      properties?.["length"] === 1
-        ? c?.["one property was created."]
-        : `${properties?.["length"]} ${c?.["properties were created."]}`,
-    );
+      const data = parsedData?.["data"];
 
-    revalidatePath("/", "layout");
+      sendEvent(controller, "status", c?.["creating properties..."]);
+      const properties = data.types
+        .map((t) =>
+          t.properties.map((p) => ({
+            ...p,
+            id: ID.generate(),
+            type: t?.["value"],
+            deletedAt: null,
+          })),
+        )
+        .flat();
+
+      await db.property.createMany({
+        data: properties,
+      });
+
+      sendEvent(
+        controller,
+        "completed",
+        properties?.["length"] === 1
+          ? c?.["one property was created."]
+          : `${properties?.["length"]} ${c?.["properties were created."]}`,
+      );
+
+      revalidatePath("/", "layout");
+    }
   } catch (error: any) {
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);

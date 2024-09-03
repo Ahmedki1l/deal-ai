@@ -215,7 +215,7 @@ export function PostUpdateForm({
                   </Button>
                 </DialogResponsive>
 
-                <ImageForm.watermark dic={dic} form={form} loading={loading} />
+                {/* <ImageForm.watermark dic={dic} form={form} loading={loading} /> */}
               </div>
             </div>
             <Card>

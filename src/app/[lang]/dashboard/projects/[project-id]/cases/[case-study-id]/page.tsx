@@ -174,7 +174,41 @@ export default async function CaseStudy({
             <AccordionItem value="target-audience">
               <AccordionTrigger>{c?.["target audience"]}</AccordionTrigger>
               <AccordionContent>
-                {caseStudy?.["targetAudience"]}
+              {(() => {
+                  try {
+                    const targetAudience = caseStudy?.["targetAudience"]
+                      ? JSON.parse(caseStudy["targetAudience"])
+                      : null;
+
+                    const renderKeyValuePairs = (data: Record<string, any>) => (
+                      <ul className="list-decimal ltr:pl-5 rtl:pr-5">
+                        {Object.entries(data).map(([key, value]) => (
+                          <li key={key} className="mb-1">
+                            <strong>{key}:</strong>{" "}
+                            {typeof value === "object" && value !== null
+                              ? renderKeyValuePairs(value)
+                              : value}
+                          </li>
+                        ))}
+                      </ul>
+                    );
+
+                    if (
+                      targetAudience &&
+                      typeof targetAudience === "object" &&
+                      !Array.isArray(targetAudience)
+                    ) {
+                      return renderKeyValuePairs(targetAudience);
+                    } else {
+                      return (
+                        <p>{c?.["no valid market strategy data available."]}</p>
+                      );
+                    }
+                  } catch (e) {
+                    console.error("Failed to parse Market_Strategy JSON", e);
+                    return <p>{c?.["error loading market strategy data."]}</p>;
+                  }
+                })()}
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="pros">

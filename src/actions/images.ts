@@ -2,11 +2,7 @@
 
 import { db } from "@/db";
 import { getAuth } from "@/lib/auth";
-import {
-  RequiresAccessError,
-  RequiresLoginError,
-  ZodError,
-} from "@/lib/exceptions";
+import { RequiresLoginError, ZodError } from "@/lib/exceptions";
 import {
   imageBinSchema,
   imageCreateSchema,
@@ -19,11 +15,10 @@ import {
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
-
-import { readFile, writeFile } from "fs/promises";
 import { resolve } from "path";
 import Sharp from "sharp";
-import axios from "axios";
+import { fetchImage, s3Client } from "@/lib/uploader"; // Ensure s3Client is properly set up
+import { Body, ObjectKey } from "aws-sdk/clients/s3";
 
 export async function createImage(data: z.infer<typeof imageCreateSchema>) {
   try {
@@ -147,18 +142,6 @@ export async function generateImage({
   }
 }
 
-// Function to fetch an image from a remote URL
-async function fetchImage(url: string) {
-  const response = await axios({
-    url,
-    responseType: "arraybuffer",
-  });
-  return Buffer.from(response.data, "binary");
-}
-import fs from "fs";
-import { s3Client } from "@/lib/uploader"; // Ensure s3Client is properly set up
-import { Body, ObjectKey } from "aws-sdk/clients/s3";
-
 export async function uploadIntoSpace(name: ObjectKey, body: Body) {
   try {
     // // Read the file from the local file system
@@ -186,6 +169,33 @@ export async function uploadIntoSpace(name: ObjectKey, body: Body) {
   }
 }
 
+export async function applyFrame(image: Buffer) {
+  try {
+    // Load the frame from the PSD file or PNG file
+    const frame = await Sharp(resolve("./public/img-processing/frame.png"))
+      .ensureAlpha() // Ensure the frame has an alpha channel
+      .toBuffer();
+
+    const { width, height } = await Sharp(frame).metadata();
+
+    // Create the final image by combining the frame and the fetched image
+    return await Sharp(image)
+      .resize(width, height) // Resize the image to match the frame size if necessary
+      .composite([
+        {
+          input: frame, // Use the frame as a composite input
+          blend: "over", // Overlay the frame over the image
+          gravity: "west", // Center the frame over the image
+        },
+      ])
+      .png() // Output as PNG to maintain transparency
+      .toBuffer();
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    throw error;
+  }
+}
+
 export async function watermarkImage({
   ...data
 }: z.infer<typeof imageWatermarkSchema>) {
@@ -198,28 +208,9 @@ export async function watermarkImage({
       "https://plus.unsplash.com/premium_photo-1680281937048-735543c5c0f7?q=80&w=1022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     );
 
-    // Load the frame from the PSD file or PNG file
-    const frame = await Sharp(resolve("./public/img-processing/frame.png"))
-      .ensureAlpha() // Ensure the frame has an alpha channel
-      .toBuffer();
-
-    const { width, height } = await Sharp(frame).metadata();
-
-    // Create the final image by combining the frame and the fetched image
-    const finalImage = await Sharp(image)
-      .resize(width, height) // Resize the image to match the frame size if necessary
-      .composite([
-        {
-          input: frame, // Use the frame as a composite input
-          blend: "over", // Overlay the frame over the image
-          gravity: "west", // Center the frame over the image
-        },
-      ])
-      .png() // Output as PNG to maintain transparency
-      .toBuffer();
-
+    const framedImage = await applyFrame(image);
     //  Store it remotely
-    return await uploadIntoSpace(`frame-${Date.now()}.png`, finalImage);
+    return await uploadIntoSpace(`frame-${Date.now()}.png`, framedImage);
   } catch (error: any) {
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) throw new ZodError(error);

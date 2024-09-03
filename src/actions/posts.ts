@@ -25,6 +25,8 @@ import { platformsArr } from "@/db/enums";
 import { sendEvent } from "@/lib/stream";
 import { getLocale } from "./helpers";
 import { getDictionary } from "@/lib/dictionaries";
+import { applyFrame, uploadIntoSpace } from "./images";
+import { fetchImage } from "@/lib/uploader";
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -191,13 +193,23 @@ export async function createPost(
             imageResponse = await res.json();
             return imageResponse;
           })
-          .then((imageResponse) => {
-            console.log("image prompt: ", adjusted_image);
-            console.log("image response: ", imageResponse);
+
+          .then(async (imageResponse) => {
+            // console.log("image prompt: ", adjusted_image);
+            // console.log("image response: ", imageResponse);
+            if (!imageResponse?.["url"]) return null;
+
+            const image = await fetchImage(imageResponse?.["url"]);
+            const framedImage = await applyFrame(image);
+            const url = await uploadIntoSpace(
+              `post-${Date.now()}.png`,
+              framedImage,
+            );
+
             return db.image.create({
               data: {
                 id: generateIdFromEntropySize(10),
-                src: imageResponse.url,
+                src: url,
                 prompt: adjusted_image.input,
                 deletedAt: null,
               } as Image,
@@ -207,16 +219,16 @@ export async function createPost(
         imageFetchPromises.push(fetchPromise);
 
         fetchPromise.then((imageData) => {
-          console.log("image Data: ", imageData);
-          console.log(currentDate.getDay());
+          // console.log("image Data: ", imageData);
+          // console.log(currentDate.getDay());
           currentDate.setDate(currentDate.getDate() + 1);
-          console.log(currentDate.getDay());
+          // console.log(currentDate.getDay());
           // Adjust currentDate to the next valid posting day
           while (!daysToPost.includes(currentDate.getDay())) {
             currentDate.setDate(currentDate.getDate() + 1);
           }
 
-          console.log(currentDate.getDay());
+          // console.log(currentDate.getDay());
 
           const randomHour = Math.floor(Math.random() * (20 - 11) + 11);
           currentDate.setHours(randomHour, 0, 0);
@@ -228,7 +240,7 @@ export async function createPost(
             content: accountPosts[i][`Post${i + 1}`],
             platform: acc,
             postAt: new Date(currentDate),
-            imageId: imageData.id,
+            imageId: imageData?.["id"] ?? null,
             deletedAt: null,
             confirmedAt: null,
           });
@@ -259,7 +271,8 @@ export async function createPost(
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
-      error?.["message"] ?? c?.["your post was not deleted. please try again."],
+      error?.["message"] ??
+        c?.["your study case was not created. please try again."],
     );
   } finally {
     controller.close();

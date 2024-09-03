@@ -100,7 +100,7 @@ export async function createCaseStudy(
     }).then((r) => r?.json());
 
     data.content = response["Case_Study"];
-    data.targetAudience = response["Target_Audience"];
+    data.targetAudience = JSON.stringify(response["Target_Audience"]);
     data.pros = JSON.stringify(response["Pros"]);
     data.cons = JSON.stringify(response["Cons"]);
     data.Market_Strategy = JSON.stringify(response["Market_Strategy"]);

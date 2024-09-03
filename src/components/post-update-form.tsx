@@ -26,14 +26,14 @@ import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { cn, isValidUrl } from "@/lib/utils";
-import { Image } from "./image";
-import { DialogResponsive } from "./dialog";
-import { ImageForm } from "./image-form";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { PostRestoreButton } from "./post-restore-button";
-import { PostBinButton } from "./post-bin-button";
-import { AlertDialogCancel } from "./ui/alert-dialog";
-import { DrawerClose } from "./ui/drawer";
+import { Image } from "@/components/image";
+import { DialogResponsive } from "@/components/dialog";
+import { ImageForm } from "@/components/image-form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PostRestoreButton } from "@/components/post-restore-button";
+import { PostBinButton } from "@/components/post-bin-button";
+import { AlertDialogCancel } from "@/components/ui/alert-dialog";
+import { DrawerClose } from "@/components/ui/drawer";
 
 export type PostUpdateFormProps = {
   post: Post & { image: ImageType | null };

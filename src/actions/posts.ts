@@ -255,7 +255,7 @@ export async function createPost(
             platform: acc,
             postAt: new Date(currentDate),
             imageId: imageData?.["id"] ?? null,
-            framedImageURL: null,
+            framedImageURL: data.framedImageURL ?? null,
             deletedAt: null,
             confirmedAt: null,
           });

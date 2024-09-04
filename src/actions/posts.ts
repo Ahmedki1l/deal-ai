@@ -27,6 +27,8 @@ import { getCookie, getLocale } from "./helpers";
 import { getDictionary } from "@/lib/dictionaries";
 import { applyFrame, uploadIntoSpace } from "./images";
 import { fetchImage } from "@/lib/uploader";
+import sharp from "sharp";
+import { FRAMES_URL } from "@/lib/constants";
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -202,25 +204,26 @@ export async function createPost(
             return imageResponse;
           })
 
-          .then(async (imageResponse) => {
+          .then((imageResponse) => {
             // console.log("image prompt: ", adjusted_image);
-            // console.log("image response: ", imageResponse);
-            if (!imageResponse?.["url"]) return null;
+            console.log("image response: ", imageResponse);
+            if (!imageResponse?.["image_url"]) return null;
 
-            const image = await fetchImage(imageResponse?.["url"]);
-            const framedImage = await applyFrame(
-              image,
-              "./public/frames/frame-00.png",
-            );
-            const url = await uploadIntoSpace(
-              `post-${Date.now()}.png`,
-              framedImage,
-            );
+            // const fetcedImage = await fetchImage(imageResponse?.["image_url"]);
+            // const bufferedImage = await sharp(fetcedImage).toBuffer();
+            // const url = await uploadIntoSpace(
+            //   `post-${Date.now()}.png`,
+            //   bufferedImage,
+            // );
+            // console.log("url: ", url);
+
+            // if (!url) return null;
 
             return db.image.create({
               data: {
                 id: generateIdFromEntropySize(10),
-                src: url,
+                src: imageResponse?.["image_url"],
+                // url,
                 prompt: adjusted_image.input,
                 deletedAt: null,
               } as Image,
@@ -294,12 +297,27 @@ export async function createPost(
 export async function updatePost({
   id,
   confirm,
-  frame,
+  frame = 1,
   ...data
 }: z.infer<typeof postUpdateSchema>) {
   try {
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
+
+    let src = data?.["image"]?.["src"] ?? null;
+
+    if (frame) {
+      // if (!data?.["image"]?.["src"])
+      //   throw Error("first select an image to apply frame on.");
+
+      const image = await fetchImage(
+        "https://plus.unsplash.com/premium_photo-1680281937048-735543c5c0f7?q=80&w=1022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      );
+
+      src = await applyFrame(image, FRAMES_URL?.[frame]).then(
+        (r) => `data:image/png;base64,${r.toString("base64")}`,
+      );
+    }
 
     await db.post.update({
       data: {
@@ -307,6 +325,7 @@ export async function updatePost({
         image: {
           update: {
             ...data?.["image"],
+            src,
           },
         },
         confirmedAt: confirm ? new Date() : null,

@@ -164,9 +164,10 @@ model Image {
 }
 
 model Post {
-  id          String  @id @map("_id")
-  caseStudyId String  @map("case-study-id")
-  imageId     String? @map("image-id")
+  id             String  @id @map("_id")
+  caseStudyId    String  @map("case-study-id")
+  imageId        String? @map("image-id")
+  framedImageURL String? @map("framed-image")
 
   title     String
   noOfWeeks String @map("no-of-weeks")

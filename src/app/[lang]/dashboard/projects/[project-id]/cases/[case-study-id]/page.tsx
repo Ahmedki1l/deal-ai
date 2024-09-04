@@ -205,13 +205,8 @@ export default async function CaseStudy({
                       );
                     }
                   } catch (e) {
-                    // console.error("Failed to parse Market_Strategy JSON", e);
-                    return (
-                      <p>
-                        {caseStudy?.["targetAudience"] ??
-                          c?.["error loading market strategy data."]}
-                      </p>
-                    );
+                    console.error("Failed to parse Market_Strategy JSON", e);
+                    return <p>{c?.["error loading market strategy data."]}</p>;
                   }
                 })()}
               </AccordionContent>
@@ -439,6 +434,7 @@ export default async function CaseStudy({
               if (!posts?.["length"]) return null;
 
               const Icon = Icons?.[platform?.["icon"]] ?? null;
+
               return (
                 <div key={i}>
                   <div className="mb-4 space-y-0.5">
@@ -473,10 +469,7 @@ export default async function CaseStudy({
                                 href={`/dashboard/projects/${projectId}/cases/${caseStudyId}/posts/${e?.["id"]}`}
                               >
                                 <Image
-                                  src={
-                                    e?.["image"]?.["src"] ??
-                                    "https://images.unsplash.com/photo-1692166623396-1a44298e22fe?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                                  }
+                                  src={e?.["image"]?.["src"]!}
                                   alt=""
                                   className="aspect-square rounded-none"
                                 />

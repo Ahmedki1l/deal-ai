@@ -34,6 +34,7 @@ import { postUpdateSchema } from "@/validations/posts";
 import { db } from "@/db";
 import { DialogResponsive } from "./dialog";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { FRAMES_URL } from "@/lib/constants";
 
 export type ImageFormProps = {
   loading: boolean;
@@ -283,11 +284,13 @@ export const ImageForm = {
     const [framedImages, setFramedImages] = useState<string[]>([]);
 
     useEffect(() => {
+      if (!form.getValues("image.src")) return;
+
       const fetchData = async () => {
         try {
-          const data = await applyAllFrames(
-            "https://plus.unsplash.com/premium_photo-1680281937048-735543c5c0f7?q=80&w=1022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          ).then((r) => JSON.parse(r));
+          const data = await applyAllFrames(form.getValues("image.src")).then(
+            (r) => JSON.parse(r),
+          );
 
           setFramedImages(data);
         } catch (error) {
@@ -304,6 +307,7 @@ export const ImageForm = {
           applying frames...
         </p>
       );
+
     return (
       <FormField
         control={form.control}
@@ -323,7 +327,7 @@ export const ImageForm = {
               {framedImages?.map((fi, i) => (
                 <ToggleGroupItem
                   key={i}
-                  value="s"
+                  value={FRAMES_URL?.[i]}
                   className="aspect-square h-full w-full"
                 >
                   <Image src={fi} alt="" className="h-full w-full" />

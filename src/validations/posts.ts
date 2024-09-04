@@ -33,6 +33,7 @@ export const postCreateSchema = postSchema.omit({
   confirmedAt: true,
   postAt: true,
 });
+
 export const postUpdateSchema = postSchema
   .omit({
     caseStudyId: true,

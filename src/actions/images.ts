@@ -21,6 +21,7 @@ import { fetchImage, s3Client } from "@/lib/uploader"; // Ensure s3Client is pro
 import { Body, ObjectKey } from "aws-sdk/clients/s3";
 import { writeFile, writeFileSync } from "fs";
 import { createCanvas, loadImage } from "canvas";
+import { FRAMES_URL } from "@/lib/constants";
 
 export async function createImage(data: z.infer<typeof imageCreateSchema>) {
   try {
@@ -231,12 +232,7 @@ export async function applyAllFrames(url: string) {
     // Fetch the image
     const image = await fetchImage(url);
 
-    const frames = [
-      "./public/frames/frame-00.png",
-      "./public/frames/frame-01.png",
-      "./public/frames/frame-02.png",
-    ];
-    const promiseFrames = frames.map((f) =>
+    const promiseFrames = FRAMES_URL?.map((f) =>
       applyFrame(image, f).then(
         (r) => `data:image/png;base64,${r.toString("base64")}`,
       ),

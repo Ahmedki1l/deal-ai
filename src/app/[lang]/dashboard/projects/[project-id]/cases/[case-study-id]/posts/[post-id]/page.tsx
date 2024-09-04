@@ -49,9 +49,7 @@ export default async function CaseStudy({
         },
       },
     },
-    where: {
-      id: postId,
-    },
+    where: { id: postId },
   });
 
   if (!post)

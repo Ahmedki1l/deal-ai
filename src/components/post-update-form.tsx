@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -34,6 +34,7 @@ import { PostRestoreButton } from "@/components/post-restore-button";
 import { PostBinButton } from "@/components/post-bin-button";
 import { AlertDialogCancel } from "@/components/ui/alert-dialog";
 import { DrawerClose } from "@/components/ui/drawer";
+import { applyAllFrames } from "@/actions/images";
 
 export type PostUpdateFormProps = {
   post: Post & { image: ImageType | null };
@@ -55,6 +56,7 @@ export function PostUpdateForm({
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const [open, setOpen] = useState<boolean>(false);
+  const [framedImages, setFramedImages] = useState<string[]>([]);
 
   const form = useForm<z.infer<typeof postUpdateSchema>>({
     mode: "onSubmit",
@@ -69,22 +71,38 @@ export function PostUpdateForm({
       confirm: !!post?.["confirmedAt"],
     },
   });
+  useEffect(() => {
+    if (!form.getValues("image.src")) return;
+
+    const fetchData = async () => {
+      try {
+        const data = await applyAllFrames(form.getValues("image.src")).then(
+          (r) => JSON.parse(r),
+        );
+
+        setFramedImages(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []); // Empty dependency array means this effect runs once after the initial render
 
   function onSubmit(data: z.infer<typeof postUpdateSchema>) {
-    // setLoading(true);
-    // console.log(data?.["confirm"]);
-    console.log(data?.["frame"]);
-    // toast.promise(updatePost(data), {
-    //   finally: () => setLoading(false),
-    //   error: async (err) => {
-    //     const msg = await t(err?.["message"], lang);
-    //     return msg;
-    //   },
-    //   success: () => {
-    //     router.refresh();
-    //     return c?.["updated successfully."];
-    //   },
-    // });
+    setLoading(true);
+
+    toast.promise(updatePost(data), {
+      finally: () => setLoading(false),
+      error: async (err) => {
+        const msg = await t(err?.["message"], lang);
+        return msg;
+      },
+      success: () => {
+        router.refresh();
+        return c?.["updated successfully."];
+      },
+    });
   }
 
   return (

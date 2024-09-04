@@ -17,7 +17,6 @@ export const postSchema = z.object({
   contentLength: z.enum(postContentLengthArr),
   platform: z.enum(platformsArr),
   postAt: z.date("post at"),
-  framedImageURL: z.string("framed-image").optional().nullable(),
   deletedAt: z.date("deletedAt"),
   confirmedAt: z.date("confirmedAt"),
 

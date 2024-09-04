@@ -69,7 +69,8 @@ export function CaseStudyCreateButton({
       setLoading(true);
       await setCookie(key, {
         ...data,
-        refImages: data?.refImages?.map((e) => e?.base64),
+        refImages: [],
+        //  data?.refImages?.map((e) => e?.base64),
       } satisfies z.infer<typeof caseStudyCreateSchema>);
 
       const eventSource = new EventSource(`/api/cases?key=${key}`);

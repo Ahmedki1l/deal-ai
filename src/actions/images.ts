@@ -19,6 +19,8 @@ import { resolve } from "path";
 import Sharp from "sharp";
 import { fetchImage, s3Client } from "@/lib/uploader"; // Ensure s3Client is properly set up
 import { Body, ObjectKey } from "aws-sdk/clients/s3";
+import { writeFile, writeFileSync } from "fs";
+import { createCanvas, loadImage } from "canvas";
 
 export async function createImage(data: z.infer<typeof imageCreateSchema>) {
   try {
@@ -221,6 +223,60 @@ export async function watermarkImage({
   }
 }
 
+// export async function applyFrameWithTitle(image: Buffer, title: string) {
+//   try {
+//     // Load the frame from the PSD file or PNG file
+//     const frame = await Sharp(resolve("./public/img-processing/frame.png"))
+//       .ensureAlpha() // Ensure the frame has an alpha channel
+//       .toBuffer();
+
+//     const { width, height } = await Sharp(frame).metadata();
+
+//     // Create a canvas to draw the title on the frame
+//     const canvas = createCanvas(width!, height!);
+//     const ctx = canvas.getContext("2d");
+
+//     // Load the frame image
+//     const frameImage = await loadImage(frame);
+//     ctx.drawImage(frameImage, 0, 0);
+
+//     // Set font and style for the title
+//     ctx.font = "bold 36px Arial";
+//     ctx.fillStyle = "white";
+//     ctx.textAlign = "center";
+
+//     // Calculate the position to center the title on the frame
+//     const x = width! / 2;
+//     const y = height! - 50; // Adjust this value to position the title properly
+
+//     // Draw the title onto the frame
+//     ctx.fillText(title, x, y);
+
+//     // Convert the canvas back to a buffer
+//     const frameWithTextBuffer = canvas.toBuffer();
+
+//     // Composite the original image with the frame that now includes the title
+//     const framedImage = await Sharp(image)
+//       .resize(width, height) // Resize the image to match the frame size if necessary
+//       .composite([
+//         {
+//           input: frameWithTextBuffer, // Use the frame with the title as a composite input
+//           blend: "over", // Overlay the frame with title over the image
+//         },
+//       ])
+//       .png() // Output as PNG to maintain transparency
+//       .toBuffer();
+//     const fileName = `framed-${Date.now()}.png`;
+//     writeFileSync(resolve(`./public/uploads/${fileName}`), framedImage);
+
+//     // Return URL
+//     return `/uploads/${fileName}`;
+//   } catch (error) {
+//     console.error("Error applying frame with title:", error);
+//     throw error;
+//   }
+// }
+
 // export async function watermarkImage({
 //   ...data
 // }: z.infer<typeof imageWatermarkSchema>) {
@@ -260,11 +316,11 @@ export async function watermarkImage({
 //       .toBuffer();
 
 //     // TODO: store it remotly
-//     const fileName = `framed-${Date.now()}.png`;
-//     await writeFile(resolve(`./public/img-processing/${fileName}`), frame);
+// const fileName = `framed-${Date.now()}.png`;
+// await writeFile(resolve(`./public/img-processing/${fileName}`), frame);
 
-//     // Return URL
-//     return `/uploads/${fileName}`;
+// // Return URL
+// return `/uploads/${fileName}`;
 
 //     // return "https://plus.unsplash.com/premium_photo-1680281937048-735543c5c0f7?q=80&w=1022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 //   } catch (error: any) {

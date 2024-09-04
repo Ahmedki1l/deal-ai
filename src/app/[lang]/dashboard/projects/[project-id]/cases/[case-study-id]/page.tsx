@@ -205,8 +205,13 @@ export default async function CaseStudy({
                       );
                     }
                   } catch (e) {
-                    console.error("Failed to parse Market_Strategy JSON", e);
-                    return <p>{c?.["error loading market strategy data."]}</p>;
+                    // console.error("Failed to parse Market_Strategy JSON", e);
+                    return (
+                      <p>
+                        {caseStudy?.["targetAudience"] ??
+                          c?.["error loading market strategy data."]}
+                      </p>
+                    );
                   }
                 })()}
               </AccordionContent>

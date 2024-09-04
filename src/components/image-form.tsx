@@ -42,63 +42,79 @@ export type ImageFormProps = {
 } & Dictionary["image-form"];
 
 export const ImageForm = {
-  src: ({ dic: { "image-form": c }, loading, form }: ImageFormProps) => (
-    <FormField
-      control={form?.["control"]}
-      name="image.file"
-      render={({ field }) => (
-        <FormItem>
-          <FormControl>
-            <div className="flex items-center justify-center gap-2">
-              <Input
-                type="file"
-                {...field}
-                value={undefined}
-                onChange={async (e) => {
-                  form.resetField("image");
+  src: ({ dic, loading, form }: ImageFormProps) => (
+    <div>
+      <FormField
+        control={form?.["control"]}
+        name="image.file"
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <div className="flex items-center justify-center gap-2">
+                <Input
+                  type="file"
+                  {...field}
+                  value={undefined}
+                  onChange={async (e) => {
+                    form.resetField("image");
 
-                  const file = e?.["target"]?.["files"]?.[0];
+                    const file = e?.["target"]?.["files"]?.[0];
 
-                  if (file) {
-                    const base64 = (await convertBase64(file))?.toString();
+                    if (file) {
+                      const base64 = (await convertBase64(file))?.toString();
 
-                    field.onChange(file);
-                    form.setValue("image.base64", base64 ?? "");
-                  }
-                }}
-                disabled={loading}
-              />
-              {!!form.watch("image.base64") ? (
-                <Image
-                  src={form.getValues("image.base64")!}
-                  alt=""
-                  className="h-8 w-8"
+                      field.onChange(file);
+                      form.setValue("image.base64", base64 ?? "");
+                    }
+                  }}
+                  disabled={loading}
                 />
-              ) : null}
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={() => {
-                  const image = form.getValues("image");
-                  form.resetField("image");
-                  form.setValue("image", {
-                    // @ts-ignore
-                    prompt: image?.["prompt"] ?? undefined,
-                    // @ts-ignore
-                    src: image?.["src"] ?? undefined,
-                  });
-                }}
-                disabled={loading}
-              >
-                <Icons.x />
-              </Button>
-            </div>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
+                {!!form.watch("image.base64") ? (
+                  <>
+                    <Image
+                      src={form.getValues("image.base64")!}
+                      alt=""
+                      className="h-8 w-8"
+                    />
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => {
+                        const image = form.getValues("image");
+                        form.resetField("image");
+                        form.setValue("image", {
+                          // @ts-ignore
+                          prompt: image?.["prompt"] ?? undefined,
+                          // @ts-ignore
+                          src: image?.["src"] ?? undefined,
+                        });
+                      }}
+                      disabled={loading}
+                    >
+                      <Icons.x />
+                    </Button>
+                  </>
+                ) : null}
+              </div>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      {/* {!!form.watch("image.base64") ? (
+        <ImageForm.chooseFrame
+          image={Buffer.from(
+            form.watch("image.base64")?.split("data:image/png;base64,")?.pop()!,
+            "base64",
+          )}
+          dic={dic}
+          form={form}
+          loading={loading}
+        />
+      ) : null} */}
+    </div>
   ),
   prompt: function Component({
     dic: {
@@ -160,67 +176,59 @@ export const ImageForm = {
       );
     }
     return (
-      <div className="grid gap-2">
-        <Tabs defaultValue="enhance">
-          <TabsList>
-            <TabsTrigger value="enhance">{c?.["enhance"]}</TabsTrigger>
-            <TabsTrigger value="generate">{c?.["generate"]}</TabsTrigger>
-          </TabsList>
+      <div className="mb-10 grid gap-4">
+        <FormField
+          control={form.control}
+          name="image.prompt"
+          render={({ field }) => (
+            <FormItem>
+              <div className="mb-2 flex items-center justify-between gap-4">
+                <FormLabel>{c?.["label"]}</FormLabel>
+                <Tooltip text={c?.["enhance prompt"]}>
+                  <Button
+                    type="button"
+                    size="icon"
+                    onClick={enhance}
+                    disabled={loading || generating}
+                  >
+                    <Icons.reload />
+                  </Button>
+                </Tooltip>
+              </div>
 
-          <TabsContent value="enhance">
-            <div className="flex items-center justify-end">
-              <Tooltip text={c?.["enhance prompt"]}>
-                <Button
-                  type="button"
-                  size="icon"
-                  onClick={enhance}
+              <FormControl>
+                <Textarea
+                  className="min-h-56 w-full"
                   disabled={loading || generating}
-                >
-                  <Icons.reload />
-                </Button>
-              </Tooltip>
-            </div>
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <FormField
-              control={form.control}
-              name="image.prompt"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{c?.["label"]}</FormLabel>
+        <div>
+          <div className="mb-2 flex items-center justify-between gap-4">
+            <FormLabel>{c?.["new image"]}</FormLabel>
+            <Tooltip text={c?.["new image"]}>
+              <Button
+                type="button"
+                size="icon"
+                onClick={generate}
+                disabled={loading || generating}
+              >
+                <Icons.reload />
+              </Button>
+            </Tooltip>
+          </div>
 
-                  <FormControl>
-                    <Textarea
-                      className="min-h-56 w-full"
-                      disabled={loading || generating}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </TabsContent>
-          <TabsContent value="generate">
-            <div className="flex items-center justify-end">
-              <Tooltip text={c?.["new image"]}>
-                <Button
-                  type="button"
-                  size="icon"
-                  onClick={generate}
-                  disabled={loading || generating}
-                >
-                  <Icons.imageReload />
-                </Button>
-              </Tooltip>
-            </div>
-
-            <Image
-              src={form.watch("image.src")!}
-              alt=""
-              className="aspect-square max-h-40"
-            />
-          </TabsContent>
-        </Tabs>
+          <Image
+            src={form.watch("image.src")!}
+            alt=""
+            className="aspect-square h-full"
+          />
+        </div>
       </div>
     );
   },
@@ -274,71 +282,70 @@ export const ImageForm = {
       </div>
     );
   },
-  chooseFrame: function Component({
-    dic: {
-      "image-form": { prompt: c },
-    },
-    loading,
-    form,
-  }: ImageFormProps) {
-    const [framedImages, setFramedImages] = useState<string[]>([]);
+  // chooseFrame: function Component({
+  //   dic: {
+  //     "image-form": { prompt: c },
+  //   },
+  //   loading,
+  //   form,
+  //   image,
+  // }: ImageFormProps & { image: Buffer }) {
+  //   const [framedImages, setFramedImages] = useState<string[]>([]);
 
-    useEffect(() => {
-      if (!form.getValues("image.src")) return;
+  //   useEffect(() => {
+  //     const fetchData = async () => {
+  //       try {
+  //         const data = await applyAllFrames(JSON.stringify(image)).then((r) =>
+  //           JSON.parse(r),
+  //         );
 
-      const fetchData = async () => {
-        try {
-          const data = await applyAllFrames(form.getValues("image.src")).then(
-            (r) => JSON.parse(r),
-          );
+  //         setFramedImages(data);
+  //       } catch (error) {
+  //         console.error("Error fetching data:", error);
+  //       }
+  //     };
 
-          setFramedImages(data);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
+  //     fetchData();
+  //   }, []); // Empty dependency array means this effect runs once after the initial render
 
-      fetchData();
-    }, []); // Empty dependency array means this effect runs once after the initial render
+  //   if (!framedImages?.["length"])
+  //     return (
+  //       <p className="py-5 text-center text-sm text-muted-foreground">
+  //         applying frames...
+  //       </p>
+  //     );
 
-    if (!framedImages?.["length"])
-      return (
-        <p className="py-5 text-center text-sm text-muted-foreground">
-          applying frames...
-        </p>
-      );
+  //   return (
+  //     <FormField
+  //       control={form.control}
+  //       name="frame"
+  //       render={({ field }) => (
+  //         <FormItem>
+  //           <FormLabel className="sr-only">Frame</FormLabel>
 
-    return (
-      <FormField
-        control={form.control}
-        name="frame"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="sr-only">Frame</FormLabel>
+  //           <ToggleGroup
+  //             type="single"
+  //             variant="outline"
+  //             onValueChange={field.onChange}
+  //             defaultValue={field.value}
+  //             disabled={loading}
+  //             className="grid h-40 grid-cols-3 gap-2"
+  //           >
+  //             {framedImages?.map((fi, i) => (
+  //               <ToggleGroupItem
+  //                 key={i}
+  //                 value={FRAMES_URL?.[i]}
+  //                 className="aspect-square h-full w-full"
+  //               >
+  //                 <Image src={fi} alt="" className="h-full w-full" />
+  //               </ToggleGroupItem>
+  //             ))}
+  //           </ToggleGroup>
 
-            <ToggleGroup
-              type="single"
-              variant="outline"
-              onValueChange={field.onChange}
-              defaultValue={field.value}
-              disabled={loading}
-              className="grid h-40 grid-cols-3 gap-2"
-            >
-              {framedImages?.map((fi, i) => (
-                <ToggleGroupItem
-                  key={i}
-                  value={FRAMES_URL?.[i]}
-                  className="aspect-square h-full w-full"
-                >
-                  <Image src={fi} alt="" className="h-full w-full" />
-                </ToggleGroupItem>
-              ))}
-            </ToggleGroup>
-
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    );
-  },
+  //           <FormMessage />
+  //         </FormItem>
+  //       )}
+  //     />
+  //   );
+  // },
 };

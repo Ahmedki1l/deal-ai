@@ -56,7 +56,6 @@ export function PostUpdateForm({
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const [open, setOpen] = useState<boolean>(false);
-  const [framedImages, setFramedImages] = useState<string[]>([]);
 
   const form = useForm<z.infer<typeof postUpdateSchema>>({
     mode: "onSubmit",
@@ -64,34 +63,16 @@ export function PostUpdateForm({
     defaultValues: {
       ...post,
       image: {
-        ...post?.["image"],
+        // ...post?.["image"],
         src: post?.["image"]?.["src"],
         prompt: post?.["image"]?.["prompt"],
       },
       confirm: !!post?.["confirmedAt"],
     },
   });
-  useEffect(() => {
-    if (!form.getValues("image.src")) return;
-
-    const fetchData = async () => {
-      try {
-        const data = await applyAllFrames(form.getValues("image.src")).then(
-          (r) => JSON.parse(r),
-        );
-
-        setFramedImages(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []); // Empty dependency array means this effect runs once after the initial render
 
   function onSubmit(data: z.infer<typeof postUpdateSchema>) {
     setLoading(true);
-
     toast.promise(updatePost(data), {
       finally: () => setLoading(false),
       error: async (err) => {
@@ -194,7 +175,7 @@ export function PostUpdateForm({
                   }
                   content={
                     <>
-                      <Tabs defaultValue="choose">
+                      <Tabs defaultValue="generate">
                         <TabsList>
                           <TabsTrigger value="choose">
                             {c?.["choose file"]}
@@ -202,7 +183,7 @@ export function PostUpdateForm({
                           <TabsTrigger value="generate">
                             {c?.["generate using AI"]}
                           </TabsTrigger>
-                          <TabsTrigger value="frame">apply frame</TabsTrigger>
+                          {/* <TabsTrigger value="frame">apply frame</TabsTrigger> */}
                         </TabsList>
                         <TabsContent value="choose">
                           <ImageForm.src
@@ -211,23 +192,13 @@ export function PostUpdateForm({
                             loading={loading}
                           />
                         </TabsContent>
+
                         <TabsContent value="generate">
                           <ImageForm.prompt
                             dic={dic}
                             form={form}
                             loading={loading}
                           />
-                        </TabsContent>
-                        <TabsContent value="frame">
-                          {!!form.watch("image.src") ? (
-                            <ImageForm.chooseFrame
-                              dic={dic}
-                              form={form}
-                              loading={loading}
-                            />
-                          ) : (
-                            <p>choose an image first</p>
-                          )}
                         </TabsContent>
                       </Tabs>
                     </>

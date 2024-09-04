@@ -12,6 +12,10 @@ const string = (title: string) => {
   return zod.string(type(title, "string")).min(1, `${title} is required.`);
 };
 
+const stringNotRequired = (title: string) => {
+  return zod.string(type(title, "string"));
+};
+
 const number = (title: string) => {
   return zod.number(type(title, "number"));
 };
@@ -28,6 +32,7 @@ export const z = {
   ...zod,
   type,
   string,
+  stringNotRequired,
   boolean,
   date,
   number,

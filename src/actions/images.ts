@@ -227,13 +227,10 @@ export async function watermarkImage({
   }
 }
 
-export async function applyAllFrames(url: string) {
+export async function applyAllFrames(image: string) {
   try {
-    // Fetch the image
-    const image = await fetchImage(url);
-
     const promiseFrames = FRAMES_URL?.map((f) =>
-      applyFrame(image, f).then(
+      applyFrame(JSON.parse(image), f).then(
         (r) => `data:image/png;base64,${r.toString("base64")}`,
       ),
     );

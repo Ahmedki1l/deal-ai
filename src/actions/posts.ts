@@ -297,27 +297,11 @@ export async function createPost(
 export async function updatePost({
   id,
   confirm,
-  frame = 1,
   ...data
 }: z.infer<typeof postUpdateSchema>) {
   try {
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
-
-    let src = data?.["image"]?.["src"] ?? null;
-
-    if (frame) {
-      // if (!data?.["image"]?.["src"])
-      //   throw Error("first select an image to apply frame on.");
-
-      const image = await fetchImage(
-        "https://plus.unsplash.com/premium_photo-1680281937048-735543c5c0f7?q=80&w=1022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      );
-
-      src = await applyFrame(image, FRAMES_URL?.[frame]).then(
-        (r) => `data:image/png;base64,${r.toString("base64")}`,
-      );
-    }
 
     await db.post.update({
       data: {
@@ -325,7 +309,6 @@ export async function updatePost({
         image: {
           update: {
             ...data?.["image"],
-            src,
           },
         },
         confirmedAt: confirm ? new Date() : null,

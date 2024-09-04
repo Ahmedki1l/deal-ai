@@ -9,7 +9,7 @@ import { imageSchema, imageUpdateFormSchema } from "./images";
 export const postSchema = z.object({
   id: z.string("id"),
   caseStudyId: z.string("caseStudyId"),
-  imageId: z.string("imageId"),
+  imageId: z.string("imageId").optional().nullable(),
   framedImageURL: z.string("framed-image").optional().nullable(),
   title: z.string("title"),
   content: z.string("content"),
@@ -18,11 +18,11 @@ export const postSchema = z.object({
   contentLength: z.enum(postContentLengthArr),
   platform: z.enum(platformsArr),
   postAt: z.date("post at"),
-  deletedAt: z.date("deletedAt"),
-  confirmedAt: z.date("confirmedAt"),
+  deletedAt: z.date("deletedAt").optional(),
+  confirmedAt: z.date("confirmedAt").optional(),
 
   // others
-  image: imageSchema,
+  image: imageSchema.optional().nullable(),
 });
 
 export const postCreateSchema = postSchema.omit({

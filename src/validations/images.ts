@@ -14,7 +14,7 @@ export const imageSchema = z.object({
   src: z.string("src"),
   prompt: z.string("prompt"),
 
-  deletedAt: z.date("deletedAt"),
+  deletedAt: z.date("deletedAt").optional().nullable(),
 });
 
 export const imageCreateSchema = imageSchema.omit({

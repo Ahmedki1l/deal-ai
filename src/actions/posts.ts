@@ -127,7 +127,7 @@ export async function createPost(
     const daysToPost = noOfPostsPerWeek === 3 ? [0, 2, 4] : [0, 1, 2, 3, 4];
     const imageApiEndpoint = domain + "/image2";
     let imageFetchPromises = [];
-    let allPostDetails: Omit<Post, "createdAt">[] = [];
+    let allPostDetails: z.infer<typeof postSchema>[] = [];
 
     // uppercasing key, to match platform
     const responseData = Object.keys(social_midea_response).reduce(
@@ -256,8 +256,7 @@ export async function createPost(
             postAt: new Date(currentDate),
             imageId: imageData?.["id"] ?? null,
             framedImageURL: data.framedImageURL ?? null,
-            deletedAt: null,
-            confirmedAt: null,
+            image: imageData,
           });
           indicator++;
         });

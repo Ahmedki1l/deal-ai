@@ -20,7 +20,7 @@ import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { ID } from "@/lib/constants";
-import { deleteCookie, setCookie } from "@/actions/helpers";
+import { deleteCookie, getCookie, setCookie } from "@/actions/helpers";
 
 export type PostCreateButtonProps = {
   caseStudy: CaseStudy;
@@ -51,7 +51,6 @@ export function PostCreateButton({
       platform: "FACEBOOK",
     },
   });
-
   async function onSubmit(data: z.infer<typeof postCreateSchema>) {
     const id = ID.generate();
     const key = `create-${id}`;
@@ -59,14 +58,7 @@ export function PostCreateButton({
 
     try {
       setLoading(true);
-      await setCookie(key, {
-        project,
-        caseStudy,
-        ...data,
-      } satisfies z.infer<typeof postCreateSchema> & {
-        project: Project & { platforms: Platform[] };
-        caseStudy: CaseStudy;
-      });
+      await setCookie(key, data);
 
       const eventSource = new EventSource(`/api/posts?key=${key}`);
       eventSource.addEventListener("status", (event) => {

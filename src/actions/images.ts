@@ -13,7 +13,7 @@ import {
   imageWatermarkSchema,
 } from "@/validations/images";
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
+import { promise, z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
 import { resolve } from "path";
 import Sharp from "sharp";
@@ -171,10 +171,10 @@ export async function uploadIntoSpace(name: ObjectKey, body: Body) {
   }
 }
 
-export async function applyFrame(image: Buffer) {
+export async function applyFrame(image: Buffer, frameURL: string) {
   try {
     // Load the frame from the PSD file or PNG file
-    const frame = await Sharp(resolve("./public/img-processing/frame.png"))
+    const frame = await Sharp(resolve(frameURL))
       .ensureAlpha() // Ensure the frame has an alpha channel
       .toBuffer();
 
@@ -210,7 +210,10 @@ export async function watermarkImage({
       "https://plus.unsplash.com/premium_photo-1680281937048-735543c5c0f7?q=80&w=1022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     );
 
-    const framedImage = await applyFrame(image);
+    const framedImage = await applyFrame(
+      image,
+      "./public/img-processing/frame.png",
+    );
     //  Store it remotely
     return await uploadIntoSpace(`frame-${Date.now()}.png`, framedImage);
   } catch (error: any) {
@@ -220,6 +223,28 @@ export async function watermarkImage({
       error?.["message"] ??
         "Your image URL was not generated. Please try again.",
     );
+  }
+}
+
+export async function applyAllFrames(url: string) {
+  try {
+    // Fetch the image
+    const image = await fetchImage(url);
+
+    const frames = [
+      "./public/frames/frame-00.png",
+      "./public/frames/frame-01.png",
+      "./public/frames/frame-02.png",
+    ];
+    const promiseFrames = frames.map((f) =>
+      applyFrame(image, f).then(
+        (r) => `data:image/png;base64,${r.toString("base64")}`,
+      ),
+    );
+    return JSON.stringify(await Promise.all(promiseFrames));
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    throw error;
   }
 }
 

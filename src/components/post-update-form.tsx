@@ -71,19 +71,20 @@ export function PostUpdateForm({
   });
 
   function onSubmit(data: z.infer<typeof postUpdateSchema>) {
-    setLoading(true);
-    console.log(data?.["confirm"]);
-    toast.promise(updatePost(data), {
-      finally: () => setLoading(false),
-      error: async (err) => {
-        const msg = await t(err?.["message"], lang);
-        return msg;
-      },
-      success: () => {
-        router.refresh();
-        return c?.["updated successfully."];
-      },
-    });
+    // setLoading(true);
+    // console.log(data?.["confirm"]);
+    console.log(data?.["frame"]);
+    // toast.promise(updatePost(data), {
+    //   finally: () => setLoading(false),
+    //   error: async (err) => {
+    //     const msg = await t(err?.["message"], lang);
+    //     return msg;
+    //   },
+    //   success: () => {
+    //     router.refresh();
+    //     return c?.["updated successfully."];
+    //   },
+    // });
   }
 
   return (
@@ -92,7 +93,7 @@ export function PostUpdateForm({
         <div className="space-y-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <BackButton dic={dic} type="button" variant="ghost" size="sm" />
+              {/* <BackButton dic={dic} type="button" variant="ghost" size="sm" /> */}
               <h1 className="text-md font-semibold">{c?.["post details"]}</h1>
             </div>
 
@@ -183,6 +184,7 @@ export function PostUpdateForm({
                           <TabsTrigger value="generate">
                             {c?.["generate using AI"]}
                           </TabsTrigger>
+                          <TabsTrigger value="frame">apply frame</TabsTrigger>
                         </TabsList>
                         <TabsContent value="choose">
                           <ImageForm.src
@@ -197,6 +199,17 @@ export function PostUpdateForm({
                             form={form}
                             loading={loading}
                           />
+                        </TabsContent>
+                        <TabsContent value="frame">
+                          {!!form.watch("image.src") ? (
+                            <ImageForm.chooseFrame
+                              dic={dic}
+                              form={form}
+                              loading={loading}
+                            />
+                          ) : (
+                            <p>choose an image first</p>
+                          )}
                         </TabsContent>
                       </Tabs>
                     </>
@@ -214,8 +227,6 @@ export function PostUpdateForm({
                     <Icons.edit />
                   </Button>
                 </DialogResponsive>
-
-                {/* <ImageForm.watermark dic={dic} form={form} loading={loading} /> */}
               </div>
             </div>
             <Card>

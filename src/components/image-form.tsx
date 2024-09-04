@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Dictionary } from "@/types/locale";
-import { useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Image as ImageType } from "@prisma/client";
 import { useLocale } from "@/hooks/use-locale";
@@ -22,6 +22,7 @@ import { Image } from "./image";
 import { Icons } from "./icons";
 import { toast } from "sonner";
 import {
+  applyAllFrames,
   generateImage,
   regenerateImagePrompt,
   watermarkImage,
@@ -31,6 +32,8 @@ import { Tooltip } from "./tooltip";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { postUpdateSchema } from "@/validations/posts";
 import { db } from "@/db";
+import { DialogResponsive } from "./dialog";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 export type ImageFormProps = {
   loading: boolean;
@@ -268,6 +271,70 @@ export const ImageForm = {
           </Tooltip>
         </div>
       </div>
+    );
+  },
+  chooseFrame: function Component({
+    dic: {
+      "image-form": { prompt: c },
+    },
+    loading,
+    form,
+  }: ImageFormProps) {
+    const [framedImages, setFramedImages] = useState<string[]>([]);
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const data = await applyAllFrames(
+            "https://plus.unsplash.com/premium_photo-1680281937048-735543c5c0f7?q=80&w=1022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          ).then((r) => JSON.parse(r));
+
+          setFramedImages(data);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+
+      fetchData();
+    }, []); // Empty dependency array means this effect runs once after the initial render
+
+    if (!framedImages?.["length"])
+      return (
+        <p className="py-5 text-center text-sm text-muted-foreground">
+          applying frames...
+        </p>
+      );
+    return (
+      <FormField
+        control={form.control}
+        name="frame"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="sr-only">Frame</FormLabel>
+
+            <ToggleGroup
+              type="single"
+              variant="outline"
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+              disabled={loading}
+              className="grid h-40 grid-cols-3 gap-2"
+            >
+              {framedImages?.map((fi, i) => (
+                <ToggleGroupItem
+                  key={i}
+                  value="s"
+                  className="aspect-square h-full w-full"
+                >
+                  <Image src={fi} alt="" className="h-full w-full" />
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     );
   },
 };

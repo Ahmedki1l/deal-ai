@@ -10,6 +10,7 @@ export const postSchema = z.object({
   id: z.string("id"),
   caseStudyId: z.string("caseStudyId"),
   imageId: z.string("imageId"),
+  framedImageURL: z.string("framed-image").nullable(),
   title: z.string("title"),
   content: z.string("content"),
   noOfWeeks: z.string("no of weeks"),

@@ -180,10 +180,7 @@ export async function createPost(
       "https://elsamalotyapis-production.up.railway.app/api/generateImage";
 
     let imageFetchPromises = [];
-    let allPostDetails: Omit<
-      Post,
-      "createdAt" | "framedImageURL" | "confirmedAt"
-    >[] =
+    let allPostDetails: Omit<Post, "createdAt" | "confirmedAt">[] =
       // : z.infer<typeof postSchema>[] =
       [];
 
@@ -322,6 +319,7 @@ export async function createPost(
             platform: acc,
             postAt: new Date(currentDate),
             imageId: imageData?.["id"] ?? null,
+            framedImageURL: null,
             deletedAt: null,
           });
           indicator++;
@@ -372,7 +370,7 @@ export async function updatePost({
 
     // @ts-ignore
     const src = (data?.["image"]?.["src"] as unknown as string | null) ?? "";
-    let framedImageURL = null;
+    let fiURL: string | null = null;
 
     console.log("frame: ", frame, " -  src: ", src);
     if (frame && src) {
@@ -381,10 +379,7 @@ export async function updatePost({
       const fetchedImage = await fetchImage(src);
       const framedImage = await applyFrame(fetchedImage, frame);
       // const bufferedImage = await Sharp(fetcedImage).toBuffer();
-      framedImageURL = await uploadIntoSpace(
-        `post-${Date.now()}.png`,
-        framedImage,
-      );
+      fiURL = await uploadIntoSpace(`post-${Date.now()}.png`, framedImage);
 
       console.log("frameed src: ", src);
     }
@@ -398,7 +393,7 @@ export async function updatePost({
           },
         },
         confirmedAt: confirm ? new Date() : null,
-        framedImageURL: framedImageURL ?? null,
+        framedImageURL: fiURL,
       },
       where: {
         id,

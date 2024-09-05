@@ -64,12 +64,15 @@ export default async function CaseStudy({
       posts: {
         include: {
           image: {
-            where: {
-              deletedAt: null,
-            },
+            // where: {
+            //   deletedAt: null,
+            // },
           },
         },
-        where: { deletedAt: null },
+        // where: {
+        //    deletedAt: null
+
+        // },
       },
       project: {
         include: {

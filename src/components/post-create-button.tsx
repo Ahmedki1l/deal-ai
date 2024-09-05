@@ -51,55 +51,72 @@ export function PostCreateButton({
       platform: "FACEBOOK",
     },
   });
-  async function onSubmit(data: z.infer<typeof postCreateSchema>) {
-    const id = ID.generate();
-    const key = `create-${id}`;
-    const toastId = toast.loading(c?.["initializing posts..."]);
+  // async function onSubmit(data: z.infer<typeof postCreateSchema>) {
+  //   const id = ID.generate();
+  //   const key = `create-${id}`;
+  //   const toastId = toast.loading(c?.["initializing posts..."]);
 
-    try {
-      setLoading(true);
-      await setCookie(key, data);
+  //   try {
+  //     setLoading(true);
+  //     await setCookie(key, data);
 
-      const eventSource = new EventSource(`/api/posts?key=${key}`);
-      eventSource.addEventListener("status", (event) => {
-        toast.loading(event.data?.replaceAll('"', ""), {
-          id: toastId,
-        });
-      });
+  //     const eventSource = new EventSource(`/api/posts?key=${key}`);
+  //     eventSource.addEventListener("status", (event) => {
+  //       toast.loading(event.data?.replaceAll('"', ""), {
+  //         id: toastId,
+  //       });
+  //     });
 
-      eventSource.addEventListener("completed", (event) => {
-        toast.dismiss(toastId);
-        eventSource.close();
-        toast.success(event.data?.replaceAll('"', ""));
+  //     eventSource.addEventListener("completed", (event) => {
+  //       toast.dismiss(toastId);
+  //       eventSource.close();
+  //       toast.success(event.data?.replaceAll('"', ""));
 
+  //       router.refresh();
+  //       setOpen(false);
+  //       form.reset();
+  //       setLoading(false);
+  //     });
+
+  //     eventSource.addEventListener("error", (event) => {
+  //       console.error("Error occurred:", event);
+  //       toast.dismiss(toastId);
+  //       eventSource.close();
+
+  //       setLoading(false);
+  //     });
+
+  //     eventSource.addEventListener("close", () => {
+  //       toast.dismiss(toastId);
+  //       eventSource.close();
+
+  //       setLoading(false);
+  //     });
+  //   } catch (err: any) {
+  //     toast.dismiss(toastId);
+  //     setLoading(false);
+
+  //     toast.error(err?.message);
+  //   } finally {
+  //     await deleteCookie(key);
+  //   }
+  // }
+
+  function onSubmit(data: z.infer<typeof postCreateSchema>) {
+    setLoading(true);
+    toast.promise(createPost({ ...data, project, caseStudy }), {
+      finally: () => setLoading(false),
+      error: async (err) => {
+        const msg = await t(err?.["message"], lang);
+        return msg;
+      },
+      success: () => {
         router.refresh();
-        setOpen(false);
         form.reset();
-        setLoading(false);
-      });
-
-      eventSource.addEventListener("error", (event) => {
-        console.error("Error occurred:", event);
-        toast.dismiss(toastId);
-        eventSource.close();
-
-        setLoading(false);
-      });
-
-      eventSource.addEventListener("close", () => {
-        toast.dismiss(toastId);
-        eventSource.close();
-
-        setLoading(false);
-      });
-    } catch (err: any) {
-      toast.dismiss(toastId);
-      setLoading(false);
-
-      toast.error(err?.message);
-    } finally {
-      await deleteCookie(key);
-    }
+        setOpen(false);
+        return c?.["created successfully."];
+      },
+    });
   }
 
   return (

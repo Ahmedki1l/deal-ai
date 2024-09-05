@@ -22,13 +22,10 @@ import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
 import { CaseStudy, Image, Platform, Post, Project } from "@prisma/client";
 import { platformsArr } from "@/db/enums";
-import { sendEvent } from "@/lib/stream";
+// import { sendEvent } from "@/lib/stream";
 import { getCookie, getLocale } from "./helpers";
 import { getDictionary } from "@/lib/dictionaries";
-import { applyFrame, uploadIntoSpace } from "./images";
-import { fetchImage } from "@/lib/uploader";
-import sharp from "sharp";
-import { FRAMES_URL } from "@/lib/constants";
+import axios from "axios";
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -41,31 +38,40 @@ function containsArabic(text: string | null) {
 }
 
 export async function createPost(
-  controller: ReadableStreamDefaultController<any>,
-  key: string,
+  // controller: ReadableStreamDefaultController<any>,
+  // key: string,
+  {
+    project,
+    caseStudy,
+    ...data
+  }: z.infer<typeof postCreateSchema> & {
+    project: Project & { platforms: Platform[] };
+    caseStudy: CaseStudy;
+  },
 ) {
   const { actions: c } = await getDictionary(await getLocale());
 
   try {
-    sendEvent(controller, "status", c?.["getting info..."]);
+    // sendEvent(controller, "status", c?.["getting info..."]);
 
-    const user = await getAuth();
-    if (!user) throw new RequiresLoginError();
-    // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
+    // const user = await getAuth();
+    // if (!user) throw new RequiresLoginError();
+    // // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
 
-    const body = await getCookie<z.infer<typeof postCreateSchema>>(key);
-    if (!body) throw Error("No body Data.");
+    // const body = await getCookie<z.infer<typeof postCreateSchema>>(key);
+    // if (!body) throw Error("No body Data.");
 
-    const parsedData = postCreateSchema.safeParse(body);
-    if (!parsedData.success) throw new Error("Invalid data");
+    // const parsedData = postCreateSchema.safeParse(body);
+    // if (!parsedData.success) throw new Error("Invalid data");
 
-    const data = parsedData?.["data"];
-    const caseStudyResponse = await db.caseStudy.findFirst({
-      include: { project: { include: { platforms: true } } },
-      where: { id: data?.["caseStudyId"] },
-    });
-    if (!caseStudyResponse) throw new Error("non existing study case.");
-    const { project, ...caseStudy } = caseStudyResponse;
+    // const data = parsedData?.["data"];
+    // const caseStudyResponse = await db.caseStudy.findFirst({
+    //   include: { project: { include: { platforms: true } } },
+    //   where: { id: data?.["caseStudyId"] },
+    // });
+    // if (!caseStudyResponse) throw new Error("non existing study case.");
+    // const { project, ...caseStudy } = caseStudyResponse;
+    // console.log(data, project, caseStudy);
 
     let endpoint_language = "en";
 
@@ -95,13 +101,22 @@ export async function createPost(
         image_anaylzer_prompt.input += url + ", ";
       });
 
-      sendEvent(controller, "status", c?.["generating images..."]);
+      // sendEvent(controller, "status", c?.["generating images..."]);
       const image_analyzer_endpoint = domain + `/en/image-analyzer`;
+
+      console.log("image_anaylzer_prompt: ", image_anaylzer_prompt);
       image_analyzer_response = await fetch(image_analyzer_endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(image_anaylzer_prompt),
-      }).then((r) => r?.json());
+      }).then(async (r) => {
+        try {
+          return await r?.json();
+        } catch {
+          console.log("image_analyzer_response: ", await r?.text());
+        }
+      });
+      console.log("image_analyzer_response: ", image_analyzer_response);
     }
 
     const prompt = {
@@ -113,26 +128,44 @@ export async function createPost(
     const social_media_endpoint =
       domain + `/${endpoint_language}/chat/socialmediaplan`;
 
-    sendEvent(
-      controller,
-      "status",
-      c?.["generating AI prompt for social media..."],
-    );
-    const social_midea_response = await fetch(social_media_endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(prompt),
-    }).then((r) => r?.json());
+    // sendEvent(
+    //   controller,
+    //   "status",
+    //   c?.["generating AI prompt for social media..."],
+    // );
+
+    console.log("social_media_response prompt: ", prompt);
+
+    const social_media_response = await axios
+      .post(social_media_endpoint, prompt, {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((response) => response.data)
+      .catch(async (error) => {
+        if (error.response) {
+          console.log("social_media_response: ", error.response.data);
+        } else {
+          console.log("Error: ", error.message);
+        }
+      });
 
     const daysToPost = noOfPostsPerWeek === 3 ? [0, 2, 4] : [0, 1, 2, 3, 4];
-    const imageApiEndpoint = domain + "/image2";
+    const imageApiEndpoint =
+      // "https://elsamalotyapis-production.up.railway.app/api/generateImage";
+      domain + "/image2";
+
     let imageFetchPromises = [];
-    let allPostDetails: z.infer<typeof postSchema>[] = [];
+    let allPostDetails: Omit<
+      Post,
+      "createdAt" | "framedImageURL" | "confirmedAt"
+    >[] =
+      // : z.infer<typeof postSchema>[] =
+      [];
 
     // uppercasing key, to match platform
-    const responseData = Object.keys(social_midea_response).reduce(
+    const responseData = Object.keys(social_media_response).reduce(
       (acc, key) => {
-        acc[key.toUpperCase()] = social_midea_response?.[key];
+        acc[key.toUpperCase()] = social_media_response?.[key];
         return acc;
       },
       {} as { [key: string]: { [key: string]: string }[] },
@@ -158,19 +191,24 @@ export async function createPost(
           input: accountPosts[i][`Post${i + 1}`],
         };
 
-        sendEvent(
-          controller,
-          "status",
-          c?.["generating social media content..."],
-        );
-        const prompt_generator_response = await fetch(
-          prompt_generator_endpoint,
-          {
-            method: "POST",
+        // sendEvent(
+        //   controller,
+        //   "status",
+        //   c?.["generating social media content..."],
+        // );
+        console.log("prompt_generator_prompt: ", prompt_generator_prompt);
+        const prompt_generator_response = await axios
+          .post(prompt_generator_endpoint, prompt_generator_prompt, {
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(prompt_generator_prompt),
-          },
-        ).then((r) => r?.json());
+          })
+          .then((response) => response.data)
+          .catch(async (error) => {
+            if (error.response) {
+              console.log("prompt_generator_prompt: ", error.response.data);
+            } else {
+              console.log("Error: ", error.message);
+            }
+          });
 
         const imagePrompt = {
           input:
@@ -180,32 +218,45 @@ export async function createPost(
         };
 
         const adjusted_image_prompt = {
-          input: `you must adjust this prompt to be only 1000 characters long at max: ${imagePrompt.input}`,
+          input: `you must adjust this prompt to be only 1000 characters long at max: ${imagePrompt?.input}`,
         };
 
-        sendEvent(controller, "status", c?.["generating AI images..."]);
+        // sendEvent(controller, "status", c?.["generating AI images..."]);
+        console.log("adjusted_image_prompt: ", adjusted_image_prompt);
         const adjusted_image_response = await fetch(prompt_generator_endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(adjusted_image_prompt),
-        }).then((r) => r?.json());
+        }).then(async (r) => {
+          try {
+            return await r?.json();
+          } catch {
+            console.log("adjusted_image_response: ", await r?.text());
+          }
+        });
+        console.log("adjusted_image_response: ", adjusted_image_response);
 
         let imageResponse;
 
         const adjusted_image = { input: adjusted_image_response?.prompt };
 
+        console.log("adjusted_image: ", adjusted_image);
         const fetchPromise = fetch(imageApiEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(adjusted_image),
         })
-          .then(async (res) => {
-            imageResponse = await res.json();
-            return imageResponse;
+          .then(async (r) => {
+            try {
+              return await r?.json();
+            } catch {
+              console.log("imageResponse: ", await r?.text());
+            }
           })
-
           .then((imageResponse) => {
             // console.log("image prompt: ", adjusted_image);
+            console.log("imageResponse: ", imageResponse);
+
             console.log("image response: ", imageResponse);
             if (!imageResponse?.["image_url"]) return null;
 
@@ -234,18 +285,20 @@ export async function createPost(
 
         fetchPromise.then((imageData) => {
           // console.log("image Data: ", imageData);
-          // console.log(currentDate.getDay());
+          console.log(currentDate.getDay());
           currentDate.setDate(currentDate.getDate() + 1);
-          // console.log(currentDate.getDay());
+          console.log(currentDate.getDay());
           // Adjust currentDate to the next valid posting day
           while (!daysToPost.includes(currentDate.getDay())) {
             currentDate.setDate(currentDate.getDate() + 1);
           }
 
-          // console.log(currentDate.getDay());
+          console.log(currentDate.getDay());
 
           const randomHour = Math.floor(Math.random() * (20 - 11) + 11);
           currentDate.setHours(randomHour, 0, 0);
+
+          console.log(`post ${i + 1}`);
 
           allPostDetails.push({
             ...data,
@@ -254,31 +307,34 @@ export async function createPost(
             content: accountPosts[i][`Post${i + 1}`],
             platform: acc,
             postAt: new Date(currentDate),
-            imageId: imageData?.["id"] ?? null,
+            imageId:
+              //  imageData?.["id"] ??
+              null,
+            deletedAt: null,
           });
           indicator++;
         });
       }
     }
 
-    sendEvent(controller, "status", c?.["adusting posts together..."]);
+    // sendEvent(controller, "status", c?.["adusting posts together..."]);
     await Promise.all(imageFetchPromises);
 
     if (!allPostDetails?.["length"]) {
-      sendEvent(controller, "completed", c?.["No posts to create."]);
+      // sendEvent(controller, "completed", c?.["No posts to create."]);
       return;
     }
 
-    sendEvent(controller, "status", c?.["saving posts..."]);
+    // sendEvent(controller, "status", c?.["saving posts..."]);
     await db.post.createMany({
       data: allPostDetails,
     });
 
-    sendEvent(
-      controller,
-      "completed",
-      `${allPostDetails?.["length"]} ${c?.["posts were created."]}`,
-    );
+    // sendEvent(
+    //   controller,
+    //   "completed",
+    //   `${allPostDetails?.["length"]} ${c?.["posts were created."]}`,
+    // );
     revalidatePath("/", "layout");
   } catch (error: any) {
     console.log(error?.["message"]);
@@ -287,9 +343,10 @@ export async function createPost(
       error?.["message"] ??
         c?.["your study case was not created. please try again."],
     );
-  } finally {
-    controller.close();
   }
+  // finally {
+  //   controller.close();
+  // }
 }
 
 export async function updatePost({

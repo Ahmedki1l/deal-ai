@@ -34,7 +34,12 @@ import { PostRestoreButton } from "@/components/post-restore-button";
 import { PostBinButton } from "@/components/post-bin-button";
 import { AlertDialogCancel } from "@/components/ui/alert-dialog";
 import { DrawerClose } from "@/components/ui/drawer";
-import { applyAllFrames } from "@/actions/images";
+import {
+  applyAllFrames,
+  uploadIntoSpace,
+  watermarkImage,
+} from "@/actions/images";
+import { fetchImage } from "@/lib/uploader";
 
 export type PostUpdateFormProps = {
   post: Post & { image: ImageType | null };
@@ -55,8 +60,10 @@ export function PostUpdateForm({
   const lang = useLocale();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(disabled ?? false);
+  const [trigger, setTrigger] = useState<boolean>(loading ?? false);
   const [open, setOpen] = useState<boolean>(false);
   const [openFrame, setOpenFrame] = useState<boolean>(false);
+  // const [framedImages, setFramedImages] = useState<string[] | null>(null);
 
   const form = useForm<z.infer<typeof postUpdateSchema>>({
     mode: "onSubmit",
@@ -72,19 +79,45 @@ export function PostUpdateForm({
     },
   });
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const src = post?.["image"]?.["src"];
+  //       if (!src) {
+  //         setFramedImages(null);
+  //         return;
+  //       }
+
+  //       const image = await fetchImage(src);
+  //       const data = await applyAllFrames(JSON.stringify(image)).then((r) =>
+  //         JSON.parse(r),
+  //       );
+
+  //       setFramedImages(data);
+  //     } catch (error) {
+  //       setFramedImages(null);
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []); // Empty dependency array means this effect runs once after the initial render
+
   function onSubmit(data: z.infer<typeof postUpdateSchema>) {
     setLoading(true);
-    toast.promise(updatePost(data), {
-      finally: () => setLoading(false),
-      error: async (err) => {
-        const msg = await t(err?.["message"], lang);
-        return msg;
-      },
-      success: () => {
-        router.refresh();
-        return c?.["updated successfully."];
-      },
-    });
+    // toast.promise(updatePost(data), {
+    //   finally: () => setLoading(false),
+    //   error: async (err) => {
+    //     const msg = await t(err?.["message"], lang);
+    //     return msg;
+    //   },
+    //   success: () => {
+    //     router.refresh();
+    //     return c?.["updated successfully."];
+    //   },
+    // });
+
+    console.log(data?.["frame"], data?.["image"]);
   }
 
   console.log(form.formState.errors);
@@ -102,13 +135,13 @@ export function PostUpdateForm({
             <div className="hidden items-center gap-2 md:flex">
               {post?.["deletedAt"] ? (
                 <PostRestoreButton
-                  disabled={post?.["deletedAt"] ? false : disabled}
+                  disabled={post?.["deletedAt"] ? false : disabled || trigger}
                   dic={dic}
                   asChild
                   post={post}
                 >
                   <Button
-                    disabled={post?.["deletedAt"] ? false : disabled}
+                    disabled={post?.["deletedAt"] ? false : disabled || trigger}
                     variant="secondary"
                     size="sm"
                   >
@@ -128,7 +161,7 @@ export function PostUpdateForm({
                 </PostBinButton>
               )}
               <Button
-                disabled={loading}
+                disabled={loading || trigger}
                 type="button"
                 onClick={() => form.reset()}
                 variant="outline"
@@ -137,7 +170,7 @@ export function PostUpdateForm({
                 {c?.["discard"]}
               </Button>
               <Button
-                disabled={loading}
+                disabled={loading || trigger}
                 type="submit"
                 size="sm"
                 className="w-full"
@@ -168,13 +201,13 @@ export function PostUpdateForm({
               <div className="absolute right-16 top-4 z-50 flex items-center gap-2 text-lg font-medium">
                 <DialogResponsive
                   dic={dic}
-                  disabled={loading}
+                  disabled={loading || trigger}
                   confirmButton={
                     <>
                       <Button
                         type="button"
                         onClick={() => setOpen(false)}
-                        disabled={loading}
+                        disabled={loading || trigger}
                         className="w-full md:w-fit"
                       >
                         {!disabled && loading && <Icons.spinner />}
@@ -221,21 +254,50 @@ export function PostUpdateForm({
                   open={open}
                   setOpen={setOpen}
                 >
-                  <Button disabled={loading} size="icon" variant="secondary">
+                  <Button
+                    disabled={loading || trigger}
+                    size="icon"
+                    variant="secondary"
+                  >
                     <Icons.edit />
                   </Button>
                 </DialogResponsive>
               </div>
               <div className="absolute right-4 top-4 z-50 flex items-center gap-2 text-lg font-medium">
+                <Button
+                  onClick={async () => {
+                    toast.promise(
+                      async () => {
+                        setTrigger(true);
+                        const url = await watermarkImage(
+                          post?.["image"]?.["src"]!,
+                        );
+                        form.setValue("image.src", url);
+                      },
+                      {
+                        finally: () => setTrigger(false),
+                        loading: "applying frame...",
+                        success: () => "applied frame",
+                      },
+                    );
+                  }}
+                  disabled={trigger}
+                  size="icon"
+                >
+                  <Icons.image />
+                </Button>
+              </div>
+
+              {/* <div className="absolute right-4 top-4 z-50 flex items-center gap-2 text-lg font-medium">
                 <DialogResponsive
                   dic={dic}
-                  disabled={loading}
+                  disabled={loading || trigger}
                   confirmButton={
                     <>
                       <Button
                         type="button"
                         onClick={() => setOpenFrame(false)}
-                        disabled={loading}
+                        disabled={loading || trigger}
                         className="w-full md:w-fit"
                       >
                         {!disabled && loading && <Icons.spinner />}
@@ -249,10 +311,11 @@ export function PostUpdateForm({
                         dic={dic}
                         form={form}
                         loading={loading}
+                        // framedImages={framedImages}
                       />
                     </>
                   }
-                  title={c?.["update image"]}
+                  title="apply frame"
                   description={
                     c?.[
                       "updating an image allows you to refine and enhance the details of your ongoing developments"
@@ -261,11 +324,11 @@ export function PostUpdateForm({
                   open={openFrame}
                   setOpen={setOpenFrame}
                 >
-                  <Button disabled={loading} size="icon" variant="secondary">
+                  <Button disabled={loading || trigger} size="icon" variant="secondary">
                     <Icons.image />
                   </Button>
                 </DialogResponsive>
-              </div>
+              </div> */}
             </div>
             <Card>
               <CardHeader>
@@ -319,14 +382,14 @@ export function PostUpdateForm({
           <div className="flex items-center justify-center gap-2 md:hidden">
             {post?.["deletedAt"] ? (
               <PostRestoreButton
-                disabled={post?.["deletedAt"] ? false : disabled}
+                disabled={post?.["deletedAt"] ? false : disabled || trigger}
                 dic={dic}
                 asChild
                 post={post}
               >
                 <Button
                   size="sm"
-                  disabled={post?.["deletedAt"] ? false : disabled}
+                  disabled={post?.["deletedAt"] ? false : disabled || trigger}
                   variant="secondary"
                 >
                   {c?.["restore"]}
@@ -341,7 +404,7 @@ export function PostUpdateForm({
             )}
 
             <Button
-              disabled={loading}
+              disabled={loading || trigger}
               type="button"
               onClick={() => form.reset()}
               variant="outline"
@@ -351,7 +414,7 @@ export function PostUpdateForm({
             </Button>
 
             <Button
-              disabled={loading}
+              disabled={loading || trigger}
               type="submit"
               size="sm"
               className="w-full"

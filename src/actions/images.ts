@@ -199,22 +199,15 @@ export async function applyFrame(image: Buffer, frameURL: string) {
   }
 }
 
-export async function watermarkImage({
-  ...data
-}: z.infer<typeof imageWatermarkSchema>) {
+export async function watermarkImage(src: string) {
   try {
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
 
     // Fetch the image
-    const image = await fetchImage(
-      "https://plus.unsplash.com/premium_photo-1680281937048-735543c5c0f7?q=80&w=1022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    );
+    const image = await fetchImage(src);
 
-    const framedImage = await applyFrame(
-      image,
-      "./public/img-processing/frame.png",
-    );
+    const framedImage = await applyFrame(image, FRAMES_URL?.[1]);
     //  Store it remotely
     return await uploadIntoSpace(`frame-${Date.now()}.png`, framedImage);
   } catch (error: any) {

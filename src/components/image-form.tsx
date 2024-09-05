@@ -245,26 +245,21 @@ export const ImageForm = {
 
     async function addWatermark() {
       setGenerating(true);
-      toast.promise(
-        watermarkImage({
-          src: form?.getValues("image.src") ?? "",
-        }),
-        {
-          finally: () => setGenerating(false),
-          error: async (err) => {
-            const msg = await t(err?.["message"], lang);
-            return msg;
-          },
-          success: async (url) => {
-            form?.resetField("image.base64");
-            form?.resetField("image.file");
-
-            form?.setValue("image.src", url);
-
-            return url;
-          },
+      toast.promise(watermarkImage(form?.getValues("image.src") ?? ""), {
+        finally: () => setGenerating(false),
+        error: async (err) => {
+          const msg = await t(err?.["message"], lang);
+          return msg;
         },
-      );
+        success: async (url) => {
+          form?.resetField("image.base64");
+          form?.resetField("image.file");
+
+          form?.setValue("image.src", url);
+
+          return url;
+        },
+      });
     }
     return (
       <div className="grid gap-2">
@@ -283,20 +278,27 @@ export const ImageForm = {
       </div>
     );
   },
-  chooseFrame: function Component({
-    dic: {
-      "image-form": { prompt: c },
-    },
-    loading,
-    form,
-  }: ImageFormProps) {
-    const [framedImages, setFramedImages] = useState<string[]>([]);
+  chooseFrame: function Component(
+    {
+      dic: {
+        "image-form": { prompt: c },
+      },
+      loading,
+      form,
+      // framedImages,
+    }: ImageFormProps,
+    // & { framedImages: string[] | null }
+  ) {
+    const [framedImages, setFramedImages] = useState<string[] | null>(null);
 
     useEffect(() => {
       const fetchData = async () => {
         try {
           const src = form.getValues("image.src");
-          if (!!src) return;
+          if (!src) {
+            setFramedImages([]);
+            return;
+          }
 
           const image = await fetchImage(src);
           const data = await applyAllFrames(JSON.stringify(image)).then((r) =>
@@ -305,6 +307,7 @@ export const ImageForm = {
 
           setFramedImages(data);
         } catch (error) {
+          setFramedImages([]);
           console.error("Error fetching data:", error);
         }
       };
@@ -312,10 +315,17 @@ export const ImageForm = {
       fetchData();
     }, []); // Empty dependency array means this effect runs once after the initial render
 
-    if (!framedImages?.["length"])
+    if (!framedImages)
       return (
         <p className="py-5 text-center text-sm text-muted-foreground">
           applying frames...
+        </p>
+      );
+
+    if (!framedImages?.["length"])
+      return (
+        <p className="py-5 text-center text-sm text-muted-foreground">
+          No frames to be applied...
         </p>
       );
 

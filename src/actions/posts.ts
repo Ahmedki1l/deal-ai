@@ -41,6 +41,27 @@ function containsArabic(text: string | null) {
   return arabicRegex.test(text ? text : "");
 }
 
+async function generateImg(prompt) {
+  let request = {
+    // prompt: Please a beautiful ${propertyType} view from "outside" at day time with beautiful detailed background and please create a realistic design with detailed background with properties at background and use floors data from "${5}" and build a ${propertyType} in ${landArea} square metre area with a detailed and beautiful background matching with city and a front view from outside thanks.,
+    prompt: prompt,
+    // input: please use this data to generate an image to be a background image for a presentation, it should be a building containing the number of floors in these data and put in a title in the bottom of the image with a margin bottom of 50px, data: ${JSON.stringify(data['تقرير_تحليل_الاستثمار']['معايير_التطوير'])},
+  };
+  let response = await fetch(
+    "https://elsamalotyapis-production.up.railway.app/api/generateImage",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request),
+    },
+  );
+  let imageObject = await response.json();
+  console.log(imageObject.data.data[0].url);
+  return imageObject.data.data[0].url;
+}
+
 export async function createPost(
   controller: ReadableStreamDefaultController<any>,
   key: string,
@@ -244,26 +265,15 @@ export async function createPost(
         const adjusted_image = { prompt: adjusted_image_response?.prompt };
 
         console.log("adjusted_image: ", adjusted_image);
-        const fetchPromise = fetch(imageApiEndpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(adjusted_image),
-        })
-          .then(async (r) => {
-            try {
-              return await r?.json();
-            } catch {
-              console.log("imageResponse: ", await r?.text());
-            }
-          })
-          .then(async (imageResponse) => {
+        const fetchPromise = generateImg(adjusted_image).then(
+          async (imageResponse) => {
             // console.log("image prompt: ", adjusted_image);
             console.log("imageResponse: ", imageResponse);
 
             console.log("image response: ", imageResponse);
-            if (!imageResponse?.data.data[0].url) return null;
+            if (!imageResponse) return null;
 
-            const fetcedImage = await fetchImage(imageResponse?.["image_url"]);
+            const fetcedImage = await fetchImage(imageResponse);
             const bufferedImage = await Sharp(fetcedImage).toBuffer();
             const url = await uploadIntoSpace(
               `post-${Date.now()}.png`,
@@ -281,7 +291,8 @@ export async function createPost(
                 deletedAt: null,
               } as Image,
             });
-          });
+          },
+        );
 
         imageFetchPromises.push(fetchPromise);
 

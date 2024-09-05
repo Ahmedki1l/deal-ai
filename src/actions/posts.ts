@@ -273,21 +273,21 @@ export async function createPost(
 
             if (!imageResponse) return null;
 
-            // const fetchedImage = await fetchImage(imageResponse);
+            const fetchedImage = await fetchImage(imageResponse);
             // const framedImage = await applyFrame(fetchedImage, FRAMES_URL?.[0]);
-            // // const bufferedImage = await Sharp(fetcedImage).toBuffer();
-            // const url = await uploadIntoSpace(
-            //   `post-${Date.now()}.png`,
-            //   framedImage,
-            // );
-            // console.log("url: ", url);
+            const bufferedImage = await Sharp(fetchedImage).toBuffer();
+            const url = await uploadIntoSpace(
+              `post-${Date.now()}.png`,
+              bufferedImage,
+            );
+            console.log("url: ", url);
 
-            // if (!url) return null;
+            if (!url) return null;
 
             return db.image.create({
               data: {
                 id: generateIdFromEntropySize(10),
-                src: imageResponse,
+                src: url,
                 prompt: adjusted_image.prompt,
                 deletedAt: null,
               } as Image,
@@ -371,7 +371,8 @@ export async function updatePost({
     if (!user) throw new RequiresLoginError();
 
     // @ts-ignore
-    let src = (data?.["image"]?.["src"] as unknown as string | null) ?? "";
+    const src = (data?.["image"]?.["src"] as unknown as string | null) ?? "";
+    let framedImageURL = null;
 
     console.log("frame: ", frame, " -  src: ", src);
     if (frame && src) {
@@ -380,7 +381,10 @@ export async function updatePost({
       const fetchedImage = await fetchImage(src);
       const framedImage = await applyFrame(fetchedImage, frame);
       // const bufferedImage = await Sharp(fetcedImage).toBuffer();
-      src = await uploadIntoSpace(`post-${Date.now()}.png`, framedImage);
+      framedImageURL = await uploadIntoSpace(
+        `post-${Date.now()}.png`,
+        framedImage,
+      );
 
       console.log("frameed src: ", src);
     }
@@ -391,10 +395,10 @@ export async function updatePost({
         image: {
           update: {
             ...data?.["image"],
-            src,
           },
         },
         confirmedAt: confirm ? new Date() : null,
+        framedImageURL: framedImageURL ?? null,
       },
       where: {
         id,

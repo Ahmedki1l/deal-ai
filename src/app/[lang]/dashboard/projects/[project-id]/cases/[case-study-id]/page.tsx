@@ -472,7 +472,10 @@ export default async function CaseStudy({
                                 href={`/dashboard/projects/${projectId}/cases/${caseStudyId}/posts/${e?.["id"]}`}
                               >
                                 <Image
-                                  src={e?.["image"]?.["src"]!}
+                                  src={
+                                    e?.["framedImageURL"] ??
+                                    e?.["image"]?.["src"]!
+                                  }
                                   alt=""
                                   className="aspect-square rounded-none"
                                 />

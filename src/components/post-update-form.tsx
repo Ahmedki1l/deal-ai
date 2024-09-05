@@ -157,7 +157,10 @@ export function PostUpdateForm({
             >
               {/* <div className="absolute inset-0" /> */}
               {isValidUrl(form.watch("image.src") ?? "") ? (
-                <Image src={form.getValues("image.src")!} alt="" />
+                <Image
+                  src={post?.["framedImageURL"] ?? form.getValues("image.src")!}
+                  alt=""
+                />
               ) : null}
               <div className="absolute right-16 top-4 z-50 flex items-center gap-2 text-lg font-medium">
                 <DialogResponsive

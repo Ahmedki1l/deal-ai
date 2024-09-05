@@ -26,6 +26,10 @@ import { platformsArr } from "@/db/enums";
 import { getCookie, getLocale } from "./helpers";
 import { getDictionary } from "@/lib/dictionaries";
 import axios from "axios";
+import { sendEvent } from "@/lib/stream";
+import { fetchImage } from "@/lib/uploader";
+import Sharp from "sharp";
+import { uploadIntoSpace } from "./images";
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -38,40 +42,40 @@ function containsArabic(text: string | null) {
 }
 
 export async function createPost(
-  // controller: ReadableStreamDefaultController<any>,
-  // key: string,
-  {
-    project,
-    caseStudy,
-    ...data
-  }: z.infer<typeof postCreateSchema> & {
-    project: Project & { platforms: Platform[] };
-    caseStudy: CaseStudy;
-  },
+  controller: ReadableStreamDefaultController<any>,
+  key: string,
+  // {
+  //   project,
+  //   caseStudy,
+  //   ...data
+  // }: z.infer<typeof postCreateSchema> & {
+  //   project: Project & { platforms: Platform[] };
+  //   caseStudy: CaseStudy;
+  // },
 ) {
   const { actions: c } = await getDictionary(await getLocale());
 
   try {
-    // sendEvent(controller, "status", c?.["getting info..."]);
+    sendEvent(controller, "status", c?.["getting info..."]);
 
-    // const user = await getAuth();
-    // if (!user) throw new RequiresLoginError();
-    // // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
+    const user = await getAuth();
+    if (!user) throw new RequiresLoginError();
+    // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
 
-    // const body = await getCookie<z.infer<typeof postCreateSchema>>(key);
-    // if (!body) throw Error("No body Data.");
+    const body = await getCookie<z.infer<typeof postCreateSchema>>(key);
+    if (!body) throw Error("No body Data.");
 
-    // const parsedData = postCreateSchema.safeParse(body);
-    // if (!parsedData.success) throw new Error("Invalid data");
+    const parsedData = postCreateSchema.safeParse(body);
+    if (!parsedData.success) throw new Error("Invalid data");
 
-    // const data = parsedData?.["data"];
-    // const caseStudyResponse = await db.caseStudy.findFirst({
-    //   include: { project: { include: { platforms: true } } },
-    //   where: { id: data?.["caseStudyId"] },
-    // });
-    // if (!caseStudyResponse) throw new Error("non existing study case.");
-    // const { project, ...caseStudy } = caseStudyResponse;
-    // console.log(data, project, caseStudy);
+    const data = parsedData?.["data"];
+    const caseStudyResponse = await db.caseStudy.findFirst({
+      include: { project: { include: { platforms: true } } },
+      where: { id: data?.["caseStudyId"] },
+    });
+    if (!caseStudyResponse) throw new Error("non existing study case.");
+    const { project, ...caseStudy } = caseStudyResponse;
+    console.log(data, project, caseStudy);
 
     let endpoint_language = "en";
 
@@ -101,7 +105,7 @@ export async function createPost(
         image_anaylzer_prompt.input += url + ", ";
       });
 
-      // sendEvent(controller, "status", c?.["generating images..."]);
+      sendEvent(controller, "status", c?.["generating images..."]);
       const image_analyzer_endpoint = domain + `/en/image-analyzer`;
 
       console.log("image_anaylzer_prompt: ", image_anaylzer_prompt);
@@ -128,11 +132,11 @@ export async function createPost(
     const social_media_endpoint =
       domain + `/${endpoint_language}/chat/socialmediaplan`;
 
-    // sendEvent(
-    //   controller,
-    //   "status",
-    //   c?.["generating AI prompt for social media..."],
-    // );
+    sendEvent(
+      controller,
+      "status",
+      c?.["generating AI prompt for social media..."],
+    );
 
     console.log("social_media_response prompt: ", prompt);
 
@@ -191,11 +195,11 @@ export async function createPost(
           input: accountPosts[i][`Post${i + 1}`],
         };
 
-        // sendEvent(
-        //   controller,
-        //   "status",
-        //   c?.["generating social media content..."],
-        // );
+        sendEvent(
+          controller,
+          "status",
+          c?.["generating social media content..."],
+        );
         console.log("prompt_generator_prompt: ", prompt_generator_prompt);
         const prompt_generator_response = await axios
           .post(prompt_generator_endpoint, prompt_generator_prompt, {
@@ -221,7 +225,7 @@ export async function createPost(
           input: `you must adjust this prompt to be only 1000 characters long at max: ${imagePrompt?.input}`,
         };
 
-        // sendEvent(controller, "status", c?.["generating AI images..."]);
+        sendEvent(controller, "status", c?.["generating AI images..."]);
         console.log("adjusted_image_prompt: ", adjusted_image_prompt);
         const adjusted_image_response = await fetch(prompt_generator_endpoint, {
           method: "POST",
@@ -253,28 +257,27 @@ export async function createPost(
               console.log("imageResponse: ", await r?.text());
             }
           })
-          .then((imageResponse) => {
+          .then(async (imageResponse) => {
             // console.log("image prompt: ", adjusted_image);
             console.log("imageResponse: ", imageResponse);
 
             console.log("image response: ", imageResponse);
             if (!imageResponse?.["image_url"]) return null;
 
-            // const fetcedImage = await fetchImage(imageResponse?.["image_url"]);
-            // const bufferedImage = await sharp(fetcedImage).toBuffer();
-            // const url = await uploadIntoSpace(
-            //   `post-${Date.now()}.png`,
-            //   bufferedImage,
-            // );
-            // console.log("url: ", url);
+            const fetcedImage = await fetchImage(imageResponse?.["image_url"]);
+            const bufferedImage = await Sharp(fetcedImage).toBuffer();
+            const url = await uploadIntoSpace(
+              `post-${Date.now()}.png`,
+              bufferedImage,
+            );
+            console.log("url: ", url);
 
-            // if (!url) return null;
+            if (!url) return null;
 
             return db.image.create({
               data: {
                 id: generateIdFromEntropySize(10),
-                src: imageResponse?.["image_url"],
-                // url,
+                src: url,
                 prompt: adjusted_image.input,
                 deletedAt: null,
               } as Image,
@@ -307,9 +310,7 @@ export async function createPost(
             content: accountPosts[i][`Post${i + 1}`],
             platform: acc,
             postAt: new Date(currentDate),
-            imageId:
-              //  imageData?.["id"] ??
-              null,
+            imageId: imageData?.["id"] ?? null,
             deletedAt: null,
           });
           indicator++;
@@ -317,24 +318,24 @@ export async function createPost(
       }
     }
 
-    // sendEvent(controller, "status", c?.["adusting posts together..."]);
+    sendEvent(controller, "status", c?.["adusting posts together..."]);
     await Promise.all(imageFetchPromises);
 
     if (!allPostDetails?.["length"]) {
-      // sendEvent(controller, "completed", c?.["No posts to create."]);
+      sendEvent(controller, "completed", c?.["No posts to create."]);
       return;
     }
 
-    // sendEvent(controller, "status", c?.["saving posts..."]);
+    sendEvent(controller, "status", c?.["saving posts..."]);
     await db.post.createMany({
       data: allPostDetails,
     });
 
-    // sendEvent(
-    //   controller,
-    //   "completed",
-    //   `${allPostDetails?.["length"]} ${c?.["posts were created."]}`,
-    // );
+    sendEvent(
+      controller,
+      "completed",
+      `${allPostDetails?.["length"]} ${c?.["posts were created."]}`,
+    );
     revalidatePath("/", "layout");
   } catch (error: any) {
     console.log(error?.["message"]);
@@ -343,10 +344,9 @@ export async function createPost(
       error?.["message"] ??
         c?.["your study case was not created. please try again."],
     );
+  } finally {
+    controller.close();
   }
-  // finally {
-  //   controller.close();
-  // }
 }
 
 export async function updatePost({

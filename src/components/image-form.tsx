@@ -296,7 +296,7 @@ export const ImageForm = {
       const fetchData = async () => {
         try {
           const src = form.getValues("image.src");
-          if (!src) return;
+          if (!!src) return;
 
           const image = await fetchImage(src);
           const data = await applyAllFrames(JSON.stringify(image)).then((r) =>

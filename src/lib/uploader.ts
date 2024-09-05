@@ -17,9 +17,13 @@ export const s3Client = new S3({
 
 // Function to fetch an image from a remote URL
 export async function fetchImage(url: string) {
+  console.log("url: ", url);
   const response = await axios({
     url,
     responseType: "arraybuffer",
-  });
-  return Buffer.from(response.data, "binary");
+  })
+    .then((r) => r?.["data"])
+    .catch((err) => console.error("error fetching image: ", err?.["message"]));
+  console.log(response);
+  return Buffer.from(response, "binary");
 }

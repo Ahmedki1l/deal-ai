@@ -15,6 +15,7 @@ export function Image({ className, src, alt, ...props }: ImageProps) {
         "h-full w-full rounded-md border bg-muted object-cover object-center transition-colors",
         className,
       )}
+      priority={true}
       {...props}
     />
   );

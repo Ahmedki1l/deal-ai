@@ -56,6 +56,7 @@ export function PostUpdateForm({
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const [open, setOpen] = useState<boolean>(false);
+  const [openFrame, setOpenFrame] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof postUpdateSchema>>({
     mode: "onSubmit",
@@ -85,6 +86,8 @@ export function PostUpdateForm({
       },
     });
   }
+
+  console.log(form.formState.errors);
 
   return (
     <Form {...form}>
@@ -152,11 +155,11 @@ export function PostUpdateForm({
                 // form.watch("image") && `bg-[src(${form.getValues("image")})]`,
               )}
             >
-              <div className="absolute inset-0 bg-primary/30" />
+              {/* <div className="absolute inset-0" /> */}
               {isValidUrl(form.watch("image.src") ?? "") ? (
                 <Image src={form.getValues("image.src")!} alt="" />
               ) : null}
-              <div className="absolute right-4 top-4 z-50 flex items-center gap-2 text-lg font-medium">
+              <div className="absolute right-16 top-4 z-50 flex items-center gap-2 text-lg font-medium">
                 <DialogResponsive
                   dic={dic}
                   disabled={loading}
@@ -214,6 +217,46 @@ export function PostUpdateForm({
                 >
                   <Button disabled={loading} size="icon" variant="secondary">
                     <Icons.edit />
+                  </Button>
+                </DialogResponsive>
+              </div>
+              <div className="absolute right-4 top-4 z-50 flex items-center gap-2 text-lg font-medium">
+                <DialogResponsive
+                  dic={dic}
+                  disabled={loading}
+                  confirmButton={
+                    <>
+                      <Button
+                        type="button"
+                        onClick={() => setOpenFrame(false)}
+                        disabled={loading}
+                        className="w-full md:w-fit"
+                      >
+                        {!disabled && loading && <Icons.spinner />}
+                        {c?.["submit"]}
+                      </Button>
+                    </>
+                  }
+                  content={
+                    <>
+                      <ImageForm.chooseFrame
+                        dic={dic}
+                        form={form}
+                        loading={loading}
+                      />
+                    </>
+                  }
+                  title={c?.["update image"]}
+                  description={
+                    c?.[
+                      "updating an image allows you to refine and enhance the details of your ongoing developments"
+                    ]
+                  }
+                  open={openFrame}
+                  setOpen={setOpenFrame}
+                >
+                  <Button disabled={loading} size="icon" variant="secondary">
+                    <Icons.image />
                   </Button>
                 </DialogResponsive>
               </div>

@@ -29,7 +29,7 @@ import axios from "axios";
 import { sendEvent } from "@/lib/stream";
 import { fetchImage } from "@/lib/uploader";
 import Sharp from "sharp";
-import { uploadIntoSpace } from "./images";
+import { applyFrame, uploadIntoSpace } from "./images";
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -352,11 +352,25 @@ export async function createPost(
 export async function updatePost({
   id,
   confirm,
+  frame,
   ...data
 }: z.infer<typeof postUpdateSchema>) {
   try {
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
+
+    // @ts-ignore
+    let src = (data?.["image"]?.["src"] as unknown as string | null) ?? "";
+
+    console.log("frame: ", frame, " -  src: ", src);
+    if (frame && src) {
+      console.log("framing...");
+      const image = await fetchImage(src);
+      const framedImage = await applyFrame(image, frame);
+      src = await uploadIntoSpace(`post-${Date.now()}.png`, framedImage);
+
+      console.log("frameed src: ", src);
+    }
 
     await db.post.update({
       data: {
@@ -364,6 +378,7 @@ export async function updatePost({
         image: {
           update: {
             ...data?.["image"],
+            src,
           },
         },
         confirmedAt: confirm ? new Date() : null,

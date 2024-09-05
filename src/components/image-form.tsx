@@ -35,6 +35,7 @@ import { db } from "@/db";
 import { DialogResponsive } from "./dialog";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { FRAMES_URL } from "@/lib/constants";
+import { fetchImage } from "@/lib/uploader";
 
 export type ImageFormProps = {
   loading: boolean;
@@ -282,70 +283,73 @@ export const ImageForm = {
       </div>
     );
   },
-  // chooseFrame: function Component({
-  //   dic: {
-  //     "image-form": { prompt: c },
-  //   },
-  //   loading,
-  //   form,
-  //   image,
-  // }: ImageFormProps & { image: Buffer }) {
-  //   const [framedImages, setFramedImages] = useState<string[]>([]);
+  chooseFrame: function Component({
+    dic: {
+      "image-form": { prompt: c },
+    },
+    loading,
+    form,
+  }: ImageFormProps) {
+    const [framedImages, setFramedImages] = useState<string[]>([]);
 
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //       try {
-  //         const data = await applyAllFrames(JSON.stringify(image)).then((r) =>
-  //           JSON.parse(r),
-  //         );
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const src = form.getValues("image.src");
+          if (!src) return;
 
-  //         setFramedImages(data);
-  //       } catch (error) {
-  //         console.error("Error fetching data:", error);
-  //       }
-  //     };
+          const image = await fetchImage(src);
+          const data = await applyAllFrames(JSON.stringify(image)).then((r) =>
+            JSON.parse(r),
+          );
 
-  //     fetchData();
-  //   }, []); // Empty dependency array means this effect runs once after the initial render
+          setFramedImages(data);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
 
-  //   if (!framedImages?.["length"])
-  //     return (
-  //       <p className="py-5 text-center text-sm text-muted-foreground">
-  //         applying frames...
-  //       </p>
-  //     );
+      fetchData();
+    }, []); // Empty dependency array means this effect runs once after the initial render
 
-  //   return (
-  //     <FormField
-  //       control={form.control}
-  //       name="frame"
-  //       render={({ field }) => (
-  //         <FormItem>
-  //           <FormLabel className="sr-only">Frame</FormLabel>
+    if (!framedImages?.["length"])
+      return (
+        <p className="py-5 text-center text-sm text-muted-foreground">
+          applying frames...
+        </p>
+      );
 
-  //           <ToggleGroup
-  //             type="single"
-  //             variant="outline"
-  //             onValueChange={field.onChange}
-  //             defaultValue={field.value}
-  //             disabled={loading}
-  //             className="grid h-40 grid-cols-3 gap-2"
-  //           >
-  //             {framedImages?.map((fi, i) => (
-  //               <ToggleGroupItem
-  //                 key={i}
-  //                 value={FRAMES_URL?.[i]}
-  //                 className="aspect-square h-full w-full"
-  //               >
-  //                 <Image src={fi} alt="" className="h-full w-full" />
-  //               </ToggleGroupItem>
-  //             ))}
-  //           </ToggleGroup>
+    return (
+      <FormField
+        control={form.control}
+        name="frame"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="sr-only">Frame</FormLabel>
 
-  //           <FormMessage />
-  //         </FormItem>
-  //       )}
-  //     />
-  //   );
-  // },
+            <ToggleGroup
+              type="single"
+              variant="outline"
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+              disabled={loading}
+              className="grid h-40 grid-cols-3 gap-2"
+            >
+              {framedImages?.map((fi, i) => (
+                <ToggleGroupItem
+                  key={i}
+                  value={FRAMES_URL?.[i]}
+                  className="aspect-square h-full w-full"
+                >
+                  <Image src={fi} alt="" className="h-full w-full" />
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  },
 };

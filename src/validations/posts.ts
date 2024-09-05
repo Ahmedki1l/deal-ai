@@ -45,6 +45,7 @@ export const postUpdateSchema = postSchema
   .and(
     z.object({
       confirm: z.boolean("confirm"),
+      frame: z.stringNotRequired("frame").optional(),
       image: imageUpdateFormSchema,
     }),
   );

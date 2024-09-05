@@ -158,7 +158,10 @@ export function PostUpdateForm({
               {/* <div className="absolute inset-0" /> */}
               {isValidUrl(form.watch("image.src") ?? "") ? (
                 <Image
-                  src={post?.["framedImageURL"] ?? form.getValues("image.src")!}
+                  src={
+                    // post?.["framedImageURL"] ??
+                    form.getValues("image.src")!
+                  }
                   alt=""
                 />
               ) : null}

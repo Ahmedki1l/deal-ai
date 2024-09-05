@@ -316,7 +316,7 @@ export async function createPost(
             platform: acc,
             postAt: new Date(currentDate),
             imageId: imageData?.["id"] ?? null,
-            framedImageURL: null,
+            // framedImageURL: null,
             deletedAt: null,
           });
           indicator++;
@@ -367,7 +367,7 @@ export async function updatePost({
 
     // @ts-ignore
     const src = (data?.["image"]?.["src"] as unknown as string | null) ?? "";
-    let fiURL: string | null = null;
+    let fiURL: string | null = src ?? null;
 
     console.log("frame: ", frame, " -  src: ", src);
     if (frame && src) {
@@ -378,7 +378,7 @@ export async function updatePost({
       // const bufferedImage = await Sharp(fetcedImage).toBuffer();
       fiURL = await uploadIntoSpace(`post-${Date.now()}.png`, framedImage);
 
-      console.log("frameed src: ", src);
+      console.log("frameed src: ", fiURL);
     }
 
     await db.post.update({
@@ -387,10 +387,11 @@ export async function updatePost({
         image: {
           update: {
             ...data?.["image"],
+            src: fiURL,
           },
         },
         confirmedAt: confirm ? new Date() : null,
-        framedImageURL: fiURL,
+        // framedImageURL: fiURL,
       },
       where: {
         id,

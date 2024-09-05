@@ -155,8 +155,7 @@ export async function createPost(
 
     const daysToPost = noOfPostsPerWeek === 3 ? [0, 2, 4] : [0, 1, 2, 3, 4];
     const imageApiEndpoint =
-      // "https://elsamalotyapis-production.up.railway.app/api/generateImage";
-      domain + "/image2";
+      "https://elsamalotyapis-production.up.railway.app/api/generateImage";
 
     let imageFetchPromises = [];
     let allPostDetails: Omit<
@@ -242,7 +241,7 @@ export async function createPost(
 
         let imageResponse;
 
-        const adjusted_image = { input: adjusted_image_response?.prompt };
+        const adjusted_image = { prompt: adjusted_image_response?.prompt };
 
         console.log("adjusted_image: ", adjusted_image);
         const fetchPromise = fetch(imageApiEndpoint, {
@@ -262,7 +261,7 @@ export async function createPost(
             console.log("imageResponse: ", imageResponse);
 
             console.log("image response: ", imageResponse);
-            if (!imageResponse?.["image_url"]) return null;
+            if (!imageResponse?.data.data[0].url) return null;
 
             const fetcedImage = await fetchImage(imageResponse?.["image_url"]);
             const bufferedImage = await Sharp(fetcedImage).toBuffer();
@@ -278,7 +277,7 @@ export async function createPost(
               data: {
                 id: generateIdFromEntropySize(10),
                 src: url,
-                prompt: adjusted_image.input,
+                prompt: adjusted_image.prompt,
                 deletedAt: null,
               } as Image,
             });

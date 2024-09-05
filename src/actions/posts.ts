@@ -180,10 +180,7 @@ export async function createPost(
       "https://elsamalotyapis-production.up.railway.app/api/generateImage";
 
     let imageFetchPromises = [];
-    let allPostDetails: Omit<Post, "createdAt" | "confirmedAt">[] =
-      // : z.infer<typeof postSchema>[] =
-      [];
-
+    let allPostDetails: any[] = [];
     // uppercasing key, to match platform
     const responseData = Object.keys(social_media_response).reduce(
       (acc, key) => {

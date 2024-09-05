@@ -272,21 +272,20 @@ export async function createPost(
 
             if (!imageResponse) return null;
 
-            // const fetcedImage = await fetchImage(imageResponse);
-            // const bufferedImage = await Sharp(fetcedImage).toBuffer();
-            // const url = await uploadIntoSpace(
-            //   `post-${Date.now()}.png`,
-            //   bufferedImage,
-            // );
-            // console.log("url: ", url);
+            const fetcedImage = await fetchImage(imageResponse);
+            const bufferedImage = await Sharp(fetcedImage).toBuffer();
+            const url = await uploadIntoSpace(
+              `post-${Date.now()}.png`,
+              bufferedImage,
+            );
+            console.log("url: ", url);
 
-            // if (!url) return null;
+            if (!url) return null;
 
             return db.image.create({
               data: {
                 id: generateIdFromEntropySize(10),
-                src: imageResponse,
-                // url,
+                src: url,
                 prompt: adjusted_image.prompt,
                 deletedAt: null,
               } as Image,

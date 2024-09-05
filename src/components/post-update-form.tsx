@@ -71,7 +71,7 @@ export function PostUpdateForm({
     defaultValues: {
       ...post,
       image: {
-        // ...post?.["image"],
+        ...post?.["image"],
         src: post?.["image"]?.["src"],
         prompt: post?.["image"]?.["prompt"],
       },

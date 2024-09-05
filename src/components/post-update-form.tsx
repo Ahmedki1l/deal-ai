@@ -63,7 +63,10 @@ export function PostUpdateForm({
   const [trigger, setTrigger] = useState<boolean>(loading ?? false);
   const [open, setOpen] = useState<boolean>(false);
   const [openFrame, setOpenFrame] = useState<boolean>(false);
-  // const [framedImages, setFramedImages] = useState<string[] | null>(null);
+  const [framedImages, setFramedImages] = useState<string[] | null>(null);
+  const [src, setSrc] = useState<string | null>(
+    post?.["image"]?.["src"] ?? null,
+  );
 
   const form = useForm<z.infer<typeof postUpdateSchema>>({
     mode: "onSubmit",
@@ -79,33 +82,28 @@ export function PostUpdateForm({
     },
   });
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const src = post?.["image"]?.["src"];
-  //       if (!src) {
-  //         setFramedImages(null);
-  //         return;
-  //       }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!src) {
+          setFramedImages([]);
+          return;
+        }
 
-  //       const image = await fetchImage(src);
-  //       const data = await applyAllFrames(JSON.stringify(image)).then((r) =>
-  //         JSON.parse(r),
-  //       );
+        const result = await applyAllFrames(src);
+        setFramedImages(result);
+      } catch (error) {
+        setFramedImages([]);
+        console.error("Error fetching data:", error);
+      }
+    };
 
-  //       setFramedImages(data);
-  //     } catch (error) {
-  //       setFramedImages(null);
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []); // Empty dependency array means this effect runs once after the initial render
+    fetchData();
+  }, [src]);
 
   function onSubmit(data: z.infer<typeof postUpdateSchema>) {
     setLoading(true);
-    toast.promise(updatePost(data), {
+    toast.promise(updatePost(JSON.stringify(data)), {
       finally: () => setLoading(false),
       error: async (err) => {
         const msg = await t(err?.["message"], lang);
@@ -116,11 +114,7 @@ export function PostUpdateForm({
         return c?.["updated successfully."];
       },
     });
-
-    // console.log(data?.["frame"], data?.["image"]);
   }
-
-  console.log(form.formState.errors);
 
   return (
     <Form {...form}>
@@ -135,13 +129,13 @@ export function PostUpdateForm({
             <div className="hidden items-center gap-2 md:flex">
               {post?.["deletedAt"] ? (
                 <PostRestoreButton
-                  disabled={post?.["deletedAt"] ? false : disabled || trigger}
+                  disabled={trigger || post?.["deletedAt"] ? false : disabled}
                   dic={dic}
                   asChild
                   post={post}
                 >
                   <Button
-                    disabled={post?.["deletedAt"] ? false : disabled || trigger}
+                    disabled={trigger || post?.["deletedAt"] ? false : disabled}
                     variant="secondary"
                     size="sm"
                   >
@@ -150,12 +144,16 @@ export function PostUpdateForm({
                 </PostRestoreButton>
               ) : (
                 <PostBinButton
-                  disabled={disabled}
+                  disabled={loading || trigger || disabled}
                   dic={dic}
                   asChild
                   post={post}
                 >
-                  <Button disabled={disabled} size="sm" variant="destructive">
+                  <Button
+                    disabled={loading || trigger || disabled}
+                    size="sm"
+                    variant="destructive"
+                  >
                     {c?.["delete"]}
                   </Button>
                 </PostBinButton>
@@ -181,7 +179,7 @@ export function PostUpdateForm({
             </div>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-[0.7fr,1fr]">
+          <div className="grid gap-4 lg:grid-cols-2">
             <div
               className={cn(
                 "relative h-full min-h-60 flex-col overflow-hidden rounded text-primary-foreground dark:border-r lg:flex",
@@ -192,13 +190,15 @@ export function PostUpdateForm({
               {isValidUrl(form.watch("image.src") ?? "") ? (
                 <Image
                   src={
-                    // post?.["framedImageURL"] ??
-                    form.getValues("image.src")!
+                    form.watch("frame")
+                      ? `data:image/png;base64,${JSON.parse(form.watch("frame")!)}`
+                      : (form.watch("framedImageURL") ??
+                        form.getValues("image.src")!)
                   }
                   alt=""
                 />
               ) : null}
-              <div className="absolute right-16 top-4 z-50 flex items-center gap-2 text-lg font-medium">
+              <div className="absolute right-4 top-4 z-50 flex items-center gap-2 text-lg font-medium">
                 <DialogResponsive
                   dic={dic}
                   disabled={loading || trigger}
@@ -262,33 +262,7 @@ export function PostUpdateForm({
                     <Icons.edit />
                   </Button>
                 </DialogResponsive>
-              </div>
-              <div className="absolute right-4 top-4 z-50 flex items-center gap-2 text-lg font-medium">
-                <Button
-                  onClick={async () => {
-                    toast.promise(
-                      async () => {
-                        setTrigger(true);
-                        const url = await watermarkImage(
-                          form.getValues("image.src")!,
-                        );
-                        form.setValue("image.src", url);
-                      },
-                      {
-                        finally: () => setTrigger(false),
-                        loading: "applying frame...",
-                        success: () => "applied frame",
-                      },
-                    );
-                  }}
-                  disabled={trigger}
-                  size="icon"
-                >
-                  <Icons.image />
-                </Button>
-              </div>
 
-              {/* <div className="absolute right-4 top-4 z-50 flex items-center gap-2 text-lg font-medium">
                 <DialogResponsive
                   dic={dic}
                   disabled={loading || trigger}
@@ -311,7 +285,7 @@ export function PostUpdateForm({
                         dic={dic}
                         form={form}
                         loading={loading}
-                        // framedImages={framedImages}
+                        framedImages={framedImages}
                       />
                     </>
                   }
@@ -324,11 +298,28 @@ export function PostUpdateForm({
                   open={openFrame}
                   setOpen={setOpenFrame}
                 >
-                  <Button disabled={loading || trigger} size="icon" variant="secondary">
-                    <Icons.image />
+                  <Button
+                    disabled={loading || trigger}
+                    size="icon"
+                    variant="secondary"
+                  >
+                    <Icons.imageReload />
                   </Button>
                 </DialogResponsive>
-              </div> */}
+                {form.watch("framedImageURL") || form.watch("frame") ? (
+                  <Button
+                    type="button"
+                    size="icon"
+                    onClick={() => {
+                      form.setValue("framedImageURL", null);
+                      form.setValue("frame", undefined);
+                    }}
+                    disabled={loading || trigger}
+                  >
+                    <Icons.x />
+                  </Button>
+                ) : null}
+              </div>
             </div>
             <Card>
               <CardHeader>
@@ -382,29 +373,37 @@ export function PostUpdateForm({
           <div className="flex items-center justify-center gap-2 md:hidden">
             {post?.["deletedAt"] ? (
               <PostRestoreButton
-                disabled={post?.["deletedAt"] ? false : disabled || trigger}
+                disabled={(trigger ?? post?.["deletedAt"]) ? false : disabled}
                 dic={dic}
                 asChild
                 post={post}
               >
                 <Button
                   size="sm"
-                  disabled={post?.["deletedAt"] ? false : disabled || trigger}
+                  disabled={(trigger ?? post?.["deletedAt"]) ? false : disabled}
                   variant="secondary"
                 >
                   {c?.["restore"]}
                 </Button>
               </PostRestoreButton>
             ) : (
-              <PostBinButton disabled={disabled} dic={dic} asChild post={post}>
-                <Button size="sm" disabled={disabled} variant="destructive">
+              <PostBinButton
+                disabled={loading || trigger || disabled}
+                dic={dic}
+                asChild
+                post={post}
+              >
+                <Button
+                  size="sm"
+                  disabled={loading || trigger || disabled}
+                  variant="destructive"
+                >
                   {c?.["delete"]}
                 </Button>
               </PostBinButton>
             )}
 
             <Button
-              disabled={loading || trigger}
               type="button"
               onClick={() => form.reset()}
               variant="outline"
@@ -414,7 +413,7 @@ export function PostUpdateForm({
             </Button>
 
             <Button
-              disabled={loading || trigger}
+              disabled={loading || trigger || disabled}
               type="submit"
               size="sm"
               className="w-full"

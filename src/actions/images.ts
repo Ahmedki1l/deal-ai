@@ -35,7 +35,7 @@ export async function createImage(data: z.infer<typeof imageCreateSchema>) {
 
     revalidatePath("/", "layout");
   } catch (error: any) {
-    console.log(error?.["message"]);
+    console.error(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
       error?.["message"] ?? "your image was not deleted. Please try again.",
@@ -60,7 +60,7 @@ export async function updateImage({
 
     revalidatePath("/", "layout");
   } catch (error: any) {
-    console.log(error?.["message"]);
+    console.error(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
       error?.["message"] ?? "your image was not updated. Please try again.",
@@ -86,13 +86,9 @@ export async function regenerateImagePrompt({
       body: JSON.stringify({ input: data.prompt }),
     }).then((r) => r?.json());
 
-    console.log(enhanced_prompt_response);
-
     const adjusted_image_prompt = {
       input: `you must adjust this prompt to be only 1000 characters long at max: ${enhanced_prompt_response.prompt}`,
     };
-
-    console.log("adjusted image request: ", adjusted_image_prompt);
 
     const prompt_generator_endpoint = domain + `/en/prompt-generator`;
     const adjusted_image_response = await fetch(prompt_generator_endpoint, {
@@ -101,11 +97,9 @@ export async function regenerateImagePrompt({
       body: JSON.stringify(adjusted_image_prompt),
     }).then((r) => r?.json());
 
-    console.log("adjusted prompt: ", adjusted_image_response);
-
     return adjusted_image_response.prompt;
   } catch (error: any) {
-    console.log(error?.["message"]);
+    console.error(error?.["message"]);
     if (error instanceof z.ZodError) throw new ZodError(error);
     throw Error(
       error?.["message"] ??
@@ -132,11 +126,9 @@ export async function generateImage({
       body: JSON.stringify({ input: data.prompt }),
     }).then((r) => r?.json());
 
-    console.log(image_generator_response);
-
     return image_generator_response.url;
   } catch (error: any) {
-    console.log(error?.["message"]);
+    console.error(error?.["message"]);
     if (error instanceof z.ZodError) throw new ZodError(error);
     throw Error(
       error?.["message"] ??
@@ -147,11 +139,6 @@ export async function generateImage({
 
 export async function uploadIntoSpace(name: ObjectKey, body: Body) {
   try {
-    // // Read the file from the local file system
-    // const fileContent = fs.readFileSync(
-    //   "./public/img-processing/filled-frame.png",
-    // );
-
     // Set up S3 upload parameters
     const params = {
       Bucket: process.env.DO_SPACE_BUCKET!,
@@ -164,8 +151,7 @@ export async function uploadIntoSpace(name: ObjectKey, body: Body) {
     await s3Client.upload(params).promise();
 
     // Return the uploaded file URL
-    const location = `https://${process.env.DO_SPACE_BUCKET}.${process.env.DO_SPACE_URL!.split("//")[1]}/${params.Key}`;
-    return location;
+    return `https://${process.env.DO_SPACE_BUCKET}.${process.env.DO_SPACE_URL!.split("//")[1]}/${params.Key}`;
   } catch (error) {
     console.error("Error uploading file:", error);
     throw error;
@@ -194,7 +180,7 @@ export async function applyFrame(image: Buffer, frameURL: string) {
       .png() // Output as PNG to maintain transparency
       .toBuffer();
   } catch (error) {
-    console.error("Error uploading file:", error);
+    console.error("Error applying frame:", error);
     throw error;
   }
 }
@@ -211,7 +197,7 @@ export async function watermarkImage(src: string) {
     //  Store it remotely
     return await uploadIntoSpace(`frame-${Date.now()}.png`, framedImage);
   } catch (error: any) {
-    console.log(error?.["message"]);
+    console.error(error?.["message"]);
     if (error instanceof z.ZodError) throw new ZodError(error);
     throw Error(
       error?.["message"] ??
@@ -220,16 +206,16 @@ export async function watermarkImage(src: string) {
   }
 }
 
-export async function applyAllFrames(image: string) {
+export async function applyAllFrames(src: string) {
   try {
+    const image = await fetchImage(src);
+
     const promiseFrames = FRAMES_URL?.map((f) =>
-      applyFrame(JSON.parse(image), f).then(
-        (r) => `data:image/png;base64,${r.toString("base64")}`,
-      ),
+      applyFrame(image, f).then((r) => r?.toString("base64")),
     );
-    return JSON.stringify(await Promise.all(promiseFrames));
+    return await Promise.all(promiseFrames);
   } catch (error) {
-    console.error("Error uploading file:", error);
+    console.error("Error applying frames:", error);
     throw error;
   }
 }
@@ -335,7 +321,7 @@ export async function applyAllFrames(image: string) {
 
 //     // return "https://plus.unsplash.com/premium_photo-1680281937048-735543c5c0f7?q=80&w=1022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 //   } catch (error: any) {
-//     console.log(error?.["message"]);
+//     console.error(error?.["message"]);
 //     if (error instanceof z.ZodError) throw new ZodError(error);
 //     throw Error(
 //       error?.["message"] ??
@@ -353,7 +339,7 @@ export async function deleteImage({ id }: z.infer<typeof imageDeleteSchema>) {
 
     revalidatePath("/", "layout");
   } catch (error: any) {
-    console.log(error?.["message"]);
+    console.error(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
       error?.["message"] ?? "your image was not deleted. Please try again.",

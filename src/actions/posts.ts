@@ -97,7 +97,6 @@ export async function createPost(
     });
     if (!caseStudyResponse) throw new Error("non existing study case.");
     const { project, ...caseStudy } = caseStudyResponse;
-    console.log(data, project, caseStudy);
 
     let endpoint_language = "en";
 
@@ -344,7 +343,7 @@ export async function createPost(
     );
     revalidatePath("/", "layout");
   } catch (error: any) {
-    console.log(error?.["message"]);
+    console.error(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
       error?.["message"] ??
@@ -355,41 +354,32 @@ export async function createPost(
   }
 }
 
-export async function updatePost({
-  id,
-  confirm,
-  frame,
-  ...data
-}: z.infer<typeof postUpdateSchema>) {
+export async function updatePost(stringData: string) {
   try {
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
 
-    // // @ts-ignore
-    // const src = (data?.["image"]?.["src"] as unknown as string | null) ?? "";
-    // let fiURL: string | null = src ?? null;
+    const { id, confirm, frame, ...data } = JSON.parse(stringData) as z.infer<
+      typeof postUpdateSchema
+    >;
 
-    // console.log("frame: ", frame, " -  src: ", src);
-    // if (frame && src) {
-    //   console.log("framing...");
+    const url = frame
+      ? await uploadIntoSpace(
+          `post-${Date.now()}.png`,
+          Buffer.from(frame, "base64"),
+        )
+      : null;
 
-    //   const fetchedImage = await fetchImage(src);
-    //   const framedImage = await applyFrame(fetchedImage, frame);
-    //   // const bufferedImage = await Sharp(fetcedImage).toBuffer();
-    //   fiURL = await uploadIntoSpace(`post-${Date.now()}.png`, framedImage);
-
-    //   console.log("frameed src: ", fiURL);
-    // }
+    console.log("framed url: ", url);
 
     await db.post.update({
       data: {
         ...data,
         image: {
-          update: {
-            ...data?.["image"],
-          },
+          update: { ...data?.["image"] },
         },
         confirmedAt: confirm ? new Date() : null,
+        framedImageURL: url,
       },
       where: {
         id,
@@ -398,7 +388,7 @@ export async function updatePost({
 
     revalidatePath("/", "layout");
   } catch (error: any) {
-    console.log(error?.["message"]);
+    console.error(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
       error?.["message"] ?? "your post was not updated. Please try again.",
@@ -429,7 +419,7 @@ export async function updatePostFeature({
 
     revalidatePath("/", "layout");
   } catch (error: any) {
-    console.log(error?.["message"]);
+    console.error(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
       error?.["message"] ?? "your post was not updated. Please try again.",
@@ -446,7 +436,7 @@ export async function deletePost({ id }: z.infer<typeof postDeleteSchema>) {
 
     revalidatePath("/", "layout");
   } catch (error: any) {
-    console.log(error?.["message"]);
+    console.error(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
       error?.["message"] ?? "your post was not deleted. Please try again.",

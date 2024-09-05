@@ -161,11 +161,6 @@ export const ImageForm = {
             return msg;
           },
           success: async (src: string) => {
-            const new_prompt = form.getValues("image.prompt");
-            console.log("new prompt: ", new_prompt);
-            const prev_image_src = form.getValues("image.src");
-            console.log("prev_image_src: ", prev_image_src);
-
             form.resetField("image.base64");
             form.resetField("image.file");
 
@@ -278,43 +273,14 @@ export const ImageForm = {
       </div>
     );
   },
-  chooseFrame: function Component(
-    {
-      dic: {
-        "image-form": { prompt: c },
-      },
-      loading,
-      form,
-      // framedImages,
-    }: ImageFormProps,
-    // & { framedImages: string[] | null }
-  ) {
-    const [framedImages, setFramedImages] = useState<string[] | null>(null);
-
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const src = form.getValues("image.src");
-          if (!src) {
-            setFramedImages([]);
-            return;
-          }
-
-          const image = await fetchImage(src);
-          const data = await applyAllFrames(JSON.stringify(image)).then((r) =>
-            JSON.parse(r),
-          );
-
-          setFramedImages(data);
-        } catch (error) {
-          setFramedImages([]);
-          console.error("Error fetching data:", error);
-        }
-      };
-
-      fetchData();
-    }, []); // Empty dependency array means this effect runs once after the initial render
-
+  chooseFrame: function Component({
+    dic: {
+      "image-form": { prompt: c },
+    },
+    loading,
+    form,
+    framedImages,
+  }: ImageFormProps & { framedImages: string[] | null }) {
     if (!framedImages)
       return (
         <p className="py-5 text-center text-sm text-muted-foreground">
@@ -343,15 +309,19 @@ export const ImageForm = {
               onValueChange={field.onChange}
               defaultValue={field.value}
               disabled={loading}
-              className="grid h-40 grid-cols-3 gap-2"
+              className="grid h-auto grid-cols-3 gap-2"
             >
               {framedImages?.map((fi, i) => (
                 <ToggleGroupItem
                   key={i}
-                  value={FRAMES_URL?.[i]}
-                  className="aspect-square h-full w-full"
+                  value={JSON.stringify(fi)}
+                  className="h-fit w-fit"
                 >
-                  <Image src={fi} alt="" className="h-full w-full" />
+                  <Image
+                    src={`data:image/png;base64,${fi}`}
+                    alt=""
+                    className="h-40 rounded-none border-none"
+                  />
                 </ToggleGroupItem>
               ))}
             </ToggleGroup>

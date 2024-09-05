@@ -220,7 +220,7 @@ export function PostUpdateForm({
                   </Button>
                 </DialogResponsive>
               </div>
-              {/* <div className="absolute right-4 top-4 z-50 flex items-center gap-2 text-lg font-medium">
+              <div className="absolute right-4 top-4 z-50 flex items-center gap-2 text-lg font-medium">
                 <DialogResponsive
                   dic={dic}
                   disabled={loading}
@@ -259,7 +259,7 @@ export function PostUpdateForm({
                     <Icons.image />
                   </Button>
                 </DialogResponsive>
-              </div> */}
+              </div>
             </div>
             <Card>
               <CardHeader>

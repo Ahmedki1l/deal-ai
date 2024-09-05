@@ -105,19 +105,19 @@ export function PostUpdateForm({
 
   function onSubmit(data: z.infer<typeof postUpdateSchema>) {
     setLoading(true);
-    // toast.promise(updatePost(data), {
-    //   finally: () => setLoading(false),
-    //   error: async (err) => {
-    //     const msg = await t(err?.["message"], lang);
-    //     return msg;
-    //   },
-    //   success: () => {
-    //     router.refresh();
-    //     return c?.["updated successfully."];
-    //   },
-    // });
+    toast.promise(updatePost(data), {
+      finally: () => setLoading(false),
+      error: async (err) => {
+        const msg = await t(err?.["message"], lang);
+        return msg;
+      },
+      success: () => {
+        router.refresh();
+        return c?.["updated successfully."];
+      },
+    });
 
-    console.log(data?.["frame"], data?.["image"]);
+    // console.log(data?.["frame"], data?.["image"]);
   }
 
   console.log(form.formState.errors);

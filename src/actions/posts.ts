@@ -365,21 +365,21 @@ export async function updatePost({
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
 
-    // @ts-ignore
-    const src = (data?.["image"]?.["src"] as unknown as string | null) ?? "";
-    let fiURL: string | null = src ?? null;
+    // // @ts-ignore
+    // const src = (data?.["image"]?.["src"] as unknown as string | null) ?? "";
+    // let fiURL: string | null = src ?? null;
 
-    console.log("frame: ", frame, " -  src: ", src);
-    if (frame && src) {
-      console.log("framing...");
+    // console.log("frame: ", frame, " -  src: ", src);
+    // if (frame && src) {
+    //   console.log("framing...");
 
-      const fetchedImage = await fetchImage(src);
-      const framedImage = await applyFrame(fetchedImage, frame);
-      // const bufferedImage = await Sharp(fetcedImage).toBuffer();
-      fiURL = await uploadIntoSpace(`post-${Date.now()}.png`, framedImage);
+    //   const fetchedImage = await fetchImage(src);
+    //   const framedImage = await applyFrame(fetchedImage, frame);
+    //   // const bufferedImage = await Sharp(fetcedImage).toBuffer();
+    //   fiURL = await uploadIntoSpace(`post-${Date.now()}.png`, framedImage);
 
-      console.log("frameed src: ", fiURL);
-    }
+    //   console.log("frameed src: ", fiURL);
+    // }
 
     await db.post.update({
       data: {
@@ -387,11 +387,9 @@ export async function updatePost({
         image: {
           update: {
             ...data?.["image"],
-            src: fiURL,
           },
         },
         confirmedAt: confirm ? new Date() : null,
-        // framedImageURL: fiURL,
       },
       where: {
         id,

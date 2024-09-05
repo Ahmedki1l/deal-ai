@@ -270,7 +270,7 @@ export function PostUpdateForm({
                       async () => {
                         setTrigger(true);
                         const url = await watermarkImage(
-                          post?.["image"]?.["src"]!,
+                          form.getValues("image.src")!,
                         );
                         form.setValue("image.src", url);
                       },

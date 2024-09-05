@@ -207,7 +207,7 @@ export async function watermarkImage(src: string) {
     // Fetch the image
     const image = await fetchImage(src);
 
-    const framedImage = await applyFrame(image, FRAMES_URL?.[1]);
+    const framedImage = await applyFrame(image, FRAMES_URL?.[0]);
     //  Store it remotely
     return await uploadIntoSpace(`frame-${Date.now()}.png`, framedImage);
   } catch (error: any) {

@@ -41,7 +41,7 @@ function containsArabic(text: string | null) {
   return arabicRegex.test(text ? text : "");
 }
 
-async function generateImg(prompt) {
+async function generateImg(prompt: { prompt: any }) {
   let request = {
     // prompt: Please a beautiful ${propertyType} view from "outside" at day time with beautiful detailed background and please create a realistic design with detailed background with properties at background and use floors data from "${5}" and build a ${propertyType} in ${landArea} square metre area with a detailed and beautiful background matching with city and a front view from outside thanks.,
     prompt: prompt,
@@ -265,7 +265,7 @@ export async function createPost(
         const adjusted_image = { prompt: adjusted_image_response?.prompt };
 
         console.log("adjusted_image: ", adjusted_image);
-        const fetchPromise = generateImg(adjusted_image).then(
+        const fetchPromise = generateImg(adjusted_image.prompt).then(
           async (imageResponse) => {
             // console.log("image prompt: ", adjusted_image);
             console.log("imageResponse: ", imageResponse);

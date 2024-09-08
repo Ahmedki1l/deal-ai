@@ -433,6 +433,7 @@ export function DashboardPostsBarChart({
               dataKey={activeChart}
               fill={`var(--color-${activeChart})`}
               onClick={(e) => setChoosenDate(e?.["date"])}
+              className="cursor-pointer"
             />
           </BarChart>
         </ChartContainer>
@@ -442,9 +443,9 @@ export function DashboardPostsBarChart({
         open={!!choosenDate?.["length"]}
         onOpenChange={(o) => setChoosenDate(o ? "" : null)}
       >
-        <DialogTrigger>Open</DialogTrigger>
-        <DialogContent className="container">
+        <DialogContent>
           {posts
+            .filter((p) => p?.["platform"] === activeChart)
             .filter(
               (p) =>
                 p?.["postAt"].toLocaleDateString() ==

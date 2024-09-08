@@ -445,11 +445,11 @@ export function DashboardPostsBarChart({
       >
         <DialogContent>
           {posts
-            .filter((p) => p?.["platform"] === activeChart)
             .filter(
               (p) =>
+                p?.["platform"] === activeChart &&
                 p?.["postAt"].toLocaleDateString() ==
-                new Date(choosenDate ?? "").toLocaleDateString(),
+                  new Date(choosenDate ?? "").toLocaleDateString(),
             )
             ?.map((p, i) => (
               <Link

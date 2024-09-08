@@ -19,7 +19,7 @@ export default async function Dashboard({ params: { lang } }: DashboardProps) {
   const user = (await getAuth())?.["user"]!;
   const projects = await db.project.findMany({
     include: {
-      caseStudy: { include: { posts: true } },
+      caseStudy: { include: { posts: { include: { image: true } } } },
       properties: true,
       platforms: true,
     },
@@ -28,6 +28,18 @@ export default async function Dashboard({ params: { lang } }: DashboardProps) {
       deletedAt: null,
     },
   });
+  const posts = projects
+    ?.map((p) =>
+      p?.["caseStudy"]
+        .map((c) =>
+          c?.["posts"].map((post) => ({
+            ...post,
+            project: p,
+          })),
+        )
+        .flat(),
+    )
+    ?.flat();
 
   return (
     <DashboardLayout>
@@ -47,7 +59,7 @@ export default async function Dashboard({ params: { lang } }: DashboardProps) {
       </DashboardLayout.Header>
 
       <div className="mt-10 space-y-10">
-        <DashboardPostsBarChart dic={dic} />
+        <DashboardPostsBarChart dic={dic} posts={posts} />
 
         <div className="flex flex-col gap-4">
           <CardTitle>{c?.["latest projects"]}</CardTitle>

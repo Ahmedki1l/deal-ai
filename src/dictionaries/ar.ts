@@ -372,10 +372,10 @@ export default {
     posts: "المنشورات",
     "showing total posts for the last 3 months.":
       "عرض إجمالي المنشورات لآخر 3 أشهر.",
-    facebook: "فيسبوك",
-    instagram: "إنستغرام",
-    linkedin: "لينكد إن",
-    twitter: "تويتر",
+    FACEBOOK: "فيسبوك",
+    INSTAGRAM: "إنستغرام",
+    LINKEDIN: "لينكد إن",
+    TWITTER: "تويتر",
     views: "المشاهدات",
   },
   "data-table": {

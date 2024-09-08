@@ -1,8 +1,197 @@
+// "use client";
+
+// import * as React from "react";
+// import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+
+// import {
+//   Card,
+//   CardContent,
+//   CardDescription,
+//   CardHeader,
+//   CardTitle,
+// } from "@/components/ui/card";
+// import {
+//   ChartConfig,
+//   ChartContainer,
+//   ChartTooltip,
+//   ChartTooltipContent,
+// } from "@/components/ui/chart";
+// import { Dictionary } from "@/types/locale";
+// import { $Enums, PLATFORM, Post } from "@prisma/client";
+
+// type DashboardPostsBarChartProps = {
+//   posts: Post[];
+// } & Dictionary["dashboard-posts-bar-chart"];
+// export function DashboardPostsBarChart({
+//   dic: { "dashboard-posts-bar-chart": c },
+//   posts,
+// }: DashboardPostsBarChartProps) {
+//   const [activeChart, setActiveChart] =
+//     React.useState<keyof typeof chartConfig>("FACEBOOK");
+
+//   const viewPlatforms = [
+//     "FACEBOOK",
+//     "INSTAGRAM",
+//     "LINKEDIN",
+//     "TWITTER",
+//   ] as $Enums.PLATFORM[];
+
+//   const chartData = posts.reduce(
+//     (acc, post) => {
+//       const date = post.createdAt.toISOString().split("T")[0]; // Extracting date
+//       const platform = post.platform;
+
+//       // Find existing date entry or create a new one
+//       let dateEntry = acc.find((entry) => entry.date === date);
+
+//       if (!dateEntry) {
+//         dateEntry = {
+//           date,
+//           FACEBOOK: 0,
+//           INSTAGRAM: 0,
+//           LINKEDIN: 0,
+//           TWITTER: 0,
+//         };
+//         acc.push(dateEntry);
+//       }
+
+//       // Increment platform count based on post platform
+//       if (viewPlatforms.includes(platform)) dateEntry[platform] += 1;
+
+//       return acc;
+//     },
+//     [] as Array<{
+//       date: string;
+//       FACEBOOK: number;
+//       INSTAGRAM: number;
+//       LINKEDIN: number;
+//       TWITTER: number;
+//     }>,
+//   );
+
+//   const chartConfig = {
+//     views: {
+//       label: "Page Views",
+//     },
+//     FACEBOOK: {
+//       label: "Facebook",
+//       color: "hsl(var(--chart-1))",
+//     },
+//     INSTAGRAM: {
+//       label: "Instagram",
+//       color: "hsl(var(--chart-2))",
+//     },
+//     LINKEDIN: {
+//       label: "LinkedIn",
+//       color: "hsl(var(--chart-5))",
+//     },
+//     TWITTER: {
+//       label: "Twitter",
+//       color: "hsl(var(--chart-4))",
+//     },
+//   } satisfies ChartConfig;
+
+//   const total = React.useMemo(
+//     () => ({
+//       FACEBOOK: chartData.reduce((acc, curr) => acc + curr.FACEBOOK, 0),
+//       INSTAGRAM: chartData.reduce((acc, curr) => acc + curr.INSTAGRAM, 0),
+//       LINKEDIN: chartData.reduce((acc, curr) => acc + curr.LINKEDIN, 0),
+//       TWITTER: chartData.reduce((acc, curr) => acc + curr.TWITTER, 0),
+//     }),
+//     [],
+//   );
+
+//   return (
+//     <div className="rounded-none border-none">
+//       {/* <div className="grid grid-cols-3 gap-10">
+//         <DashboardPostsBarChart />
+//         <DashboardPostsBarChart />
+//         <DashboardPostsBarChart />
+//       </div> */}
+//       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+//         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+//           <CardTitle>{c?.["posts"]}</CardTitle>
+//           <CardDescription>
+//             {c?.["showing total posts for the last 3 months."]}
+//           </CardDescription>
+//         </div>
+//         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4">
+//           {viewPlatforms?.map((key) => {
+//             const chart = key as keyof typeof chartConfig;
+
+//             return (
+//               <button
+//                 key={chart}
+//                 data-active={activeChart === chart}
+//                 className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+//                 onClick={() => setActiveChart(chart)}
+//               >
+//                 <span className="text-xs text-muted-foreground">
+//                   {c?.[chart]}
+//                 </span>
+//                 <span className="text-lg font-bold leading-none sm:text-3xl">
+//                   {total?.[key as keyof typeof total]?.toLocaleString()}
+//                 </span>
+//               </button>
+//             );
+//           })}
+//         </div>
+//       </CardHeader>
+//       <CardContent className="px-2 sm:p-6">
+//         <ChartContainer
+//           config={chartConfig}
+//           className="aspect-auto h-[250px] w-full"
+//         >
+//           <BarChart
+//             accessibilityLayer
+//             data={chartData}
+//             margin={{
+//               left: 12,
+//               right: 12,
+//             }}
+//           >
+//             <CartesianGrid vertical={false} />
+//             <XAxis
+//               dataKey="date"
+//               tickLine={false}
+//               axisLine={false}
+//               tickMargin={8}
+//               minTickGap={32}
+//               tickFormatter={(value) => {
+//                 const date = new Date(value);
+//                 return date.toLocaleDateString("en-US", {
+//                   month: "short",
+//                   day: "numeric",
+//                 });
+//               }}
+//             />
+//             <ChartTooltip
+//               content={
+//                 <ChartTooltipContent
+//                   className="w-[150px]"
+//                   nameKey="views"
+//                   labelFormatter={(value) => {
+//                     return new Date(value).toLocaleDateString("en-US", {
+//                       month: "short",
+//                       day: "numeric",
+//                       year: "numeric",
+//                     });
+//                   }}
+//                 />
+//               }
+//             />
+//             <Bar dataKey={activeChart} fill={`var(--color-${activeChart})`} />
+//           </BarChart>
+//         </ChartContainer>
+//       </CardContent>
+//     </div>
+//   );
+// }
+
 "use client";
 
 import * as React from "react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-
 import {
   Card,
   CardContent,
@@ -17,693 +206,157 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Dictionary } from "@/types/locale";
+import {
+  $Enums,
+  Image as ImageType,
+  PLATFORM,
+  Post,
+  Project,
+} from "@prisma/client";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Image } from "./image";
+import { Link } from "./link";
 
-const chartData = [
-  {
-    date: "2024-04-01",
-    facebook: 222,
-    instagram: 150,
-    linkedin: 150,
-    twitter: 150,
-  },
-  {
-    date: "2024-04-02",
-    facebook: 97,
-    instagram: 180,
-    linkedin: 180,
-    twitter: 180,
-  },
-  {
-    date: "2024-04-03",
-    facebook: 167,
-    instagram: 120,
-    linkedin: 120,
-    twitter: 120,
-  },
-  {
-    date: "2024-04-04",
-    facebook: 242,
-    instagram: 260,
-    linkedin: 260,
-    twitter: 260,
-  },
-  {
-    date: "2024-04-05",
-    facebook: 373,
-    instagram: 290,
-    linkedin: 290,
-    twitter: 290,
-  },
-  {
-    date: "2024-04-06",
-    facebook: 301,
-    instagram: 340,
-    linkedin: 340,
-    twitter: 340,
-  },
-  {
-    date: "2024-04-07",
-    facebook: 245,
-    instagram: 180,
-    linkedin: 180,
-    twitter: 180,
-  },
-  {
-    date: "2024-04-08",
-    facebook: 409,
-    instagram: 320,
-    linkedin: 320,
-    twitter: 320,
-  },
-  {
-    date: "2024-04-09",
-    facebook: 59,
-    instagram: 110,
-    linkedin: 110,
-    twitter: 110,
-  },
-  {
-    date: "2024-04-10",
-    facebook: 261,
-    instagram: 190,
-    linkedin: 190,
-    twitter: 190,
-  },
-  {
-    date: "2024-04-11",
-    facebook: 327,
-    instagram: 350,
-    linkedin: 350,
-    twitter: 350,
-  },
-  {
-    date: "2024-04-12",
-    facebook: 292,
-    instagram: 210,
-    linkedin: 210,
-    twitter: 210,
-  },
-  {
-    date: "2024-04-13",
-    facebook: 342,
-    instagram: 380,
-    linkedin: 380,
-    twitter: 380,
-  },
-  {
-    date: "2024-04-14",
-    facebook: 137,
-    instagram: 220,
-    linkedin: 220,
-    twitter: 220,
-  },
-  {
-    date: "2024-04-15",
-    facebook: 120,
-    instagram: 170,
-    linkedin: 170,
-    twitter: 170,
-  },
-  {
-    date: "2024-04-16",
-    facebook: 138,
-    instagram: 190,
-    linkedin: 190,
-    twitter: 190,
-  },
-  {
-    date: "2024-04-17",
-    facebook: 446,
-    instagram: 360,
-    linkedin: 360,
-    twitter: 360,
-  },
-  {
-    date: "2024-04-18",
-    facebook: 364,
-    instagram: 410,
-    linkedin: 410,
-    twitter: 410,
-  },
-  {
-    date: "2024-04-19",
-    facebook: 243,
-    instagram: 180,
-    linkedin: 180,
-    twitter: 180,
-  },
-  {
-    date: "2024-04-20",
-    facebook: 89,
-    instagram: 150,
-    linkedin: 150,
-    twitter: 150,
-  },
-  {
-    date: "2024-04-21",
-    facebook: 137,
-    instagram: 200,
-    linkedin: 200,
-    twitter: 200,
-  },
-  {
-    date: "2024-04-22",
-    facebook: 224,
-    instagram: 170,
-    linkedin: 170,
-    twitter: 170,
-  },
-  {
-    date: "2024-04-23",
-    facebook: 138,
-    instagram: 230,
-    linkedin: 230,
-    twitter: 230,
-  },
-  {
-    date: "2024-04-24",
-    facebook: 387,
-    instagram: 290,
-    linkedin: 290,
-    twitter: 290,
-  },
-  {
-    date: "2024-04-25",
-    facebook: 215,
-    instagram: 250,
-    linkedin: 250,
-    twitter: 250,
-  },
-  {
-    date: "2024-04-26",
-    facebook: 75,
-    instagram: 130,
-    linkedin: 130,
-    twitter: 130,
-  },
-  {
-    date: "2024-04-27",
-    facebook: 383,
-    instagram: 420,
-    linkedin: 420,
-    twitter: 420,
-  },
-  {
-    date: "2024-04-28",
-    facebook: 122,
-    instagram: 180,
-    linkedin: 180,
-    twitter: 180,
-  },
-  {
-    date: "2024-04-29",
-    facebook: 315,
-    instagram: 240,
-    linkedin: 240,
-    twitter: 240,
-  },
-  {
-    date: "2024-04-30",
-    facebook: 454,
-    instagram: 380,
-    linkedin: 380,
-    twitter: 380,
-  },
-  {
-    date: "2024-05-01",
-    facebook: 165,
-    instagram: 220,
-    linkedin: 220,
-    twitter: 220,
-  },
-  {
-    date: "2024-05-02",
-    facebook: 293,
-    instagram: 310,
-    linkedin: 310,
-    twitter: 310,
-  },
-  {
-    date: "2024-05-03",
-    facebook: 247,
-    instagram: 190,
-    linkedin: 190,
-    twitter: 190,
-  },
-  {
-    date: "2024-05-04",
-    facebook: 385,
-    instagram: 420,
-    linkedin: 420,
-    twitter: 420,
-  },
-  {
-    date: "2024-05-05",
-    facebook: 481,
-    instagram: 390,
-    linkedin: 390,
-    twitter: 390,
-  },
-  {
-    date: "2024-05-06",
-    facebook: 498,
-    instagram: 520,
-    linkedin: 520,
-    twitter: 520,
-  },
-  {
-    date: "2024-05-07",
-    facebook: 388,
-    instagram: 300,
-    linkedin: 300,
-    twitter: 300,
-  },
-  {
-    date: "2024-05-08",
-    facebook: 149,
-    instagram: 210,
-    linkedin: 210,
-    twitter: 210,
-  },
-  {
-    date: "2024-05-09",
-    facebook: 227,
-    instagram: 180,
-    linkedin: 180,
-    twitter: 180,
-  },
-  {
-    date: "2024-05-10",
-    facebook: 293,
-    instagram: 330,
-    linkedin: 330,
-    twitter: 330,
-  },
-  {
-    date: "2024-05-11",
-    facebook: 335,
-    instagram: 270,
-    linkedin: 270,
-    twitter: 270,
-  },
-  {
-    date: "2024-05-12",
-    facebook: 197,
-    instagram: 240,
-    linkedin: 240,
-    twitter: 240,
-  },
-  {
-    date: "2024-05-13",
-    facebook: 197,
-    instagram: 160,
-    linkedin: 160,
-    twitter: 160,
-  },
-  {
-    date: "2024-05-14",
-    facebook: 448,
-    instagram: 490,
-    linkedin: 490,
-    twitter: 490,
-  },
-  {
-    date: "2024-05-15",
-    facebook: 473,
-    instagram: 380,
-    linkedin: 380,
-    twitter: 380,
-  },
-  {
-    date: "2024-05-16",
-    facebook: 338,
-    instagram: 400,
-    linkedin: 400,
-    twitter: 400,
-  },
-  {
-    date: "2024-05-17",
-    facebook: 499,
-    instagram: 420,
-    linkedin: 420,
-    twitter: 420,
-  },
-  {
-    date: "2024-05-18",
-    facebook: 315,
-    instagram: 350,
-    linkedin: 350,
-    twitter: 350,
-  },
-  {
-    date: "2024-05-19",
-    facebook: 235,
-    instagram: 180,
-    linkedin: 180,
-    twitter: 180,
-  },
-  {
-    date: "2024-05-20",
-    facebook: 177,
-    instagram: 230,
-    linkedin: 230,
-    twitter: 230,
-  },
-  {
-    date: "2024-05-21",
-    facebook: 82,
-    instagram: 140,
-    linkedin: 140,
-    twitter: 140,
-  },
-  {
-    date: "2024-05-22",
-    facebook: 81,
-    instagram: 120,
-    linkedin: 120,
-    twitter: 120,
-  },
-  {
-    date: "2024-05-23",
-    facebook: 252,
-    instagram: 290,
-    linkedin: 290,
-    twitter: 290,
-  },
-  {
-    date: "2024-05-24",
-    facebook: 294,
-    instagram: 220,
-    linkedin: 220,
-    twitter: 220,
-  },
-  {
-    date: "2024-05-25",
-    facebook: 201,
-    instagram: 250,
-    linkedin: 250,
-    twitter: 250,
-  },
-  {
-    date: "2024-05-26",
-    facebook: 213,
-    instagram: 170,
-    linkedin: 170,
-    twitter: 170,
-  },
-  {
-    date: "2024-05-27",
-    facebook: 420,
-    instagram: 460,
-    linkedin: 460,
-    twitter: 460,
-  },
-  {
-    date: "2024-05-28",
-    facebook: 233,
-    instagram: 190,
-    linkedin: 190,
-    twitter: 190,
-  },
-  {
-    date: "2024-05-29",
-    facebook: 78,
-    instagram: 130,
-    linkedin: 130,
-    twitter: 130,
-  },
-  {
-    date: "2024-05-30",
-    facebook: 340,
-    instagram: 280,
-    linkedin: 280,
-    twitter: 280,
-  },
-  {
-    date: "2024-05-31",
-    facebook: 178,
-    instagram: 230,
-    linkedin: 230,
-    twitter: 230,
-  },
-  {
-    date: "2024-06-01",
-    facebook: 178,
-    instagram: 200,
-    linkedin: 200,
-    twitter: 200,
-  },
-  {
-    date: "2024-06-02",
-    facebook: 470,
-    instagram: 410,
-    linkedin: 410,
-    twitter: 410,
-  },
-  {
-    date: "2024-06-03",
-    facebook: 103,
-    instagram: 160,
-    linkedin: 160,
-    twitter: 160,
-  },
-  {
-    date: "2024-06-04",
-    facebook: 439,
-    instagram: 380,
-    linkedin: 380,
-    twitter: 380,
-  },
-  {
-    date: "2024-06-05",
-    facebook: 88,
-    instagram: 140,
-    linkedin: 140,
-    twitter: 140,
-  },
-  {
-    date: "2024-06-06",
-    facebook: 294,
-    instagram: 250,
-    linkedin: 250,
-    twitter: 250,
-  },
-  {
-    date: "2024-06-07",
-    facebook: 323,
-    instagram: 370,
-    linkedin: 370,
-    twitter: 370,
-  },
-  {
-    date: "2024-06-08",
-    facebook: 385,
-    instagram: 320,
-    linkedin: 320,
-    twitter: 320,
-  },
-  {
-    date: "2024-06-09",
-    facebook: 438,
-    instagram: 480,
-    linkedin: 480,
-    twitter: 480,
-  },
-  {
-    date: "2024-06-10",
-    facebook: 155,
-    instagram: 200,
-    linkedin: 200,
-    twitter: 200,
-  },
-  {
-    date: "2024-06-11",
-    facebook: 92,
-    instagram: 150,
-    linkedin: 150,
-    twitter: 150,
-  },
-  {
-    date: "2024-06-12",
-    facebook: 492,
-    instagram: 420,
-    linkedin: 420,
-    twitter: 420,
-  },
-  {
-    date: "2024-06-13",
-    facebook: 81,
-    instagram: 130,
-    linkedin: 130,
-    twitter: 130,
-  },
-  {
-    date: "2024-06-14",
-    facebook: 426,
-    instagram: 380,
-    linkedin: 380,
-    twitter: 380,
-  },
-  {
-    date: "2024-06-15",
-    facebook: 307,
-    instagram: 350,
-    linkedin: 350,
-    twitter: 350,
-  },
-  {
-    date: "2024-06-16",
-    facebook: 371,
-    instagram: 310,
-    linkedin: 310,
-    twitter: 310,
-  },
-  {
-    date: "2024-06-17",
-    facebook: 475,
-    instagram: 520,
-    linkedin: 520,
-    twitter: 520,
-  },
-  {
-    date: "2024-06-18",
-    facebook: 107,
-    instagram: 170,
-    linkedin: 170,
-    twitter: 170,
-  },
-  {
-    date: "2024-06-19",
-    facebook: 341,
-    instagram: 290,
-    linkedin: 290,
-    twitter: 290,
-  },
-  {
-    date: "2024-06-20",
-    facebook: 408,
-    instagram: 450,
-    linkedin: 450,
-    twitter: 450,
-  },
-  {
-    date: "2024-06-21",
-    facebook: 169,
-    instagram: 210,
-    linkedin: 210,
-    twitter: 210,
-  },
-  {
-    date: "2024-06-22",
-    facebook: 317,
-    instagram: 270,
-    linkedin: 270,
-    twitter: 270,
-  },
-  {
-    date: "2024-06-23",
-    facebook: 480,
-    instagram: 530,
-    linkedin: 530,
-    twitter: 530,
-  },
-  {
-    date: "2024-06-24",
-    facebook: 132,
-    instagram: 180,
-    linkedin: 180,
-    twitter: 180,
-  },
-  {
-    date: "2024-06-25",
-    facebook: 141,
-    instagram: 190,
-    linkedin: 190,
-    twitter: 190,
-  },
-  {
-    date: "2024-06-26",
-    facebook: 434,
-    instagram: 380,
-    linkedin: 380,
-    twitter: 380,
-  },
-  {
-    date: "2024-06-27",
-    facebook: 448,
-    instagram: 490,
-    linkedin: 490,
-    twitter: 490,
-  },
-  {
-    date: "2024-06-28",
-    facebook: 149,
-    instagram: 200,
-    linkedin: 200,
-    twitter: 200,
-  },
-  {
-    date: "2024-06-29",
-    facebook: 103,
-    instagram: 160,
-    linkedin: 160,
-    twitter: 160,
-  },
-  {
-    date: "2024-06-30",
-    facebook: 446,
-    instagram: 400,
-    linkedin: 400,
-    twitter: 400,
-  },
-];
+type DashboardPostsBarChartProps = {
+  posts: (Post & {
+    image: ImageType | null;
+    project: Project;
+  })[];
+} & Dictionary["dashboard-posts-bar-chart"];
 
-const chartConfig = {
-  views: {
-    label: "Page Views",
-  },
-  facebook: {
-    label: "Facebook",
-    color: "hsl(var(--chart-1))",
-  },
-  instagram: {
-    label: "Instagram",
-    color: "hsl(var(--chart-2))",
-  },
-  linkedin: {
-    label: "LinkedIn",
-    color: "hsl(var(--chart-5))",
-  },
-  twitter: {
-    label: "Twitter",
-    color: "hsl(var(--chart-4))",
-  },
-} satisfies ChartConfig;
-
-type DashboardPostsBarChartProps = {} & Dictionary["dashboard-posts-bar-chart"];
 export function DashboardPostsBarChart({
   dic: { "dashboard-posts-bar-chart": c },
+  posts,
 }: DashboardPostsBarChartProps) {
+  const [choosenDate, setChoosenDate] = React.useState<string | null>(null);
   const [activeChart, setActiveChart] =
-    React.useState<keyof typeof chartConfig>("facebook");
+    React.useState<keyof typeof chartConfig>("FACEBOOK");
+
+  const viewPlatforms = [
+    "FACEBOOK",
+    "INSTAGRAM",
+    "LINKEDIN",
+    "TWITTER",
+  ] as $Enums.PLATFORM[];
+
+  // Helper function to get the date range for previous, current, and next month
+  function getDateRange() {
+    const currentDate = new Date();
+    const previousMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() - 1,
+      1,
+    );
+    const nextMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + 1,
+      1,
+    );
+
+    return { previousMonth, currentDate, nextMonth };
+  }
+
+  const { previousMonth, currentDate, nextMonth } = getDateRange();
+
+  // Use the actual post.postAt date for each post and map it accordingly
+  const chartData = posts.reduce(
+    (acc, post) => {
+      const platform = post.platform;
+      const postAtDate = new Date(post.postAt).toISOString().split("T")[0]; // Get the postAt date
+
+      // Find existing date entry or create a new one
+      let dateEntry = acc.find((entry) => entry.date === postAtDate);
+
+      if (!dateEntry) {
+        dateEntry = {
+          date: postAtDate,
+          FACEBOOK: 0,
+          INSTAGRAM: 0,
+          LINKEDIN: 0,
+          TWITTER: 0,
+        };
+        acc.push(dateEntry);
+      }
+
+      // Increment platform count based on post platform
+      if (viewPlatforms.includes(platform)) dateEntry[platform] += 1;
+
+      return acc;
+    },
+    [] as Array<{
+      date: string;
+      FACEBOOK: number;
+      INSTAGRAM: number;
+      LINKEDIN: number;
+      TWITTER: number;
+    }>,
+  );
+
+  // Populate the full 3-month date range for the chart, even if there are no posts for certain dates
+  const fullDateRange = [];
+  for (
+    let d = new Date(previousMonth);
+    d <= new Date(nextMonth.getFullYear(), nextMonth.getMonth() + 1, 0);
+    d.setDate(d.getDate() + 1)
+  ) {
+    const dateString = d.toISOString().split("T")[0];
+    if (!chartData.some((entry) => entry.date === dateString)) {
+      fullDateRange.push({
+        date: dateString,
+        FACEBOOK: 0,
+        INSTAGRAM: 0,
+        LINKEDIN: 0,
+        TWITTER: 0,
+      });
+    }
+  }
+
+  // Merge full date range with actual chart data
+  const mergedData = [...fullDateRange, ...chartData].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+  );
+
+  const chartConfig = {
+    views: {
+      label: "posts",
+    },
+    FACEBOOK: {
+      label: "Facebook",
+      color: "hsl(var(--chart-1))",
+    },
+    INSTAGRAM: {
+      label: "Instagram",
+      color: "hsl(var(--chart-2))",
+    },
+    LINKEDIN: {
+      label: "LinkedIn",
+      color: "hsl(var(--chart-5))",
+    },
+    TWITTER: {
+      label: "Twitter",
+      color: "hsl(var(--chart-4))",
+    },
+  } satisfies ChartConfig;
 
   const total = React.useMemo(
     () => ({
-      facebook: chartData.reduce((acc, curr) => acc + curr.facebook, 0),
-      instagram: chartData.reduce((acc, curr) => acc + curr.instagram, 0),
-      linkedin: chartData.reduce((acc, curr) => acc + curr.linkedin, 0),
-      twitter: chartData.reduce((acc, curr) => acc + curr.twitter, 0),
+      FACEBOOK: chartData.reduce((acc, curr) => acc + curr.FACEBOOK, 0),
+      INSTAGRAM: chartData.reduce((acc, curr) => acc + curr.INSTAGRAM, 0),
+      LINKEDIN: chartData.reduce((acc, curr) => acc + curr.LINKEDIN, 0),
+      TWITTER: chartData.reduce((acc, curr) => acc + curr.TWITTER, 0),
     }),
-    [],
+    [chartData],
   );
 
   return (
     <div className="rounded-none border-none">
-      {/* <div className="grid grid-cols-3 gap-10">
-        <DashboardPostsBarChart />
-        <DashboardPostsBarChart />
-        <DashboardPostsBarChart />
-      </div> */}
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
           <CardTitle>{c?.["posts"]}</CardTitle>
@@ -712,7 +365,7 @@ export function DashboardPostsBarChart({
           </CardDescription>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4">
-          {["facebook", "instagram", "linkedin", "twitter"].map((key) => {
+          {viewPlatforms?.map((key) => {
             const chart = key as keyof typeof chartConfig;
 
             return (
@@ -740,7 +393,7 @@ export function DashboardPostsBarChart({
         >
           <BarChart
             accessibilityLayer
-            data={chartData}
+            data={mergedData} // Use the merged full date range
             margin={{
               left: 12,
               right: 12,
@@ -776,10 +429,53 @@ export function DashboardPostsBarChart({
                 />
               }
             />
-            <Bar dataKey={activeChart} fill={`var(--color-${activeChart})`} />
+            <Bar
+              dataKey={activeChart}
+              fill={`var(--color-${activeChart})`}
+              onClick={(e) => setChoosenDate(e?.["date"])}
+            />
           </BarChart>
         </ChartContainer>
       </CardContent>
+
+      <Dialog
+        open={!!choosenDate?.["length"]}
+        onOpenChange={(o) => setChoosenDate(o ? "" : null)}
+      >
+        <DialogTrigger>Open</DialogTrigger>
+        <DialogContent className="container">
+          {posts
+            .filter(
+              (p) =>
+                p?.["postAt"].toLocaleDateString() ==
+                new Date(choosenDate ?? "").toLocaleDateString(),
+            )
+            ?.map((p, i) => (
+              <Link
+                key={i}
+                href={`/dashboard/projects/${p?.["project"]?.["id"]}/cases/${p?.["caseStudyId"]}/posts/${p?.["id"]}`}
+              >
+                <Card>
+                  <CardHeader className="flex flex-row items-start justify-start gap-4">
+                    <div>
+                      <Image
+                        src={p?.["framedImageURL"] ?? p?.["image"]?.["src"]!}
+                        alt=""
+                        className="aspect-square max-h-20"
+                      />
+                    </div>
+                    <div>
+                      <CardTitle>{p?.["title"]}</CardTitle>
+                      <CardDescription>
+                        project: {p?.["project"]?.["title"]}
+                      </CardDescription>
+                    </div>
+                  </CardHeader>
+                </Card>
+              </Link>
+            ))}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

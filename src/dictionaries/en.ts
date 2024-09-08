@@ -371,10 +371,10 @@ export default {
     posts: "Posts",
     "showing total posts for the last 3 months.":
       "Showing total posts for the last 3 months.",
-    facebook: "Facebook",
-    instagram: "Instagram",
-    linkedin: "LinkedIn",
-    twitter: "Twitter",
+    FACEBOOK: "Facebook",
+    INSTAGRAM: "Instagram",
+    LINKEDIN: "LinkedIn",
+    TWITTER: "Twitter",
     views: "Views",
   },
 

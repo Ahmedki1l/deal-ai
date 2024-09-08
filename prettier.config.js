@@ -26,7 +26,7 @@ module.exports = {
   importOrderParserPlugins: ["typescript", "jsx", "decorators-legacy"],
   plugins: [
     "prettier-plugin-organize-imports",
-    "@ianvs/prettier-plugin-sort-imports",
+    // "@ianvs/prettier-plugin-sort-imports",
     "prettier-plugin-tailwindcss",
   ],
   tailwindFunctions: ["cn", "cva"],

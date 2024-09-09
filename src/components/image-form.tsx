@@ -228,54 +228,54 @@ export const ImageForm = {
       </div>
     );
   },
-  watermark: function Component({
-    dic: {
-      "image-form": { prompt: c },
-    },
-    loading,
-    form,
-  }: ImageFormProps) {
-    const lang = useLocale();
-    const [generating, setGenerating] = useState(false);
+  // watermark: function Component({
+  //   dic: {
+  //     "image-form": { prompt: c },
+  //   },
+  //   loading,
+  //   form,
+  // }: ImageFormProps) {
+  //   const lang = useLocale();
+  //   const [generating, setGenerating] = useState(false);
 
-    async function addWatermark() {
-      setGenerating(true);
-      toast.promise(watermarkImage(form?.getValues("image.src") ?? ""), {
-        finally: () => setGenerating(false),
-        error: async (err) => {
-          const msg = await t(err?.["message"], lang);
-          return msg;
-        },
-        success: async (url) => {
-          form?.resetField("image.base64");
-          form?.resetField("image.file");
+  //   async function addWatermark() {
+  //     setGenerating(true);
+  //     toast.promise(watermarkImage(form?.getValues("image.src") ?? ""), {
+  //       finally: () => setGenerating(false),
+  //       error: async (err) => {
+  //         const msg = await t(err?.["message"], lang);
+  //         return msg;
+  //       },
+  //       success: async (url) => {
+  //         form?.resetField("image.base64");
+  //         form?.resetField("image.file");
 
-          form?.setValue("image.src", url);
+  //         form?.setValue("image.src", url);
 
-          return url;
-        },
-      });
-    }
-    return (
-      <div className="grid gap-2">
-        <div className="flex items-center justify-end">
-          <Tooltip text="add watermark">
-            <Button
-              type="button"
-              size="icon"
-              onClick={addWatermark}
-              disabled={loading || generating}
-            >
-              <Icons.imageReload />
-            </Button>
-          </Tooltip>
-        </div>
-      </div>
-    );
-  },
+  //         return url;
+  //       },
+  //     });
+  //   }
+  //   return (
+  //     <div className="grid gap-2">
+  //       <div className="flex items-center justify-end">
+  //         <Tooltip text="add watermark">
+  //           <Button
+  //             type="button"
+  //             size="icon"
+  //             onClick={addWatermark}
+  //             disabled={loading || generating}
+  //           >
+  //             <Icons.imageReload />
+  //           </Button>
+  //         </Tooltip>
+  //       </div>
+  //     </div>
+  //   );
+  // },
   chooseFrame: function Component({
     dic: {
-      "image-form": { prompt: c },
+      "image-form": { frame: c },
     },
     loading,
     form,
@@ -284,14 +284,14 @@ export const ImageForm = {
     if (!framedImages)
       return (
         <p className="py-5 text-center text-sm text-muted-foreground">
-          applying frames...
+          {c?.["applying frames..."]}
         </p>
       );
 
     if (!framedImages?.["length"])
       return (
         <p className="py-5 text-center text-sm text-muted-foreground">
-          No frames to be applied...
+          {c?.["no frames to be applied..."]}
         </p>
       );
 
@@ -301,7 +301,7 @@ export const ImageForm = {
         name="frame"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="sr-only">Frame</FormLabel>
+            <FormLabel className="sr-only">{c?.["frame"]}</FormLabel>
 
             <ToggleGroup
               type="single"

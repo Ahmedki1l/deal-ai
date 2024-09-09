@@ -1,4 +1,5 @@
 import { NavItem, SelectItem } from "@/types";
+import { PROPERTY_TYPE } from "@prisma/client";
 
 export default {
   site: {
@@ -377,6 +378,7 @@ export default {
     LINKEDIN: "لينكد إن",
     TWITTER: "تويتر",
     views: "المشاهدات",
+    "project name": "إسم المشروع",
   },
   "data-table": {
     "no results.": "لا توجد نتائج.",
@@ -423,6 +425,11 @@ export default {
       "new image": "صورة جديدة",
       enhance: "تحسين الوصف",
       generate: "إنشاء صورة",
+    },
+    frame: {
+      frame: "Frame",
+      "applying frames...": "يتم التطبيق...",
+      "no frames to be applied...": "لا يوجد فريم للإختيا...",
     },
   },
   "locale-switcher": {
@@ -528,6 +535,7 @@ export default {
       "تحديث الصورة يتيح لك تحسين وتعزيز تفاصيل مشاريعك الحالية",
     "choose file": "اختيار ملف",
     "generate using AI": "إنشاء باستخدام الذكاء الاصطناعي",
+    "apply frame": "تطبيق الإطار المناسب...",
   },
   "post-update-schedule-button": {
     "scheduled successfully.": "تم جدولته بنجاح.",
@@ -734,7 +742,7 @@ export default {
     propertyTypes: [
       { value: "APARTMENT", label: "شقة" },
       { value: "VILLA", label: "فيلا" },
-    ] as SelectItem[],
+    ] as (SelectItem & { value: PROPERTY_TYPE })[],
     campaignTypes: [
       { value: "BRANDING_AWARENESS", label: "زيادة الوعي بالعلامة التجارية" },
       { value: "ENGAGEMENT", label: "التفاعل" },

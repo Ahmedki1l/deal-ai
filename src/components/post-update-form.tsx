@@ -289,12 +289,12 @@ export function PostUpdateForm({
                       />
                     </>
                   }
-                  title="apply frame"
-                  description={
-                    c?.[
-                      "updating an image allows you to refine and enhance the details of your ongoing developments"
-                    ]
-                  }
+                  title={c?.["apply frame"]}
+                  // description={
+                  //   c?.[
+                  //     "updating an image allows you to refine and enhance the details of your ongoing developments"
+                  //   ]
+                  // }
                   open={openFrame}
                   setOpen={setOpenFrame}
                 >

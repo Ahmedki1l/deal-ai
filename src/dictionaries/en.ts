@@ -1,4 +1,5 @@
 import { NavItem, SelectItem } from "@/types";
+import { PROPERTY_TYPE } from "@prisma/client";
 
 export default {
   site: {
@@ -376,6 +377,7 @@ export default {
     LINKEDIN: "LinkedIn",
     TWITTER: "Twitter",
     views: "Views",
+    "project name": "Project Name",
   },
 
   "data-table": {
@@ -425,6 +427,11 @@ export default {
       "new image": "new image",
       enhance: "enhance",
       generate: "generate",
+    },
+    frame: {
+      frame: "Frame",
+      "applying frames...": "Applying Frames...",
+      "no frames to be applied...": "No frames to be applied...",
     },
   },
   "locale-switcher": {
@@ -526,6 +533,7 @@ export default {
       "Updating an image allows you to refine and enhance the details of your ongoing developments",
     "choose file": "choose file",
     "generate using AI": "generate using AI",
+    "apply frame": "Apply Frame",
   },
   "post-update-schedule-button": {
     "scheduled successfully.": "scheduled successfully.",
@@ -690,7 +698,7 @@ export default {
     propertyTypes: [
       { value: "APARTMENT", label: "Apartment" },
       { value: "VILLA", label: "Villa" },
-    ] as SelectItem[],
+    ] as (SelectItem & { value: PROPERTY_TYPE })[],
     campaignTypes: [
       { value: "BRANDING_AWARENESS", label: "Branding Awareness" },
       { value: "ENGAGEMENT", label: "Engagement" },

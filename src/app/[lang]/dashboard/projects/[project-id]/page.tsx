@@ -73,7 +73,12 @@ export default async function Project({
     { label: c?.["city"], value: project?.["city"] },
     { label: c?.["country"], value: project?.["country"] },
     { label: c?.["spaces"], value: project?.["spaces"] },
-    { label: c?.["property types"], value: project?.["propertyTypes"] },
+    {
+      label: c?.["property types"],
+      value: dic?.["db"]?.["propertyTypes"]
+        ?.filter((p) => project?.["propertyTypes"].includes(p?.["value"]))
+        ?.map((e) => e?.["label"]),
+    },
     {
       label: c?.["platforms"],
       value: (
@@ -146,7 +151,9 @@ export default async function Project({
                     <TableCell className="font-medium">
                       {e?.["label"]}
                     </TableCell>
-                    <TableCell className="text-right">{e?.["value"]}</TableCell>
+                    <TableCell className="text-right">
+                      {e?.["value"]?.join(", ")}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

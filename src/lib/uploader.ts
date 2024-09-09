@@ -17,13 +17,33 @@ export const s3Client = new S3({
 
 // Function to fetch an image from a remote URL
 export async function fetchImage(url: string) {
-  console.log("url: ", url);
   const response = await axios({
     url,
     responseType: "arraybuffer",
   })
     .then((r) => r?.["data"])
     .catch((err) => console.error("error fetching image: ", err?.["message"]));
-  console.log(response);
+
   return Buffer.from(response, "binary");
 }
+
+// export async function fetchImage(url: string) {
+//   try {
+//     console.log("url: ", url);
+//     const response = await axios({
+//       url,
+//       responseType: "stream", // Stream the image
+//       timeout: 10000, // 10-second timeout
+//     });
+
+//     const chunks: Buffer[] = [];
+//     return await new Promise<Buffer>((resolve, reject) => {
+//       response.data.on("data", (chunk: Buffer) => chunks.push(chunk));
+//       response.data.on("end", () => resolve(Buffer.concat(chunks)));
+//       response.data.on("error", (err: Error) => reject(err));
+//     });
+//   } catch (error: any) {
+//     console.error("Error fetching image: ", error?.["message"]);
+//     throw error;
+//   }
+// }

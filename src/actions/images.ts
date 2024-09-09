@@ -161,7 +161,7 @@ export async function uploadIntoSpace(name: ObjectKey, body: Body) {
 export async function applyFrame(
   image: Buffer,
   frameURL: string,
-  title: string,
+  data: { title: string },
 ) {
   try {
     if (FRAMES_URL?.[0] == frameURL) {
@@ -181,7 +181,7 @@ export async function applyFrame(
       const context = canvas.getContext("2d");
 
       // Split the title into words
-      const words = title.split(" "); // Example: ["مشروع", "مكين", "003"]
+      const words = data?.["title"]?.split(" "); // Example: ["مشروع", "مكين", "003"]
 
       // Function to adjust font size to fit a word within maxTextWidth
       const fitTextToWidth = (
@@ -428,9 +428,537 @@ export async function applyAllFrames(src: string, title: string) {
   try {
     const image = await fetchImage(src);
 
-    const promiseFrames = FRAMES_URL?.map((f) =>
-      applyFrame(image, f, title).then((r) => r?.toString("base64")),
+    const FRAMES_URLS = [
+      {
+        value: "./public/frames/frame-00.png",
+        applyFrame: async (
+          image: Buffer,
+          data: { title: string; phone: string; domain: string },
+        ): Promise<Buffer> => {
+          const maxTextWidth = 250; // Maximum width for the text
+          const normalFontSize = 30; // Font size for normal text
+          const lineSpacing = 20; // Line spacing between words
+
+          // Load the frame from the PNG file
+          const frame = await Sharp(resolve(FRAMES_URLS?.["0"]?.["value"]))
+            .ensureAlpha() // Ensure the frame has an alpha channel
+            .toBuffer();
+
+          const { width, height } = await Sharp(frame).metadata();
+
+          // Create a canvas to draw the text
+          const canvas = createCanvas(width!, height!);
+          const context = canvas.getContext("2d");
+
+          // Split the title into words
+          const words = data?.["title"]?.split(" "); // Example: ["مشروع", "مكين", "003"]
+
+          // Function to adjust font size to fit a word within maxTextWidth
+          const fitTextToWidth = (
+            text: string,
+            maxWidth: number,
+            initialFontSize: number,
+          ) => {
+            let fontSize = initialFontSize;
+            do {
+              fontSize -= 1;
+              context.font = `bold ${fontSize}px Arial`;
+            } while (
+              context.measureText(text).width > maxWidth &&
+              fontSize > 0
+            );
+            return fontSize;
+          };
+
+          // Set the font size for the second word to fit within the maxTextWidth
+          const secondWordFontSize = fitTextToWidth(words[1], maxTextWidth, 50);
+
+          // Calculate total height of the text
+          let totalHeight =
+            normalFontSize * 2 + lineSpacing + secondWordFontSize; // 2 normal words + bold word + spacing
+          const startY = height! - totalHeight - 200; // Start position vertically (10px padding from bottom)
+
+          // Render first word: normal, black, and small
+          context.font = `bold ${normalFontSize}px Arial`;
+          context.fillStyle = "#000000"; // Black color
+          context.textAlign = "center";
+          context.fillText(words?.[0], maxTextWidth / 2, startY);
+
+          // Render second word: yellow, bold, and larger
+          context.font = `bold ${secondWordFontSize}px Arial`; // Using Arial font for the second word
+          context.fillStyle = "#FFD700"; // Yellow color
+          context.fillText(
+            words?.[1],
+            maxTextWidth / 2,
+            startY + normalFontSize + lineSpacing,
+          );
+
+          // Render third word: normal, black, and small, with wrapping if necessary
+          const remainingWords = words.slice(2)?.join(" ");
+          context.font = `bold ${normalFontSize}px Arial`;
+          context.fillStyle = "#000000"; // Black color
+          context.textAlign = "center";
+
+          // Wrap remaining words if necessary
+          let currentLine = "";
+          let lines = [];
+          remainingWords.split(" ").forEach((word) => {
+            const testLine = currentLine + word + " ";
+            const testWidth = context.measureText(testLine).width;
+            if (testWidth > maxTextWidth && currentLine !== "") {
+              lines.push(currentLine.trim());
+              currentLine = word + " ";
+            } else {
+              currentLine = testLine;
+            }
+          });
+          lines.push(currentLine.trim());
+
+          // Draw each line of the remaining words
+          lines.forEach((line) => {
+            context.fillText(
+              line,
+              maxTextWidth / 2,
+              startY +
+                normalFontSize +
+                lineSpacing +
+                secondWordFontSize +
+                lines.indexOf(line) * (normalFontSize + lineSpacing),
+            );
+          });
+
+          // Convert the canvas with text to a buffer
+          const textImageBuffer = canvas.toBuffer();
+
+          // Create the final image by combining the frame, fetched image, and the title text
+          return await Sharp(image)
+            .resize(width!, height!) // Resize the image to match the frame size if necessary
+            .composite([
+              {
+                input: frame, // Use the frame as a composite input
+                blend: "over", // Overlay the frame over the image
+              },
+              {
+                input: textImageBuffer, // Add the title text as an overlay
+                blend: "over", // Overlay the text on the image
+              },
+            ])
+            .png() // Output as PNG to maintain transparency
+            .toBuffer();
+        },
+      },
+      {
+        value: "./public/frames/frame-01.png",
+        applyFrame: async (
+          image: Buffer,
+          data: { title: string },
+        ): Promise<Buffer> => {
+          const frame = await Sharp(resolve(FRAMES_URLS?.["1"]?.["value"]))
+            .ensureAlpha() // Ensure the frame has an alpha channel
+            .toBuffer();
+
+          const { width, height } = await Sharp(frame).metadata();
+
+          return await Sharp(image)
+            .resize(width!, height!) // Resize the image to match the frame size if necessary
+            .composite([
+              {
+                input: frame, // Use the frame as a composite input
+                blend: "over", // Overlay the frame over the image
+                gravity: "center",
+              },
+            ])
+            .png() // Output as PNG to maintain transparency
+            .toBuffer();
+        },
+      },
+      {
+        value: "./public/frames/frame-02.png",
+        applyFrame: async (
+          image: Buffer,
+          data: { title: string },
+        ): Promise<Buffer> => {
+          const frame = await Sharp(resolve(FRAMES_URLS?.["2"]?.["value"]))
+            .ensureAlpha() // Ensure the frame has an alpha channel
+            .toBuffer();
+
+          const { width, height } = await Sharp(frame).metadata();
+
+          return await Sharp(image)
+            .resize(width!, height!) // Resize the image to match the frame size if necessary
+            .composite([
+              {
+                input: frame, // Use the frame as a composite input
+                blend: "over", // Overlay the frame over the image
+                gravity: "center",
+              },
+            ])
+            .png() // Output as PNG to maintain transparency
+            .toBuffer();
+        },
+      },
+      {
+        value: "./public/frames/frame-03.png",
+        applyFrame: async (
+          image: Buffer,
+          data: { title: string },
+        ): Promise<Buffer> => {
+          const frame = await Sharp(resolve(FRAMES_URLS?.["3"]?.["value"]))
+            .ensureAlpha() // Ensure the frame has an alpha channel
+            .toBuffer();
+
+          const { width, height } = await Sharp(frame).metadata();
+
+          return await Sharp(image)
+            .resize(width!, height!) // Resize the image to match the frame size if necessary
+            .composite([
+              {
+                input: frame, // Use the frame as a composite input
+                blend: "over", // Overlay the frame over the image
+                gravity: "center",
+              },
+            ])
+            .png() // Output as PNG to maintain transparency
+            .toBuffer();
+        },
+      },
+      {
+        value: "./public/frames/frame-04.png",
+        applyFrame: async (
+          image: Buffer,
+          data: { title: string },
+        ): Promise<Buffer> => {
+          const frame = await Sharp(resolve(FRAMES_URLS?.["4"]?.["value"]))
+            .ensureAlpha() // Ensure the frame has an alpha channel
+            .toBuffer();
+
+          const { width, height } = await Sharp(frame).metadata();
+
+          return await Sharp(image)
+            .resize(width!, height!) // Resize the image to match the frame size if necessary
+            .composite([
+              {
+                input: frame, // Use the frame as a composite input
+                blend: "over", // Overlay the frame over the image
+                gravity: "center",
+              },
+            ])
+            .png() // Output as PNG to maintain transparency
+            .toBuffer();
+        },
+      },
+      {
+        value: "./public/frames/frame-05.png",
+        applyFrame: async (
+          image: Buffer,
+          data: { title: string },
+        ): Promise<Buffer> => {
+          const frame = await Sharp(resolve(FRAMES_URLS?.["5"]?.["value"]))
+            .ensureAlpha() // Ensure the frame has an alpha channel
+            .toBuffer();
+
+          const { width, height } = await Sharp(frame).metadata();
+
+          return await Sharp(image)
+            .resize(width!, height!) // Resize the image to match the frame size if necessary
+            .composite([
+              {
+                input: frame, // Use the frame as a composite input
+                blend: "over", // Overlay the frame over the image
+                gravity: "center",
+              },
+            ])
+            .png() // Output as PNG to maintain transparency
+            .toBuffer();
+        },
+      },
+      {
+        value: "./public/frames/frame-06.png",
+        applyFrame: async (
+          image: Buffer,
+          data: { title: string },
+        ): Promise<Buffer> => {
+          const frame = await Sharp(resolve(FRAMES_URLS?.["6"]?.["value"]))
+            .ensureAlpha() // Ensure the frame has an alpha channel
+            .toBuffer();
+
+          const { width, height } = await Sharp(frame).metadata();
+
+          return await Sharp(image)
+            .resize(width!, height!) // Resize the image to match the frame size if necessary
+            .composite([
+              {
+                input: frame, // Use the frame as a composite input
+                blend: "over", // Overlay the frame over the image
+                gravity: "center",
+              },
+            ])
+            .png() // Output as PNG to maintain transparency
+            .toBuffer();
+        },
+      },
+      {
+        value: "./public/frames/frame-07.png",
+        applyFrame: async (
+          image: Buffer,
+          data: { title: string },
+        ): Promise<Buffer> => {
+          const frame = await Sharp(resolve(FRAMES_URLS?.["7"]?.["value"]))
+            .ensureAlpha() // Ensure the frame has an alpha channel
+            .toBuffer();
+
+          const { width, height } = await Sharp(frame).metadata();
+
+          return await Sharp(image)
+            .resize(width!, height!) // Resize the image to match the frame size if necessary
+            .composite([
+              {
+                input: frame, // Use the frame as a composite input
+                blend: "over", // Overlay the frame over the image
+                gravity: "center",
+              },
+            ])
+            .png() // Output as PNG to maintain transparency
+            .toBuffer();
+        },
+      },
+      {
+        value: "./public/frames/frame-08.png",
+        applyFrame: async (
+          image: Buffer,
+          data: { title: string },
+        ): Promise<Buffer> => {
+          const frame = await Sharp(resolve(FRAMES_URLS?.["8"]?.["value"]))
+            .ensureAlpha() // Ensure the frame has an alpha channel
+            .toBuffer();
+
+          const { width, height } = await Sharp(frame).metadata();
+
+          return await Sharp(image)
+            .resize(width!, height!) // Resize the image to match the frame size if necessary
+            .composite([
+              {
+                input: frame, // Use the frame as a composite input
+                blend: "over", // Overlay the frame over the image
+                gravity: "center",
+              },
+            ])
+            .png() // Output as PNG to maintain transparency
+            .toBuffer();
+        },
+      },
+      {
+        value: "./public/frames/frame-09.png",
+        applyFrame: async (
+          image: Buffer,
+          data: { title: string },
+        ): Promise<Buffer> => {
+          const frame = await Sharp(resolve(FRAMES_URLS?.["9"]?.["value"]))
+            .ensureAlpha() // Ensure the frame has an alpha channel
+            .toBuffer();
+
+          const { width, height } = await Sharp(frame).metadata();
+
+          return await Sharp(image)
+            .resize(width!, height!) // Resize the image to match the frame size if necessary
+            .composite([
+              {
+                input: frame, // Use the frame as a composite input
+                blend: "over", // Overlay the frame over the image
+                gravity: "center",
+              },
+            ])
+            .png() // Output as PNG to maintain transparency
+            .toBuffer();
+        },
+      },
+      {
+        value: "./public/frames/frame-10.png",
+        applyFrame: async (
+          image: Buffer,
+          data: { title: string },
+        ): Promise<Buffer> => {
+          const frame = await Sharp(resolve(FRAMES_URLS?.["10"]?.["value"]))
+            .ensureAlpha() // Ensure the frame has an alpha channel
+            .toBuffer();
+
+          const { width, height } = await Sharp(frame).metadata();
+
+          return await Sharp(image)
+            .resize(width!, height!) // Resize the image to match the frame size if necessary
+            .composite([
+              {
+                input: frame, // Use the frame as a composite input
+                blend: "over", // Overlay the frame over the image
+                gravity: "center",
+              },
+            ])
+            .png() // Output as PNG to maintain transparency
+            .toBuffer();
+        },
+      },
+      {
+        value: "./public/frames/frame-11.png",
+        applyFrame: async (
+          image: Buffer,
+          data: { title: string },
+        ): Promise<Buffer> => {
+          const frame = await Sharp(resolve(FRAMES_URLS?.["11"]?.["value"]))
+            .ensureAlpha() // Ensure the frame has an alpha channel
+            .toBuffer();
+
+          const { width, height } = await Sharp(frame).metadata();
+
+          return await Sharp(image)
+            .resize(width!, height!) // Resize the image to match the frame size if necessary
+            .composite([
+              {
+                input: frame, // Use the frame as a composite input
+                blend: "over", // Overlay the frame over the image
+                gravity: "center",
+              },
+            ])
+            .png() // Output as PNG to maintain transparency
+            .toBuffer();
+        },
+      },
+      {
+        value: "./public/frames/frame-12.png",
+        applyFrame: async (
+          image: Buffer,
+          data: { title: string },
+        ): Promise<Buffer> => {
+          const frame = await Sharp(resolve(FRAMES_URLS?.["12"]?.["value"]))
+            .ensureAlpha() // Ensure the frame has an alpha channel
+            .toBuffer();
+
+          const { width, height } = await Sharp(frame).metadata();
+
+          return await Sharp(image)
+            .resize(width!, height!) // Resize the image to match the frame size if necessary
+            .composite([
+              {
+                input: frame, // Use the frame as a composite input
+                blend: "over", // Overlay the frame over the image
+                gravity: "center",
+              },
+            ])
+            .png() // Output as PNG to maintain transparency
+            .toBuffer();
+        },
+      },
+      {
+        value: "./public/frames/frame-13.png",
+        applyFrame: async (
+          image: Buffer,
+          data: { title: string },
+        ): Promise<Buffer> => {
+          const frame = await Sharp(resolve(FRAMES_URLS?.["13"]?.["value"]))
+            .ensureAlpha() // Ensure the frame has an alpha channel
+            .toBuffer();
+
+          const { width, height } = await Sharp(frame).metadata();
+
+          return await Sharp(image)
+            .resize(width!, height!) // Resize the image to match the frame size if necessary
+            .composite([
+              {
+                input: frame, // Use the frame as a composite input
+                blend: "over", // Overlay the frame over the image
+                gravity: "center",
+              },
+            ])
+            .png() // Output as PNG to maintain transparency
+            .toBuffer();
+        },
+      },
+      {
+        value: "./public/frames/frame-14.png",
+        applyFrame: async (
+          image: Buffer,
+          data: { title: string },
+        ): Promise<Buffer> => {
+          const frame = await Sharp(resolve(FRAMES_URLS?.["14"]?.["value"]))
+            .ensureAlpha() // Ensure the frame has an alpha channel
+            .toBuffer();
+
+          const { width, height } = await Sharp(frame).metadata();
+
+          return await Sharp(image)
+            .resize(width!, height!) // Resize the image to match the frame size if necessary
+            .composite([
+              {
+                input: frame, // Use the frame as a composite input
+                blend: "over", // Overlay the frame over the image
+                gravity: "center",
+              },
+            ])
+            .png() // Output as PNG to maintain transparency
+            .toBuffer();
+        },
+      },
+      {
+        value: "./public/frames/frame-15.png",
+        applyFrame: async (
+          image: Buffer,
+          data: { title: string },
+        ): Promise<Buffer> => {
+          const frame = await Sharp(resolve(FRAMES_URLS?.["15"]?.["value"]))
+            .ensureAlpha() // Ensure the frame has an alpha channel
+            .toBuffer();
+
+          const { width, height } = await Sharp(frame).metadata();
+
+          return await Sharp(image)
+            .resize(width!, height!) // Resize the image to match the frame size if necessary
+            .composite([
+              {
+                input: frame, // Use the frame as a composite input
+                blend: "over", // Overlay the frame over the image
+                gravity: "center",
+              },
+            ])
+            .png() // Output as PNG to maintain transparency
+            .toBuffer();
+        },
+      },
+      {
+        value: "./public/frames/frame-16.png",
+        applyFrame: async (
+          image: Buffer,
+          data: { title: string },
+        ): Promise<Buffer> => {
+          const frame = await Sharp(resolve(FRAMES_URLS?.["16"]?.["value"]))
+            .ensureAlpha() // Ensure the frame has an alpha channel
+            .toBuffer();
+
+          const { width, height } = await Sharp(frame).metadata();
+
+          return await Sharp(image)
+            .resize(width!, height!) // Resize the image to match the frame size if necessary
+            .composite([
+              {
+                input: frame, // Use the frame as a composite input
+                blend: "over", // Overlay the frame over the image
+                gravity: "center",
+              },
+            ])
+            .png() // Output as PNG to maintain transparency
+            .toBuffer();
+        },
+      },
+    ];
+
+    const promiseFrames = FRAMES_URLS?.map((f) =>
+      f
+        .applyFrame(image, {
+          title,
+          phone: "+0102 218 4878",
+          domain: "www.takamol.com",
+        })
+        .then((r) => r?.toString("base64")),
     );
+
     return await Promise.all(promiseFrames);
   } catch (error) {
     console.error("Error applying frames:", error);

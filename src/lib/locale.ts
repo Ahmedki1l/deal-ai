@@ -5,7 +5,7 @@ import { match as matchLocale } from "@formatjs/intl-localematcher";
 import { DictionaryObject, DictionaryValue, Locale } from "@/types/locale";
 
 export const i18n = {
-  defaultLocale: "en",
+  defaultLocale: "ar",
   locales: ["en", "ar", "fr", "de"],
 } as const;
 
@@ -20,7 +20,7 @@ export function getLocale(req: NextRequest): string | undefined {
 }
 
 export function t(value: string, lang: Locale) {
-  return tl(value, { from: "en", to: lang });
+  return tl(value, { from: "ar", to: lang });
 }
 
 // -------------- logic for here

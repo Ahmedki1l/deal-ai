@@ -8,7 +8,9 @@ type HomeProps = Readonly<{
 }>;
 
 export const metadata: Metadata = { title: "Home" };
+
 export default async function Home({ params: { lang } }: HomeProps) {
+  lang = "ar";
   const { user } = await getAuth();
   if (user) redirect(`/${lang}/dashboard`);
   else redirect(`/${lang}/login`);

@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/card";
 import { BackButton } from "@/components/back-button";
 import { PostForm } from "@/components/post-form";
-import { Image as ImageType, Post } from "@prisma/client";
+import { CaseStudy, Image as ImageType, Post, Project } from "@prisma/client";
 import { Dictionary } from "@/types/locale";
 import { t } from "@/lib/locale";
 import { useLocale } from "@/hooks/use-locale";
@@ -34,16 +34,15 @@ import { PostRestoreButton } from "@/components/post-restore-button";
 import { PostBinButton } from "@/components/post-bin-button";
 import { AlertDialogCancel } from "@/components/ui/alert-dialog";
 import { DrawerClose } from "@/components/ui/drawer";
-import {
-  applyAllFrames,
-  uploadIntoSpace,
-  watermarkImage,
-} from "@/actions/images";
+import { applyAllFrames } from "@/actions/images";
 import { fetchImage } from "@/lib/uploader";
 import { FRAMES_URL } from "@/lib/constants";
 
 export type PostUpdateFormProps = {
-  post: Post & { image: ImageType | null };
+  post: Post & {
+    image: ImageType | null;
+    caseStudy: CaseStudy & { project: Project };
+  };
   disabled?: boolean;
 } & Dictionary["post-update-form"] &
   Dictionary["image-form"] &
@@ -91,7 +90,10 @@ export function PostUpdateForm({
           return;
         }
 
-        const result = await applyAllFrames(src);
+        const result = await applyAllFrames(
+          src,
+          post?.["caseStudy"]?.["project"]?.["title"],
+        );
         setFramedImages(result);
       } catch (error) {
         setFramedImages([]);

@@ -20,7 +20,7 @@ import Sharp from "sharp";
 import { fetchImage, s3Client } from "@/lib/uploader"; // Ensure s3Client is properly set up
 import { Body, ObjectKey } from "aws-sdk/clients/s3";
 import { writeFile, writeFileSync } from "fs";
-import { createCanvas, loadImage } from "canvas";
+import { createCanvas, loadImage, registerFont } from "canvas";
 import { FRAMES_URL } from "@/lib/constants";
 
 export async function createImage(data: z.infer<typeof imageCreateSchema>) {
@@ -158,23 +158,134 @@ export async function uploadIntoSpace(name: ObjectKey, body: Body) {
   }
 }
 
-export async function applyFrame(image: Buffer, frameURL: string) {
+export async function applyFrame(
+  image: Buffer,
+  frameURL: string,
+  title: string,
+) {
   try {
-    // Load the frame from the PSD file or PNG file
+    if (FRAMES_URL?.[0] == frameURL) {
+      const maxTextWidth = 100; // Maximum width for the text
+      const normalFontSize = 18; // Font size for normal text
+      const lineSpacing = 15; // Line spacing between words
+
+      // Load the frame from the PNG file
+      const frame = await Sharp(resolve(frameURL))
+        .ensureAlpha() // Ensure the frame has an alpha channel
+        .toBuffer();
+
+      const { width, height } = await Sharp(frame).metadata();
+
+      // Create a canvas to draw the text
+      const canvas = createCanvas(width!, height!);
+      const context = canvas.getContext("2d");
+
+      // Split the title into words
+      const words = title.split(" "); // Example: ["مشروع", "مكين", "003"]
+
+      // Function to adjust font size to fit a word within maxTextWidth
+      const fitTextToWidth = (
+        text: string,
+        maxWidth: number,
+        initialFontSize: number,
+      ) => {
+        let fontSize = initialFontSize;
+        do {
+          fontSize -= 1;
+          context.font = `bold ${fontSize}px Cairo`;
+        } while (context.measureText(text).width > maxWidth && fontSize > 0);
+        return fontSize;
+      };
+
+      // Set the font size for the second word to fit within the maxTextWidth
+      const secondWordFontSize = fitTextToWidth(words[1], maxTextWidth, 30);
+
+      // Calculate total height of the text
+      let totalHeight = normalFontSize * 2 + lineSpacing + secondWordFontSize; // 2 normal words + bold word + spacing
+      const startY = height! - totalHeight - 260; // Start position vertically (10px padding from bottom)
+
+      // Render first word: normal, black, and small
+      context.font = `bold ${normalFontSize}px Cairo`;
+      context.fillStyle = "#000000"; // Black color
+      context.textAlign = "center";
+      context.fillText(words?.[0], maxTextWidth / 2 + 20, startY);
+
+      // Render second word: yellow, bold, and larger
+      context.font = `bold ${secondWordFontSize}px Cairo`; // Using Cairo font for the second word
+      context.fillStyle = "#FFD700"; // Yellow color
+      context.fillText(
+        words?.[1],
+        maxTextWidth / 2 + 20,
+        startY + normalFontSize + lineSpacing,
+      );
+
+      // Render third word: normal, black, and small, with wrapping if necessary
+      const remainingWords = words.slice(2)?.join(" ");
+      context.font = `bold ${normalFontSize}px Cairo`;
+      context.fillStyle = "#000000"; // Black color
+      context.textAlign = "center";
+
+      // Wrap remaining words if necessary
+      let currentLine = "";
+      let lines = [];
+      remainingWords.split(" ").forEach((word) => {
+        const testLine = currentLine + word + " ";
+        const testWidth = context.measureText(testLine).width;
+        if (testWidth > maxTextWidth && currentLine !== "") {
+          lines.push(currentLine.trim());
+          currentLine = word + " ";
+        } else {
+          currentLine = testLine;
+        }
+      });
+      lines.push(currentLine.trim());
+
+      // Draw each line of the remaining words
+      lines.forEach((line) => {
+        context.fillText(
+          line,
+          maxTextWidth / 2 + 20,
+          startY +
+            normalFontSize +
+            lineSpacing +
+            secondWordFontSize +
+            lines.indexOf(line) * (normalFontSize + lineSpacing),
+        );
+      });
+
+      // Convert the canvas with text to a buffer
+      const textImageBuffer = canvas.toBuffer();
+
+      // Create the final image by combining the frame, fetched image, and the title text
+      return await Sharp(image)
+        .resize(width!, height!) // Resize the image to match the frame size if necessary
+        .composite([
+          {
+            input: frame, // Use the frame as a composite input
+            blend: "over", // Overlay the frame over the image
+          },
+          {
+            input: textImageBuffer, // Add the title text as an overlay
+            blend: "over", // Overlay the text on the image
+          },
+        ])
+        .png() // Output as PNG to maintain transparency
+        .toBuffer();
+    }
+
     const frame = await Sharp(resolve(frameURL))
       .ensureAlpha() // Ensure the frame has an alpha channel
       .toBuffer();
 
     const { width, height } = await Sharp(frame).metadata();
 
-    // Create the final image by combining the frame and the fetched image
     return await Sharp(image)
-      .resize(width, height) // Resize the image to match the frame size if necessary
+      .resize(width!, height!) // Resize the image to match the frame size if necessary
       .composite([
         {
           input: frame, // Use the frame as a composite input
           blend: "over", // Overlay the frame over the image
-          gravity: "west", // Center the frame over the image
+          gravity: "center",
         },
       ])
       .png() // Output as PNG to maintain transparency
@@ -185,33 +296,140 @@ export async function applyFrame(image: Buffer, frameURL: string) {
   }
 }
 
-export async function watermarkImage(src: string) {
-  try {
-    const user = await getAuth();
-    if (!user) throw new RequiresLoginError();
+// export async function applyFrame(image: Buffer, frameURL: string) {
+//   try {
+//     const title = "مشروع مكين 003"; // The title to be styled
+//     const maxTextWidth = 100; // Maximum width for the text
+//     const normalFontSize = 18; // Font size for normal text
+//     const lineSpacing = 10; // Line spacing between words
+//     const startX = maxTextWidth / 2 + 15; // Center horizontally
 
-    // Fetch the image
-    const image = await fetchImage(src);
+//     // Load the frame from the PNG file
+//     const frame = await Sharp(resolve(frameURL))
+//       .ensureAlpha() // Ensure the frame has an alpha channel
+//       .toBuffer();
 
-    const framedImage = await applyFrame(image, FRAMES_URL?.[0]);
-    //  Store it remotely
-    return await uploadIntoSpace(`frame-${Date.now()}.png`, framedImage);
-  } catch (error: any) {
-    console.error(error?.["message"]);
-    if (error instanceof z.ZodError) throw new ZodError(error);
-    throw Error(
-      error?.["message"] ??
-        "Your image URL was not generated. Please try again.",
-    );
-  }
-}
+//     const { width, height } = await Sharp(frame).metadata();
 
-export async function applyAllFrames(src: string) {
+//     // Create a canvas to draw the text
+//     const canvas = createCanvas(width!, height!);
+//     const context = canvas.getContext("2d");
+
+//     // Split the title into words
+//     const words = title.split(" "); // Example: ["مشروع", "مكين", "003"]
+
+//     // Function to adjust font size to fit a word within maxTextWidth
+//     const fitTextToWidth = (
+//       text: string,
+//       maxWidth: number,
+//       initialFontSize: number,
+//       isBold: boolean = false,
+//       font: string = "Cairo",
+//     ) => {
+//       let fontSize = initialFontSize;
+//       do {
+//         fontSize -= 1;
+//         context.font = `bold ${fontSize}px ${font}`;
+//       } while (context.measureText(text).width > maxWidth && fontSize > 0);
+//       return fontSize;
+//     };
+
+//     // Set the font size for the second word to fit within the maxTextWidth
+//     const secondWordFontSize = fitTextToWidth(words[1], maxTextWidth, 30, true);
+
+//     // Render the words: first and third words are normal, second is bold and yellow
+//     let startY = height! - 20; // Start position vertically
+
+//     // Render first word: normal, black, and small
+//     context.font = `${normalFontSize}px Cairo`;
+//     context.fillStyle = "#000000"; // Black color
+//     context.textAlign = "center";
+//     context.fillText(words[0], startX, startY);
+
+//     // Render second word: yellow, bold, and larger
+//     startY += normalFontSize + lineSpacing;
+//     context.font = `bold ${secondWordFontSize}px Cairo`; // Using Cairo font for the second word
+//     context.fillStyle = "#FFD700"; // Yellow color
+//     context.fillText(words[1], startX, startY);
+
+//     // Render third word: normal, black, and small, with wrapping if necessary
+//     const remainingWords = words.slice(2).join(" ");
+//     context.font = `${normalFontSize}px Cairo`;
+//     context.fillStyle = "#000000"; // Black color
+//     context.textAlign = "center";
+
+//     // Wrap remaining words if necessary
+//     let currentLine = "";
+//     let lines = [];
+//     remainingWords.split(" ").forEach((word) => {
+//       const testLine = currentLine + word + " ";
+//       const testWidth = context.measureText(testLine).width;
+//       if (testWidth > maxTextWidth && currentLine !== "") {
+//         lines.push(currentLine.trim());
+//         currentLine = word + " ";
+//       } else {
+//         currentLine = testLine;
+//       }
+//     });
+//     lines.push(currentLine.trim());
+
+//     // Draw each line of the remaining words
+//     lines.forEach((line) => {
+//       startY += normalFontSize + lineSpacing;
+//       context.fillText(line, startX, startY);
+//     });
+
+//     // Convert the canvas with text to a buffer
+//     const textImageBuffer = canvas.toBuffer();
+
+//     // Create the final image by combining the frame, fetched image, and the title text
+//     return await Sharp(image)
+//       .resize(width!, height!) // Resize the image to match the frame size if necessary
+//       .composite([
+//         {
+//           input: frame, // Use the frame as a composite input
+//           blend: "over", // Overlay the frame over the image
+//         },
+//         {
+//           input: textImageBuffer, // Add the title text as an overlay
+//           blend: "over", // Overlay the text on the image
+//         },
+//       ])
+//       .png() // Output as PNG to maintain transparency
+//       .toBuffer();
+//   } catch (error) {
+//     console.error("Error applying frame:", error);
+//     throw error;
+//   }
+// }
+
+// export async function watermarkImage(src: string) {
+//   try {
+//     const user = await getAuth();
+//     if (!user) throw new RequiresLoginError();
+
+//     // Fetch the image
+//     const image = await fetchImage(src);
+
+//     const framedImage = await applyFrame(image, FRAMES_URL?.[0]);
+//     //  Store it remotely
+//     return await uploadIntoSpace(`frame-${Date.now()}.png`, framedImage);
+//   } catch (error: any) {
+//     console.error(error?.["message"]);
+//     if (error instanceof z.ZodError) throw new ZodError(error);
+//     throw Error(
+//       error?.["message"] ??
+//         "Your image URL was not generated. Please try again.",
+//     );
+//   }
+// }
+
+export async function applyAllFrames(src: string, title: string) {
   try {
     const image = await fetchImage(src);
 
     const promiseFrames = FRAMES_URL?.map((f) =>
-      applyFrame(image, f).then((r) => r?.toString("base64")),
+      applyFrame(image, f, title).then((r) => r?.toString("base64")),
     );
     return await Promise.all(promiseFrames);
   } catch (error) {
@@ -219,7 +437,6 @@ export async function applyAllFrames(src: string) {
     throw error;
   }
 }
-
 // export async function applyFrameWithTitle(image: Buffer, title: string) {
 //   try {
 //     // Load the frame from the PSD file or PNG file
@@ -238,7 +455,7 @@ export async function applyAllFrames(src: string) {
 //     ctx.drawImage(frameImage, 0, 0);
 
 //     // Set font and style for the title
-//     ctx.font = "bold 36px Arial";
+//     ctx.font = "bold 36px Cairo";
 //     ctx.fillStyle = "white";
 //     ctx.textAlign = "center";
 

@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Dictionary } from "@/types/locale";
-import { SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Image as ImageType } from "@prisma/client";
 import { useLocale } from "@/hooks/use-locale";
@@ -123,7 +123,10 @@ export const ImageForm = {
     },
     loading,
     form,
-  }: ImageFormProps) {
+    setSrc,
+  }: ImageFormProps & {
+    setSrc: Dispatch<SetStateAction<string | null>>;
+  }) {
     const lang = useLocale();
     const [generating, setGenerating] = useState(false);
 
@@ -165,7 +168,7 @@ export const ImageForm = {
             form.resetField("image.file");
 
             form?.setValue("image.src", src);
-
+            setSrc(src);
             return c?.["generated successfully."];
           },
         },

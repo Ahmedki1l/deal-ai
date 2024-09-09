@@ -240,6 +240,7 @@ export function PostUpdateForm({
                             dic={dic}
                             form={form}
                             loading={loading}
+                            setSrc={setSrc}
                           />
                         </TabsContent>
                       </Tabs>
@@ -290,11 +291,11 @@ export function PostUpdateForm({
                     </>
                   }
                   title={c?.["apply frame"]}
-                  // description={
-                  //   c?.[
-                  //     "updating an image allows you to refine and enhance the details of your ongoing developments"
-                  //   ]
-                  // }
+                  description={
+                    c?.[
+                      "updating an image allows you to refine and enhance the details of your ongoing developments"
+                    ]
+                  }
                   open={openFrame}
                   setOpen={setOpenFrame}
                 >

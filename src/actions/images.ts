@@ -165,9 +165,9 @@ export async function applyFrame(
 ) {
   try {
     if (FRAMES_URL?.[0] == frameURL) {
-      const maxTextWidth = 100; // Maximum width for the text
-      const normalFontSize = 18; // Font size for normal text
-      const lineSpacing = 15; // Line spacing between words
+      const maxTextWidth = 250; // Maximum width for the text
+      const normalFontSize = 30; // Font size for normal text
+      const lineSpacing = 20; // Line spacing between words
 
       // Load the frame from the PNG file
       const frame = await Sharp(resolve(frameURL))
@@ -192,36 +192,36 @@ export async function applyFrame(
         let fontSize = initialFontSize;
         do {
           fontSize -= 1;
-          context.font = `bold ${fontSize}px Cairo`;
+          context.font = `bold ${fontSize}px Arial`;
         } while (context.measureText(text).width > maxWidth && fontSize > 0);
         return fontSize;
       };
 
       // Set the font size for the second word to fit within the maxTextWidth
-      const secondWordFontSize = fitTextToWidth(words[1], maxTextWidth, 30);
+      const secondWordFontSize = fitTextToWidth(words[1], maxTextWidth, 50);
 
       // Calculate total height of the text
       let totalHeight = normalFontSize * 2 + lineSpacing + secondWordFontSize; // 2 normal words + bold word + spacing
-      const startY = height! - totalHeight - 260; // Start position vertically (10px padding from bottom)
+      const startY = height! - totalHeight - 200; // Start position vertically (10px padding from bottom)
 
       // Render first word: normal, black, and small
-      context.font = `bold ${normalFontSize}px Cairo`;
+      context.font = `bold ${normalFontSize}px Arial`;
       context.fillStyle = "#000000"; // Black color
       context.textAlign = "center";
-      context.fillText(words?.[0], maxTextWidth / 2 + 20, startY);
+      context.fillText(words?.[0], maxTextWidth / 2, startY);
 
       // Render second word: yellow, bold, and larger
-      context.font = `bold ${secondWordFontSize}px Cairo`; // Using Cairo font for the second word
+      context.font = `bold ${secondWordFontSize}px Arial`; // Using Arial font for the second word
       context.fillStyle = "#FFD700"; // Yellow color
       context.fillText(
         words?.[1],
-        maxTextWidth / 2 + 20,
+        maxTextWidth / 2,
         startY + normalFontSize + lineSpacing,
       );
 
       // Render third word: normal, black, and small, with wrapping if necessary
       const remainingWords = words.slice(2)?.join(" ");
-      context.font = `bold ${normalFontSize}px Cairo`;
+      context.font = `bold ${normalFontSize}px Arial`;
       context.fillStyle = "#000000"; // Black color
       context.textAlign = "center";
 
@@ -244,7 +244,7 @@ export async function applyFrame(
       lines.forEach((line) => {
         context.fillText(
           line,
-          maxTextWidth / 2 + 20,
+          maxTextWidth / 2,
           startY +
             normalFontSize +
             lineSpacing +
@@ -324,7 +324,7 @@ export async function applyFrame(
 //       maxWidth: number,
 //       initialFontSize: number,
 //       isBold: boolean = false,
-//       font: string = "Cairo",
+//       font: string = "Arial",
 //     ) => {
 //       let fontSize = initialFontSize;
 //       do {
@@ -341,20 +341,20 @@ export async function applyFrame(
 //     let startY = height! - 20; // Start position vertically
 
 //     // Render first word: normal, black, and small
-//     context.font = `${normalFontSize}px Cairo`;
+//     context.font = `${normalFontSize}px Arial`;
 //     context.fillStyle = "#000000"; // Black color
 //     context.textAlign = "center";
 //     context.fillText(words[0], startX, startY);
 
 //     // Render second word: yellow, bold, and larger
 //     startY += normalFontSize + lineSpacing;
-//     context.font = `bold ${secondWordFontSize}px Cairo`; // Using Cairo font for the second word
+//     context.font = `bold ${secondWordFontSize}px Arial`; // Using Arial font for the second word
 //     context.fillStyle = "#FFD700"; // Yellow color
 //     context.fillText(words[1], startX, startY);
 
 //     // Render third word: normal, black, and small, with wrapping if necessary
 //     const remainingWords = words.slice(2).join(" ");
-//     context.font = `${normalFontSize}px Cairo`;
+//     context.font = `${normalFontSize}px Arial`;
 //     context.fillStyle = "#000000"; // Black color
 //     context.textAlign = "center";
 
@@ -455,7 +455,7 @@ export async function applyAllFrames(src: string, title: string) {
 //     ctx.drawImage(frameImage, 0, 0);
 
 //     // Set font and style for the title
-//     ctx.font = "bold 36px Cairo";
+//     ctx.font = "bold 36px Arial";
 //     ctx.fillStyle = "white";
 //     ctx.textAlign = "center";
 

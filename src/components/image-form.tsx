@@ -21,12 +21,7 @@ import { convertBase64, isValidUrl } from "@/lib/utils";
 import { Image } from "./image";
 import { Icons } from "./icons";
 import { toast } from "sonner";
-import {
-  applyAllFrames,
-  generateImage,
-  regenerateImagePrompt,
-  watermarkImage,
-} from "@/actions/images";
+import { generateImage, regenerateImagePrompt } from "@/actions/images";
 import { t } from "@/lib/locale";
 import { Tooltip } from "./tooltip";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";

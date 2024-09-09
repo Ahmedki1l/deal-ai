@@ -58,13 +58,8 @@ export default async function Dashboard({ params: { lang } }: DashboardProps) {
         </div>
       </DashboardLayout.Header>
 
-      <div className="mt-10 space-y-10">
+      <div className="mt-10">
         <DashboardPostsBarChart dic={dic} posts={posts} />
-
-        <div className="flex flex-col gap-4">
-          <CardTitle>{c?.["latest projects"]}</CardTitle>
-          <Table dic={dic} data={projects} />
-        </div>
       </div>
     </DashboardLayout>
   );

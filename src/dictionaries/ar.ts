@@ -441,6 +441,7 @@ export default {
     ar: "العربية (AR)",
     fr: "الفرنسية (FR)",
     de: "الألمانية (DE)",
+    "change language": "تغيير اللغة",
   },
   "mode-toggle": {
     "toggle theme": "تبديل النظام",

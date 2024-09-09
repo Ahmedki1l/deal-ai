@@ -35,7 +35,11 @@ export function LocaleSwitcher({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="link" size="sm" className="gap-1 underline">
+        <Button
+          variant="link"
+          size={isLabeled ? "sm" : "icon"}
+          className="gap-1 underline"
+        >
           <Icons.globe />
           {isLabeled && <span>{c?.[lang]}</span>}
           <span className="sr-only">

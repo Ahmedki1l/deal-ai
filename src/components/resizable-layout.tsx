@@ -28,6 +28,7 @@ import {
 import { Avatar } from "./avatar";
 import { LocaleSwitcher, LocaleSwitcherProps } from "./locale-switcher";
 import { ModeToggler, ModeTogglerProps } from "./mode-toggler";
+import { Link } from "./link";
 
 type ResizableLayoutProps = {
   user: User;
@@ -62,7 +63,7 @@ export function ResizableLayout({
   return (
     <ResizablePanelGroup
       direction="horizontal"
-      className="flex h-screen w-full flex-col"
+      className="flex h-screen w-full flex-col dark:bg-[#121212]"
       onLayout={(sizes: number[]) => {
         document.cookie = `react-resizable-panels:layout=${JSON.stringify(
           sizes,
@@ -92,30 +93,32 @@ export function ResizableLayout({
           }
         }}
         className={cn(
-          "flex h-screen min-w-[200px] max-w-[250px] flex-col justify-between transition-all duration-300 ease-in-out",
+          "flex h-screen min-w-[200px] max-w-[250px] flex-col justify-between bg-muted transition-all duration-300 ease-in-out dark:bg-card",
           isCollapsed && "min-w-[50px]",
         )}
       >
         <div className="flex h-full flex-col">
           {/* Account Switcher */}
-          <div
-            className={cn(
-              "container flex flex-col items-center justify-center py-4",
-              isCollapsed &&
-                buttonVariants({
-                  variant: "outline",
-                  size: "icon",
-                  className:
-                    "h-9 w-9 shrink-0 rounded-none border-none p-0 shadow-none",
-                }),
-            )}
-          >
-            {isCollapsed ? (
-              <Icons.logo />
-            ) : (
-              <Icons.fullLogo className="h-auto w-auto" />
-            )}
-          </div>
+          <Link href="/dashboard" className="flex items-center">
+            <div
+              className={cn(
+                "container my-1 flex flex-col items-center justify-center py-4",
+                isCollapsed &&
+                  buttonVariants({
+                    variant: "ghost",
+                    size: "icon",
+                    className:
+                      "h-9 w-9 shrink-0 rounded-none border-none p-0 shadow-none",
+                  }),
+              )}
+            >
+              {isCollapsed ? (
+                <Icons.logo />
+              ) : (
+                <Icons.fullLogo className="h-auto w-auto" />
+              )}
+            </div>
+          </Link>
 
           {/* Nav Links */}
           <div className="flex flex-1 flex-col justify-between gap-10">
@@ -148,7 +151,7 @@ export function ResizableLayout({
                     "container px-4 py-5 transition-all duration-300 ease-in-out",
                   )}
                 >
-                  <Card className="w-full">
+                  <Card className="w-full border-none bg-transparent shadow-none">
                     <CardHeader className="flex w-full flex-col items-center justify-center gap-4">
                       <div className="flex w-full items-center justify-center gap-3">
                         <Avatar
@@ -174,6 +177,28 @@ export function ResizableLayout({
                   </Card>
                 </div>
               )}
+
+              {isCollapsed ? (
+                <>
+                  <Tooltip
+                    text={dic?.["mode-toggle"]?.["toggle theme"]}
+                    side="right"
+                  >
+                    <Card className="mx-auto flex w-fit items-center justify-center rounded-full">
+                      <ModeToggler dic={dic} />
+                    </Card>
+                  </Tooltip>
+
+                  <Tooltip
+                    text={dic?.["locale-switcher"]?.["change language"]}
+                    side="right"
+                  >
+                    <Card className="mx-auto flex w-fit items-center justify-center rounded-full">
+                      <LocaleSwitcher dic={dic} />
+                    </Card>
+                  </Tooltip>
+                </>
+              ) : null}
 
               {links?.["bottom"]?.map((links, i) => (
                 <div key={i}>

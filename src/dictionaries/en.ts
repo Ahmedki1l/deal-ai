@@ -443,6 +443,7 @@ export default {
     ar: "العربية (AR)",
     fr: "French (FR)",
     de: "Deautch (DE)",
+    "change language": "change language",
   },
   "mode-toggle": {
     "toggle theme": "toggle theme",

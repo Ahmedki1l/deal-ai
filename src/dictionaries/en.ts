@@ -537,6 +537,7 @@ export default {
     "choose file": "choose file",
     "generate using AI": "generate using AI",
     "apply frame": "Apply Frame",
+    "project name": "Project Name",
   },
   "post-update-schedule-button": {
     "scheduled successfully.": "scheduled successfully.",

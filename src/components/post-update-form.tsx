@@ -37,6 +37,8 @@ import { DrawerClose } from "@/components/ui/drawer";
 import { applyAllFrames } from "@/actions/images";
 import { fetchImage } from "@/lib/uploader";
 import { FRAMES_URL } from "@/lib/constants";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 
 export type PostUpdateFormProps = {
   post: Post & {
@@ -338,6 +340,13 @@ export function PostUpdateForm({
                   form={form as any}
                   loading={loading}
                 />
+                <div>
+                  <Label>{c?.["project name"]}</Label>
+                  <Input
+                    value={post?.["caseStudy"]?.["project"]?.["title"]}
+                    disabled={true}
+                  />
+                </div>
                 <PostForm.content
                   dic={dic}
                   form={form as any}

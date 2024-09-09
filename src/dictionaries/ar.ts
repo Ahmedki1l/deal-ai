@@ -539,6 +539,7 @@ export default {
     "choose file": "اختيار ملف",
     "generate using AI": "إنشاء باستخدام الذكاء الاصطناعي",
     "apply frame": "تطبيق الإطار المناسب...",
+    "project name": "إسم المشروع التابع له",
   },
   "post-update-schedule-button": {
     "scheduled successfully.": "تم جدولته بنجاح.",

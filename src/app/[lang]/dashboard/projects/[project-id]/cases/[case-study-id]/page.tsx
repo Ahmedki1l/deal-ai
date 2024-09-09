@@ -115,8 +115,10 @@ export default async function CaseStudy({
               className={buttonVariants({ variant: "ghost" })}
             >
               <Icons.chevronLeft />
-
-              {caseStudy?.["project"]?.["title"]}
+              {c?.["back to"]}{" "}
+              <span className="font-semibold">
+                {caseStudy?.["project"]?.["title"]}
+              </span>
             </Link>
           </div>
 

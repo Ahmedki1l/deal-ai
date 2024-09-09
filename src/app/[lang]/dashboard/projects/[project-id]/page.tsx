@@ -76,8 +76,9 @@ export default async function Project({
     {
       label: c?.["property types"],
       value: dic?.["db"]?.["propertyTypes"]
-        ?.filter((p) => project?.["propertyTypes"].includes(p?.["value"]))
-        ?.map((e) => e?.["label"]),
+        ?.filter((p) => !!project?.["propertyTypes"].includes(p?.["value"]))
+        ?.map((p) => p?.["label"])
+        .join(", "),
     },
     {
       label: c?.["platforms"],
@@ -151,9 +152,7 @@ export default async function Project({
                     <TableCell className="font-medium">
                       {e?.["label"]}
                     </TableCell>
-                    <TableCell className="text-right">
-                      {e?.["value"]?.join(", ")}
-                    </TableCell>
+                    <TableCell className="text-right">{e?.["value"]}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

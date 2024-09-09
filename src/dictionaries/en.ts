@@ -128,6 +128,7 @@ export default {
 
           cases: {
             case: {
+              "back to": "back to",
               "market strategy": "market strategy",
               "error loading market strategy data.":
                 "error loading market strategy data.",
@@ -188,6 +189,7 @@ export default {
                 "you have not created you posts yet.":
                   "you have not created you posts yet.",
                 post: {
+                  "back to": "back to",
                   "it's project or study case is deleted, once you restore it all will be editable.":
                     "it's project or study case is deleted, once you restore it all will be editable.",
                   "oops, no such post.": "oops, no such post.",
@@ -214,6 +216,7 @@ export default {
             },
           },
           properties: {
+            "back to": "back to",
             properties: "Properties",
             "oops, no such property.": "oops, no such property.",
             "you have not created you property yet.":

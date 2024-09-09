@@ -62,7 +62,10 @@ export default async function CaseStudy({
           <div>
             <Link href={`/dashboard/projects/${projectId}`}>
               <Icons.chevronLeft />
-              {property?.["project"]?.["title"]}
+              {c?.["back to"]}{" "}
+              <span className="font-semibold">
+                {property?.["project"]?.["title"]}
+              </span>
             </Link>
           </div>
 

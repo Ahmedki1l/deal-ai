@@ -124,6 +124,7 @@ export default {
 
           cases: {
             case: {
+              "back to": "العودة إلي",
               "market strategy": "استراتيجية السوق",
               "error loading market strategy data.":
                 "خطأ في تحميل بيانات استراتيجية السوق.",
@@ -184,6 +185,7 @@ export default {
                 "you have not created you posts yet.":
                   "لم تقم بإنشاء منشوراتك بعد.",
                 post: {
+                  "back to": "العودة إلي",
                   "it's project or study case is deleted, once you restore it all will be editable.":
                     "تم حذف المشروع أو دراسة الحالة، بمجرد استعادته سيكون كل شيء قابلاً للتعديل.",
                   "oops, no such post.": "عذرًا، لا توجد منشورة بهذا الاسم.",
@@ -210,6 +212,7 @@ export default {
             },
           },
           properties: {
+            "back to": "العودة إلي",
             properties: "الوحدات",
             "oops, no such property.": "عذرًا، لا توجد خاصية بهذا الاسم.",
             "you have not created you property yet.":

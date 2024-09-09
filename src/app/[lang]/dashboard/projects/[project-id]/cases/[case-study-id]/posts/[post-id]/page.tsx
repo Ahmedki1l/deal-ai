@@ -83,7 +83,7 @@ export default async function CaseStudy({
             >
               <Icons.chevronLeft />
               {c?.["back to"]}{" "}
-              <span className="font-semibold">
+              <span className="font-bold">
                 {post?.["caseStudy"]?.["title"]}
               </span>
             </Link>

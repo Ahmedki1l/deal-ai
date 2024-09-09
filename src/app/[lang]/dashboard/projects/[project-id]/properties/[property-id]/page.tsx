@@ -5,7 +5,7 @@ import { BackButton } from "@/components/back-button";
 import { LocaleProps } from "@/types/locale";
 import { getDictionary } from "@/lib/dictionaries";
 import { PropertyRestoreButton } from "@/components/property-restore-button";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { PropertyBinButton } from "@/components/property-bin-button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Icons } from "@/components/icons";
@@ -60,10 +60,13 @@ export default async function CaseStudy({
       <div className="flex flex-col gap-5">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <Link href={`/dashboard/projects/${projectId}`}>
+            <Link
+              href={`/dashboard/projects/${projectId}`}
+              className={buttonVariants({ variant: "ghost" })}
+            >
               <Icons.chevronLeft />
               {c?.["back to"]}{" "}
-              <span className="font-semibold">
+              <span className="font-bold">
                 {property?.["project"]?.["title"]}
               </span>
             </Link>

@@ -128,16 +128,17 @@ export const ImageForm = {
     setSrc: Dispatch<SetStateAction<string | null>>;
   }) {
     const lang = useLocale();
+    const [generatingPrompt, setGeneratingPrompt] = useState(false);
     const [generating, setGenerating] = useState(false);
 
     async function enhance() {
-      setGenerating(true);
+      setGeneratingPrompt(true);
       toast.promise(
         regenerateImagePrompt({
           prompt: form.getValues("image.prompt") ?? "",
         }),
         {
-          finally: () => setGenerating(false),
+          finally: () => setGeneratingPrompt(false),
           error: async (err) => {
             const msg = await t(err?.["message"], lang);
             return msg;
@@ -188,9 +189,9 @@ export const ImageForm = {
                     type="button"
                     size="icon"
                     onClick={enhance}
-                    disabled={loading || generating}
+                    disabled={loading || generating || generatingPrompt}
                   >
-                    <Icons.reload />
+                    {generatingPrompt ? <Icons.spinner /> : <Icons.reload />}
                   </Button>
                 </Tooltip>
               </div>
@@ -198,7 +199,7 @@ export const ImageForm = {
               <FormControl>
                 <Textarea
                   className="min-h-56 w-full"
-                  disabled={loading || generating}
+                  disabled={loading || generating || generatingPrompt}
                   {...field}
                 />
               </FormControl>
@@ -215,9 +216,9 @@ export const ImageForm = {
                 type="button"
                 size="icon"
                 onClick={generate}
-                disabled={loading || generating}
+                disabled={loading || generating || generatingPrompt}
               >
-                <Icons.reload />
+                {generating ? <Icons.spinner /> : <Icons.reload />}
               </Button>
             </Tooltip>
           </div>
@@ -225,7 +226,7 @@ export const ImageForm = {
           <Image
             src={form.watch("image.src")!}
             alt=""
-            className="aspect-square h-full"
+            className="aspect-auto h-60"
           />
         </div>
       </div>
@@ -312,7 +313,7 @@ export const ImageForm = {
               onValueChange={field.onChange}
               defaultValue={field.value}
               disabled={loading}
-              className="grid h-auto grid-cols-3 gap-2"
+              className="grid grid-cols-3 gap-4"
             >
               {framedImages?.map((fi, i) => (
                 <ToggleGroupItem
@@ -323,7 +324,7 @@ export const ImageForm = {
                   <Image
                     src={`data:image/png;base64,${fi}`}
                     alt=""
-                    className="h-40 rounded-none border-none"
+                    className="rounded-none border-none"
                   />
                 </ToggleGroupItem>
               ))}

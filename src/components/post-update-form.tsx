@@ -40,6 +40,7 @@ import {
   watermarkImage,
 } from "@/actions/images";
 import { fetchImage } from "@/lib/uploader";
+import { FRAMES_URL } from "@/lib/constants";
 
 export type PostUpdateFormProps = {
   post: Post & { image: ImageType | null };
@@ -99,7 +100,7 @@ export function PostUpdateForm({
     };
 
     fetchData();
-  }, [src]);
+  }, [src, FRAMES_URL]);
 
   function onSubmit(data: z.infer<typeof postUpdateSchema>) {
     setLoading(true);
@@ -180,146 +181,149 @@ export function PostUpdateForm({
           </div>
 
           <div className="grid gap-4 lg:grid-cols-2">
-            <div
-              className={cn(
-                "relative h-full min-h-60 flex-col overflow-hidden rounded text-primary-foreground dark:border-r lg:flex",
-                // form.watch("image") && `bg-[src(${form.getValues("image")})]`,
-              )}
-            >
-              {/* <div className="absolute inset-0" /> */}
-              {isValidUrl(form.watch("image.src") ?? "") ? (
-                <Image
-                  src={
-                    form.watch("frame")
-                      ? `data:image/png;base64,${JSON.parse(form.watch("frame")!)}`
-                      : (form.watch("framedImageURL") ??
-                        form.getValues("image.src")!)
-                  }
-                  alt=""
-                />
-              ) : null}
-              <div className="absolute right-4 top-4 z-50 flex items-center gap-2 text-lg font-medium">
-                <DialogResponsive
-                  dic={dic}
-                  disabled={loading || trigger}
-                  confirmButton={
-                    <>
-                      <Button
-                        type="button"
-                        onClick={() => setOpen(false)}
-                        disabled={loading || trigger}
-                        className="w-full md:w-fit"
-                      >
-                        {!disabled && loading && <Icons.spinner />}
-                        {c?.["submit"]}
-                      </Button>
-                    </>
-                  }
-                  content={
-                    <>
-                      <Tabs defaultValue="generate">
-                        <TabsList>
-                          <TabsTrigger value="choose">
-                            {c?.["choose file"]}
-                          </TabsTrigger>
-                          <TabsTrigger value="generate">
-                            {c?.["generate using AI"]}
-                          </TabsTrigger>
-                          {/* <TabsTrigger value="frame">apply frame</TabsTrigger> */}
-                        </TabsList>
-                        <TabsContent value="choose">
-                          <ImageForm.src
-                            dic={dic}
-                            form={form}
-                            loading={loading}
-                          />
-                        </TabsContent>
-
-                        <TabsContent value="generate">
-                          <ImageForm.prompt
-                            dic={dic}
-                            form={form}
-                            loading={loading}
-                            setSrc={setSrc}
-                          />
-                        </TabsContent>
-                      </Tabs>
-                    </>
-                  }
-                  title={c?.["update image"]}
-                  description={
-                    c?.[
-                      "updating an image allows you to refine and enhance the details of your ongoing developments"
-                    ]
-                  }
-                  open={open}
-                  setOpen={setOpen}
-                >
-                  <Button
-                    disabled={loading || trigger}
-                    size="icon"
-                    variant="secondary"
-                  >
-                    <Icons.edit />
-                  </Button>
-                </DialogResponsive>
-
-                <DialogResponsive
-                  dic={dic}
-                  disabled={loading || trigger}
-                  confirmButton={
-                    <>
-                      <Button
-                        type="button"
-                        onClick={() => setOpenFrame(false)}
-                        disabled={loading || trigger}
-                        className="w-full md:w-fit"
-                      >
-                        {!disabled && loading && <Icons.spinner />}
-                        {c?.["submit"]}
-                      </Button>
-                    </>
-                  }
-                  content={
-                    <>
-                      <ImageForm.chooseFrame
-                        dic={dic}
-                        form={form}
-                        loading={loading}
-                        framedImages={framedImages}
-                      />
-                    </>
-                  }
-                  title={c?.["apply frame"]}
-                  description={
-                    c?.[
-                      "updating an image allows you to refine and enhance the details of your ongoing developments"
-                    ]
-                  }
-                  open={openFrame}
-                  setOpen={setOpenFrame}
-                >
-                  <Button
-                    disabled={loading || trigger}
-                    size="icon"
-                    variant="secondary"
-                  >
-                    <Icons.imageReload />
-                  </Button>
-                </DialogResponsive>
-                {form.watch("framedImageURL") || form.watch("frame") ? (
-                  <Button
-                    type="button"
-                    size="icon"
-                    onClick={() => {
-                      form.setValue("framedImageURL", null);
-                      form.setValue("frame", undefined);
-                    }}
-                    disabled={loading || trigger}
-                  >
-                    <Icons.x />
-                  </Button>
+            <div>
+              <div
+                className={cn(
+                  "relative h-full min-h-60 flex-col overflow-hidden rounded text-primary-foreground dark:border-r lg:flex",
+                  // form.watch("image") && `bg-[src(${form.getValues("image")})]`,
+                )}
+              >
+                {/* <div className="absolute inset-0" /> */}
+                {isValidUrl(form.watch("image.src") ?? "") ? (
+                  <Image
+                    src={
+                      form.watch("frame")
+                        ? `data:image/png;base64,${JSON.parse(form.watch("frame")!)}`
+                        : (form.watch("framedImageURL") ??
+                          form.getValues("image.src")!)
+                    }
+                    alt=""
+                    className="bg-transparent object-contain"
+                  />
                 ) : null}
+                <div className="absolute right-4 top-4 z-50 flex items-center gap-2 text-lg font-medium">
+                  <DialogResponsive
+                    dic={dic}
+                    disabled={loading || trigger}
+                    confirmButton={
+                      <>
+                        <Button
+                          type="button"
+                          onClick={() => setOpen(false)}
+                          disabled={loading || trigger}
+                          className="w-full md:w-fit"
+                        >
+                          {!disabled && loading && <Icons.spinner />}
+                          {c?.["submit"]}
+                        </Button>
+                      </>
+                    }
+                    content={
+                      <>
+                        <Tabs defaultValue="generate">
+                          <TabsList>
+                            <TabsTrigger value="choose">
+                              {c?.["choose file"]}
+                            </TabsTrigger>
+                            <TabsTrigger value="generate">
+                              {c?.["generate using AI"]}
+                            </TabsTrigger>
+                            {/* <TabsTrigger value="frame">apply frame</TabsTrigger> */}
+                          </TabsList>
+                          <TabsContent value="choose">
+                            <ImageForm.src
+                              dic={dic}
+                              form={form}
+                              loading={loading}
+                            />
+                          </TabsContent>
+
+                          <TabsContent value="generate">
+                            <ImageForm.prompt
+                              dic={dic}
+                              form={form}
+                              loading={loading}
+                              setSrc={setSrc}
+                            />
+                          </TabsContent>
+                        </Tabs>
+                      </>
+                    }
+                    title={c?.["update image"]}
+                    description={
+                      c?.[
+                        "updating an image allows you to refine and enhance the details of your ongoing developments"
+                      ]
+                    }
+                    open={open}
+                    setOpen={setOpen}
+                  >
+                    <Button
+                      disabled={loading || trigger}
+                      size="icon"
+                      variant="secondary"
+                    >
+                      <Icons.edit />
+                    </Button>
+                  </DialogResponsive>
+
+                  <DialogResponsive
+                    dic={dic}
+                    disabled={loading || trigger}
+                    confirmButton={
+                      <>
+                        <Button
+                          type="button"
+                          onClick={() => setOpenFrame(false)}
+                          disabled={loading || trigger}
+                          className="w-full md:w-fit"
+                        >
+                          {!disabled && loading && <Icons.spinner />}
+                          {c?.["submit"]}
+                        </Button>
+                      </>
+                    }
+                    content={
+                      <>
+                        <ImageForm.chooseFrame
+                          dic={dic}
+                          form={form}
+                          loading={loading}
+                          framedImages={framedImages}
+                        />
+                      </>
+                    }
+                    title={c?.["apply frame"]}
+                    description={
+                      c?.[
+                        "updating an image allows you to refine and enhance the details of your ongoing developments"
+                      ]
+                    }
+                    open={openFrame}
+                    setOpen={setOpenFrame}
+                  >
+                    <Button
+                      disabled={loading || trigger}
+                      size="icon"
+                      variant="secondary"
+                    >
+                      <Icons.imageReload />
+                    </Button>
+                  </DialogResponsive>
+                  {form.watch("framedImageURL") || form.watch("frame") ? (
+                    <Button
+                      type="button"
+                      size="icon"
+                      onClick={() => {
+                        form.setValue("framedImageURL", null);
+                        form.setValue("frame", undefined);
+                      }}
+                      disabled={loading || trigger}
+                    >
+                      <Icons.x />
+                    </Button>
+                  ) : null}
+                </div>
               </div>
             </div>
             <Card>

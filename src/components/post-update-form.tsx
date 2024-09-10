@@ -133,8 +133,8 @@ export function PostUpdateForm({
         600,
       );
 
-      if (src) editorRef.current.addPhoto(src);
-      if (frame) editorRef.current.addTheme(frames?.[Number(frame)]?.["src"]);
+      if (src) editorRef?.current?.addPhoto(src);
+      if (frame) editorRef?.current?.addTheme(frames?.[Number(frame)]?.["src"]);
     }
   }, [src, frame]);
 
@@ -161,6 +161,7 @@ export function PostUpdateForm({
     );
   }
 
+  console.log(form.formState.errors);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -376,6 +377,7 @@ export function PostUpdateForm({
                         form.setValue("frame", undefined);
 
                         setSrc(form.getValues("image.src") ?? null);
+                        setFrame(null);
                       }}
                       disabled={loading || trigger}
                     >

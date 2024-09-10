@@ -94,7 +94,7 @@ export async function createPost(
       include: { project: { include: { platforms: true } } },
       where: { id: data?.["caseStudyId"] },
     });
-    if (!caseStudyResponse) throw new Error("non existing study case.");
+    if (!caseStudyResponse) throw new Error("non existing poststudy case.");
     const { project, ...caseStudy } = caseStudyResponse;
 
     let endpoint_language = "en";
@@ -345,8 +345,7 @@ export async function createPost(
     console.error(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
-      error?.["message"] ??
-        c?.["your study case was not created. please try again."],
+      error?.["message"] ?? c?.["your post was not created. please try again."],
     );
   } finally {
     controller.close();

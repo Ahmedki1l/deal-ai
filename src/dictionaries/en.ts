@@ -739,9 +739,10 @@ export default {
     "saving posts...": "saving posts...",
     "posts were created.": "posts were created.",
     "No posts to create.": "No posts to create.",
+    "your post was not created. please try again.":
+      "your post was not created. please try again.",
     "your post was not deleted. please try again.":
       "your post was not deleted. Please try again.",
-
     "creating properties...": "creating properties...",
     "creating platforms...": "creating platforms...",
     "creating project...": "creating project...",

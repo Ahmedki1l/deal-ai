@@ -7,6 +7,7 @@ class PhotoEditor {
   private layer: Konva.Layer;
   private photo: Konva.Image | null;
   private theme: Konva.Image | null;
+  private textLayer: Konva.Text | null; // New text layer
   private transformer: Konva.Transformer;
   private isEditorEnabled: boolean;
 
@@ -21,13 +22,18 @@ class PhotoEditor {
     this.stage.add(this.layer);
     this.photo = null;
     this.theme = null;
+    this.textLayer = null; // Initialize text layer to null
     this.transformer = new Konva.Transformer();
     this.layer.add(this.transformer);
     this.isEditorEnabled = false;
 
     this.stage.on("click", (e: Konva.KonvaEventObject<MouseEvent>) => {
       if (!this.isEditorEnabled) return;
-      if (e.target === this.photo || e.target === this.theme) {
+      if (
+        e.target === this.photo ||
+        e.target === this.theme ||
+        e.target === this.textLayer
+      ) {
         this.transformer.nodes([e.target]);
       } else {
         this.transformer.nodes([]);
@@ -88,6 +94,48 @@ class PhotoEditor {
     });
   }
 
+  // New method to add text layer
+  addText(
+    text: string,
+    x: number = 0,
+    y: number = 0,
+    fontSize: number = 20,
+    fontFamily: string = "Arial",
+    fill: string = "black",
+  ) {
+    const textNode = new Konva.Text({
+      x: x,
+      y: y,
+      text: text,
+      fontSize: fontSize,
+      fontFamily: fontFamily,
+      fill: fill,
+      draggable: this.isEditorEnabled,
+    });
+
+    this.layer.add(textNode);
+    textNode.moveToTop(); // Ensure the text is on top
+    this.layer.draw();
+  }
+
+  // New method to edit text layer
+  editText(
+    newText: string,
+    fontSize: number = 30,
+    fontFamily: string = "Arial",
+    fill: string = "black",
+  ) {
+    if (this.textLayer) {
+      this.textLayer.setAttrs({
+        text: newText,
+        fontSize: fontSize,
+        fontFamily: fontFamily,
+        fill: fill,
+      });
+      this.layer.draw();
+    }
+  }
+
   editPhotoPosition(x: number, y: number) {
     if (this.photo) {
       this.photo.position({ x: x, y: y });
@@ -125,6 +173,7 @@ class PhotoEditor {
     link.click();
     document.body.removeChild(link);
   }
+
   getResult(
     pixelRatio: number = 2,
     format: "png" | "jpeg" = "png",
@@ -170,6 +219,7 @@ class PhotoEditor {
     viewerLayer.add(clonedLayer);
     viewerLayer.draw();
   }
+
   uploadPhoto(
     acceptedFileTypes: AcceptedFileTypes = [
       "image/jpeg",
@@ -223,6 +273,9 @@ class PhotoEditor {
     }
     if (this.theme) {
       this.theme.draggable(this.isEditorEnabled);
+    }
+    if (this.textLayer) {
+      this.textLayer.draggable(this.isEditorEnabled);
     }
     if (!this.isEditorEnabled) {
       this.transformer.nodes([]);

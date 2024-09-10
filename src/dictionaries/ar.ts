@@ -783,6 +783,8 @@ export default {
     "saving posts...": "جارٍ حفظ المنشورات...",
     "posts were created.": "تم إنشاء المنشورات.",
     "No posts to create.": "لا توجد منشورات لإنشائها.",
+    "your post was not created. please try again.":
+      "لم يتم إنشاء المنشور الخاص بك. الرجاء المحاولة مرة أخرى.",
     "your post was not deleted. please try again.":
       "لم يتم حذف المنشور الخاص بك. الرجاء المحاولة مرة أخرى.",
     "creating properties...": "جارٍ إنشاء الوحدات...",

@@ -3699,6 +3699,11 @@ keyv@^4.5.3:
   dependencies:
     json-buffer "3.0.1"
 
+konva@^9.3.15:
+  version "9.3.15"
+  resolved "https://registry.yarnpkg.com/konva/-/konva-9.3.15.tgz#0ffc10944784cfe8a4c7d02dc6072c87d9b17854"
+  integrity sha512-6jceV1u75a41Fwky7HIg7Xr092sn9g+emE/F4KrkNey9j5IwM/No91z4g13P9kbh0NePzC20YvfyGVS5EzliUA==
+
 ky@^1.5.0:
   version "1.5.0"
   resolved "https://registry.npmjs.org/ky/-/ky-1.5.0.tgz"

@@ -1,22 +1,86 @@
-import { getAuth } from "@/lib/auth";
-import { LocaleProps } from "@/types/locale";
-import type { Metadata } from "next";
-import { redirect } from "next/navigation";
+"use client";
 
-type HomeProps = Readonly<{
-  params: LocaleProps;
-}>;
+import { PhotoEditor } from "@/lib/konva";
+import { LegacyRef, Ref, useEffect, useRef } from "react";
 
-export const metadata: Metadata = { title: "Home" };
+export default function PhotoEditorComponent() {
+  const containerRef = useRef<null>(null);
+  const editorRef = useRef<PhotoEditor | null>(null);
 
-export default async function Home({ params: { lang } }: HomeProps) {
-  lang = "ar";
-  const { user } = await getAuth();
-  if (user) redirect(`/${lang}/dashboard`);
-  else redirect(`/${lang}/login`);
+  useEffect(() => {
+    if (containerRef.current) {
+      editorRef.current = new PhotoEditor(
+        containerRef?.["current"]?.["id"],
+        800,
+        600,
+      );
+    }
+  }, []);
 
-  return <div className="container flex-1 py-6">Home </div>;
+  const handleUploadPhoto = () => {
+    if (editorRef.current) {
+      editorRef.current.uploadPhoto();
+    }
+  };
+
+  const handleUploadTheme = () => {
+    if (editorRef.current) {
+      editorRef.current.uploadTheme();
+    }
+  };
+
+  const handleDownload = () => {
+    if (editorRef.current) {
+      editorRef.current.downloadFinalProduct();
+    }
+  };
+
+  return (
+    <div>
+      <h1>Photo Editor</h1>
+      <div
+        id="photo-editor-container"
+        ref={containerRef}
+        style={{ border: "1px solid #ccc", width: "800px", height: "600px" }}
+      ></div>
+      <div style={{ marginTop: "20px" }}>
+        <button onClick={handleUploadPhoto}>Upload Photo</button>
+        <br></br>
+        <button onClick={handleUploadTheme}>Upload Theme</button>
+        <br></br>
+        <button
+          onClick={() => {
+            editorRef?.current?.toggleEditorMode();
+          }}
+        >
+          Toggle Edit
+        </button>
+        <br></br>
+        <button onClick={handleDownload}>Download Final Product</button>
+      </div>
+    </div>
+  );
 }
+
+// import { getAuth } from "@/lib/auth";
+// import { LocaleProps } from "@/types/locale";
+// import type { Metadata } from "next";
+// import { redirect } from "next/navigation";
+
+// type HomeProps = Readonly<{
+//   params: LocaleProps;
+// }>;
+
+// export const metadata: Metadata = { title: "Home" };
+
+// export default async function Home({ params: { lang } }: HomeProps) {
+//   lang = "ar";
+//   const { user } = await getAuth();
+//   if (user) redirect(`/${lang}/dashboard`);
+//   else redirect(`/${lang}/login`);
+
+//   return <div className="container flex-1 py-6">Home </div>;
+// }
 
 // "use client";
 // import React, { useState, useEffect } from "react";

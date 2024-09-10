@@ -11,11 +11,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Dictionary } from "@/types/locale";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Button } from "./ui/button";
-import { Image as ImageType } from "@prisma/client";
 import { useLocale } from "@/hooks/use-locale";
-import { imageUpdateFormSchema } from "@/validations/images";
 import { Textarea } from "./ui/textarea";
 import { convertBase64, isValidUrl } from "@/lib/utils";
 import { Image } from "./image";
@@ -24,13 +22,47 @@ import { toast } from "sonner";
 import { generateImage, regenerateImagePrompt } from "@/actions/images";
 import { t } from "@/lib/locale";
 import { Tooltip } from "./tooltip";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { postUpdateSchema } from "@/validations/posts";
-import { db } from "@/db";
-import { DialogResponsive } from "./dialog";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { FRAMES_URL } from "@/lib/constants";
-import { fetchImage } from "@/lib/uploader";
+
+import frame0 from "../../public/frames/filled/frame-00.png";
+import frame1 from "../../public/frames/filled/frame-01.png";
+import frame2 from "../../public/frames/filled/frame-02.png";
+import frame3 from "../../public/frames/filled/frame-03.png";
+import frame4 from "../../public/frames/filled/frame-04.png";
+import frame5 from "../../public/frames/filled/frame-05.png";
+import frame6 from "../../public/frames/filled/frame-06.png";
+import frame7 from "../../public/frames/filled/frame-07.png";
+import frame8 from "../../public/frames/filled/frame-08.png";
+import frame9 from "../../public/frames/filled/frame-09.png";
+import frame10 from "../../public/frames/filled/frame-10.png";
+import frame11 from "../../public/frames/filled/frame-11.png";
+import frame12 from "../../public/frames/filled/frame-12.png";
+import frame13 from "../../public/frames/filled/frame-13.png";
+import frame14 from "../../public/frames/filled/frame-14.png";
+import frame15 from "../../public/frames/filled/frame-15.png";
+import frame16 from "../../public/frames/filled/frame-16.png";
+
+export const frames = [
+  frame0,
+  frame1,
+  frame2,
+  frame3,
+  frame4,
+  frame5,
+  frame6,
+  frame7,
+  frame8,
+  frame9,
+  frame10,
+  frame11,
+  frame12,
+  frame13,
+  frame14,
+  frame15,
+  frame16,
+];
 
 export type ImageFormProps = {
   loading: boolean;
@@ -39,78 +71,65 @@ export type ImageFormProps = {
 
 export const ImageForm = {
   src: ({ dic, loading, form }: ImageFormProps) => (
-    <div>
-      <FormField
-        control={form?.["control"]}
-        name="image.file"
-        render={({ field }) => (
-          <FormItem>
-            <FormControl>
-              <div className="flex items-center justify-center gap-2">
-                <Input
-                  type="file"
-                  {...field}
-                  value={undefined}
-                  onChange={async (e) => {
-                    form.resetField("image");
+    <FormField
+      control={form?.["control"]}
+      name="image.file"
+      render={({ field }) => (
+        <FormItem>
+          <FormControl>
+            <div className="flex items-center justify-center gap-2">
+              <Input
+                type="file"
+                {...field}
+                value={undefined}
+                onChange={async (e) => {
+                  form.resetField("image");
 
-                    const file = e?.["target"]?.["files"]?.[0];
+                  const file = e?.["target"]?.["files"]?.[0];
 
-                    if (file) {
-                      const base64 = (await convertBase64(file))?.toString();
+                  if (file) {
+                    const base64 = (await convertBase64(file))?.toString();
 
-                      field.onChange(file);
-                      form.setValue("image.base64", base64 ?? "");
-                    }
-                  }}
-                  disabled={loading}
-                />
-                {!!form.watch("image.base64") ? (
-                  <>
-                    <Image
-                      src={form.getValues("image.base64")!}
-                      alt=""
-                      className="h-8 w-8"
-                    />
+                    field.onChange(file);
+                    form.setValue("image.base64", base64 ?? "");
+                  }
+                }}
+                disabled={loading}
+              />
+              {!!form.watch("image.base64") ? (
+                <>
+                  <Image
+                    src={form.getValues("image.base64")!}
+                    alt=""
+                    className="h-8 w-8"
+                  />
 
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => {
-                        const image = form.getValues("image");
-                        form.resetField("image");
-                        form.setValue("image", {
-                          // @ts-ignore
-                          prompt: image?.["prompt"] ?? undefined,
-                          // @ts-ignore
-                          src: image?.["src"] ?? undefined,
-                        });
-                      }}
-                      disabled={loading}
-                    >
-                      <Icons.x />
-                    </Button>
-                  </>
-                ) : null}
-              </div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      {/* {!!form.watch("image.base64") ? (
-        <ImageForm.chooseFrame
-          image={Buffer.from(
-            form.watch("image.base64")?.split("data:image/png;base64,")?.pop()!,
-            "base64",
-          )}
-          dic={dic}
-          form={form}
-          loading={loading}
-        />
-      ) : null} */}
-    </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => {
+                      const image = form.getValues("image");
+                      form.resetField("image");
+                      form.setValue("image", {
+                        // @ts-ignore
+                        prompt: image?.["prompt"] ?? undefined,
+                        // @ts-ignore
+                        src: image?.["src"] ?? undefined,
+                      });
+                    }}
+                    disabled={loading}
+                  >
+                    <Icons.x />
+                  </Button>
+                </>
+              ) : null}
+            </div>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   ),
   prompt: function Component({
     dic: {
@@ -119,9 +138,7 @@ export const ImageForm = {
     loading,
     form,
     setSrc,
-  }: ImageFormProps & {
-    setSrc: Dispatch<SetStateAction<string | null>>;
-  }) {
+  }: ImageFormProps & { setSrc: Dispatch<SetStateAction<string | null>> }) {
     const lang = useLocale();
     const [generatingPrompt, setGeneratingPrompt] = useState(false);
     const [generating, setGenerating] = useState(false);
@@ -227,73 +244,14 @@ export const ImageForm = {
       </div>
     );
   },
-  // watermark: function Component({
-  //   dic: {
-  //     "image-form": { prompt: c },
-  //   },
-  //   loading,
-  //   form,
-  // }: ImageFormProps) {
-  //   const lang = useLocale();
-  //   const [generating, setGenerating] = useState(false);
-
-  //   async function addWatermark() {
-  //     setGenerating(true);
-  //     toast.promise(watermarkImage(form?.getValues("image.src") ?? ""), {
-  //       finally: () => setGenerating(false),
-  //       error: async (err) => {
-  //         const msg = await t(err?.["message"], lang);
-  //         return msg;
-  //       },
-  //       success: async (url) => {
-  //         form?.resetField("image.base64");
-  //         form?.resetField("image.file");
-
-  //         form?.setValue("image.src", url);
-
-  //         return url;
-  //       },
-  //     });
-  //   }
-  //   return (
-  //     <div className="grid gap-2">
-  //       <div className="flex items-center justify-end">
-  //         <Tooltip text="add watermark">
-  //           <Button
-  //             type="button"
-  //             size="icon"
-  //             onClick={addWatermark}
-  //             disabled={loading || generating}
-  //           >
-  //             <Icons.imageReload />
-  //           </Button>
-  //         </Tooltip>
-  //       </div>
-  //     </div>
-  //   );
-  // },
-  chooseFrame: function Component({
+  frame: function Component({
     dic: {
       "image-form": { frame: c },
     },
     loading,
     form,
-    framedImages,
-  }: ImageFormProps & { framedImages: string[] | null }) {
-    if (!framedImages)
-      return (
-        <p className="py-5 text-center text-sm text-muted-foreground">
-          {c?.["applying frames..."]}
-        </p>
-      );
-
-    if (!framedImages?.["length"])
-      return (
-        <p className="py-5 text-center text-sm text-muted-foreground">
-          {c?.["no frames to be applied..."]}
-        </p>
-      );
-
+    setFrame,
+  }: ImageFormProps & { setFrame: Dispatch<SetStateAction<string | null>> }) {
     return (
       <FormField
         control={form.control}
@@ -305,21 +263,24 @@ export const ImageForm = {
             <ToggleGroup
               type="single"
               variant="outline"
-              onValueChange={field.onChange}
+              onValueChange={(e) => {
+                field.onChange(e);
+                setFrame(e);
+              }}
               defaultValue={field.value}
               disabled={loading}
               className="grid grid-cols-3 gap-4"
             >
-              {framedImages?.map((fi, i) => (
+              {FRAMES_URL?.map((fi, i) => (
                 <ToggleGroupItem
                   key={i}
-                  value={JSON.stringify(fi)}
+                  value={i?.toString()}
                   className="h-fit w-fit"
                 >
                   <Image
-                    src={`data:image/png;base64,${fi}`}
+                    src={frames?.[i]?.src}
                     alt=""
-                    className="rounded-none border-none"
+                    className="h-40 rounded-none border-none"
                   />
                 </ToggleGroupItem>
               ))}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -32,13 +32,48 @@ import { ImageForm } from "@/components/image-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PostRestoreButton } from "@/components/post-restore-button";
 import { PostBinButton } from "@/components/post-bin-button";
-import { AlertDialogCancel } from "@/components/ui/alert-dialog";
-import { DrawerClose } from "@/components/ui/drawer";
-import { applyAllFrames } from "@/actions/images";
-import { fetchImage } from "@/lib/uploader";
-import { FRAMES_URL } from "@/lib/constants";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { PhotoEditor } from "@/lib/konva";
+
+import frame0 from "../../public/frames/frame-00.png";
+import frame1 from "../../public/frames/frame-01.png";
+import frame2 from "../../public/frames/frame-02.png";
+import frame3 from "../../public/frames/frame-03.png";
+import frame4 from "../../public/frames/frame-04.png";
+import frame5 from "../../public/frames/frame-05.png";
+import frame6 from "../../public/frames/frame-06.png";
+import frame7 from "../../public/frames/frame-07.png";
+import frame8 from "../../public/frames/frame-08.png";
+import frame9 from "../../public/frames/frame-09.png";
+import frame10 from "../../public/frames/frame-10.png";
+import frame11 from "../../public/frames/frame-11.png";
+import frame12 from "../../public/frames/frame-12.png";
+import frame13 from "../../public/frames/frame-13.png";
+import frame14 from "../../public/frames/frame-14.png";
+import frame15 from "../../public/frames/frame-15.png";
+import frame16 from "../../public/frames/frame-16.png";
+import { Tooltip } from "./tooltip";
+
+export const frames = [
+  frame0,
+  frame1,
+  frame2,
+  frame3,
+  frame4,
+  frame5,
+  frame6,
+  frame7,
+  frame8,
+  frame9,
+  frame10,
+  frame11,
+  frame12,
+  frame13,
+  frame14,
+  frame15,
+  frame16,
+];
 
 export type PostUpdateFormProps = {
   post: Post & {
@@ -63,12 +98,18 @@ export function PostUpdateForm({
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const [trigger, setTrigger] = useState<boolean>(loading ?? false);
+
+  const [editable, setEditable] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [openFrame, setOpenFrame] = useState<boolean>(false);
-  const [framedImages, setFramedImages] = useState<string[] | null>(null);
+
   const [src, setSrc] = useState<string | null>(
-    post?.["image"]?.["src"] ?? null,
+    post?.["framedImageURL"] ?? post?.["image"]?.["src"] ?? null,
   );
+  const [frame, setFrame] = useState<string | null>(null);
+
+  const containerRef = useRef<null>(null);
+  const editorRef = useRef<PhotoEditor | null>(null);
 
   const form = useForm<z.infer<typeof postUpdateSchema>>({
     mode: "onSubmit",
@@ -85,40 +126,39 @@ export function PostUpdateForm({
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (!src) {
-          setFramedImages([]);
-          return;
-        }
+    if (containerRef.current) {
+      editorRef.current = new PhotoEditor(
+        containerRef?.["current"]?.["id"],
+        800,
+        600,
+      );
 
-        const result = await applyAllFrames(
-          src,
-          post?.["caseStudy"]?.["project"]?.["title"],
-        );
-        setFramedImages(result);
-      } catch (error) {
-        setFramedImages([]);
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, [src, FRAMES_URL]);
+      if (src) editorRef.current.addPhoto(src);
+      if (frame) editorRef.current.addTheme(frames?.[Number(frame)]?.["src"]);
+    }
+  }, [src, frame]);
 
   function onSubmit(data: z.infer<typeof postUpdateSchema>) {
     setLoading(true);
-    toast.promise(updatePost(JSON.stringify(data)), {
-      finally: () => setLoading(false),
-      error: async (err) => {
-        const msg = await t(err?.["message"], lang);
-        return msg;
+    toast.promise(
+      updatePost(
+        JSON.stringify({
+          ...data,
+          frame: data?.["frame"] ? editorRef?.["current"]?.getResult() : null,
+        }),
+      ),
+      {
+        finally: () => setLoading(false),
+        error: async (err) => {
+          const msg = await t(err?.["message"], lang);
+          return msg;
+        },
+        success: () => {
+          router.refresh();
+          return c?.["updated successfully."];
+        },
       },
-      success: () => {
-        router.refresh();
-        return c?.["updated successfully."];
-      },
-    });
+    );
   }
 
   return (
@@ -193,19 +233,29 @@ export function PostUpdateForm({
                 )}
               >
                 {/* <div className="absolute inset-0" /> */}
-                {isValidUrl(form.watch("image.src") ?? "") ? (
-                  <Image
-                    src={
-                      form.watch("frame")
-                        ? `data:image/png;base64,${JSON.parse(form.watch("frame")!)}`
-                        : (form.watch("framedImageURL") ??
-                          form.getValues("image.src")!)
-                    }
-                    alt=""
-                    className="bg-transparent object-contain"
-                  />
-                ) : null}
+                <div
+                  id="photo-editor-container"
+                  ref={containerRef}
+                  style={{
+                    border: "1px solid #fff",
+                    width: "800px",
+                    height: "600px",
+                  }}
+                />
+
                 <div className="absolute right-4 top-4 z-50 flex items-center gap-2 text-lg font-medium">
+                  <Tooltip text={editable ? "stop editing" : "start editing"}>
+                    <Button
+                      type="button"
+                      size="icon"
+                      onClick={() => {
+                        const ed = editorRef?.current?.toggleEditorMode();
+                        setEditable(ed ?? !editable);
+                      }}
+                    >
+                      <Icons.edit />
+                    </Button>
+                  </Tooltip>
                   <DialogResponsive
                     dic={dic}
                     disabled={loading || trigger}
@@ -262,13 +312,16 @@ export function PostUpdateForm({
                     open={open}
                     setOpen={setOpen}
                   >
+                    {/* <Tooltip text="update photo"> */}
                     <Button
+                      type="button"
                       disabled={loading || trigger}
                       size="icon"
                       variant="secondary"
                     >
                       <Icons.edit />
                     </Button>
+                    {/* </Tooltip> */}
                   </DialogResponsive>
 
                   <DialogResponsive
@@ -289,11 +342,11 @@ export function PostUpdateForm({
                     }
                     content={
                       <>
-                        <ImageForm.chooseFrame
+                        <ImageForm.frame
                           dic={dic}
                           form={form}
                           loading={loading}
-                          framedImages={framedImages}
+                          setFrame={setFrame}
                         />
                       </>
                     }
@@ -321,6 +374,8 @@ export function PostUpdateForm({
                       onClick={() => {
                         form.setValue("framedImageURL", null);
                         form.setValue("frame", undefined);
+
+                        setSrc(form.getValues("image.src") ?? null);
                       }}
                       disabled={loading || trigger}
                     >

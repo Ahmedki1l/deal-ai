@@ -33,6 +33,7 @@ import {
   Moon,
   Laptop,
   MapPin,
+  Type,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { VariantProps, cva } from "class-variance-authority";
@@ -87,6 +88,9 @@ export const Icons = {
   ),
   home: ({ className, ...props }: IconProps) => (
     <Home className={cn(IconsVariants({}), className)} {...props} />
+  ),
+  write: ({ className, ...props }: IconProps) => (
+    <Type className={cn(IconsVariants({}), className)} {...props} />
   ),
   schedule: ({ className, ...props }: IconProps) => (
     <CalendarCheck2 className={cn(IconsVariants({}), className)} {...props} />

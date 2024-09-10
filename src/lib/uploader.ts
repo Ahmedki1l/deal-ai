@@ -8,6 +8,7 @@ export const s3Client = new S3({
     accessKeyId: process.env.DO_SPACE_ID!,
     secretAccessKey: process.env.DO_SPACE_SECRET!,
   },
+  httpOptions: { timeout: 60000 }, // 60 seconds
   s3ForcePathStyle: true, // Required for DigitalOcean Spaces
   sslEnabled: true, // SSL enabled
   // httpOptions: {

@@ -29,8 +29,7 @@ import axios from "axios";
 import { sendEvent } from "@/lib/stream";
 import { fetchImage } from "@/lib/uploader";
 import Sharp from "sharp";
-import { applyFrame, uploadIntoSpace } from "./images";
-import { FRAMES_URL } from "@/lib/constants";
+import { uploadIntoSpace } from "./images";
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -362,15 +361,18 @@ export async function updatePost(stringData: string) {
     const { id, confirm, frame, ...data } = JSON.parse(stringData) as z.infer<
       typeof postUpdateSchema
     >;
+    let url = null;
 
-    const url = frame
-      ? await uploadIntoSpace(
-          `post-${Date.now()}.png`,
-          Buffer.from(frame, "base64"),
-        )
-      : null;
+    if (frame) {
+      const sharpFramedImage = await Sharp(Buffer.from(frame, "base64"))
+        .resize({ width: 800 }) // Resize to a more manageable size if necessary
+        .png({ quality: 90 }) // Compress the PNG to 80% quality
+        .toBuffer();
 
-    console.log("framed url: ", url);
+      console.log("uploading...");
+      url = await uploadIntoSpace(`post-${Date.now()}.png`, sharpFramedImage);
+      console.log("framed url: ", url);
+    }
 
     await db.post.update({
       data: {
@@ -381,9 +383,7 @@ export async function updatePost(stringData: string) {
         confirmedAt: confirm ? new Date() : null,
         framedImageURL: url,
       },
-      where: {
-        id,
-      },
+      where: { id },
     });
 
     revalidatePath("/", "layout");

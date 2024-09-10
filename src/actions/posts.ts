@@ -365,7 +365,7 @@ export async function updatePost(stringData: string) {
     if (frame) {
       const sharpFramedImage = await Sharp(Buffer.from(frame, "base64"))
         .resize({ width: 800 }) // Resize to a more manageable size if necessary
-        .png({ quality: 90 }) // Compress the PNG to 80% quality
+        .png({ quality: 85 }) // Compress the PNG to 80% quality
         .toBuffer();
 
       console.log("uploading...");

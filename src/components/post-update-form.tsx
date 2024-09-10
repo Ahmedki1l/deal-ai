@@ -54,7 +54,7 @@ import frame14 from "../../public/frames/frame-14.png";
 import frame15 from "../../public/frames/frame-15.png";
 import frame16 from "../../public/frames/frame-16.png";
 import { Tooltip } from "./tooltip";
-
+import { frames as FilledFrames } from "@/components/image-form";
 export const frames = [
   frame0,
   frame1,
@@ -129,7 +129,7 @@ export function PostUpdateForm({
     if (containerRef.current) {
       editorRef.current = new PhotoEditor(
         containerRef?.["current"]?.["id"],
-        800,
+        600,
         600,
       );
 
@@ -161,7 +161,6 @@ export function PostUpdateForm({
     );
   }
 
-  console.log(form.formState.errors);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -234,29 +233,136 @@ export function PostUpdateForm({
                 )}
               >
                 {/* <div className="absolute inset-0" /> */}
+
                 <div
                   id="photo-editor-container"
                   ref={containerRef}
-                  style={{
-                    border: "1px solid #fff",
-                    width: "800px",
-                    height: "600px",
-                  }}
+                  className={cn(
+                    "h-[616px] w-[616px]",
+                    editable && "border-4 border-green-600 p-1",
+                  )}
                 />
+                <div className="absolute right-4 top-4 z-50 flex items-center gap-6 text-lg font-medium">
+                  <div className="flex items-center gap-2">
+                    <Tooltip text={editable ? "stop editing" : "start editing"}>
+                      <Button
+                        type="button"
+                        size="icon"
+                        onClick={() => {
+                          const ed = editorRef?.current?.toggleEditorMode();
+                          setEditable(ed ?? !editable);
+                        }}
+                      >
+                        <Icons.image />
+                      </Button>
+                    </Tooltip>
 
-                <div className="absolute right-4 top-4 z-50 flex items-center gap-2 text-lg font-medium">
-                  <Tooltip text={editable ? "stop editing" : "start editing"}>
-                    <Button
-                      type="button"
-                      size="icon"
-                      onClick={() => {
-                        const ed = editorRef?.current?.toggleEditorMode();
-                        setEditable(ed ?? !editable);
-                      }}
+                    <Tooltip text="new text">
+                      <Button
+                        type="button"
+                        size="icon"
+                        onClick={() => {
+                          editorRef?.current?.addText();
+                        }}
+                      >
+                        <Icons.write />
+                      </Button>
+                    </Tooltip>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <DialogResponsive
+                      dic={dic}
+                      disabled={loading || trigger}
+                      confirmButton={
+                        <>
+                          <Button
+                            type="button"
+                            onClick={() => setOpenFrame(false)}
+                            disabled={loading || trigger}
+                            className="w-full md:w-fit"
+                          >
+                            {!disabled && loading && <Icons.spinner />}
+                            {c?.["submit"]}
+                          </Button>
+                        </>
+                      }
+                      content={
+                        <>
+                          {frame ? (
+                            <Tabs defaultValue="choosen frame">
+                              <TabsList>
+                                <TabsTrigger value="choosen frame">
+                                  choosen frame
+                                </TabsTrigger>
+                                <TabsTrigger value="choose frame">
+                                  choose another frame
+                                </TabsTrigger>
+                              </TabsList>
+
+                              <TabsContent value="choosen frame">
+                                <Image
+                                  src={FilledFrames?.[Number(frame)]?.["src"]}
+                                  alt=""
+                                  className={cn("aspect-square")}
+                                />
+                              </TabsContent>
+                              <TabsContent value="choose frame">
+                                <ImageForm.frame
+                                  dic={dic}
+                                  form={form}
+                                  loading={loading}
+                                  setFrame={setFrame}
+                                />
+                              </TabsContent>
+                            </Tabs>
+                          ) : (
+                            <ImageForm.frame
+                              dic={dic}
+                              form={form}
+                              loading={loading}
+                              setFrame={setFrame}
+                            />
+                          )}
+                        </>
+                      }
+                      title={c?.["apply frame"]}
+                      description={
+                        c?.[
+                          "updating an image allows you to refine and enhance the details of your ongoing developments"
+                        ]
+                      }
+                      open={openFrame}
+                      setOpen={setOpenFrame}
                     >
-                      <Icons.edit />
-                    </Button>
-                  </Tooltip>
+                      <Button
+                        disabled={loading || trigger}
+                        size="icon"
+                        variant="secondary"
+                      >
+                        <Icons.imageReload />
+                      </Button>
+                    </DialogResponsive>
+                    {form.watch("framedImageURL") || form.watch("frame") ? (
+                      <Tooltip text="clear frame">
+                        <Button
+                          type="button"
+                          size="icon"
+                          onClick={() => {
+                            form.setValue("framedImageURL", null);
+                            form.setValue("frame", undefined);
+
+                            setSrc(form.getValues("image.src") ?? null);
+                            setFrame(null);
+                          }}
+                          disabled={loading || trigger}
+                        >
+                          <Icons.x />
+                        </Button>
+                      </Tooltip>
+                    ) : null}
+                  </div>
+
                   <DialogResponsive
                     dic={dic}
                     disabled={loading || trigger}
@@ -324,66 +430,6 @@ export function PostUpdateForm({
                     </Button>
                     {/* </Tooltip> */}
                   </DialogResponsive>
-
-                  <DialogResponsive
-                    dic={dic}
-                    disabled={loading || trigger}
-                    confirmButton={
-                      <>
-                        <Button
-                          type="button"
-                          onClick={() => setOpenFrame(false)}
-                          disabled={loading || trigger}
-                          className="w-full md:w-fit"
-                        >
-                          {!disabled && loading && <Icons.spinner />}
-                          {c?.["submit"]}
-                        </Button>
-                      </>
-                    }
-                    content={
-                      <>
-                        <ImageForm.frame
-                          dic={dic}
-                          form={form}
-                          loading={loading}
-                          setFrame={setFrame}
-                        />
-                      </>
-                    }
-                    title={c?.["apply frame"]}
-                    description={
-                      c?.[
-                        "updating an image allows you to refine and enhance the details of your ongoing developments"
-                      ]
-                    }
-                    open={openFrame}
-                    setOpen={setOpenFrame}
-                  >
-                    <Button
-                      disabled={loading || trigger}
-                      size="icon"
-                      variant="secondary"
-                    >
-                      <Icons.imageReload />
-                    </Button>
-                  </DialogResponsive>
-                  {form.watch("framedImageURL") || form.watch("frame") ? (
-                    <Button
-                      type="button"
-                      size="icon"
-                      onClick={() => {
-                        form.setValue("framedImageURL", null);
-                        form.setValue("frame", undefined);
-
-                        setSrc(form.getValues("image.src") ?? null);
-                        setFrame(null);
-                      }}
-                      disabled={loading || trigger}
-                    >
-                      <Icons.x />
-                    </Button>
-                  ) : null}
                 </div>
               </div>
             </div>

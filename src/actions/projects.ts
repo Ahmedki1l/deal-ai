@@ -2,6 +2,7 @@
 
 import { db } from "@/db";
 import { getAuth } from "@/lib/auth";
+import { ID } from "@/lib/constants";
 import { RequiresLoginError, ZodError } from "@/lib/exceptions";
 import {
   projectBinSchema,
@@ -9,101 +10,120 @@ import {
   projectDeleteSchema,
   projectUpdateSchema,
 } from "@/validations/projects";
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
 import { generateIdFromEntropySize } from "lucia";
-import { sendEvent } from "@/lib/stream";
-import { getCookie, getLocale } from "./helpers";
-import { getDictionary } from "@/lib/dictionaries";
-import { ID } from "@/lib/constants";
+import { revalidatePath } from "next/cache";
+import Sharp from "sharp";
+import { z } from "zod";
+import { uploadIntoSpace } from "./images";
 
 export async function createProject(
-  controller: ReadableStreamDefaultController<any>,
-  key: string,
+  // controller: ReadableStreamDefaultController<any>,
+  // key: string,
+  {
+    types,
+    platforms: plattformArr,
+    map,
+    logo,
+    ...data
+  }: z.infer<typeof projectCreateFormSchema>,
 ) {
-  const { actions: c } = await getDictionary(await getLocale());
+  // const { actions: c } = await getDictionary(await getLocale());
   try {
     const { user } = await getAuth();
     if (!user) throw new RequiresLoginError();
     // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
 
-    const body = await getCookie<z.infer<typeof projectCreateFormSchema>>(key);
-    if (body) {
-      const parsedData = projectCreateFormSchema.safeParse(body);
-      if (!parsedData.success) throw new Error("Invalid data");
+    // const body = await getCookie<z.infer<typeof projectCreateFormSchema>>(key);
+    // if (body) {
+    //   const parsedData = projectCreateFormSchema.safeParse(body);
+    //   if (!parsedData.success) throw new Error("Invalid data");
 
-      const {
-        types,
-        platforms: plattformArr,
-        map,
-        ...data
-      } = parsedData?.["data"];
+    //   const {
+    // types,
+    // platforms: plattformArr,
+    // map,
+    // logo,
+    // ...data
+    //   } = parsedData?.["data"];
 
-      const id = ID.generate();
-      const properties = types
-        .map((t) =>
-          t.properties.map(({ projectId, ...p }) => ({
-            ...p,
-            projectId: id,
-            id: generateIdFromEntropySize(10),
-            type: t?.["value"],
-            deletedAt: null,
-          })),
-        )
-        .flat();
-
-      const platforms = plattformArr
-        .map((t) => ({
-          ...t,
+    const id = ID.generate();
+    const properties = types
+      .map((t) =>
+        t.properties.map(({ projectId, ...p }) => ({
+          ...p,
           projectId: id,
           id: generateIdFromEntropySize(10),
-          urn: t?.["urn"] ?? null,
-          clientId: t?.["clientId"] ?? null,
-        }))
+          type: t?.["value"],
+          deletedAt: null,
+        })),
+      )
+      .flat();
 
-        .flat();
-      const project = {
-        ...data,
-        id,
-        userId: user?.["id"],
-        propertyTypes: types?.map((e) => e?.["value"]),
+    const platforms = plattformArr
+      .map((t) => ({
+        ...t,
+        projectId: id,
+        id: generateIdFromEntropySize(10),
+        urn: t?.["urn"] ?? null,
+        clientId: t?.["clientId"] ?? null,
+      }))
 
-        deletedAt: null,
-      };
+      .flat();
+    const project = {
+      ...data,
+      id,
+      userId: user?.["id"],
+      propertyTypes: types?.map((e) => e?.["value"]),
 
-      await db.$transaction(async (tx) => {
-        if (properties?.["length"]) {
-          console.log(properties);
-          sendEvent(controller, "status", c?.["creating properties..."]);
-          await tx.property.createMany({
-            data: properties,
-          });
-        }
+      deletedAt: null,
+    };
 
-        if (platforms?.["length"]) {
-          sendEvent(controller, "status", c?.["creating platforms..."]);
-          await tx.platform.createMany({
-            data: platforms,
-          });
-        }
+    let url: string | null = null;
 
-        sendEvent(controller, "status", c?.["creating project..."]);
-        await tx.project.create({ data: project });
-      });
+    if (logo) {
+      const img = await Sharp(Buffer.from(logo, "base64"))
+        .resize({ width: 800 }) // Resize to a more manageable size if necessary
+        .png({ quality: 85 }) // Compress the PNG to 80% quality
+        .toBuffer();
 
-      sendEvent(controller, "completed", c?.["created successfully."]);
-
-      revalidatePath("/", "layout");
+      console.log("uploading...");
+      url = await uploadIntoSpace(`project-logo-${Date.now()}.png`, img);
+      console.log("framed url: ", url);
     }
+
+    await db.$transaction(async (tx) => {
+      if (properties?.["length"]) {
+        console.log(properties);
+        // sendEvent(controller, "status", c?.["creating properties..."]);
+        await tx.property.createMany({
+          data: properties,
+        });
+      }
+
+      if (platforms?.["length"]) {
+        // sendEvent(controller, "status", c?.["creating platforms..."]);
+        await tx.platform.createMany({
+          data: platforms,
+        });
+      }
+
+      // sendEvent(controller, "status", c?.["creating project..."]);
+      await tx.project.create({ data: { ...project, logo: url } });
+    });
+
+    // sendEvent(controller, "completed", c?.["created successfully."]);
+    revalidatePath("/", "layout");
+    // }
   } catch (error: any) {
     console.log(error?.["message"]);
     if (error instanceof z.ZodError) return new ZodError(error);
     throw Error(
       error?.["message"] ?? "your project was not created. Please try again.",
     );
-  } finally {
-    controller.close();
   }
+  // finally {
+  //   controller.close();
+  // }
 }
 
 export async function updateProject({

@@ -1,5 +1,5 @@
-import { z } from "@/lib/zod";
 import { platformsArr, propertyTypesArr } from "@/db/enums";
+import { z } from "@/lib/zod";
 import { propertyCreateFormSchema } from "./properties";
 
 export const projectSchema = z.object(
@@ -8,6 +8,7 @@ export const projectSchema = z.object(
     id: z.string("id"),
     userId: z.string("userId"),
     title: z.string("title"),
+    logo: z.string("logo").nullable().optional(),
     description: z.string("description").optional(),
 
     distinct: z.string("distinct"),

@@ -1,32 +1,24 @@
-import { Metadata } from "next";
-import { db } from "@/db";
-import { EmptyPlaceholder } from "@/components/empty-placeholder";
 import { BackButton } from "@/components/back-button";
-import { DataTable } from "@/components/data-table";
-import { Button, buttonVariants } from "@/components/ui/button";
 import { CaseStudyCreateButton } from "@/components/case-study-create-button";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { EmptyPlaceholder } from "@/components/empty-placeholder";
+import { Icons } from "@/components/icons";
+import { Image } from "@/components/image";
+import { Link } from "@/components/link";
+import { Map } from "@/components/map";
+import { ProjectBinButton } from "@/components/project-bin-button";
+import { ProjectRestoreButton } from "@/components/project-restore-button";
 import { PropertyCreateButton } from "@/components/property-create-button";
-import { LocaleProps } from "@/types/locale";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { db } from "@/db";
+import { platforms } from "@/db/enums";
 import { getDictionary } from "@/lib/dictionaries";
+import { LocaleProps } from "@/types/locale";
+import { Metadata } from "next";
 import { CaseStudyTable } from "./case-study-table";
 import { PropertyTable } from "./properties-table";
-import { platforms } from "@/db/enums";
-import { Icons } from "@/components/icons";
-import { Map } from "@/components/map";
-import { ProjectRestoreButton } from "@/components/project-restore-button";
-import { ProjectBinButton } from "@/components/project-bin-button";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Link } from "@/components/link";
 
 type ProjectProps = Readonly<{
   params: { "project-id": string } & LocaleProps;
@@ -128,13 +120,25 @@ export default async function Project({
 
         <div className="mb-6 space-y-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight">
-                {project?.["title"]}
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                {project?.["description"]}
-              </p>
+            <div className="flex items-start justify-start gap-2">
+              {project?.["logo"] ? (
+                <Image
+                  src={project?.["logo"]}
+                  alt={project?.["title"]}
+                  className="aspect-square w-12 rounded-full"
+                />
+              ) : (
+                <div className="aspect-square w-12 rounded-full bg-muted"></div>
+              )}
+
+              <div>
+                <h2 className="text-2xl font-bold tracking-tight">
+                  {project?.["title"]}
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {project?.["description"]}
+                </p>
+              </div>
             </div>
 
             <div>

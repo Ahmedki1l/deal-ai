@@ -578,6 +578,7 @@ export default {
       label: "العنوان",
       "health center": "مركز صحي",
     },
+    logo: { label: "اللوجو" },
     map: {
       label: "الخريطة",
       "choose on map": "إختر علي الخريطة",

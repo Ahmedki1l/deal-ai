@@ -1,21 +1,22 @@
-import type { Metadata } from "next";
-import { Cairo } from "next/font/google";
-
 import "@/styles/globals.css";
-
-import { getAuth } from "@/lib/auth";
-import { getDictionary } from "@/lib/dictionaries";
-import { i18n } from "@/lib/locale";
-import { cn } from "@/lib/utils";
-import { LocaleProps } from "@/types/locale";
-
 import { SessionProvider } from "@/components/session-provider";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { getAuth } from "@/lib/auth";
+import { getDictionary } from "@/lib/dictionaries";
+import { i18n } from "@/lib/locale";
+import { cn } from "@/lib/utils";
+import { LocaleProps } from "@/types/locale";
+import type { Metadata } from "next";
+import localFont from "next/font/local";
 
-const cairo = Cairo({ subsets: ["arabic"] });
+const cairo = localFont({
+  src: "../../../public/fonts/cairo.ttf",
+  variable: "--font-cairo",
+  weight: "100 900",
+});
 
 type RootLayoutProps = Readonly<{
   children: React.ReactNode;

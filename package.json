@@ -14,8 +14,9 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "prettier --write",
-      "eslint --fix"
+      "pnpx prettier --plugin prettier-plugin-organize-imports --write .",
+      "pnpx prettier --plugin @ianvs/prettier-plugin-sort-imports --write .",
+      "pnpx prettier --plugin prettier-plugin-tailwindcss --write ."
     ],
     "*.css": [
       "prettier --write"

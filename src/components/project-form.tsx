@@ -1,7 +1,7 @@
 "use client";
 
-import { useFieldArray, UseFormReturn } from "react-hook-form";
-import * as z from "zod";
+import { Icons } from "@/components/icons";
+import { Button } from "@/components/ui/button";
 import {
   FormControl,
   FormField,
@@ -10,13 +10,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Icons } from "@/components/icons";
-import {
-  projectCreateFormSchema,
-  projectUpdateFormSchema,
-} from "@/validations/projects";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -24,16 +17,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { platforms } from "@/db/enums";
-import { Dictionary } from "@/types/locale";
-import { MapPicker } from "./map";
-import { useState } from "react";
-import { toast } from "sonner";
-import { t } from "@/lib/locale";
 import { useLocale } from "@/hooks/use-locale";
+import { t } from "@/lib/locale";
+import { convertBase64 } from "@/lib/utils";
+import { Dictionary } from "@/types/locale";
+import {
+  projectCreateFormSchema,
+  projectUpdateFormSchema,
+} from "@/validations/projects";
 import { useRouter } from "next/navigation";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import { useState } from "react";
+import { useFieldArray, UseFormReturn } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
+import { Image } from "./image";
+import { MapPicker } from "./map";
 import { Tooltip } from "./tooltip";
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 
 export type ProjectFormProps = {
   loading: boolean;
@@ -51,7 +53,7 @@ export const ProjectForm = {
       control={form.control}
       name="title"
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="w-full">
           <FormLabel>{c?.["title"]?.["label"]}</FormLabel>
           <FormControl>
             <Input
@@ -60,6 +62,65 @@ export const ProjectForm = {
               disabled={loading}
               {...field}
             />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  ),
+  logo: ({
+    dic: {
+      "project-form": { logo: c },
+    },
+    loading,
+    form,
+  }: ProjectFormProps) => (
+    <FormField
+      control={form?.["control"]}
+      name="logo"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{c?.["label"]}</FormLabel>
+
+          <FormControl>
+            <div className="flex items-center justify-center gap-2">
+              <Input
+                type="file"
+                {...field}
+                value={undefined}
+                onChange={async (e) => {
+                  form.resetField("logo");
+                  const file = e?.["target"]?.["files"]?.[0];
+
+                  if (file) {
+                    const base64 = (await convertBase64(file))?.toString();
+
+                    // field.onChange(file);
+                    form.setValue("logo", base64 ?? "");
+                  }
+                }}
+                disabled={loading}
+              />
+              {!!form.watch("logo") ? (
+                <>
+                  <Image
+                    src={form.getValues("logo")!}
+                    alt=""
+                    className="h-8 w-8"
+                  />
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => form.resetField("logo")}
+                    disabled={loading}
+                  >
+                    <Icons.x />
+                  </Button>
+                </>
+              ) : null}
+            </div>
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -83,7 +144,7 @@ export const ProjectForm = {
             <Dialog>
               <DialogTrigger>
                 <Tooltip text={c?.["choose on map"]} align="end">
-                  <Button type="button" variant="ghost" size="icon">
+                  <Button type="button" variant="outline" size="icon">
                     <Icons.mapPicker />
                   </Button>
                 </Tooltip>

@@ -1,38 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
-import * as z from "zod";
-
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { Icons } from "@/components/icons";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import {
-  projectCreateFormSchema,
-  projectCreateSchema,
-} from "@/validations/projects";
-import { User } from "@/types/db";
-import { ProjectForm } from "@/components/project-form";
+import { createProject } from "@/actions/projects";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
-
+import { Icons } from "@/components/icons";
+import { ProjectForm } from "@/components/project-form";
 import { PropertyForm } from "@/components/property-form";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "./ui/label";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form } from "@/components/ui/form";
 import { propertyTypes } from "@/db/enums";
 import { useLocale } from "@/hooks/use-locale";
+import { toastPromise } from "@/lib/utils";
+import { User } from "@/types/db";
 import { Dictionary } from "@/types/locale";
-import { deleteCookie, getCookie, setCookie } from "@/actions/helpers";
-import { ID } from "@/lib/constants";
+import { projectCreateFormSchema } from "@/validations/projects";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import * as z from "zod";
+import { Label } from "./ui/label";
 
 export type ProjectCreateButtonProps = { user: User } & Omit<
   DialogResponsiveProps,
@@ -64,54 +51,69 @@ export function ProjectCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof projectCreateFormSchema>) {
-    const id = ID.generate();
-    const key = `create-${id}`;
-    const toastId = toast.loading(c?.["initializing project..."]);
+    await toastPromise(
+      async () =>
+        await createProject({
+          ...data,
+          logo: data?.["logo"]?.split(",")?.[1] ?? null,
+        }),
+      setLoading,
+      lang,
+    );
+    // const id = ID.generate();
+    // const key = `create-${id}`;
+    // const toastId = toast.loading(c?.["initializing project..."]);
 
-    try {
-      setLoading(true);
-      await setCookie(key, data);
+    // try {
+    //   setLoading(true);
+    //   console.log(data?.["logo"]?.["length"]);
 
-      const eventSource = new EventSource(`/api/projects?key=${key}`);
-      eventSource.addEventListener("status", (event) => {
-        toast.loading(event.data?.replaceAll('"', ""), {
-          id: toastId,
-        });
-      });
+    //   await setCookie(key, {
+    //     ...data,
+    //     logo: data?.["logo"]?.split(",")?.["1"] ?? null,
+    //   });
 
-      eventSource.addEventListener("completed", (event) => {
-        toast.dismiss(toastId);
-        eventSource.close();
-        toast.success(event.data?.replaceAll('"', ""));
+    //   const eventSource = new EventSource(`/api/projects?key=${key}`);
+    //   eventSource.addEventListener("status", (event) => {
+    //     toast.loading(event.data?.replaceAll('"', ""), {
+    //       id: toastId,
+    //     });
+    //   });
 
-        router.refresh();
-        setOpen(false);
-        form.reset();
-        setLoading(false);
-      });
+    //   eventSource.addEventListener("completed", (event) => {
+    //     toast.dismiss(toastId);
+    //     eventSource.close();
+    //     toast.success(event.data?.replaceAll('"', ""));
 
-      eventSource.addEventListener("error", (event) => {
-        console.error("Error occurred:", event);
-        toast.dismiss(toastId);
-        eventSource.close();
+    //     router.refresh();
+    //     setOpen(false);
+    //     form.reset();
+    //     setLoading(false);
+    //   });
 
-        setLoading(false);
-      });
+    //   eventSource.addEventListener("error", (event) => {
+    //     console.error("Error occurred:", event);
+    //     toast.dismiss(toastId);
+    //     eventSource.close();
 
-      eventSource.addEventListener("close", () => {
-        toast.dismiss(toastId);
-        eventSource.close();
+    //     setLoading(false);
+    //   });
 
-        setLoading(false);
-      });
-    } catch (err: any) {
-      toast.dismiss(toastId);
-      setLoading(false);
+    //   eventSource.addEventListener("close", () => {
+    //     toast.dismiss(toastId);
+    //     eventSource.close();
 
-      toast.error(err?.message);
-    } finally {
-      await deleteCookie(key);
-    }
+    //     setLoading(false);
+    //   });
+    // } catch (err: any) {
+    //   toast.dismiss(toastId);
+    //   setLoading(false);
+
+    //   toast.error(err?.message);
+    // } finally {
+    //   toast.dismiss(toastId);
+    //   await deleteCookie(key);
+    // }
   }
 
   return (
@@ -133,6 +135,13 @@ export function ProjectCreateButton({
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
               <div className="space-y-2">
+                <div className="flex items-center justify-center">
+                  <ProjectForm.logo
+                    dic={dic}
+                    form={form as any}
+                    loading={loading}
+                  />
+                </div>
                 <ProjectForm.title
                   dic={dic}
                   form={form as any}

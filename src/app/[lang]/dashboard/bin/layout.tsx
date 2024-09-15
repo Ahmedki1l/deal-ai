@@ -1,5 +1,5 @@
-import { Separator } from "@/components/ui/separator";
 import { SidebarNav } from "@/components/sidebar-nav";
+import { Separator } from "@/components/ui/separator";
 import { getDictionary } from "@/lib/dictionaries";
 import { LocaleProps } from "@/types/locale";
 

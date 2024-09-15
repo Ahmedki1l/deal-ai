@@ -1,5 +1,6 @@
 "use client";
 
+import { logout } from "@/actions/users";
 import { Icons } from "@/components/icons";
 import { SideNav } from "@/components/side-nav";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -11,11 +12,14 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useLocale } from "@/hooks/use-locale";
 import { cn, toastPromise } from "@/lib/utils";
-import { logout } from "@/actions/users";
 import { NavItem } from "@/types";
 import { Dictionary } from "@/types/locale";
 import { User } from "lucia";
 import { useState } from "react";
+import { Avatar } from "./avatar";
+import { Link } from "./link";
+import { LocaleSwitcher, LocaleSwitcherProps } from "./locale-switcher";
+import { ModeToggler, ModeTogglerProps } from "./mode-toggler";
 import { Tooltip } from "./tooltip";
 import {
   Card,
@@ -25,10 +29,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { Avatar } from "./avatar";
-import { LocaleSwitcher, LocaleSwitcherProps } from "./locale-switcher";
-import { ModeToggler, ModeTogglerProps } from "./mode-toggler";
-import { Link } from "./link";
 
 type ResizableLayoutProps = {
   user: User;

@@ -1,8 +1,8 @@
+import { DictionaryObject, DictionaryValue, Locale } from "@/types/locale";
+import { match as matchLocale } from "@formatjs/intl-localematcher";
+import Negotiator from "negotiator";
 import { NextRequest } from "next/server";
 import tl from "translate";
-import Negotiator from "negotiator";
-import { match as matchLocale } from "@formatjs/intl-localematcher";
-import { DictionaryObject, DictionaryValue, Locale } from "@/types/locale";
 
 export const i18n = {
   defaultLocale: "ar",

@@ -1,25 +1,22 @@
 "use server";
 
+import { db } from "@/db";
+import { getAuth, google, lucia } from "@/lib/auth";
+import { RequiresLoginError, ZodError } from "@/lib/exceptions";
+import {
+  userAuthLoginSchema,
+  userAuthRegisterSchema,
+  userUpdateProfilePasswordSchema,
+  userUpdateProfilePersonalSchema,
+} from "@/validations/users";
+import { generateCodeVerifier, generateState } from "arctic";
+import { generateIdFromEntropySize } from "lucia";
+import { revalidatePath } from "next/cache";
+import { isRedirectError } from "next/dist/client/components/redirect";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { generateIdFromEntropySize } from "lucia";
-import { isRedirectError } from "next/dist/client/components/redirect";
 import * as z from "zod";
-
-import { google } from "@/lib/auth";
-import { generateCodeVerifier, generateState } from "arctic";
-
-import {
-  userAuthRegisterSchema,
-  userAuthLoginSchema,
-  userUpdateProfilePersonalSchema,
-  userUpdateProfilePasswordSchema,
-} from "@/validations/users";
-import { lucia, getAuth } from "@/lib/auth";
-import { db } from "@/db";
 import { getLocale, hash, verify } from "./helpers";
-import { RequiresLoginError, ZodError } from "@/lib/exceptions";
-import { revalidatePath } from "next/cache";
 
 export async function signUpWithPassword(
   credentials: z.infer<typeof userAuthRegisterSchema>,

@@ -1,9 +1,6 @@
 "use client";
 
-import { Command as CommandPrimitive, useCommandState } from "cmdk";
-import * as React from "react";
-import { forwardRef, useEffect } from "react";
-
+import { Icons } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import {
   Command,
@@ -12,7 +9,9 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-import { Icons } from "@/components/icons";
+import { Command as CommandPrimitive, useCommandState } from "cmdk";
+import * as React from "react";
+import { forwardRef, useEffect } from "react";
 
 export interface Option {
   value: string;

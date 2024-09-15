@@ -1,7 +1,7 @@
-import "server-only";
-import { cache } from "react";
-import { Locale } from "@/types/locale";
 import { translateObject } from "@/lib/locale";
+import { Locale } from "@/types/locale";
+import { cache } from "react";
+import "server-only";
 
 const site = {
   ar: () => import("@/dictionaries/ar").then((module) => module.default),

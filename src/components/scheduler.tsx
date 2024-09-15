@@ -1,4 +1,7 @@
 "use client";
+
+import { platforms } from "@/db/enums";
+import { useLocale } from "@/hooks/use-locale";
 import { cn, getMonth } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import {
@@ -10,13 +13,10 @@ import {
 } from "@prisma/client";
 import dayjs from "dayjs";
 import { Fragment, useEffect, useState } from "react";
-import { Icons } from "./icons";
-import { Button } from "./ui/button";
-import { platforms } from "@/db/enums";
-import { PostUpdateForm } from "./post-update-form";
 import { DialogResponsive } from "./dialog";
-import { Image } from "./image";
-import { useLocale } from "@/hooks/use-locale";
+import { Icons } from "./icons";
+import { PostUpdateForm } from "./post-update-form";
+import { Button } from "./ui/button";
 
 export type SchedulerProps = {
   posts: (Post & {

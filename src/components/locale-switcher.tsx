@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,10 +8,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Icons } from "@/components/icons";
+import { useLocale } from "@/hooks/use-locale";
 import { i18n } from "@/lib/locale";
 import { Dictionary, Locale } from "@/types/locale";
-import { useLocale } from "@/hooks/use-locale";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export type LocaleSwitcherProps = {
   isLabeled?: boolean;

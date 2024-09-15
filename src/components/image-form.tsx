@@ -1,7 +1,6 @@
 "use client";
 
-import { UseFormReturn } from "react-hook-form";
-import * as z from "zod";
+import { generateImage, regenerateImagePrompt } from "@/actions/images";
 import {
   FormControl,
   FormField,
@@ -10,24 +9,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Dictionary } from "@/types/locale";
-import { Dispatch, SetStateAction, useState } from "react";
-import { Button } from "./ui/button";
-import { useLocale } from "@/hooks/use-locale";
-import { Textarea } from "./ui/textarea";
-import { convertBase64, isValidUrl } from "@/lib/utils";
-import { Image } from "./image";
-import { Icons } from "./icons";
-import { toast } from "sonner";
-import { generateImage, regenerateImagePrompt } from "@/actions/images";
-import { t } from "@/lib/locale";
-import { Tooltip } from "./tooltip";
-import { postUpdateSchema } from "@/validations/posts";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useLocale } from "@/hooks/use-locale";
 import { FRAMES_URL } from "@/lib/constants";
-
+import { t } from "@/lib/locale";
+import { convertBase64 } from "@/lib/utils";
+import { Dictionary } from "@/types/locale";
+import { postUpdateSchema } from "@/validations/posts";
+import { Dispatch, SetStateAction, useState } from "react";
+import { UseFormReturn } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 import frame0 from "../../public/frames/filled/frame-00.png";
-import frame1 from "../../public/frames/filled/frame-01.png";
 import frame2 from "../../public/frames/filled/frame-02.png";
 import frame3 from "../../public/frames/filled/frame-03.png";
 import frame4 from "../../public/frames/filled/frame-04.png";
@@ -43,10 +36,15 @@ import frame13 from "../../public/frames/filled/frame-13.png";
 import frame14 from "../../public/frames/filled/frame-14.png";
 import frame15 from "../../public/frames/filled/frame-15.png";
 import frame16 from "../../public/frames/filled/frame-16.png";
+import { Icons } from "./icons";
+import { Image } from "./image";
+import { Tooltip } from "./tooltip";
+import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
 
 export const frames = [
   frame0,
-  frame1,
+  // frame1,
   frame2,
   frame3,
   frame4,

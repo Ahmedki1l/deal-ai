@@ -1,30 +1,27 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
-
-import { Link } from "@/components/link";
-import { Property } from "@prisma/client";
-import { DataTableColumnHeader } from "@/components/data-table-column-header";
-import { DataTableRowActions } from "@/components/data-table-row-actions";
-import {
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-} from "@/components/ui/dropdown-menu";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { CaseStudy, Post } from "@prisma/client";
-import {
-  CaseStudyUpdateForm,
-  CaseStudyUpdateFormProps,
-} from "@/components/case-study-update-form";
-import { CaseStudyDeleteButton } from "@/components/case-study-delete-button";
-import { Icons } from "@/components/icons";
-import { CardDescription, CardTitle } from "@/components/ui/card";
-import { Dictionary } from "@/types/locale";
-import { DataTable, DataTableProps } from "@/components/data-table";
 import {
   CaseStudyBinButton,
   CaseStudyBinButtonProps,
 } from "@/components/case-study-bin-button";
+import {
+  CaseStudyUpdateForm,
+  CaseStudyUpdateFormProps,
+} from "@/components/case-study-update-form";
+import { DataTable, DataTableProps } from "@/components/data-table";
+import { DataTableColumnHeader } from "@/components/data-table-column-header";
+import { DataTableRowActions } from "@/components/data-table-row-actions";
+import { Icons } from "@/components/icons";
+import { Link } from "@/components/link";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+} from "@/components/ui/dropdown-menu";
+import { Dictionary } from "@/types/locale";
+import { CaseStudy, Post } from "@prisma/client";
+import { ColumnDef } from "@tanstack/react-table";
 
 type CaseStudyColumnType = CaseStudy & { posts: Post[] };
 type CaseStudyTableProps = {

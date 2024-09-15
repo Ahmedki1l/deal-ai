@@ -1,7 +1,7 @@
 "use client";
 
-import { UseFieldArrayRemove, UseFormReturn } from "react-hook-form";
-import * as z from "zod";
+import { Icons } from "@/components/icons";
+import { Button } from "@/components/ui/button";
 import {
   FormControl,
   FormField,
@@ -10,7 +10,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { propertyCreateFormSchema } from "@/validations/properties";
 import {
   Select,
   SelectContent,
@@ -19,10 +18,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { propertyTypes } from "@/db/enums";
-import { Button } from "@/components/ui/button";
-import { Icons } from "@/components/icons";
-import { Dictionary } from "@/types/locale";
 import { useLocale } from "@/hooks/use-locale";
+import { Dictionary } from "@/types/locale";
+import { propertyCreateFormSchema } from "@/validations/properties";
+import { UseFieldArrayRemove, UseFormReturn } from "react-hook-form";
+import * as z from "zod";
 
 export type PropertyFormProps = {
   loading: boolean;

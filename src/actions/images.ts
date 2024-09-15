@@ -1,8 +1,13 @@
 "use server";
 
+import { resolve } from "path";
 import { db } from "@/db";
 import { getAuth } from "@/lib/auth";
+// import { writeFile, writeFileSync } from "fs";
+// import { createCanvas, loadImage, registerFont } from "canvas";
+import { FRAMES_URL } from "@/lib/constants";
 import { RequiresLoginError, ZodError } from "@/lib/exceptions";
+import { s3Client } from "@/lib/uploader"; // Ensure s3Client is properly set up
 import {
   imageBinSchema,
   imageCreateSchema,
@@ -10,18 +15,12 @@ import {
   imageGenerateSchema,
   imageRegeneratePromptSchema,
   imageUpdateSchema,
-  imageWatermarkSchema,
 } from "@/validations/images";
-import { revalidatePath } from "next/cache";
-import { promise, z } from "zod";
-import { generateIdFromEntropySize } from "lucia";
-import { resolve } from "path";
-import Sharp from "sharp";
-import { fetchImage, s3Client } from "@/lib/uploader"; // Ensure s3Client is properly set up
 import { Body, ObjectKey } from "aws-sdk/clients/s3";
-// import { writeFile, writeFileSync } from "fs";
-// import { createCanvas, loadImage, registerFont } from "canvas";
-import { FRAMES_URL } from "@/lib/constants";
+import { generateIdFromEntropySize } from "lucia";
+import { revalidatePath } from "next/cache";
+import Sharp from "sharp";
+import { z } from "zod";
 
 export async function createImage(data: z.infer<typeof imageCreateSchema>) {
   try {

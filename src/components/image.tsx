@@ -1,6 +1,6 @@
+import { cn } from "@/lib/utils";
 import NextImage from "next/image";
 import { ComponentPropsWithoutRef } from "react";
-import { cn } from "@/lib/utils";
 
 export type ImageProps = {} & ComponentPropsWithoutRef<typeof NextImage>;
 

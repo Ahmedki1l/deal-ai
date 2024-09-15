@@ -1,38 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
-import * as z from "zod";
-
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { Icons } from "@/components/icons";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import {
-  propertyCreateFormSchema,
-  propertyCreateSchema,
-} from "@/validations/properties";
-import { createProperty } from "@/actions/properties";
-import { PropertyForm } from "@/components/property-form";
-import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
-import { Project } from "@prisma/client";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "./ui/label";
-import { propertyTypes } from "@/db/enums";
-import { Dictionary } from "@/types/locale";
-import { useLocale } from "@/hooks/use-locale";
-import { t } from "@/lib/locale";
 import { deleteCookie, setCookie } from "@/actions/helpers";
+import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
+import { Icons } from "@/components/icons";
+import { PropertyForm } from "@/components/property-form";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form } from "@/components/ui/form";
+import { propertyTypes } from "@/db/enums";
+import { useLocale } from "@/hooks/use-locale";
 import { ID } from "@/lib/constants";
+import { Dictionary } from "@/types/locale";
+import { propertyCreateFormSchema } from "@/validations/properties";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Project } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
+import { Label } from "./ui/label";
 
 export type PropertyCreateButtonProps = { project: Pick<Project, "id"> } & Omit<
   DialogResponsiveProps,

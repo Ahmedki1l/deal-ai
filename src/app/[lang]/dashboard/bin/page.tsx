@@ -1,10 +1,8 @@
 import { BinProjectsTable } from "@/components/bin-projects-table";
-import { Separator } from "@/components/ui/separator";
 import { db } from "@/db";
 import { getDictionary } from "@/lib/dictionaries";
 import { LocaleProps } from "@/types/locale";
 import type { Metadata } from "next";
-import React from "react";
 
 type BinProjectsProps = Readonly<{ params: LocaleProps }>;
 

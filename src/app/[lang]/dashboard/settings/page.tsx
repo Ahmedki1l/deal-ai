@@ -1,10 +1,10 @@
-import { Metadata } from "next";
-import { getAuth } from "@/lib/auth";
 import { Separator } from "@/components/ui/separator";
-import { LocaleProps } from "@/types/locale";
-import { getDictionary } from "@/lib/dictionaries";
-import { UserProfilePersonalForm } from "@/components/user-profile-personal-form";
 import { UserProfilePasswordForm } from "@/components/user-profile-password-form";
+import { UserProfilePersonalForm } from "@/components/user-profile-personal-form";
+import { getAuth } from "@/lib/auth";
+import { getDictionary } from "@/lib/dictionaries";
+import { LocaleProps } from "@/types/locale";
+import { Metadata } from "next";
 
 type SettingsProps = Readonly<{
   params: LocaleProps;

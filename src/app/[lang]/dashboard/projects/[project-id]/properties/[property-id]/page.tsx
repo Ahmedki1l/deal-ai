@@ -1,15 +1,15 @@
-import { Metadata } from "next";
-import { db } from "@/db";
-import { EmptyPlaceholder } from "@/components/empty-placeholder";
 import { BackButton } from "@/components/back-button";
-import { LocaleProps } from "@/types/locale";
-import { getDictionary } from "@/lib/dictionaries";
-import { PropertyRestoreButton } from "@/components/property-restore-button";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { PropertyBinButton } from "@/components/property-bin-button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { EmptyPlaceholder } from "@/components/empty-placeholder";
 import { Icons } from "@/components/icons";
 import { Link } from "@/components/link";
+import { PropertyBinButton } from "@/components/property-bin-button";
+import { PropertyRestoreButton } from "@/components/property-restore-button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { db } from "@/db";
+import { getDictionary } from "@/lib/dictionaries";
+import { LocaleProps } from "@/types/locale";
+import { Metadata } from "next";
 
 type CaseStudyProps = Readonly<{
   params: { "project-id": string; "property-id": string } & LocaleProps;

@@ -1,11 +1,9 @@
-import type { Metadata } from "next";
-
+import { Scheduler } from "@/components/scheduler";
 import { db } from "@/db";
 import { getAuth } from "@/lib/auth";
 import { getDictionary } from "@/lib/dictionaries";
 import { LocaleProps } from "@/types/locale";
-import { Scheduler } from "@/components/scheduler";
-import { platform } from "os";
+import type { Metadata } from "next";
 
 type CalenderProps = Readonly<{ params: LocaleProps }>;
 

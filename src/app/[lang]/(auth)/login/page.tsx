@@ -1,12 +1,11 @@
-import type { Metadata } from "next";
-
 import { Icons } from "@/components/icons";
-import { Suspense } from "react";
-import { UserAuthLoginForm } from "@/components/user-auth-login-form";
+import { Image } from "@/components/image";
 import { Link } from "@/components/link";
+import { UserAuthLoginForm } from "@/components/user-auth-login-form";
 import { getDictionary } from "@/lib/dictionaries";
 import { LocaleProps } from "@/types/locale";
-import { Image } from "@/components/image";
+import type { Metadata } from "next";
+import { Suspense } from "react";
 import takaml from "../../../../../public/images/Takaml.png";
 
 type LoginProps = Readonly<{

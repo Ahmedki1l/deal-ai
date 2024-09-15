@@ -1,23 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import * as z from "zod";
-
+import { updateProject } from "@/actions/projects";
+import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
+import { Icons } from "@/components/icons";
+import { ProjectForm } from "@/components/project-form";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { Icons } from "@/components/icons";
-import { projectUpdateFormSchema } from "@/validations/projects";
-import { ProjectForm } from "@/components/project-form";
-import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
-import { Project } from "@prisma/client";
-import { updateProject } from "@/actions/projects";
-import { Dictionary } from "@/types/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { t } from "@/lib/locale";
+import { Dictionary } from "@/types/locale";
+import { projectUpdateFormSchema } from "@/validations/projects";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Project } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 
 export type ProjectUpdateFormProps = {
   project: Project;

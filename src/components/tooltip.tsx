@@ -1,9 +1,9 @@
-import { cn } from "@/lib/utils";
 import {
   Tooltip as ToolTip,
-  TooltipTrigger,
   TooltipContent,
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 type TooltipProps = {
   children: React.ReactNode;

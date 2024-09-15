@@ -1,28 +1,5 @@
 "use client";
 
-import * as React from "react";
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   DataTablePagination,
   DataTablePaginationProps,
@@ -32,10 +9,33 @@ import {
   DataTableToolbarProps,
 } from "@/components/data-table-toolbar";
 import { EmptyPlaceholder } from "@/components/empty-placeholder";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Dictionary } from "@/types/locale";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable,
+  VisibilityState,
+} from "@tanstack/react-table";
+import * as React from "react";
 import { DataTableColumnHeaderProps } from "./data-table-column-header";
-import { DataTableViewOptionsProps } from "./data-table-view-options";
 import { DataTableRowActionsProps } from "./data-table-row-actions";
+import { DataTableViewOptionsProps } from "./data-table-view-options";
 
 export type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];

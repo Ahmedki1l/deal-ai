@@ -1,7 +1,5 @@
 "use client";
 
-import * as React from "react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import {
   Card,
   CardContent,
@@ -15,22 +13,11 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Dictionary } from "@/types/locale";
-import {
-  $Enums,
-  Image as ImageType,
-  PLATFORM,
-  Post,
-  Project,
-} from "@prisma/client";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { $Enums, Image as ImageType, Post, Project } from "@prisma/client";
+import * as React from "react";
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { Image } from "./image";
 import { Link } from "./link";
 

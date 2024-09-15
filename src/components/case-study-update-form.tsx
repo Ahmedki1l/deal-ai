@@ -1,22 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { updateCaseStudy } from "@/actions/case-studies";
+import { CaseStudyForm } from "@/components/case-study-form";
+import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
+import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { Icons } from "@/components/icons";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { caseStudyUpdateSchema } from "@/validations/case-studies";
-import { updateCaseStudy } from "@/actions/case-studies";
-import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
-import { CaseStudyForm } from "@/components/case-study-form";
-import { CaseStudy } from "@prisma/client";
-import { Dictionary } from "@/types/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { t } from "@/lib/locale";
+import { Dictionary } from "@/types/locale";
+import { caseStudyUpdateSchema } from "@/validations/case-studies";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CaseStudy } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 
 export type CaseStudyUpdateFormProps = {
   caseStudy: CaseStudy;

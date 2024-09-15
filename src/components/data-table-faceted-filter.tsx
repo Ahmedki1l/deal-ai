@@ -1,8 +1,4 @@
-import * as React from "react";
-import { CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons";
-import { Column } from "@tanstack/react-table";
-
-import { cn } from "@/lib/utils";
+import { Icons } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,8 +16,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { Icons } from "@/components/icons";
+import { cn } from "@/lib/utils";
 import { SelectItem } from "@/types";
+import { CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons";
+import { Column } from "@tanstack/react-table";
 
 type DataTableFacetedFilterProps<TData, TValue> = {
   column?: Column<TData, TValue>;

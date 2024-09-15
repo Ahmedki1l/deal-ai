@@ -1,10 +1,10 @@
-import { cache } from "react";
+import { db } from "@/db";
+import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
+import { User as dbUser } from "@prisma/client";
 import { Google } from "arctic";
 import { Lucia, Session, User } from "lucia";
 import { cookies } from "next/headers";
-import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
-import { db } from "@/db";
-import { User as dbUser } from "@prisma/client";
+import { cache } from "react";
 
 const adapter = new PrismaAdapter(db.session, db.user);
 

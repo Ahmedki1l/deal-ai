@@ -1,12 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronDownIcon } from "@radix-ui/react-icons";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-import { cn } from "@/lib/utils";
-import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,10 +9,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "sonner";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useTheme } from "next-themes";
 import { Dictionary } from "@/types/locale";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTheme } from "next-themes";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { LocaleSwitcher } from "./locale-switcher";
 import { Label } from "./ui/label";
 

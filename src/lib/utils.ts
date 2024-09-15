@@ -1,9 +1,9 @@
-import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { Locale } from "@/types/locale";
+import { clsx, type ClassValue } from "clsx";
 import dayjs from "dayjs";
 import { Dispatch, SetStateAction } from "react";
-import { Locale } from "@/types/locale";
 import { toast } from "sonner";
+import { twMerge } from "tailwind-merge";
 import { t } from "./locale";
 
 export function cn(...inputs: ClassValue[]) {

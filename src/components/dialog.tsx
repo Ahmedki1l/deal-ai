@@ -1,21 +1,5 @@
 "use client";
 
-import * as React from "react";
-
-import { Button } from "@/components/ui/button";
-import { useMediaQuery } from "@/hooks/use-media-query";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import { Dictionary } from "@/types/locale";
-
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -26,7 +10,21 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { Dictionary } from "@/types/locale";
 import { AlertDialogTriggerProps } from "@radix-ui/react-alert-dialog";
+import * as React from "react";
 
 export type DialogResponsiveProps = {
   confirmButton?: React.ReactNode;

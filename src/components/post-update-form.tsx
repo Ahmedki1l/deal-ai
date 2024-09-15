@@ -1,43 +1,31 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { Icons } from "@/components/icons";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { postUpdateSchema } from "@/validations/posts";
 import { updatePost } from "@/actions/posts";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { BackButton } from "@/components/back-button";
-import { PostForm } from "@/components/post-form";
-import { CaseStudy, Image as ImageType, Post, Project } from "@prisma/client";
-import { Dictionary } from "@/types/locale";
-import { t } from "@/lib/locale";
-import { useLocale } from "@/hooks/use-locale";
-import { cn, isValidUrl } from "@/lib/utils";
-import { Image } from "@/components/image";
 import { DialogResponsive } from "@/components/dialog";
-import { ImageForm } from "@/components/image-form";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PostRestoreButton } from "@/components/post-restore-button";
+import { Icons } from "@/components/icons";
+import { Image } from "@/components/image";
+import { frames as FilledFrames, ImageForm } from "@/components/image-form";
 import { PostBinButton } from "@/components/post-bin-button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
+import { PostForm } from "@/components/post-form";
+import { PostRestoreButton } from "@/components/post-restore-button";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form } from "@/components/ui/form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useLocale } from "@/hooks/use-locale";
 import { PhotoEditor } from "@/lib/konva";
-
+import { t } from "@/lib/locale";
+import { cn } from "@/lib/utils";
+import { Dictionary } from "@/types/locale";
+import { postUpdateSchema } from "@/validations/posts";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CaseStudy, Image as ImageType, Post, Project } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 import frame0 from "../../public/frames/frame-00.png";
-import frame1 from "../../public/frames/frame-01.png";
 import frame2 from "../../public/frames/frame-02.png";
 import frame3 from "../../public/frames/frame-03.png";
 import frame4 from "../../public/frames/frame-04.png";
@@ -54,10 +42,12 @@ import frame14 from "../../public/frames/frame-14.png";
 import frame15 from "../../public/frames/frame-15.png";
 import frame16 from "../../public/frames/frame-16.png";
 import { Tooltip } from "./tooltip";
-import { frames as FilledFrames } from "@/components/image-form";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+
 export const frames = [
   frame0,
-  frame1,
+  // frame1,
   frame2,
   frame3,
   frame4,
@@ -134,7 +124,13 @@ export function PostUpdateForm({
       );
 
       if (src) editorRef?.current?.addPhoto(src);
-      if (frame) editorRef?.current?.addTheme(frames?.[Number(frame)]?.["src"]);
+      if (frame) {
+        editorRef?.current?.addFrame(Number(frame), {
+          title: post?.["caseStudy"]?.["project"]?.["title"],
+          phone: "+20123 456 7890",
+          website: "www.x.com",
+        });
+      }
     }
   }, [src, frame]);
 
@@ -224,7 +220,7 @@ export function PostUpdateForm({
             </div>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-2">
+          <div className="grid gap-4 lg:grid-cols-[616px,1fr]">
             <div>
               <div
                 className={cn(
@@ -262,7 +258,7 @@ export function PostUpdateForm({
                         type="button"
                         size="icon"
                         onClick={() => {
-                          editorRef?.current?.addText();
+                          editorRef?.current?.addText({});
                         }}
                       >
                         <Icons.write />
@@ -433,6 +429,7 @@ export function PostUpdateForm({
                 </div>
               </div>
             </div>
+
             <Card>
               <CardHeader>
                 <CardTitle>{c?.["post information"]}</CardTitle>

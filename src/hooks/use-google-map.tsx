@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
+import { useEffect, useState } from "react";
 
 export const useGoogleMaps = () => {
   const [loader, setLoader] = useState<Loader | null>(null);

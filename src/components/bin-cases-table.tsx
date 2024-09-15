@@ -1,27 +1,26 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
-
-import { DataTableColumnHeader } from "@/components/data-table-column-header";
-import { DataTableRowActions } from "@/components/data-table-row-actions";
-import {
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-} from "@/components/ui/dropdown-menu";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { CaseStudy } from "@prisma/client";
-import { Link } from "@/components/link";
 import {
   CaseStudyDeleteButton,
   CaseStudyDeleteButtonProps,
 } from "@/components/case-study-delete-button";
-import { CardTitle } from "@/components/ui/card";
-import { Dictionary } from "@/types/locale";
-import { DataTable, DataTableProps } from "@/components/data-table";
 import {
   CaseStudyRestoreButton,
   CaseStudyRestoreButtonProps,
 } from "@/components/case-study-restore-button";
+import { DataTable, DataTableProps } from "@/components/data-table";
+import { DataTableColumnHeader } from "@/components/data-table-column-header";
+import { DataTableRowActions } from "@/components/data-table-row-actions";
+import { Link } from "@/components/link";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+} from "@/components/ui/dropdown-menu";
+import { Dictionary } from "@/types/locale";
+import { CaseStudy } from "@prisma/client";
+import { ColumnDef } from "@tanstack/react-table";
 
 type ColumnType = Pick<CaseStudy, "id" | "projectId" | "title" | "deletedAt">;
 

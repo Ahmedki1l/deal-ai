@@ -1,12 +1,11 @@
-import type { Metadata } from "next";
-
 import { EmptyPlaceholder } from "@/components/empty-placeholder";
+import { ProjectCreateButton } from "@/components/project-create-button";
+import { Button } from "@/components/ui/button";
 import { db } from "@/db";
 import { getAuth } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
-import { ProjectCreateButton } from "@/components/project-create-button";
 import { getDictionary } from "@/lib/dictionaries";
 import { LocaleProps } from "@/types/locale";
+import type { Metadata } from "next";
 import { Table } from "./table";
 
 type ProjectsProps = Readonly<{ params: LocaleProps }>;

@@ -1,31 +1,29 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
-
+import { DataTable, DataTableProps } from "@/components/data-table";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { DataTableRowActions } from "@/components/data-table-row-actions";
-import {
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-} from "@/components/ui/dropdown-menu";
-import { Button, buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
-import { CaseStudy, Platform, Post, Project, Property } from "@prisma/client";
-import {
-  ProjectUpdateForm,
-  ProjectUpdateFormProps,
-} from "@/components/project-update-form";
 import { Link } from "@/components/link";
-import { ProjectDeleteButton } from "@/components/project-delete-button";
-import { CardTitle } from "@/components/ui/card";
-import { platforms } from "@/db/enums";
-import { Dictionary } from "@/types/locale";
-import { DataTable, DataTableProps } from "@/components/data-table";
 import {
   ProjectBinButton,
   ProjectBinButtonProps,
 } from "@/components/project-bin-button";
+import {
+  ProjectUpdateForm,
+  ProjectUpdateFormProps,
+} from "@/components/project-update-form";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+} from "@/components/ui/dropdown-menu";
+import { platforms } from "@/db/enums";
 import { useLocale } from "@/hooks/use-locale";
+import { Dictionary } from "@/types/locale";
+import { CaseStudy, Platform, Post, Project, Property } from "@prisma/client";
+import { ColumnDef } from "@tanstack/react-table";
 
 type ColumnType = Project & {
   caseStudy: (CaseStudy & { posts: Post[] })[];

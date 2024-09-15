@@ -1,20 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { toast } from "sonner";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-
+import { signInWithGoogle, signUpWithPassword } from "@/actions/users";
+import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { Icons } from "@/components/icons";
-import { userAuthRegisterSchema } from "@/validations/users";
 import { UserForm } from "@/components/user-form";
-import { signInWithGoogle, signUpWithPassword } from "@/actions/users";
-import { Dictionary } from "@/types/locale";
-import { t } from "@/lib/locale";
 import { useLocale } from "@/hooks/use-locale";
+import { t } from "@/lib/locale";
+import { Dictionary } from "@/types/locale";
+import { userAuthRegisterSchema } from "@/validations/users";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 
 export type UserAuthRegisterFormProps = {} & Dictionary["auth"] &
   Dictionary["user-form"];

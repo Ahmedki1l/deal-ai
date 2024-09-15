@@ -1,22 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { Icons } from "@/components/icons";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { propertyDeleteSchema } from "@/validations/properties";
 import { deleteProperty } from "@/actions/properties";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
-import { Property } from "@prisma/client";
-import { Dictionary } from "@/types/locale";
+import { Icons } from "@/components/icons";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
 import { t } from "@/lib/locale";
+import { Dictionary } from "@/types/locale";
+import { propertyDeleteSchema } from "@/validations/properties";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Property } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 
 export type PropertyDeleteButtonProps = {
   property: Pick<Property, "id">;

@@ -1,9 +1,9 @@
 "use server";
 
-import { Locale } from "@/types/locale";
-import { cookies, headers } from "next/headers";
-import { hash as Hash, verify as Verify } from "@node-rs/argon2";
 import { i18n } from "@/lib/locale";
+import { Locale } from "@/types/locale";
+import { hash as Hash, verify as Verify } from "@node-rs/argon2";
+import { cookies, headers } from "next/headers";
 
 export async function getCookie<T>(key: string) {
   const val = cookies().get(key)?.["value"];

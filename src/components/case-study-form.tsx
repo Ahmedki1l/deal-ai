@@ -1,7 +1,8 @@
 "use client";
 
-import { useFieldArray, UseFormReturn } from "react-hook-form";
-import * as z from "zod";
+import { Icons } from "@/components/icons";
+import { Image } from "@/components/image";
+import { Button } from "@/components/ui/button";
 import {
   FormControl,
   FormField,
@@ -10,16 +11,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { convertBase64 } from "@/lib/utils";
+import { Dictionary } from "@/types/locale";
 import {
   caseStudyCreateFormSchema,
   caseStudyUpdateFormSchema,
 } from "@/validations/case-studies";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Icons } from "@/components/icons";
-import { convertBase64 } from "@/lib/utils";
-import { Image } from "@/components/image";
-import { Dictionary } from "@/types/locale";
+import { useFieldArray, UseFormReturn } from "react-hook-form";
+import * as z from "zod";
 
 export type CaseStudyFormProps = {
   loading: boolean;

@@ -1,8 +1,5 @@
 "use client";
 
-import { UseFormReturn } from "react-hook-form";
-import * as z from "zod";
-
 import {
   FormControl,
   FormField,
@@ -11,13 +8,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Dictionary } from "@/types/locale";
 import {
   userAuthLoginSchema,
   userAuthRegisterSchema,
   userUpdateProfilePasswordFormSchema,
   userUpdateProfilePersonalSchema,
 } from "@/validations/users";
-import { Dictionary } from "@/types/locale";
+import { UseFormReturn } from "react-hook-form";
+import * as z from "zod";
 
 export type UserFormProps = {
   loading: boolean;

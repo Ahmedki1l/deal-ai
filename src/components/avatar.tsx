@@ -1,12 +1,12 @@
-import { AvatarProps as AvatarUIProps } from "@radix-ui/react-avatar";
+import { IconProps, Icons } from "@/components/icons";
 import {
-  Avatar as AvatarUI,
   AvatarFallback,
   AvatarImage,
+  Avatar as AvatarUI,
 } from "@/components/ui/avatar";
-import { IconProps, Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { User } from "@/types/db";
+import { AvatarProps as AvatarUIProps } from "@radix-ui/react-avatar";
 
 export type AvatarProps = {
   user: Pick<User, "name" | "image"> | null;

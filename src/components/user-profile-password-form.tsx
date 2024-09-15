@@ -1,21 +1,8 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { updatePassword } from "@/actions/users";
+import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
-import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -24,22 +11,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Icons } from "@/components/icons";
-import { Avatar } from "@/components/avatar";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { z } from "zod";
-import { z as Z } from "@/lib/zod";
-import { User } from "lucia";
-import { userUpdateProfilePasswordFormSchema } from "@/validations/users";
-import { updatePassword, updateUser } from "@/actions/users";
-import { UserForm } from "./user-form";
+import { Form } from "@/components/ui/form";
 import { Dictionary } from "@/types/locale";
+import { userUpdateProfilePasswordFormSchema } from "@/validations/users";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { User } from "lucia";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import { UserForm } from "./user-form";
 
 export type UserProfilePasswordProps = {
   user: User;

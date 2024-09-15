@@ -1,16 +1,16 @@
-import { SelectItem } from "@/types";
+import { Icons } from "@/components/icons";
 import { getEnumArray } from "@/db/utils";
+import ar from "@/dictionaries/ar";
+import en from "@/dictionaries/en";
+import { SelectItem } from "@/types";
+import { Locale } from "@/types/locale";
 import {
-  PROPERTY_TYPE,
   PLATFORM,
   POST_CAMPAIGN,
   POST_CONTENT_LENGTH,
+  PROPERTY_TYPE,
 } from "@prisma/client";
-import { Icons } from "@/components/icons";
-import { Locale } from "@/types/locale";
-import { t } from "@/lib/locale";
-import ar from "@/dictionaries/ar";
-import en from "@/dictionaries/en";
+
 export const platformsArr = getEnumArray<PLATFORM>(PLATFORM);
 export const propertyTypesArr = getEnumArray<PROPERTY_TYPE>(PROPERTY_TYPE);
 export const postCampaignArr = getEnumArray<POST_CAMPAIGN>(POST_CAMPAIGN);

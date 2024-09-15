@@ -2,21 +2,19 @@
 
 import { db } from "@/db";
 import { getAuth } from "@/lib/auth";
+import { ID } from "@/lib/constants";
+import { getDictionary } from "@/lib/dictionaries";
 import { RequiresLoginError, ZodError } from "@/lib/exceptions";
+import { sendEvent } from "@/lib/stream";
 import {
   propertyBinSchema,
   propertyCreateFormSchema,
-  propertyCreateSchema,
   propertyDeleteSchema,
   propertyUpdateSchema,
 } from "@/validations/properties";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { generateIdFromEntropySize } from "lucia";
-import { sendEvent } from "@/lib/stream";
 import { getCookie, getLocale } from "./helpers";
-import { getDictionary } from "@/lib/dictionaries";
-import { ID } from "@/lib/constants";
 
 export async function createProperty(
   controller: ReadableStreamDefaultController<any>,

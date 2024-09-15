@@ -1,10 +1,10 @@
 "use client";
-import NextLink from "next/link";
-import { ComponentPropsWithoutRef } from "react";
 
-import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { useLocale } from "@/hooks/use-locale";
+import { cn } from "@/lib/utils";
+import NextLink from "next/link";
+import { ComponentPropsWithoutRef } from "react";
 
 export type LinkProps = ComponentPropsWithoutRef<typeof NextLink> & {
   href: string;

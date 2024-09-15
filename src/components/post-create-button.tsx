@@ -1,26 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
-import * as z from "zod";
-
+import { deleteCookie, setCookie } from "@/actions/helpers";
+import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
+import { Icons } from "@/components/icons";
+import { PostForm } from "@/components/post-form";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { Icons } from "@/components/icons";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { postCreateSchema } from "@/validations/posts";
-import { createPost } from "@/actions/posts";
-import { PostForm } from "@/components/post-form";
-import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
-import { CaseStudy, Platform } from "@prisma/client";
-import { Project } from "@prisma/client";
-import { Dictionary } from "@/types/locale";
-import { t } from "@/lib/locale";
 import { useLocale } from "@/hooks/use-locale";
 import { ID } from "@/lib/constants";
-import { deleteCookie, getCookie, setCookie } from "@/actions/helpers";
+import { Dictionary } from "@/types/locale";
+import { postCreateSchema } from "@/validations/posts";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CaseStudy, Platform, Project } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 
 export type PostCreateButtonProps = {
   caseStudy: CaseStudy;

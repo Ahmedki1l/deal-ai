@@ -1,22 +1,14 @@
-import { Metadata } from "next";
-import { db } from "@/db";
-import { EmptyPlaceholder } from "@/components/empty-placeholder";
 import { BackButton } from "@/components/back-button";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { PostUpdateForm } from "@/components/post-update-form";
-import { getDictionary } from "@/lib/dictionaries";
-import { LocaleProps } from "@/types/locale";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { EmptyPlaceholder } from "@/components/empty-placeholder";
 import { Icons } from "@/components/icons";
 import { Link } from "@/components/link";
+import { PostUpdateForm } from "@/components/post-update-form";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
+import { db } from "@/db";
+import { getDictionary } from "@/lib/dictionaries";
+import { LocaleProps } from "@/types/locale";
+import { Metadata } from "next";
 
 type CaseStudyProps = Readonly<{
   params: {

@@ -1,6 +1,6 @@
+import { db } from "@/db";
 import { google, lucia } from "@/lib/auth";
 import kyInstance from "@/lib/ky";
-import { db } from "@/db";
 import { OAuth2RequestError } from "arctic";
 import { generateIdFromEntropySize } from "lucia";
 import { cookies } from "next/headers";

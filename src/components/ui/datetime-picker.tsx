@@ -1,24 +1,13 @@
 "use client";
-import * as React from "react";
-import { useImperativeHandle, useRef } from "react";
-import { add, format } from "date-fns";
-import {
-  Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
+
 import { Button, buttonVariants } from "@/components/ui/button";
 import { CalendarProps } from "@/components/ui/calendar";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Clock } from "lucide-react";
-import { enUS, Locale } from "date-fns/locale";
-
 import {
   Select,
   SelectContent,
@@ -26,6 +15,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+import { add, format } from "date-fns";
+import { enUS, Locale } from "date-fns/locale";
+import {
+  Calendar as CalendarIcon,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import * as React from "react";
+import { useImperativeHandle, useRef } from "react";
 import { DayPicker } from "react-day-picker";
 
 // ---------- utils start ----------
@@ -794,5 +793,5 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
 
 DateTimePicker.displayName = "DateTimePicker";
 
-export { DateTimePicker, TimePickerInput, TimePicker };
-export type { TimePickerType, DateTimePickerProps, DateTimePickerRef };
+export { DateTimePicker, TimePicker, TimePickerInput };
+export type { DateTimePickerProps, DateTimePickerRef, TimePickerType };

@@ -1,11 +1,10 @@
 "use client";
 
 import { Link } from "@/components/link";
-import { usePathname } from "next/navigation";
-
-import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { NavItem, SelectItem } from "@/types";
+import { cn } from "@/lib/utils";
+import { NavItem } from "@/types";
+import { usePathname } from "next/navigation";
 
 type SidebarNavProps = React.HTMLAttributes<HTMLElement> & {
   items: NavItem[];

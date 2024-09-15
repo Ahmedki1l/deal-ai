@@ -1,14 +1,12 @@
-import type { Metadata } from "next";
-import { CardTitle } from "@/components/ui/card";
-import { getAuth } from "@/lib/auth";
-import { db } from "@/db";
-import { getDictionary } from "@/lib/dictionaries";
-import { LocaleProps } from "@/types/locale";
+import { DashboardLayout } from "@/components/dashboard-layout";
+import { DashboardPostsBarChart } from "@/components/dashboard-posts-bar-char";
 import { ProjectCreateButton } from "@/components/project-create-button";
 import { Button } from "@/components/ui/button";
-import { Table } from "./projects/table";
-import { DashboardPostsBarChart } from "@/components/dashboard-posts-bar-char";
-import { DashboardLayout } from "@/components/dashboard-layout";
+import { db } from "@/db";
+import { getAuth } from "@/lib/auth";
+import { getDictionary } from "@/lib/dictionaries";
+import { LocaleProps } from "@/types/locale";
+import type { Metadata } from "next";
 
 type DashboardProps = Readonly<{ params: LocaleProps }>;
 

@@ -1,30 +1,28 @@
-import { Metadata } from "next";
-import { db } from "@/db";
-import { EmptyPlaceholder } from "@/components/empty-placeholder";
 import { BackButton } from "@/components/back-button";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { CaseStudyBinButton } from "@/components/case-study-bin-button";
+import { CaseStudyRestoreButton } from "@/components/case-study-restore-button";
+import { EmptyPlaceholder } from "@/components/empty-placeholder";
+import { Icons } from "@/components/icons";
+import { Image } from "@/components/image";
+import { Link } from "@/components/link";
 import { PostCreateButton } from "@/components/post-create-button";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { PostUpdateContentButton } from "@/components/post-update-content-button";
+import { PostUpdateScheduleButton } from "@/components/post-update-schedule-button";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -32,18 +30,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Image } from "@/components/image";
-import { Icons } from "@/components/icons";
-import { PostUpdateContentButton } from "@/components/post-update-content-button";
-import { PostUpdateScheduleButton } from "@/components/post-update-schedule-button";
-import { Link } from "@/components/link";
+import { db } from "@/db";
 import { platforms } from "@/db/enums";
-import { LocaleProps } from "@/types/locale";
 import { getDictionary } from "@/lib/dictionaries";
-import { CaseStudyRestoreButton } from "@/components/case-study-restore-button";
-import { CaseStudyBinButton } from "@/components/case-study-bin-button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
+import { LocaleProps } from "@/types/locale";
+import { Metadata } from "next";
 
 type CaseStudyProps = Readonly<{
   params: { "project-id": string; "case-study-id": string } & LocaleProps;

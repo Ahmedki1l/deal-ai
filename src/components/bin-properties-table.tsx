@@ -1,23 +1,22 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
-
+import { DataTable, DataTableProps } from "@/components/data-table";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { DataTableRowActions } from "@/components/data-table-row-actions";
-import {
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-} from "@/components/ui/dropdown-menu";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Property } from "@prisma/client";
 import { Link } from "@/components/link";
 import {
   PropertyDeleteButton,
   PropertyDeleteButtonProps,
 } from "@/components/property-delete-button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+} from "@/components/ui/dropdown-menu";
 import { Dictionary } from "@/types/locale";
-import { DataTable, DataTableProps } from "@/components/data-table";
+import { Property } from "@prisma/client";
+import { ColumnDef } from "@tanstack/react-table";
 import {
   PropertyRestoreButton,
   PropertyRestoreButtonProps,

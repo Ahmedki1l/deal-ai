@@ -2,20 +2,19 @@
 
 import { db } from "@/db";
 import { getAuth } from "@/lib/auth";
+import { getDictionary } from "@/lib/dictionaries";
 import { RequiresLoginError, ZodError } from "@/lib/exceptions";
+import { sendEvent } from "@/lib/stream";
 import {
   caseStudyBinSchema,
   caseStudyCreateSchema,
   caseStudyDeleteSchema,
   caseStudyUpdateSchema,
 } from "@/validations/case-studies";
+import { generateIdFromEntropySize } from "lucia";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { generateIdFromEntropySize } from "lucia";
-import { Platform, Project } from "@prisma/client";
-import { sendEvent } from "@/lib/stream";
 import { getCookie, getLocale } from "./helpers";
-import { getDictionary } from "@/lib/dictionaries";
 
 // Function to check if a string contains Arabic characters
 function containsArabic(text: string) {

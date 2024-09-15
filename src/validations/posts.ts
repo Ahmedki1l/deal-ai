@@ -1,9 +1,9 @@
-import { z } from "@/lib/zod";
 import {
   platformsArr,
   postCampaignArr,
   postContentLengthArr,
 } from "@/db/enums";
+import { z } from "@/lib/zod";
 import { imageSchema, imageUpdateFormSchema } from "./images";
 
 export const postSchema = z.object({

@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { createProject } from "@/actions/projects";
 
 export async function GET(req: NextRequest) {
   const key = req.nextUrl.searchParams.get("key");
@@ -8,9 +6,9 @@ export async function GET(req: NextRequest) {
 
   const stream = new ReadableStream({
     async start(controller) {
-      createProject(controller, key).finally(() => {
-        cookies().delete(key);
-      });
+      // createProject(controller, key).finally(() => {
+      //   cookies().delete(key);
+      // });
     },
   });
 

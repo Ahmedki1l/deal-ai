@@ -68,7 +68,12 @@ export type ImageFormProps = {
 } & Dictionary["image-form"];
 
 export const ImageForm = {
-  src: ({ dic, loading, form }: ImageFormProps) => (
+  src: ({
+    dic,
+    loading,
+    form,
+    setSrc,
+  }: ImageFormProps & { setSrc: Dispatch<SetStateAction<string | null>> }) => (
     <FormField
       control={form?.["control"]}
       name="image.file"
@@ -86,10 +91,11 @@ export const ImageForm = {
                   const file = e?.["target"]?.["files"]?.[0];
 
                   if (file) {
-                    const base64 = (await convertBase64(file))?.toString();
+                    const base64 = (await convertBase64(file))!?.toString();
 
                     field.onChange(file);
-                    form.setValue("image.base64", base64 ?? "");
+                    form.setValue("image.base64", base64);
+                    setSrc(base64);
                   }
                 }}
                 disabled={loading}
@@ -106,16 +112,7 @@ export const ImageForm = {
                     type="button"
                     variant="outline"
                     size="icon"
-                    onClick={() => {
-                      const image = form.getValues("image");
-                      form.resetField("image");
-                      form.setValue("image", {
-                        // @ts-ignore
-                        prompt: image?.["prompt"] ?? undefined,
-                        // @ts-ignore
-                        src: image?.["src"] ?? undefined,
-                      });
-                    }}
+                    onClick={() => form.resetField("image")}
                     disabled={loading}
                   >
                     <Icons.x />
@@ -179,6 +176,7 @@ export const ImageForm = {
             form.resetField("image.file");
 
             form?.setValue("image.src", src);
+            form.setValue("image.base64", null);
             setSrc(src);
             return c?.["generated successfully."];
           },
@@ -265,7 +263,7 @@ export const ImageForm = {
                 field.onChange(e);
                 setFrame(e);
               }}
-              defaultValue={field.value}
+              defaultValue={field?.["value"]}
               disabled={loading}
               className="grid grid-cols-3 gap-4"
             >

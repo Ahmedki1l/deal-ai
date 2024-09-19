@@ -8,6 +8,7 @@ import { getAuth } from "@/lib/auth";
 import { FRAMES_URL } from "@/lib/constants";
 import { RequiresLoginError, ZodError } from "@/lib/exceptions";
 import { s3Client } from "@/lib/uploader"; // Ensure s3Client is properly set up
+import { fetcher } from "@/lib/utils";
 import {
   imageBinSchema,
   imageCreateSchema,
@@ -79,22 +80,26 @@ export async function regenerateImagePrompt({
 
     const prompt_enhancer_endpoint = domain + `/en/prompt-enhancer`;
 
-    const enhanced_prompt_response = await fetch(prompt_enhancer_endpoint, {
-      method: "POST",
-      headers: { "content-Type": "application/json" },
-      body: JSON.stringify({ input: data.prompt }),
-    }).then((r) => r?.json());
+    const enhanced_prompt_response = await fetcher<any>(
+      prompt_enhancer_endpoint,
+      {
+        method: "POST",
+        body: JSON.stringify({ input: data.prompt }),
+      },
+    );
 
     const adjusted_image_prompt = {
       input: `you must adjust this prompt to be only 1000 characters long at max: ${enhanced_prompt_response.prompt}`,
     };
 
     const prompt_generator_endpoint = domain + `/en/prompt-generator`;
-    const adjusted_image_response = await fetch(prompt_generator_endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(adjusted_image_prompt),
-    }).then((r) => r?.json());
+    const adjusted_image_response = await fetcher<any>(
+      prompt_generator_endpoint,
+      {
+        method: "POST",
+        body: JSON.stringify(adjusted_image_prompt),
+      },
+    );
 
     return adjusted_image_response.prompt;
   } catch (error: any) {
@@ -119,11 +124,14 @@ export async function generateImage({
 
     const image_generator_endpoint = domain + `/image`;
 
-    const image_generator_response = await fetch(image_generator_endpoint, {
-      method: "POST",
-      headers: { "content-Type": "application/json" },
-      body: JSON.stringify({ input: data.prompt }),
-    }).then((r) => r?.json());
+    const image_generator_response = await fetcher<any>(
+      image_generator_endpoint,
+      {
+        method: "POST",
+        headers: { "content-Type": "application/json" },
+        body: JSON.stringify({ input: data.prompt }),
+      },
+    );
 
     return image_generator_response.url;
   } catch (error: any) {
@@ -272,7 +280,7 @@ export async function uploadIntoSpace(name: ObjectKey, body: Body) {
 //     if (!user) throw new RequiresLoginError();
 
 //     // Fetch the image
-//     const image = await fetchImage(src);
+//     const image = await fetcherImage(src);
 
 //     const framedImage = await applyFrame(image, FRAMES_URL?.[0]);
 //     //  Store it remotely
@@ -366,7 +374,7 @@ export async function getAllFrames() {
 //     const user = await getAuth();
 //     if (!user) throw new RequiresLoginError();
 
-//     const image = await fetchImage(
+//     const image = await fetcherImage(
 //       // data?.["src"]
 //       "https://plus.unsplash.com/premium_photo-1680281937048-735543c5c0f7?q=80&w=1022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 //     );

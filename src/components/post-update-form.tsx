@@ -110,7 +110,11 @@ export function PostUpdateForm({
         ...post?.["image"],
         src: post?.["image"]?.["src"],
         prompt: post?.["image"]?.["prompt"],
+
+        file: undefined,
+        base64: undefined,
       },
+      frame: undefined,
       confirm: !!post?.["confirmedAt"],
     },
   });
@@ -123,7 +127,12 @@ export function PostUpdateForm({
         600,
       );
 
-      if (src) editorRef?.current?.addPhoto(src);
+      if (src) {
+        if (src?.includes("data:image/png;base64,"))
+          editorRef?.current?.addBase64(src);
+        else editorRef?.current?.addPhoto(src);
+      }
+
       if (frame) {
         editorRef?.current?.addFrame(Number(frame), {
           title: post?.["caseStudy"]?.["project"]?.["title"],
@@ -140,8 +149,12 @@ export function PostUpdateForm({
       updatePost(
         JSON.stringify({
           ...data,
-          frame: data?.["frame"] ? editorRef?.["current"]?.getResult() : null,
-        }),
+          frame:
+            data?.["frame"] || data?.["image"]?.["base64"]
+              ? editorRef?.["current"]?.getResult()
+              : undefined,
+          image: { ...data?.["image"], file: undefined, base64: undefined },
+        } satisfies z.infer<typeof postUpdateSchema>),
       ),
       {
         finally: () => setLoading(false),
@@ -155,6 +168,11 @@ export function PostUpdateForm({
         },
       },
     );
+
+    // console.log({
+    //   ...data?.["image"],
+    //   frame: data?.["frame"] ? editorRef?.["current"]?.getResult() : null,
+    // });
   }
 
   return (
@@ -238,35 +256,79 @@ export function PostUpdateForm({
                     editable && "border-4 border-green-600 p-1",
                   )}
                 />
-                <div className="absolute right-4 top-4 z-50 flex items-center gap-6 text-lg font-medium">
-                  <div className="flex items-center gap-2">
-                    <Tooltip text={editable ? "stop editing" : "start editing"}>
-                      <Button
-                        type="button"
-                        size="icon"
-                        onClick={() => {
-                          const ed = editorRef?.current?.toggleEditorMode();
-                          setEditable(ed ?? !editable);
-                        }}
-                      >
-                        <Icons.image />
-                      </Button>
-                    </Tooltip>
+                <div className="absolute right-4 top-4 z-50 flex items-center gap-4 text-lg font-medium">
+                  <DialogResponsive
+                    dic={dic}
+                    disabled={loading || trigger}
+                    confirmButton={
+                      <>
+                        <Button
+                          type="button"
+                          onClick={() => setOpen(false)}
+                          disabled={loading || trigger}
+                          className="w-full md:w-fit"
+                        >
+                          {!disabled && loading && <Icons.spinner />}
+                          {c?.["submit"]}
+                        </Button>
+                      </>
+                    }
+                    content={
+                      <>
+                        <Tabs defaultValue="choose">
+                          <TabsList>
+                            <TabsTrigger value="choose">
+                              {c?.["choose file"]}
+                            </TabsTrigger>
+                            <TabsTrigger value="generate">
+                              {c?.["generate using AI"]}
+                            </TabsTrigger>
+                            {/* <TabsTrigger value="frame">apply frame</TabsTrigger> */}
+                          </TabsList>
+                          <TabsContent value="choose">
+                            <ImageForm.src
+                              dic={dic}
+                              form={form}
+                              loading={loading}
+                              setSrc={setSrc}
+                            />
+                          </TabsContent>
 
-                    <Tooltip text="new text">
-                      <Button
-                        type="button"
-                        size="icon"
-                        onClick={() => {
-                          editorRef?.current?.addText({});
-                        }}
-                      >
-                        <Icons.write />
-                      </Button>
-                    </Tooltip>
-                  </div>
+                          <TabsContent value="generate">
+                            <ImageForm.prompt
+                              dic={dic}
+                              form={form}
+                              loading={loading}
+                              setSrc={setSrc}
+                            />
+                          </TabsContent>
+                        </Tabs>
+                      </>
+                    }
+                    title={c?.["update image"]}
+                    description={
+                      c?.[
+                        "updating an image allows you to refine and enhance the details of your ongoing developments"
+                      ]
+                    }
+                    open={open}
+                    setOpen={setOpen}
+                  >
+                    <div>
+                      <Tooltip text="update photo">
+                        <Button
+                          type="button"
+                          disabled={loading || trigger}
+                          size="icon"
+                          variant="secondary"
+                        >
+                          <Icons.edit />
+                        </Button>
+                      </Tooltip>
+                    </div>
+                  </DialogResponsive>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
                     <DialogResponsive
                       dic={dic}
                       disabled={loading || trigger}
@@ -331,14 +393,20 @@ export function PostUpdateForm({
                       open={openFrame}
                       setOpen={setOpenFrame}
                     >
-                      <Button
-                        disabled={loading || trigger}
-                        size="icon"
-                        variant="secondary"
-                      >
-                        <Icons.imageReload />
-                      </Button>
+                      <div>
+                        <Tooltip text="add frame">
+                          <Button
+                            type="button"
+                            disabled={loading || trigger}
+                            size="icon"
+                            variant="secondary"
+                          >
+                            <Icons.imageReload />
+                          </Button>
+                        </Tooltip>
+                      </div>
                     </DialogResponsive>
+
                     {form.watch("framedImageURL") || form.watch("frame") ? (
                       <Tooltip text="clear frame">
                         <Button
@@ -348,7 +416,6 @@ export function PostUpdateForm({
                             form.setValue("framedImageURL", null);
                             form.setValue("frame", undefined);
 
-                            setSrc(form.getValues("image.src") ?? null);
                             setFrame(null);
                           }}
                           disabled={loading || trigger}
@@ -359,73 +426,34 @@ export function PostUpdateForm({
                     ) : null}
                   </div>
 
-                  <DialogResponsive
-                    dic={dic}
-                    disabled={loading || trigger}
-                    confirmButton={
-                      <>
-                        <Button
-                          type="button"
-                          onClick={() => setOpen(false)}
-                          disabled={loading || trigger}
-                          className="w-full md:w-fit"
-                        >
-                          {!disabled && loading && <Icons.spinner />}
-                          {c?.["submit"]}
-                        </Button>
-                      </>
-                    }
-                    content={
-                      <>
-                        <Tabs defaultValue="generate">
-                          <TabsList>
-                            <TabsTrigger value="choose">
-                              {c?.["choose file"]}
-                            </TabsTrigger>
-                            <TabsTrigger value="generate">
-                              {c?.["generate using AI"]}
-                            </TabsTrigger>
-                            {/* <TabsTrigger value="frame">apply frame</TabsTrigger> */}
-                          </TabsList>
-                          <TabsContent value="choose">
-                            <ImageForm.src
-                              dic={dic}
-                              form={form}
-                              loading={loading}
-                            />
-                          </TabsContent>
+                  <div className="flex items-center gap-1">
+                    <Tooltip text={editable ? "stop editing" : "start editing"}>
+                      <Button
+                        type="button"
+                        size="icon"
+                        onClick={() => {
+                          const ed = editorRef?.current?.toggleEditorMode();
+                          setEditable(ed ?? !editable);
+                        }}
+                        disabled={loading}
+                      >
+                        <Icons.image />
+                      </Button>
+                    </Tooltip>
 
-                          <TabsContent value="generate">
-                            <ImageForm.prompt
-                              dic={dic}
-                              form={form}
-                              loading={loading}
-                              setSrc={setSrc}
-                            />
-                          </TabsContent>
-                        </Tabs>
-                      </>
-                    }
-                    title={c?.["update image"]}
-                    description={
-                      c?.[
-                        "updating an image allows you to refine and enhance the details of your ongoing developments"
-                      ]
-                    }
-                    open={open}
-                    setOpen={setOpen}
-                  >
-                    {/* <Tooltip text="update photo"> */}
-                    <Button
-                      type="button"
-                      disabled={loading || trigger}
-                      size="icon"
-                      variant="secondary"
-                    >
-                      <Icons.edit />
-                    </Button>
-                    {/* </Tooltip> */}
-                  </DialogResponsive>
+                    <Tooltip text="new text">
+                      <Button
+                        type="button"
+                        size="icon"
+                        onClick={() => {
+                          editorRef?.current?.addText({});
+                        }}
+                        disabled={loading}
+                      >
+                        <Icons.write />
+                      </Button>
+                    </Tooltip>
+                  </div>
                 </div>
               </div>
             </div>

@@ -254,6 +254,38 @@ class PhotoEditor {
     });
   }
 
+  addBase64(
+    base64Photo: string,
+    x: number = 0,
+    y: number = 0,
+    width: number = this.stage.width(),
+    height: number = this.stage.height(),
+  ) {
+    const image = new Image();
+    image.src = base64Photo; // set the base64 string as the image source
+
+    image.onload = () => {
+      const imageNode = new Konva.Image({
+        x: x,
+        y: y,
+        image: image,
+        width: width,
+        height: height,
+        draggable: this.isEditorEnabled,
+      });
+
+      // Remove the previous photo if it exists
+      if (this.photo) {
+        this.photo.destroy();
+      }
+
+      // Add the new image to the layer
+      this.photo = imageNode;
+      this.layer.add(imageNode);
+      this.layer.draw();
+    };
+  }
+
   addTheme(
     themeUrl: string,
     x: number = 0,
@@ -544,6 +576,7 @@ class PhotoEditor {
     format: "png" | "jpeg" = "png",
     quality: number = 1,
   ) {
+    // if (!this.theme && !this.photo) return null;
     this.transformer.nodes([]);
 
     // Generate the data URL

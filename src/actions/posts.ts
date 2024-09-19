@@ -352,11 +352,11 @@ export async function updatePost(stringData: string) {
   try {
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
-
     const { id, confirm, frame, ...data } = JSON.parse(stringData) as z.infer<
       typeof postUpdateSchema
     >;
     let url = null;
+    console.log(!!frame);
 
     if (frame) {
       const sharpFramedImage = await Sharp(Buffer.from(frame, "base64"))
@@ -373,7 +373,10 @@ export async function updatePost(stringData: string) {
       data: {
         ...data,
         image: {
-          update: { ...data?.["image"] },
+          update: {
+            src: data?.["image"]?.["src"],
+            prompt: data?.["image"]?.["prompt"],
+          },
         },
         confirmedAt: confirm ? new Date() : null,
         framedImageURL: url,

@@ -73,3 +73,24 @@ export const toastPromise = async (
     setLoading(false);
   }
 };
+
+export async function fetcher<T>(
+  url: RequestInfo | URL,
+  options?: RequestInit | undefined,
+): Promise<T> {
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) throw new Error(await response.text());
+
+  const contentType = response.headers.get("content-type");
+  if (!contentType || !contentType.includes("application/json"))
+    throw new Error("Expected JSON response: " + (await response.text()));
+
+  const data = await response.json();
+  return data as T;
+}

@@ -25,10 +25,12 @@ export const caseStudySchema = z.object(
   },
 );
 
-export const caseStudyCreateSchema = caseStudySchema.omit({
-  id: true,
-  deletedAt: true,
+export const caseStudyCreateSchema = caseStudySchema.pick({
+  title: true,
+  projectId: true,
+  refImages: true,
 });
+
 export const caseStudyCreateFormSchema = caseStudyCreateSchema
   .omit({
     refImages: true,

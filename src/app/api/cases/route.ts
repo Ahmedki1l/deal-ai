@@ -1,5 +1,3 @@
-import { createCaseStudy } from "@/actions/case-studies";
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -8,9 +6,9 @@ export async function GET(req: NextRequest) {
 
   const stream = new ReadableStream({
     async start(controller) {
-      createCaseStudy(controller, key).finally(() => {
-        cookies().delete(key);
-      });
+      // createCaseStudy(controller, key).finally(() => {
+      //   cookies().delete(key);
+      // });
     },
   });
 

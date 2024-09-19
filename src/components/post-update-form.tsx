@@ -121,11 +121,7 @@ export function PostUpdateForm({
 
   useEffect(() => {
     if (containerRef.current) {
-      editorRef.current = new PhotoEditor(
-        containerRef?.["current"]?.["id"],
-        600,
-        600,
-      );
+      editorRef.current = new PhotoEditor(containerRef?.["current"]?.["id"]);
 
       if (src) {
         if (src?.includes("data:image/png;base64,"))

@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
 
   const stream = new ReadableStream({
     async start(controller) {
-      createPost(controller, key).finally(() => {
+      createPost({ controller, key }).finally(() => {
         cookies().delete(key);
       });
     },

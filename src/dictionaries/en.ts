@@ -751,5 +751,20 @@ export default {
 
     "one property was created.": "one property was created.",
     "properties were created.": "properties were created.",
+
+    users: {
+      "this email is already used.": "This email is already used.",
+      "incorrect email address.": "Incorrect email address.",
+      "incorrect password": "Incorrect password",
+      "no password setting to that account, login using google.":
+        "No password setting to that account, Login using Google.",
+      "you are not logged in.": "You are not logged in.",
+      "this action needs you to be logged in.":
+        "this action needs you to be logged in.",
+      "you don't have access to do this action.":
+        "you don't have access to do this action.",
+      "your user account was not updated. please try again.":
+        "your user account was not updated. please try again.",
+    },
   },
 };

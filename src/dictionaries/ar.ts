@@ -794,5 +794,20 @@ export default {
     "created successfully.": "تم الإنشاء بنجاح.",
     "one property was created.": "تم إنشاء وحدة واحدة.",
     "properties were created.": "وحدات تم إنشاؤها.",
+
+    users: {
+      "this email is already used.": "هذا البريد الإلكتروني مستخدم بالفعل.",
+      "incorrect email address.": "عنوان بريد إلكتروني غير صحيح.",
+      "incorrect password": "كلمة المرور غير صحيحة.",
+      "no password setting to that account, login using google.":
+        "لا توجد كلمة مرور لهذا الحساب، سجل عن طريق جوجل.",
+      "you are not logged in.": "لم تقم بتسجيل الدخول.",
+      "this action needs you to be logged in.":
+        "يجب أن تكون مسجل أولاً لهذا الإجراء.",
+      "you don't have access to do this action.":
+        "أنت غير مسموح لك بهذا الإجراء.",
+      "your user account was not updated. please try again.":
+        "your user account was not updated. please try again.",
+    },
   },
 };

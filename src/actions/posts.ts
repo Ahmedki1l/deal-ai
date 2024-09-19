@@ -6,8 +6,8 @@ import { getAuth } from "@/lib/auth";
 // import { sendEvent } from "@/lib/stream";
 import { getDictionary } from "@/lib/dictionaries";
 import { RequiresLoginError, ZodError } from "@/lib/exceptions";
-import { sendEvent } from "@/lib/stream";
 import { fetchImage } from "@/lib/uploader";
+import { fetcher } from "@/lib/utils";
 import {
   postBinSchema,
   postCreateSchema,
@@ -16,15 +16,13 @@ import {
   postUpdateContentSchema,
   postUpdateImageSchema,
   postUpdateScheduleSchema,
-  postUpdateSchema,
 } from "@/validations/posts";
-import { Image } from "@prisma/client";
-import axios from "axios";
+import { CaseStudy, Image, Platform, Project } from "@prisma/client";
 import { generateIdFromEntropySize } from "lucia";
 import { revalidatePath } from "next/cache";
 import Sharp from "sharp";
 import { z } from "zod";
-import { getCookie, getLocale } from "./helpers";
+import { getLocale } from "./helpers";
 import { uploadIntoSpace } from "./images";
 
 function delay(ms: number) {
@@ -37,7 +35,7 @@ function containsArabic(text: string | null) {
   return arabicRegex.test(text ? text : "");
 }
 
-async function generateImg(prompt: { prompt: any }) {
+async function generateImg(prompt: string) {
   let request = {
     // prompt: Please a beautiful ${propertyType} view from "outside" at day time with beautiful detailed background and please create a realistic design with detailed background with properties at background and use floors data from "${5}" and build a ${propertyType} in ${landArea} square metre area with a detailed and beautiful background matching with city and a front view from outside thanks.,
     prompt: prompt,
@@ -59,39 +57,33 @@ async function generateImg(prompt: { prompt: any }) {
 }
 
 export async function createPost(
-  controller: ReadableStreamDefaultController<any>,
-  key: string,
-  // {
-  //   project,
-  //   caseStudy,
-  //   ...data
-  // }: z.infer<typeof postCreateSchema> & {
-  //   project: Project & { platforms: Platform[] };
-  //   caseStudy: CaseStudy;
-  // },
+  // controller: ReadableStreamDefaultController<any>,
+  // key: string,
+  {
+    project,
+    caseStudy,
+    ...data
+  }: z.infer<typeof postCreateSchema> & {
+    project: Project & { platforms: Platform[] };
+    caseStudy: CaseStudy;
+  },
 ) {
   const { actions: c } = await getDictionary(await getLocale());
 
   try {
-    sendEvent(controller, "status", c?.["getting info..."]);
+    // sendEvent(controller, "status", c?.["getting info..."]);
 
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
     // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
 
-    const body = await getCookie<z.infer<typeof postCreateSchema>>(key);
-    if (!body) throw Error("No body Data.");
+    // const body = await getCookie<z.infer<typeof postCreateSchema>>(key);
+    // if (!body) throw Error("No body Data.");
 
-    const parsedData = postCreateSchema.safeParse(body);
-    if (!parsedData.success) throw new Error("Invalid data");
+    // const parsedData = postCreateSchema.safeParse(body);
+    // if (!parsedData.success) throw new Error("Invalid data");
 
-    const data = parsedData?.["data"];
-    const caseStudyResponse = await db.caseStudy.findFirst({
-      include: { project: { include: { platforms: true } } },
-      where: { id: data?.["caseStudyId"] },
-    });
-    if (!caseStudyResponse) throw new Error("non existing poststudy case.");
-    const { project, ...caseStudy } = caseStudyResponse;
+    // const data = parsedData?.["data"];
 
     let endpoint_language = "en";
 
@@ -105,23 +97,23 @@ export async function createPost(
     //defaults
     const domain = process.env.NEXT_PUBLIC_AI_API;
 
-    let weeks = data.noOfWeeks ? parseInt(data.noOfWeeks, 10) : 0;
+    let weeks = data?.["noOfWeeks"] ? parseInt(data?.["noOfWeeks"], 10) : 0;
     let noOfPostsPerWeek =
-      data.campaignType === "BRANDING_AWARENESS" ||
-      data.campaignType === "ENGAGEMENT"
+      data?.["campaignType"] === "BRANDING_AWARENESS" ||
+      data?.["campaignType"] === "ENGAGEMENT"
         ? 5
         : 3;
 
     let image_analyzer_response;
 
-    if (caseStudy.refImages.length > 0) {
+    if (caseStudy?.refImages?.length > 0) {
       let image_anaylzer_prompt = { input: "" };
 
-      caseStudy.refImages.forEach((url) => {
+      caseStudy?.refImages?.forEach((url) => {
         image_anaylzer_prompt.input += url + ", ";
       });
 
-      sendEvent(controller, "status", c?.["generating images..."]);
+      // sendEvent(controller, "status", c?.["generating images..."]);
       const image_analyzer_endpoint = domain + `/en/image-analyzer`;
 
       console.log("image_anaylzer_prompt: ", image_anaylzer_prompt);
@@ -148,26 +140,18 @@ export async function createPost(
     const social_media_endpoint =
       domain + `/${endpoint_language}/chat/socialmediaplan`;
 
-    sendEvent(
-      controller,
-      "status",
-      c?.["generating AI prompt for social media..."],
-    );
+    // sendEvent(
+    //   controller,
+    //   "status",
+    //   c?.["generating AI prompt for social media..."],
+    // );
 
     console.log("social_media_response prompt: ", prompt);
 
-    const social_media_response = await axios
-      .post(social_media_endpoint, prompt, {
-        headers: { "Content-Type": "application/json" },
-      })
-      .then((response) => response.data)
-      .catch(async (error) => {
-        if (error.response) {
-          console.log("social_media_response: ", error.response.data);
-        } else {
-          console.log("Error: ", error.message);
-        }
-      });
+    const social_media_response = await fetcher<any>(social_media_endpoint, {
+      method: "POST",
+      body: JSON.stringify(prompt),
+    });
 
     const daysToPost = noOfPostsPerWeek === 3 ? [0, 2, 4] : [0, 1, 2, 3, 4];
     const imageApiEndpoint =
@@ -204,25 +188,19 @@ export async function createPost(
           input: accountPosts[i][`Post${i + 1}`],
         };
 
-        sendEvent(
-          controller,
-          "status",
-          c?.["generating social media content..."],
-        );
+        // sendEvent(
+        //   controller,
+        //   "status",
+        //   c?.["generating social media content..."],
+        // );
         console.log("prompt_generator_prompt: ", prompt_generator_prompt);
-        const prompt_generator_response = await axios
-          .post(prompt_generator_endpoint, prompt_generator_prompt, {
-            headers: { "Content-Type": "application/json" },
-          })
-          .then((response) => response.data)
-          .catch(async (error) => {
-            if (error.response) {
-              console.log("prompt_generator_prompt: ", error.response.data);
-            } else {
-              console.log("Error: ", error.message);
-            }
-          });
-
+        const prompt_generator_response = await fetcher<{ prompt: string }>(
+          prompt_generator_endpoint,
+          {
+            method: "POST",
+            body: JSON.stringify(prompt_generator_prompt),
+          },
+        );
         const imagePrompt = {
           input:
             image_analyzer_response?.prompt +
@@ -234,27 +212,22 @@ export async function createPost(
           input: `you must adjust this prompt to be only 1000 characters long at max: ${imagePrompt?.input}`,
         };
 
-        sendEvent(controller, "status", c?.["generating AI images..."]);
+        // sendEvent(controller, "status", c?.["generating AI images..."]);
         console.log("adjusted_image_prompt: ", adjusted_image_prompt);
-        const adjusted_image_response = await fetch(prompt_generator_endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(adjusted_image_prompt),
-        }).then(async (r) => {
-          try {
-            return await r?.json();
-          } catch {
-            console.log("adjusted_image_response: ", await r?.text());
-          }
-        });
-        console.log("adjusted_image_response: ", adjusted_image_response);
+        const adjusted_image_response = await fetcher<{ prompt: string }>(
+          prompt_generator_endpoint,
+          {
+            method: "POST",
+            body: JSON.stringify(adjusted_image_prompt),
+          },
+        );
 
-        let imageResponse;
+        // let imageResponse;
 
         const adjusted_image = { prompt: adjusted_image_response?.prompt };
 
         console.log("adjusted_image: ", adjusted_image);
-        const fetchPromise = generateImg(adjusted_image.prompt).then(
+        const fetchPromise = generateImg(adjusted_image?.["prompt"]!).then(
           async (imageResponse) => {
             // console.log("image prompt: ", adjusted_image);
             console.log("imageResponse: ", imageResponse);
@@ -318,24 +291,24 @@ export async function createPost(
       }
     }
 
-    sendEvent(controller, "status", c?.["adusting posts together..."]);
+    // sendEvent(controller, "status", c?.["adusting posts together..."]);
     await Promise.all(imageFetchPromises);
 
     if (!allPostDetails?.["length"]) {
-      sendEvent(controller, "completed", c?.["No posts to create."]);
+      // sendEvent(controller, "completed", c?.["No posts to create."]);
       return;
     }
 
-    sendEvent(controller, "status", c?.["saving posts..."]);
+    // sendEvent(controller, "status", c?.["saving posts..."]);
     await db.post.createMany({
       data: allPostDetails,
     });
 
-    sendEvent(
-      controller,
-      "completed",
-      `${allPostDetails?.["length"]} ${c?.["posts were created."]}`,
-    );
+    // sendEvent(
+    //   controller,
+    //   "completed",
+    //   `${allPostDetails?.["length"]} ${c?.["posts were created."]}`,
+    // );
     revalidatePath("/", "layout");
   } catch (error: any) {
     console.error(error?.["message"]);
@@ -343,46 +316,47 @@ export async function createPost(
     throw Error(
       error?.["message"] ?? c?.["your post was not created. please try again."],
     );
-  } finally {
-    controller.close();
   }
+  // finally {
+  //   controller.close();
+  // }
 }
 
 export async function updatePost(stringData: string) {
   try {
     const user = await getAuth();
     if (!user) throw new RequiresLoginError();
-    const { id, confirm, frame, ...data } = JSON.parse(stringData) as z.infer<
-      typeof postUpdateSchema
-    >;
-    let url = null;
-    console.log(!!frame);
+    // const { id, confirm, frame, ...data } = JSON.parse(stringData) as z.infer<
+    //   typeof postUpdateSchema
+    // >;
+    // let url = null;
+    // console.log(!!frame);
 
-    if (frame) {
-      const sharpFramedImage = await Sharp(Buffer.from(frame, "base64"))
-        .resize({ width: 800 }) // Resize to a more manageable size if necessary
-        .png({ quality: 85 }) // Compress the PNG to 80% quality
-        .toBuffer();
+    // if (frame) {
+    //   const sharpFramedImage = await Sharp(Buffer.from(frame, "base64"))
+    //     .resize({ width: 800 }) // Resize to a more manageable size if necessary
+    //     .png({ quality: 85 }) // Compress the PNG to 80% quality
+    //     .toBuffer();
 
-      console.log("uploading...");
-      url = await uploadIntoSpace(`post-${Date.now()}.png`, sharpFramedImage);
-      console.log("framed url: ", url);
-    }
+    //   console.log("uploading...");
+    //   url = await uploadIntoSpace(`post-${Date.now()}.png`, sharpFramedImage);
+    //   console.log("framed url: ", url);
+    // }
 
-    await db.post.update({
-      data: {
-        ...data,
-        image: {
-          update: {
-            src: data?.["image"]?.["src"],
-            prompt: data?.["image"]?.["prompt"],
-          },
-        },
-        confirmedAt: confirm ? new Date() : null,
-        framedImageURL: url,
-      },
-      where: { id },
-    });
+    // await db.post.update({
+    //   data: {
+    //     ...data,
+    //     image: {
+    //       update: {
+    //         src: data?.["image"]?.["src"],
+    //         prompt: data?.["image"]?.["prompt"],
+    //       },
+    //     },
+    //     confirmedAt: confirm ? new Date() : null,
+    //     framedImageURL: url,
+    //   },
+    //   where: { id },
+    // });
 
     revalidatePath("/", "layout");
   } catch (error: any) {

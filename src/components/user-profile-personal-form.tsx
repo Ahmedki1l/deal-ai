@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
+import { clientAction } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { userUpdateProfilePersonalSchema } from "@/validations/users";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,13 +40,11 @@ export function UserProfilePersonalForm({
     },
   });
 
-  function onSubmit(data: z.infer<typeof userUpdateProfilePersonalSchema>) {
-    setLoading(true);
-    toast.promise(updateUser(data), {
-      finally: () => setLoading(false),
-      error: (err) => err?.["message"],
-      success: () => c?.["updated successfully."],
-    });
+  async function onSubmit(
+    data: z.infer<typeof userUpdateProfilePersonalSchema>,
+  ) {
+    await clientAction(async () => await updateUser(data), setLoading);
+    toast.success(c?.["updated successfully."]);
   }
 
   return (
@@ -65,8 +64,8 @@ export function UserProfilePersonalForm({
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4">
-                <UserForm.name dic={dic} form={form} loading={loading} />
-                <UserForm.email dic={dic} form={form} loading={true} />
+                <UserForm.name dic={dic} form={form as any} loading={loading} />
+                <UserForm.email dic={dic} form={form as any} loading={true} />
               </div>
             </CardContent>
             <CardFooter className="justify-end gap-4">

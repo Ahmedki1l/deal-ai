@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { UserForm } from "@/components/user-form";
 import { useLocale } from "@/hooks/use-locale";
-import { t } from "@/lib/locale";
+import { clientAction } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { userAuthLoginSchema } from "@/validations/users";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import * as z from "zod";
 
 export type UserAuthLoginFormProps = {} & Dictionary["auth"] &
@@ -24,30 +24,22 @@ export function UserAuthLoginForm({
     ...dic
   },
 }: UserAuthLoginFormProps) {
-  const lang = useLocale();
+  const locale = useLocale();
+  const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
   const [isFacebookLoading, setIsFacebookLoading] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof userAuthLoginSchema>>({
+    mode: "onSubmit",
     resolver: zodResolver(userAuthLoginSchema),
   });
 
   async function onSubmit(data: z.infer<typeof userAuthLoginSchema>) {
-    try {
-      setLoading(true);
-      const res = await signInWithPassword(data);
-
-      if (res?.["error"]) {
-        const msg = await t(res?.["error"], lang);
-        toast.error(msg);
-        return;
-      }
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
+    await clientAction(async () => await signInWithPassword(data), setLoading);
+    router.push(`/${locale}/dashboard`);
   }
+
   return (
     <>
       <div className="grid gap-6">
@@ -94,7 +86,7 @@ export function UserAuthLoginForm({
           </div>
         </div>
         <div className="w-full space-y-2">
-          <Button
+          {/* <Button
             type="button"
             variant="outline"
             className="w-full bg-blue-600 text-white hover:bg-blue-500 hover:text-white"
@@ -111,20 +103,17 @@ export function UserAuthLoginForm({
           >
             {isFacebookLoading ? <Icons.spinner /> : <Icons.facebook />}
             {c?.["sign in with facebook"]}
-          </Button>
+          </Button> */}
 
           <Button
             type="button"
             variant="outline"
             className="w-full"
             onClick={async () => {
-              setIsGoogleLoading(true);
-              toast.promise(signInWithGoogle(), {
-                error: async (err) => {
-                  const msg = await t(err?.["message"], lang);
-                  return msg;
-                },
-              });
+              await clientAction(
+                async () => await signInWithGoogle(),
+                setIsGoogleLoading,
+              );
             }}
             disabled={loading || isGoogleLoading || isFacebookLoading}
           >

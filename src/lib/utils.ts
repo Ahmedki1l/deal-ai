@@ -1,10 +1,8 @@
-import { Locale } from "@/types/locale";
 import { clsx, type ClassValue } from "clsx";
 import dayjs from "dayjs";
 import { Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
-import { t } from "./locale";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -50,30 +48,6 @@ export function isValidUrl(src: string) {
   }
 }
 
-export const toastPromise = async (
-  func: () => Promise<any>,
-  setLoading: Dispatch<SetStateAction<boolean>>,
-  locale: Locale,
-) => {
-  try {
-    setLoading(true);
-    const res = await func();
-
-    if (res?.["error"]) {
-      const msg = await t(res?.["error"], locale);
-      toast.error(msg);
-      return null;
-    }
-
-    return res?.["data"] ?? null;
-  } catch (err: any) {
-    toast.error(err?.["message"]);
-    return null;
-  } finally {
-    setLoading(false);
-  }
-};
-
 export async function fetcher<T>(
   url: RequestInfo | URL,
   options?: RequestInit | undefined,
@@ -94,3 +68,24 @@ export async function fetcher<T>(
   const data = await response.json();
   return data as T;
 }
+
+export const clientAction = async <T>(
+  func: () => Promise<{ data: T } | { error: string } | void>,
+  setLoading: Dispatch<SetStateAction<boolean>>,
+) => {
+  try {
+    setLoading(true);
+    const result = await func();
+
+    if (typeof result === "object" && "error" in result) {
+      toast.error(result?.["error"]);
+      return;
+    }
+
+    return result?.["data"];
+  } catch (error: any) {
+    toast.error(error?.["message"]);
+  } finally {
+    setLoading(false);
+  }
+};

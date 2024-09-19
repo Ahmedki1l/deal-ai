@@ -4,9 +4,9 @@ import {
   postContentLengthArr,
 } from "@/db/enums";
 import { z } from "@/lib/zod";
-import { imageSchema, imageUpdateFormSchema } from "./images";
+import { Post } from "@prisma/client";
 
-export const postSchema = z.object({
+export const postSchema = z.object<Record<keyof Omit<Post, "createdAt">, any>>({
   id: z.string("id"),
   caseStudyId: z.string("caseStudyId"),
   imageId: z.string("imageId").optional().nullable(),
@@ -20,35 +20,23 @@ export const postSchema = z.object({
   postAt: z.date("post at"),
   deletedAt: z.date("deletedAt").optional(),
   confirmedAt: z.date("confirmedAt").optional(),
-
-  // others
-  image: imageSchema.optional().nullable(),
 });
 
-export const postCreateSchema = postSchema.omit({
-  id: true,
-  imageId: true,
-  image: true,
-  deletedAt: true,
-  confirmedAt: true,
-  postAt: true,
+export const postCreateSchema = postSchema.pick({
+  caseStudyId: true,
+  noOfWeeks: true,
+  campaignType: true,
+  contentLength: true,
 });
 
 export const postUpdateSchema = postSchema
   .omit({
     caseStudyId: true,
     imageId: true,
-    image: true,
     deletedAt: true,
     confirmedAt: true,
   })
-  .and(
-    z.object({
-      confirm: z.boolean("confirm"),
-      frame: z.string("frame").optional(),
-      image: imageUpdateFormSchema,
-    }),
-  );
+  .and(z.object({ confirm: z.boolean("confirm") }));
 
 export const postUpdateContentSchema = postSchema.pick({
   id: true,

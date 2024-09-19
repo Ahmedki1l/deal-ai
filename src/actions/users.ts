@@ -1,8 +1,10 @@
 "use server";
 
+import { getLocale, hash, verify } from "@/actions/helpers";
 import { db } from "@/db";
 import { getAuth, google, lucia } from "@/lib/auth";
-import { RequiresLoginError, ZodError } from "@/lib/exceptions";
+import { ZodError } from "@/lib/exceptions";
+import { getDictionary, t } from "@/lib/locale";
 import {
   userAuthLoginSchema,
   userAuthRegisterSchema,
@@ -12,16 +14,19 @@ import {
 import { generateCodeVerifier, generateState } from "arctic";
 import { generateIdFromEntropySize } from "lucia";
 import { revalidatePath } from "next/cache";
-import { isRedirectError } from "next/dist/client/components/redirect";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import * as z from "zod";
-import { getLocale, hash, verify } from "./helpers";
 
 export async function signUpWithPassword(
   credentials: z.infer<typeof userAuthRegisterSchema>,
 ) {
+  const locale = await getLocale();
   try {
+    const {
+      actions: { users: c },
+    } = await getDictionary(locale);
+
     const { name, email, password } = userAuthRegisterSchema.parse(credentials);
     const passwordHash = await hash(password);
 
@@ -34,7 +39,7 @@ export async function signUpWithPassword(
       },
     });
 
-    if (existingEmail) return { error: "This email is already used." };
+    if (existingEmail) return { error: c?.["this email is already used."] };
 
     const userId = generateIdFromEntropySize(10);
     await db.user.create({
@@ -53,19 +58,26 @@ export async function signUpWithPassword(
       sessionCookie.value,
       sessionCookie.attributes,
     );
-
-    const locale = await getLocale();
-    return redirect(`/${locale}/login`);
   } catch (error: any) {
-    if (isRedirectError(error)) return { error };
-    return { error: error?.["message"] ?? "an error occured, try again." };
+    return {
+      error: await t(error?.["message"] ?? "an error occured, try again.", {
+        from: "en",
+        to: locale,
+      }),
+    };
   }
 }
 
 export async function signInWithPassword(
   credentials: z.infer<typeof userAuthLoginSchema>,
 ) {
+  const locale = await getLocale();
+
   try {
+    const {
+      actions: { users: c },
+    } = await getDictionary(locale);
+
     const { email, password } = userAuthLoginSchema.parse(credentials);
     const existingUser = await db.user.findFirst({
       where: {
@@ -75,14 +87,14 @@ export async function signInWithPassword(
         },
       },
     });
-    if (!existingUser) return { error: "No such a user." };
-    if (!existingUser?.["password"]) return { error: "Incorrect password." };
+    if (!existingUser) return { error: c?.["incorrect email address."] };
+    if (!existingUser?.["password"])
+      return {
+        error: c?.["no password setting to that account, login using google."],
+      };
 
     const validPassword = await verify(existingUser?.["password"], password);
-    if (!validPassword)
-      return {
-        error: "Incorrect email or password",
-      };
+    if (!validPassword) return { error: c?.["incorrect password"] };
 
     const session = await lucia.createSession(existingUser?.["id"], {});
     const sessionCookie = lucia.createSessionCookie(session?.["id"]);
@@ -91,16 +103,20 @@ export async function signInWithPassword(
       sessionCookie.value,
       sessionCookie.attributes,
     );
-
-    const locale = await getLocale();
-    return redirect(`/${locale}/dashboard`);
   } catch (error: any) {
-    if (isRedirectError(error)) return { error };
-    return { error: error?.["message"] ?? "an error occured, try again." };
+    return {
+      error: await t(error?.["message"] ?? "an error occured, try again.", {
+        from: "en",
+        to: locale,
+      }),
+    };
   }
 }
 
 export async function signInWithGoogle() {
+  const locale = await getLocale();
+
+  // try {
   const state = generateState();
   const codeVerifier = generateCodeVerifier();
 
@@ -108,6 +124,7 @@ export async function signInWithGoogle() {
     scopes: ["profile", "email"],
   });
 
+  cookies().set("locale", locale);
   cookies().set("state", state, {
     path: "/",
     secure: process.env.NODE_ENV === "production",
@@ -124,12 +141,30 @@ export async function signInWithGoogle() {
     sameSite: "lax",
   });
 
-  return redirect(url.toString());
+  redirect(url.toString());
+
+  // return { data: url.toString() };
+  // } catch (error: any) {
+  //   if (isRedirectError(error))
+  //     return { error: await t(error?.["message"], { from: "en", to: locale }) };
+  //   return {
+  //     error: await t(error?.["message"] ?? "an error occured, try again.", {
+  //       from: "en",
+  //       to: locale,
+  //     }),
+  //   };
+  // }
 }
 
 export async function logout() {
+  const locale = await getLocale();
+  const {
+    actions: { users: c },
+  } = await getDictionary(locale);
+
   const { session } = await getAuth();
-  if (!session) throw new Error("You are not logged in.");
+
+  if (!session) return { error: c?.["you are not logged in."] };
 
   await lucia.invalidateSession(session?.["id"]);
   const sessionCookie = lucia.createBlankSessionCookie();
@@ -140,8 +175,7 @@ export async function logout() {
     sessionCookie.attributes,
   );
 
-  const locale = await getLocale();
-  return redirect(`/${locale}/login`);
+  redirect(`/${locale}/login`);
 }
 
 export async function updateUser({
@@ -151,9 +185,16 @@ export async function updateUser({
   | typeof userUpdateProfilePersonalSchema
   | typeof userUpdateProfilePasswordSchema
 >) {
+  const locale = await getLocale();
+  const {
+    actions: { users: c },
+  } = await getDictionary(locale);
   try {
     const user = await getAuth();
-    if (!user) throw new RequiresLoginError();
+    if (!user)
+      return {
+        error: c?.["this action needs you to be logged in."],
+      };
 
     await db.user.update({
       data,
@@ -165,10 +206,18 @@ export async function updateUser({
     revalidatePath("/", "layout");
   } catch (error: any) {
     console.log(error?.["message"]);
-    if (error instanceof z.ZodError) return new ZodError(error);
-    throw Error(
-      error?.["message"] ?? "your user was not updated. Please try again.",
-    );
+    if (error instanceof z.ZodError)
+      return {
+        error: await t(new ZodError(error)?.["message"], {
+          from: "en",
+          to: locale,
+        }),
+      };
+    return {
+      error: error?.["message"]
+        ? await t(error?.["message"], { from: "en", to: locale })
+        : c?.["your user account was not updated. please try again."],
+    };
   }
 }
 
@@ -176,9 +225,17 @@ export async function updatePassword({
   id,
   ...data
 }: z.infer<typeof userUpdateProfilePasswordSchema>) {
+  const locale = await getLocale();
+  const {
+    actions: { users: c },
+  } = await getDictionary(locale);
+
   try {
     const user = await getAuth();
-    if (!user) throw new RequiresLoginError();
+    if (!user)
+      return {
+        error: c?.["this action needs you to be logged in."],
+      };
 
     const password = await hash(data?.["password"]);
     console.log(password);
@@ -198,9 +255,17 @@ export async function updatePassword({
     revalidatePath("/", "layout");
   } catch (error: any) {
     console.log(error?.["message"]);
-    if (error instanceof z.ZodError) return new ZodError(error);
-    throw Error(
-      error?.["message"] ?? "your user was not updated. Please try again.",
-    );
+    if (error instanceof z.ZodError)
+      return {
+        error: await t(new ZodError(error)?.["message"], {
+          from: "en",
+          to: locale,
+        }),
+      };
+    return {
+      error: error?.["message"]
+        ? await t(error?.["message"], { from: "en", to: locale })
+        : c?.["your user account was not updated. please try again."],
+    };
   }
 }

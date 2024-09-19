@@ -1,13 +1,12 @@
 "use client";
 
-import { deleteCookie, setCookie } from "@/actions/helpers";
+import { createPost } from "@/actions/posts";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
 import { Icons } from "@/components/icons";
 import { PostForm } from "@/components/post-form";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
-import { ID } from "@/lib/constants";
 import { Dictionary } from "@/types/locale";
 import { postCreateSchema } from "@/validations/posts";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,80 +39,86 @@ export function PostCreateButton({
 
   const form = useForm<z.infer<typeof postCreateSchema>>({
     resolver: zodResolver(postCreateSchema),
-    defaultValues: {
-      caseStudyId: caseStudy?.["id"],
-      title: "x",
-      content: "x",
-      platform: "FACEBOOK",
-    },
+    defaultValues: { caseStudyId: caseStudy?.["id"] },
   });
-  async function onSubmit(data: z.infer<typeof postCreateSchema>) {
-    const id = ID.generate();
-    const key = `create-${id}`;
-    const toastId = toast.loading(c?.["initializing posts..."]);
+  // async function onSubmit(data: z.infer<typeof postCreateSchema>) {
+  //   const id = ID.generate();
+  //   const key = `create-${id}`;
+  //   const toastId = toast.loading(c?.["initializing posts..."]);
 
-    try {
-      setLoading(true);
-      await setCookie(key, data);
+  //   try {
+  //     setLoading(true);
+  //     await setCookie(key, data);
 
-      const eventSource = new EventSource(`/api/posts?key=${key}`);
-      eventSource.addEventListener("status", (event) => {
-        toast.loading(event.data?.replaceAll('"', ""), {
-          id: toastId,
-        });
-      });
+  //     const eventSource = new EventSource(`/api/posts?key=${key}`);
+  //     eventSource.addEventListener("status", (event) => {
+  //       toast.loading(event.data?.replaceAll('"', ""), {
+  //         id: toastId,
+  //       });
+  //     });
 
-      eventSource.addEventListener("completed", (event) => {
-        toast.dismiss(toastId);
-        eventSource.close();
-        toast.success(event.data?.replaceAll('"', ""));
+  //     eventSource.addEventListener("completed", (event) => {
+  //       toast.dismiss(toastId);
+  //       eventSource.close();
+  //       toast.success(event.data?.replaceAll('"', ""));
 
-        router.refresh();
-        setOpen(false);
-        form.reset();
-        setLoading(false);
-      });
-
-      eventSource.addEventListener("error", (event) => {
-        console.error("Error occurred:", event);
-        toast.dismiss(toastId);
-        eventSource.close();
-
-        setLoading(false);
-      });
-
-      eventSource.addEventListener("close", () => {
-        toast.dismiss(toastId);
-        eventSource.close();
-
-        setLoading(false);
-      });
-    } catch (err: any) {
-      toast.dismiss(toastId);
-      setLoading(false);
-
-      toast.error(err?.message);
-    } finally {
-      await deleteCookie(key);
-    }
-  }
-
-  // function onSubmit(data: z.infer<typeof postCreateSchema>) {
-  //   setLoading(true);
-  //   toast.promise(createPost({ ...data, project, caseStudy }), {
-  //     finally: () => setLoading(false),
-  //     error: async (err) => {
-  //       const msg = await t(err?.["message"], lang);
-  //       return msg;
-  //     },
-  //     success: () => {
   //       router.refresh();
-  //       form.reset();
   //       setOpen(false);
-  //       return c?.["created successfully."];
-  //     },
-  //   });
+  //       form.reset();
+  //       setLoading(false);
+  //     });
+
+  //     eventSource.addEventListener("error", (event) => {
+  //       console.error("Error occurred:", event);
+  //       toast.dismiss(toastId);
+  //       eventSource.close();
+
+  //       setLoading(false);
+  //     });
+
+  //     eventSource.addEventListener("close", () => {
+  //       toast.dismiss(toastId);
+  //       eventSource.close();
+
+  //       setLoading(false);
+  //     });
+  //   } catch (err: any) {
+  //     toast.dismiss(toastId);
+  //     setLoading(false);
+
+  //     toast.error(err?.message);
+  //   } finally {
+  //     await deleteCookie(key);
+  //   }
   // }
+
+  async function onSubmit(data: z.infer<typeof postCreateSchema>) {
+    // setLoading(true);
+    // toast.promise(createPost({ ...data, project, caseStudy }), {
+    //   finally: () => setLoading(false),
+    //   error: async (err) => {
+    //     const msg = await t(err?.["message"], lang);
+    //     return msg;
+    //   },
+    //   success: () => {
+    //     router.refresh();
+    //     form.reset();
+    //     setOpen(false);
+    //     return c?.["created successfully."];
+    //   },
+    // });
+
+    setLoading(true);
+    toast.promise(createPost({ ...data, project, caseStudy }), {
+      finally: () => setLoading(false),
+      error(data) {
+        return data?.["message"];
+      },
+      success(data) {
+        return c?.["created successfully."];
+      },
+    });
+  }
 
   return (
     <DialogResponsive
@@ -135,11 +140,6 @@ export function PostCreateButton({
         <>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-              {/* <PostForm.description
-                dic={dic}
-                form={form as any}
-                loading={loading}
-              /> */}
               <PostForm.noOfWeeks
                 dic={dic}
                 form={form as any}

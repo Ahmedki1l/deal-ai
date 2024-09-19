@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { UserForm } from "@/components/user-form";
 import { useLocale } from "@/hooks/use-locale";
-import { t } from "@/lib/locale";
+import { clientAction } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { userAuthRegisterSchema } from "@/validations/users";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -17,6 +18,9 @@ import * as z from "zod";
 
 export type UserAuthRegisterFormProps = {} & Dictionary["auth"] &
   Dictionary["user-form"];
+interface APIError {
+  error: string;
+}
 
 export function UserAuthRegisterForm({
   dic: {
@@ -24,29 +28,42 @@ export function UserAuthRegisterForm({
     ...dic
   },
 }: UserAuthRegisterFormProps) {
-  const lang = useLocale();
+  // const lang = useLocale();
+
+  // const form = useForm<z.infer<typeof userAuthRegisterSchema>>({
+  //   resolver: zodResolver(userAuthRegisterSchema),
+  // });
+
+  // async function onSubmit(data: z.infer<typeof userAuthRegisterSchema>) {
+  //   try {
+  //     setLoading(true);
+  //     const res = await signUpWithPassword(data);
+
+  //     if (res?.["error"]) {
+  //       const msg = await t(res?.["error"], lang);
+  //       toast.error(msg);
+  //       return;
+  //     }
+  //   } catch (error) {
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
+
+  const locale = useLocale();
+  const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
   const [isFacebookLoading, setIsFacebookLoading] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof userAuthRegisterSchema>>({
+    mode: "onSubmit",
     resolver: zodResolver(userAuthRegisterSchema),
   });
 
   async function onSubmit(data: z.infer<typeof userAuthRegisterSchema>) {
-    try {
-      setLoading(true);
-      const res = await signUpWithPassword(data);
-
-      if (res?.["error"]) {
-        const msg = await t(res?.["error"], lang);
-        toast.error(msg);
-        return;
-      }
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
+    await clientAction(async () => await signUpWithPassword(data), setLoading);
+    router.push(`/${locale}`);
   }
   return (
     <>
@@ -90,7 +107,7 @@ export function UserAuthRegisterForm({
           </div>
         </div>
         <div className="w-full space-y-2">
-          <Button
+          {/* <Button
             type="button"
             variant="outline"
             className="w-full bg-blue-600 text-white hover:bg-blue-500 hover:text-white"
@@ -107,20 +124,25 @@ export function UserAuthRegisterForm({
           >
             {isFacebookLoading ? <Icons.spinner /> : <Icons.facebook />}
             {c?.["sign up with facebook"]}
-          </Button>
+          </Button> */}
 
           <Button
             type="button"
             variant="outline"
             className="w-full"
             onClick={async () => {
-              setIsGoogleLoading(true);
-              toast.promise(signInWithGoogle(), {
-                error: async (err) => {
-                  const msg = await t(err?.["message"], lang);
-                  return msg;
-                },
-              });
+              const url = await clientAction(
+                async () => await signInWithGoogle(),
+                setIsGoogleLoading,
+              );
+
+              if (!url) {
+                setLoading(false);
+                toast.error("NO URL");
+                return;
+              }
+
+              router.push(url);
             }}
             disabled={loading || isGoogleLoading || isFacebookLoading}
           >

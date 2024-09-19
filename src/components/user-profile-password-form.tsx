@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
+import { clientAction } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { userUpdateProfilePasswordFormSchema } from "@/validations/users";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,7 +40,9 @@ export function UserProfilePasswordForm({
     },
   });
 
-  function onSubmit(data: z.infer<typeof userUpdateProfilePasswordFormSchema>) {
+  async function onSubmit(
+    data: z.infer<typeof userUpdateProfilePasswordFormSchema>,
+  ) {
     if (data?.["newPassword"] != data?.["confirmNewPassword"]) {
       form.setError("confirmNewPassword", {
         message: "confirm password doesn't match.",
@@ -47,15 +50,16 @@ export function UserProfilePasswordForm({
       return;
     }
 
-    setLoading(true);
-    toast.promise(
-      updatePassword({ id: data?.["id"], password: data?.["newPassword"] }),
-      {
-        finally: () => setLoading(false),
-        error: (err) => err?.["message"],
-        success: () => c?.["updated successfully."],
-      },
+    await clientAction(
+      async () =>
+        await updatePassword({
+          id: data?.["id"],
+          password: data?.["newPassword"],
+        }),
+      setLoading,
     );
+
+    toast.success(c?.["updated successfully."]);
   }
 
   return (

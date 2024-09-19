@@ -533,8 +533,8 @@ export default {
     "save changes": "حفظ التغييرات",
     "post information": "معلومات المنشور",
     "update image": "تحديث الصورة",
-    restore: "استعادة",
-    delete: "حذف",
+    "restore post": "إستعادة المنشور",
+    "delete post": "حذف المنشور",
     "updating an image allows you to refine and enhance the details of your ongoing developments":
       "تحديث الصورة يتيح لك تحسين وتعزيز تفاصيل مشاريعك الحالية",
     "choose file": "اختيار ملف",

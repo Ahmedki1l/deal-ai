@@ -198,7 +198,7 @@ export function PostUpdateForm({
                     variant="secondary"
                     size="sm"
                   >
-                    {c?.["restore"]}
+                    {c?.["restore post"]}
                   </Button>
                 </PostRestoreButton>
               ) : (
@@ -213,19 +213,11 @@ export function PostUpdateForm({
                     size="sm"
                     variant="destructive"
                   >
-                    {c?.["delete"]}
+                    {c?.["delete post"]}
                   </Button>
                 </PostBinButton>
               )}
-              <Button
-                disabled={loading || trigger}
-                type="button"
-                onClick={() => form.reset()}
-                variant="outline"
-                size="sm"
-              >
-                {c?.["discard"]}
-              </Button>
+
               <Button
                 disabled={loading || trigger}
                 type="submit"
@@ -527,7 +519,7 @@ export function PostUpdateForm({
                   disabled={(trigger ?? post?.["deletedAt"]) ? false : disabled}
                   variant="secondary"
                 >
-                  {c?.["restore"]}
+                  {c?.["restore post"]}
                 </Button>
               </PostRestoreButton>
             ) : (
@@ -542,19 +534,10 @@ export function PostUpdateForm({
                   disabled={loading || trigger || disabled}
                   variant="destructive"
                 >
-                  {c?.["delete"]}
+                  {c?.["delete post"]}
                 </Button>
               </PostBinButton>
             )}
-
-            <Button
-              type="button"
-              onClick={() => form.reset()}
-              variant="outline"
-              size="sm"
-            >
-              {c?.["discard"]}
-            </Button>
 
             <Button
               disabled={loading || trigger || disabled}

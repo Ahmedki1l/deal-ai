@@ -1,4 +1,3 @@
-import "@/styles/globals.css";
 import { SessionProvider } from "@/components/session-provider";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -8,6 +7,7 @@ import { getAuth } from "@/lib/auth";
 import { getDictionary } from "@/lib/dictionaries";
 import { i18n } from "@/lib/locale";
 import { cn } from "@/lib/utils";
+import "@/styles/globals.css";
 import { LocaleProps } from "@/types/locale";
 import type { Metadata } from "next";
 import localFont from "next/font/local";

@@ -531,8 +531,8 @@ export default {
     "save changes": "Save Changes",
     "post information": "Post Information",
     "update image": "Update Image",
-    restore: "Restore",
-    delete: "Delete",
+    "restore post": "Restore Post",
+    "delete post": "Delete Post",
     "updating an image allows you to refine and enhance the details of your ongoing developments":
       "Updating an image allows you to refine and enhance the details of your ongoing developments",
     "choose file": "choose file",

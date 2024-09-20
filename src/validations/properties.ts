@@ -20,14 +20,26 @@ export const propertySchema = z.object(
     pool: z.string("hashtags").optional(),
     view: z.string("view").optional(),
 
-    deletedAt: z.date("deletedAt"),
+    deletedAt: z.date("deletedAt").nullable(),
   },
 );
 
-export const propertyCreateSchema = propertySchema.omit({
-  id: true,
-  deletedAt: true,
+export const propertyCreateSchema = propertySchema.pick({
+  projectId: true,
+  title: true,
+  type: true,
+  units: true,
+  space: true,
+  finishing: true,
+  floors: true,
+  rooms: true,
+  bathrooms: true,
+  receptions: true,
+  garden: true,
+  pool: true,
+  view: true,
 });
+
 export const propertyCreateFormSchema = z.object({
   types: z.array(
     z.object({

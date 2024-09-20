@@ -6,7 +6,7 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
-import { t } from "@/lib/locale";
+import { clientAction } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { propertyDeleteSchema } from "@/validations/properties";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,21 +40,13 @@ export function PropertyDeleteButton({
     },
   });
 
-  function onSubmit(data: z.infer<typeof propertyDeleteSchema>) {
-    setLoading(true);
-    toast.promise(deleteProperty(data), {
-      finally: () => setLoading(false),
-      error: async (err) => {
-        const msg = await t(err?.["message"], lang);
-        return msg;
-      },
-      success: () => {
-        router.refresh();
-        form.reset();
-        setOpen(false);
-        return c?.["deleted successfully."];
-      },
-    });
+  async function onSubmit(data: z.infer<typeof propertyDeleteSchema>) {
+    await clientAction(async () => await deleteProperty(data), setLoading);
+
+    toast.success(c?.["deleted successfully."]);
+    setOpen(false);
+    form.reset();
+    router.refresh();
   }
 
   return (

@@ -4,8 +4,8 @@ import { db } from "@/db";
 import { getAuth } from "@/lib/auth";
 import { ID } from "@/lib/constants";
 import { getDictionary } from "@/lib/dictionaries";
-import { RequiresLoginError, ZodError } from "@/lib/exceptions";
-import { sendEvent } from "@/lib/stream";
+import { t } from "@/lib/locale";
+import { ZodError } from "@/lib/zod";
 import {
   propertyBinSchema,
   propertyCreateFormSchema,
@@ -14,60 +14,48 @@ import {
 } from "@/validations/properties";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { getCookie, getLocale } from "./helpers";
+import { getLocale } from "./helpers";
 
 export async function createProperty(
-  controller: ReadableStreamDefaultController<any>,
-  key: string,
+  data: z.infer<typeof propertyCreateFormSchema>,
 ) {
-  const { actions: c } = await getDictionary(await getLocale());
+  const locale = await getLocale();
+  const { actions: c } = await getDictionary(locale);
   try {
     const { user } = await getAuth();
-    if (!user) throw new RequiresLoginError();
+    if (!user) return { error: c?.["this action needs you to be logged in."] };
     // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
 
-    const body = await getCookie<z.infer<typeof propertyCreateFormSchema>>(key);
-    if (body) {
-      const parsedData = propertyCreateFormSchema.safeParse(body);
-      if (!parsedData.success) throw new Error("Invalid data");
+    const properties = data.types
+      .map((t) =>
+        t.properties.map((p) => ({
+          ...p,
+          id: ID.generate(),
+          type: t?.["value"],
+          deletedAt: null,
+        })),
+      )
+      .flat();
 
-      const data = parsedData?.["data"];
+    await db.property.createMany({
+      data: properties,
+    });
 
-      sendEvent(controller, "status", c?.["creating properties..."]);
-      const properties = data.types
-        .map((t) =>
-          t.properties.map((p) => ({
-            ...p,
-            id: ID.generate(),
-            type: t?.["value"],
-            deletedAt: null,
-          })),
-        )
-        .flat();
-
-      await db.property.createMany({
-        data: properties,
-      });
-
-      sendEvent(
-        controller,
-        "completed",
-        properties?.["length"] === 1
-          ? c?.["one property was created."]
-          : `${properties?.["length"]} ${c?.["properties were created."]}`,
-      );
-
-      revalidatePath("/", "layout");
-    }
+    revalidatePath("/", "layout");
   } catch (error: any) {
     console.log(error?.["message"]);
-    if (error instanceof z.ZodError) return new ZodError(error);
-    throw Error(
-      error?.["message"] ??
-        "your case study was not created. Please try again.",
-    );
-  } finally {
-    controller.close();
+    if (error instanceof z.ZodError)
+      return {
+        error: await t(new ZodError(error)?.["message"], {
+          from: "en",
+          to: locale,
+        }),
+      };
+    return {
+      error: error?.["message"]
+        ? await t(error?.["message"], { from: "en", to: locale })
+        : c?.["your property was not created. please try again."],
+    };
   }
 }
 
@@ -75,10 +63,13 @@ export async function updateProperty({
   id,
   ...data
 }: z.infer<typeof propertyUpdateSchema | typeof propertyBinSchema>) {
+  const locale = await getLocale();
+  const { actions: c } = await getDictionary(locale);
+
   try {
     const { user } = await getAuth();
 
-    if (!user) throw new RequiresLoginError();
+    if (!user) return { error: c?.["this action needs you to be logged in."] };
 
     await db.property.update({
       data,
@@ -90,31 +81,48 @@ export async function updateProperty({
     revalidatePath("/", "layout");
   } catch (error: any) {
     console.log(error?.["message"]);
-    if (error instanceof z.ZodError) return new ZodError(error);
-    throw Error(
-      error?.["message"] ??
-        "your case study was not updated. Please try again.",
-    );
+    if (error instanceof z.ZodError)
+      return {
+        error: await t(new ZodError(error)?.["message"], {
+          from: "en",
+          to: locale,
+        }),
+      };
+    return {
+      error: error?.["message"]
+        ? await t(error?.["message"], { from: "en", to: locale })
+        : c?.["your property was not updated. please try again."],
+    };
   }
 }
 
 export async function deleteProperty({
   id,
 }: z.infer<typeof propertyDeleteSchema>) {
+  const locale = await getLocale();
+  const { actions: c } = await getDictionary(locale);
+
   try {
     const { user } = await getAuth();
 
-    if (!user) throw new RequiresLoginError();
+    if (!user) return { error: c?.["this action needs you to be logged in."] };
 
     await db.property.delete({ where: { id } });
 
     revalidatePath("/", "layout");
   } catch (error: any) {
     console.log(error?.["message"]);
-    if (error instanceof z.ZodError) return new ZodError(error);
-    throw Error(
-      error?.["message"] ??
-        "your case study was not deleted. Please try again.",
-    );
+    if (error instanceof z.ZodError)
+      return {
+        error: await t(new ZodError(error)?.["message"], {
+          from: "en",
+          to: locale,
+        }),
+      };
+    return {
+      error: error?.["message"]
+        ? await t(error?.["message"], { from: "en", to: locale })
+        : c?.["your property was not deleted. please try again."],
+    };
   }
 }

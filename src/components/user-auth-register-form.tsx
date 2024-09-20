@@ -13,7 +13,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import * as z from "zod";
 
 export type UserAuthRegisterFormProps = {} & Dictionary["auth"] &
@@ -131,18 +130,10 @@ export function UserAuthRegisterForm({
             variant="outline"
             className="w-full"
             onClick={async () => {
-              const url = await clientAction(
+              await clientAction(
                 async () => await signInWithGoogle(),
                 setIsGoogleLoading,
-              );
-
-              if (!url) {
-                setLoading(false);
-                toast.error("NO URL");
-                return;
-              }
-
-              router.push(url);
+              ).then(() => setIsGoogleLoading(true));
             }}
             disabled={loading || isGoogleLoading || isFacebookLoading}
           >

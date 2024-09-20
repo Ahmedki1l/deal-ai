@@ -7,7 +7,7 @@ import { PostForm } from "@/components/post-form";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
-import { t } from "@/lib/locale";
+import { clientAction } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { postUpdateContentSchema } from "@/validations/posts";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -42,20 +42,12 @@ export function PostUpdateContentButton({
   });
 
   async function onSubmit(data: z.infer<typeof postUpdateContentSchema>) {
-    setLoading(true);
-    toast.promise(updatePostFeature(data), {
-      finally: () => setLoading(false),
-      error: async (err) => {
-        const msg = await t(err?.["message"], lang);
-        return msg;
-      },
-      success: () => {
-        router.refresh();
-        form.reset();
-        setOpen(false);
-        return c?.["content updated successfully."];
-      },
-    });
+    await clientAction(async () => await updatePostFeature(data), setLoading);
+
+    toast.success(c?.["content updated successfully."]);
+    setOpen(false);
+    form.reset();
+    router.refresh();
   }
 
   return (

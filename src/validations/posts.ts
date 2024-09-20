@@ -18,7 +18,8 @@ export const postSchema = z.object<Record<keyof Omit<Post, "createdAt">, any>>({
   contentLength: z.enum(postContentLengthArr),
   platform: z.enum(platformsArr),
   postAt: z.date("post at"),
-  deletedAt: z.date("deletedAt").optional(),
+
+  deletedAt: z.date("deletedAt").nullable(),
   confirmedAt: z.date("confirmedAt").optional(),
 });
 
@@ -30,11 +31,15 @@ export const postCreateSchema = postSchema.pick({
 });
 
 export const postUpdateSchema = postSchema
-  .omit({
-    caseStudyId: true,
-    imageId: true,
-    deletedAt: true,
-    confirmedAt: true,
+  .pick({
+    id: true,
+    title: true,
+    content: true,
+    // noOfWeeks: true ,
+    // campaignType: z.enum(postCampaignArr),
+    // contentLength: z.enum(postContentLengthArr),
+    platform: true,
+    postAt: true,
   })
   .and(z.object({ confirm: z.boolean("confirm") }));
 

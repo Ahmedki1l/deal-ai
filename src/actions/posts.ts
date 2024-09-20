@@ -3,11 +3,11 @@
 import { db } from "@/db";
 import { platformsArr } from "@/db/enums";
 import { getAuth } from "@/lib/auth";
-// import { sendEvent } from "@/lib/stream";
 import { getDictionary } from "@/lib/dictionaries";
-import { RequiresLoginError, ZodError } from "@/lib/exceptions";
+import { t } from "@/lib/locale";
 import { fetchImage } from "@/lib/uploader";
 import { fetcher } from "@/lib/utils";
+import { ZodError } from "@/lib/zod";
 import {
   postBinSchema,
   postCreateSchema,
@@ -16,6 +16,7 @@ import {
   postUpdateContentSchema,
   postUpdateImageSchema,
   postUpdateScheduleSchema,
+  postUpdateSchema,
 } from "@/validations/posts";
 import { CaseStudy, Image, Platform, Project } from "@prisma/client";
 import { generateIdFromEntropySize } from "lucia";
@@ -36,63 +37,42 @@ function containsArabic(text: string | null) {
 }
 
 async function generateImg(prompt: string) {
-  let request = {
-    // prompt: Please a beautiful ${propertyType} view from "outside" at day time with beautiful detailed background and please create a realistic design with detailed background with properties at background and use floors data from "${5}" and build a ${propertyType} in ${landArea} square metre area with a detailed and beautiful background matching with city and a front view from outside thanks.,
-    prompt: prompt,
-    // input: please use this data to generate an image to be a background image for a presentation, it should be a building containing the number of floors in these data and put in a title in the bottom of the image with a margin bottom of 50px, data: ${JSON.stringify(data['تقرير_تحليل_الاستثمار']['معايير_التطوير'])},
-  };
-  let response = await fetch(
+  const request = { prompt: prompt };
+  const imageObject = await fetcher<{ data: { data: { url: string }[] } }>(
     "https://elsamalotyapis-production.up.railway.app/api/generateImage",
     {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(request),
     },
   );
-  let imageObject = await response.json();
-  console.log(imageObject.data.data[0].url);
+
   return imageObject.data.data[0].url;
 }
 
-export async function createPost(
-  // controller: ReadableStreamDefaultController<any>,
-  // key: string,
-  {
-    project,
-    caseStudy,
-    ...data
-  }: z.infer<typeof postCreateSchema> & {
-    project: Project & { platforms: Platform[] };
-    caseStudy: CaseStudy;
-  },
-) {
-  const { actions: c } = await getDictionary(await getLocale());
+export async function createPost({
+  project,
+  caseStudy,
+  ...data
+}: z.infer<typeof postCreateSchema> & {
+  project: Project & { platforms: Platform[] };
+  caseStudy: CaseStudy;
+}) {
+  const locale = await getLocale();
+  const { actions: c } = await getDictionary(locale);
 
   try {
-    // sendEvent(controller, "status", c?.["getting info..."]);
-
     const user = await getAuth();
-    if (!user) throw new RequiresLoginError();
-    // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
-
-    // const body = await getCookie<z.infer<typeof postCreateSchema>>(key);
-    // if (!body) throw Error("No body Data.");
-
-    // const parsedData = postCreateSchema.safeParse(body);
-    // if (!parsedData.success) throw new Error("Invalid data");
-
-    // const data = parsedData?.["data"];
+    if (!user)
+      return {
+        error: c?.["this action needs you to be logged in."],
+      };
 
     let endpoint_language = "en";
-
     if (
       containsArabic(caseStudy?.["prompt"]) ||
       containsArabic(caseStudy?.["caseStudyResponse"])
-    ) {
+    )
       endpoint_language = "ar";
-    }
 
     //defaults
     const domain = process.env.NEXT_PUBLIC_AI_API;
@@ -113,7 +93,6 @@ export async function createPost(
         image_anaylzer_prompt.input += url + ", ";
       });
 
-      // sendEvent(controller, "status", c?.["generating images..."]);
       const image_analyzer_endpoint = domain + `/en/image-analyzer`;
 
       console.log("image_anaylzer_prompt: ", image_anaylzer_prompt);
@@ -139,12 +118,6 @@ export async function createPost(
 
     const social_media_endpoint =
       domain + `/${endpoint_language}/chat/socialmediaplan`;
-
-    // sendEvent(
-    //   controller,
-    //   "status",
-    //   c?.["generating AI prompt for social media..."],
-    // );
 
     console.log("social_media_response prompt: ", prompt);
 
@@ -179,20 +152,14 @@ export async function createPost(
       let currentDate = new Date();
 
       for (let i = 0; i < accountPosts.length; i++) {
-        if (i % 6 === 0 && i !== 0) {
-          await delay(60000); // Wait for 60 seconds after every 6 images
-        }
+        if (i % 6 === 0 && i !== 0) await delay(60000); // Wait for 60 seconds after every 6 images
+
         const prompt_generator_endpoint = domain + `/en/prompt-generator`;
 
         const prompt_generator_prompt = {
           input: accountPosts[i][`Post${i + 1}`],
         };
 
-        // sendEvent(
-        //   controller,
-        //   "status",
-        //   c?.["generating social media content..."],
-        // );
         console.log("prompt_generator_prompt: ", prompt_generator_prompt);
         const prompt_generator_response = await fetcher<{ prompt: string }>(
           prompt_generator_endpoint,
@@ -212,7 +179,6 @@ export async function createPost(
           input: `you must adjust this prompt to be only 1000 characters long at max: ${imagePrompt?.input}`,
         };
 
-        // sendEvent(controller, "status", c?.["generating AI images..."]);
         console.log("adjusted_image_prompt: ", adjusted_image_prompt);
         const adjusted_image_response = await fetcher<{ prompt: string }>(
           prompt_generator_endpoint,
@@ -222,26 +188,21 @@ export async function createPost(
           },
         );
 
-        // let imageResponse;
-
         const adjusted_image = { prompt: adjusted_image_response?.prompt };
 
         console.log("adjusted_image: ", adjusted_image);
         const fetchPromise = generateImg(adjusted_image?.["prompt"]!).then(
           async (imageResponse) => {
-            // console.log("image prompt: ", adjusted_image);
             console.log("imageResponse: ", imageResponse);
 
             if (!imageResponse) return null;
 
             const fetchedImage = await fetchImage(imageResponse);
-            // const framedImage = await applyFrame(fetchedImage, FRAMES_URL?.[0]);
             const bufferedImage = await Sharp(fetchedImage).toBuffer();
             const url = await uploadIntoSpace(
               `post-${Date.now()}.png`,
               bufferedImage,
             );
-            console.log("url: ", url);
 
             if (!url) return null;
 
@@ -259,7 +220,6 @@ export async function createPost(
         imageFetchPromises.push(fetchPromise);
 
         fetchPromise.then((imageData) => {
-          // console.log("image Data: ", imageData);
           console.log(currentDate.getDay());
           currentDate.setDate(currentDate.getDate() + 1);
           console.log(currentDate.getDay());
@@ -283,7 +243,7 @@ export async function createPost(
             platform: acc,
             postAt: new Date(currentDate),
             imageId: imageData?.["id"] ?? null,
-            // framedImageURL: null,
+            framedImageURL: null,
             deletedAt: null,
           });
           indicator++;
@@ -291,80 +251,68 @@ export async function createPost(
       }
     }
 
-    // sendEvent(controller, "status", c?.["adusting posts together..."]);
     await Promise.all(imageFetchPromises);
 
-    if (!allPostDetails?.["length"]) {
-      // sendEvent(controller, "completed", c?.["No posts to create."]);
-      return;
-    }
-
-    // sendEvent(controller, "status", c?.["saving posts..."]);
     await db.post.createMany({
       data: allPostDetails,
     });
 
-    // sendEvent(
-    //   controller,
-    //   "completed",
-    //   `${allPostDetails?.["length"]} ${c?.["posts were created."]}`,
-    // );
     revalidatePath("/", "layout");
   } catch (error: any) {
-    console.error(error?.["message"]);
-    if (error instanceof z.ZodError) return new ZodError(error);
-    throw Error(
-      error?.["message"] ?? c?.["your post was not created. please try again."],
-    );
+    console.log(error?.["message"]);
+    if (error instanceof z.ZodError)
+      return {
+        error: await t(new ZodError(error)?.["message"], {
+          from: "en",
+          to: locale,
+        }),
+      };
+    return {
+      error: error?.["message"]
+        ? await t(error?.["message"], { from: "en", to: locale })
+        : c?.["your post was not created. please try again."],
+    };
   }
-  // finally {
-  //   controller.close();
-  // }
 }
 
-export async function updatePost(stringData: string) {
+export async function updatePost({
+  id,
+  confirm,
+  ...data
+}: z.infer<typeof postUpdateSchema>) {
+  const locale = await getLocale();
+  const { actions: c } = await getDictionary(locale);
+
   try {
     const user = await getAuth();
-    if (!user) throw new RequiresLoginError();
-    // const { id, confirm, frame, ...data } = JSON.parse(stringData) as z.infer<
-    //   typeof postUpdateSchema
-    // >;
-    // let url = null;
-    // console.log(!!frame);
+    if (!user)
+      return {
+        error: c?.["this action needs you to be logged in."],
+      };
 
-    // if (frame) {
-    //   const sharpFramedImage = await Sharp(Buffer.from(frame, "base64"))
-    //     .resize({ width: 800 }) // Resize to a more manageable size if necessary
-    //     .png({ quality: 85 }) // Compress the PNG to 80% quality
-    //     .toBuffer();
-
-    //   console.log("uploading...");
-    //   url = await uploadIntoSpace(`post-${Date.now()}.png`, sharpFramedImage);
-    //   console.log("framed url: ", url);
-    // }
-
-    // await db.post.update({
-    //   data: {
-    //     ...data,
-    //     image: {
-    //       update: {
-    //         src: data?.["image"]?.["src"],
-    //         prompt: data?.["image"]?.["prompt"],
-    //       },
-    //     },
-    //     confirmedAt: confirm ? new Date() : null,
-    //     framedImageURL: url,
-    //   },
-    //   where: { id },
-    // });
+    await db.post.update({
+      data: {
+        ...data,
+        confirmedAt: confirm ? new Date() : null,
+      },
+      where: { id },
+    });
 
     revalidatePath("/", "layout");
   } catch (error: any) {
-    console.error(error?.["message"]);
-    if (error instanceof z.ZodError) return new ZodError(error);
-    throw Error(
-      error?.["message"] ?? "your post was not updated. Please try again.",
-    );
+    console.log(error?.["message"]);
+    if (error instanceof z.ZodError)
+      return {
+        error: await t(new ZodError(error)?.["message"], {
+          from: "en",
+          to: locale,
+        }),
+      };
+    return {
+      error: error?.["message"]
+        ? await t(error?.["message"], { from: "en", to: locale })
+        : c?.["your post was not updated. please try again."],
+    };
   }
 }
 
@@ -378,9 +326,15 @@ export async function updatePostFeature({
   | typeof postBinSchema
 > &
   Pick<z.infer<typeof postSchema>, "id">) {
+  const locale = await getLocale();
+  const { actions: c } = await getDictionary(locale);
+
   try {
     const user = await getAuth();
-    if (!user) throw new RequiresLoginError();
+    if (!user)
+      return {
+        error: c?.["this action needs you to be logged in."],
+      };
 
     await db.post.update({
       data,
@@ -391,27 +345,49 @@ export async function updatePostFeature({
 
     revalidatePath("/", "layout");
   } catch (error: any) {
-    console.error(error?.["message"]);
-    if (error instanceof z.ZodError) return new ZodError(error);
-    throw Error(
-      error?.["message"] ?? "your post was not updated. Please try again.",
-    );
+    console.log(error?.["message"]);
+    if (error instanceof z.ZodError)
+      return {
+        error: await t(new ZodError(error)?.["message"], {
+          from: "en",
+          to: locale,
+        }),
+      };
+    return {
+      error: error?.["message"]
+        ? await t(error?.["message"], { from: "en", to: locale })
+        : c?.["your post was not updated. please try again."],
+    };
   }
 }
 
 export async function deletePost({ id }: z.infer<typeof postDeleteSchema>) {
+  const locale = await getLocale();
+  const { actions: c } = await getDictionary(locale);
+
   try {
     const user = await getAuth();
-    if (!user) throw new RequiresLoginError();
+    if (!user)
+      return {
+        error: c?.["this action needs you to be logged in."],
+      };
 
     await db.post.delete({ where: { id } });
 
     revalidatePath("/", "layout");
   } catch (error: any) {
-    console.error(error?.["message"]);
-    if (error instanceof z.ZodError) return new ZodError(error);
-    throw Error(
-      error?.["message"] ?? "your post was not deleted. Please try again.",
-    );
+    console.log(error?.["message"]);
+    if (error instanceof z.ZodError)
+      return {
+        error: await t(new ZodError(error)?.["message"], {
+          from: "en",
+          to: locale,
+        }),
+      };
+    return {
+      error: error?.["message"]
+        ? await t(error?.["message"], { from: "en", to: locale })
+        : c?.["your post was not deleted. please try again."],
+    };
   }
 }

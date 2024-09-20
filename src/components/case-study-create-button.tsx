@@ -7,6 +7,7 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
+import { clientAction } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { caseStudyCreateFormSchema } from "@/validations/case-studies";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -45,74 +46,21 @@ export function CaseStudyCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof caseStudyCreateFormSchema>) {
-    try {
-      setLoading(true);
-      const res = await createCaseStudy({
-        ...data,
-        refImages: data?.refImages?.map((e) => e?.["base64"]?.split(",")?.[1]),
-      });
+    await clientAction(
+      async () =>
+        await createCaseStudy({
+          ...data,
+          refImages: data?.refImages?.map(
+            (e) => e?.["base64"]?.split(",")?.[1],
+          ),
+        }),
+      setLoading,
+    );
 
-      if (res?.["error"]) {
-        toast.error(res?.["error"]);
-        return;
-      }
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-
-    // const id = ID.generate();
-    // const key = `create-${id}`;
-    // const toastId = toast.loading(c?.["initializing case..."]);
-
-    // try {
-    //   setLoading(true);
-    // await setCookie(key, {
-    //   ...data,
-    //   refImages: [],
-    //   //  data?.refImages?.map((e) => e?.base64),
-    // } satisfies z.infer<typeof caseStudyCreateSchema>);
-
-    //   const eventSource = new EventSource(`/api/cases?key=${key}`);
-    //   eventSource.addEventListener("status", (event) => {
-    //     toast.loading(event.data?.replaceAll('"', ""), {
-    //       id: toastId,
-    //     });
-    //   });
-
-    //   eventSource.addEventListener("completed", (event) => {
-    //     toast.dismiss(toastId);
-    //     eventSource.close();
-    //     toast.success(event.data?.replaceAll('"', ""));
-
-    //     router.refresh();
-    //     setOpen(false);
-    //     form.reset();
-    //     setLoading(false);
-    //   });
-
-    //   eventSource.addEventListener("error", (event) => {
-    //     console.error("Error occurred:", event);
-    //     toast.dismiss(toastId);
-    //     eventSource.close();
-
-    //     setLoading(false);
-    //   });
-
-    //   eventSource.addEventListener("close", () => {
-    //     toast.dismiss(toastId);
-    //     eventSource.close();
-
-    //     setLoading(false);
-    //   });
-    // } catch (err: any) {
-    //   toast.dismiss(toastId);
-    //   setLoading(false);
-
-    //   toast.error(err?.message);
-    // } finally {
-    //   await deleteCookie(key);
-    // }
+    toast.success(c?.["created successfully."]);
+    setOpen(false);
+    form.reset();
+    router.refresh();
   }
 
   return (

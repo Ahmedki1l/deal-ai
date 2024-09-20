@@ -3,9 +3,9 @@
 import { db } from "@/db";
 import { getAuth } from "@/lib/auth";
 import { getDictionary } from "@/lib/dictionaries";
-import { RequiresLoginError, ZodError } from "@/lib/exceptions";
 import { t } from "@/lib/locale";
 import { fetcher } from "@/lib/utils";
+import { ZodError } from "@/lib/zod";
 import {
   caseStudyBinSchema,
   caseStudyCreateSchema,
@@ -14,10 +14,9 @@ import {
 } from "@/validations/case-studies";
 import { generateIdFromEntropySize } from "lucia";
 import { revalidatePath } from "next/cache";
-import sharp from "sharp";
 import { z } from "zod";
 import { getLocale } from "./helpers";
-import { uploadIntoSpace } from "./images";
+import { base64ToBuffer, uploadIntoSpace } from "./images";
 
 // Function to check if a string contains Arabic characters
 function containsArabic(text: string) {
@@ -25,37 +24,27 @@ function containsArabic(text: string) {
   return arabicRegex.test(text);
 }
 
-export async function createCaseStudy(
-  // controller: ReadableStreamDefaultController<any>,
-  // key: string,
-  { refImages, ...data }: z.infer<typeof caseStudyCreateSchema>,
-) {
+export async function createCaseStudy({
+  refImages,
+  ...data
+}: z.infer<typeof caseStudyCreateSchema>) {
   const locale = await getLocale();
   const { actions: c } = await getDictionary(locale);
 
   try {
     const { user } = await getAuth();
+    if (!user)
+      return {
+        error: c?.["this action needs you to be logged in."],
+      };
 
-    if (!user) throw new RequiresLoginError();
-    // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
-
-    // const body = await getCookie<z.infer<typeof caseStudyCreateSchema>>(key);
-    // if (body) {
-    //   const parsedData = caseStudyCreateSchema.safeParse(body);
-    //   if (!parsedData.success) throw new Error("Invalid data");
-
-    //   const data = parsedData?.["data"];
-
-    // sendEvent(controller, "status", c?.["getting info..."]);
     const actualProject = await db.project.findFirst({
       include: {
-        caseStudy: { include: { posts: true } },
+        // caseStudy: { include: { posts: true } },
         properties: true,
         platforms: true,
       },
-      where: {
-        id: data?.["projectId"],
-      },
+      where: { id: data?.["projectId"] },
     });
 
     let endpoint_language = "en";
@@ -100,7 +89,6 @@ export async function createCaseStudy(
     const endpoint =
       process.env.NEXT_PUBLIC_AI_API + `/${endpoint_language}/chat/casestudy`;
 
-    // sendEvent(controller, "status", c?.["generating using AI..."]);
     // Send data to the server
     const response = await fetcher<{
       Case_Study: string;
@@ -117,7 +105,6 @@ export async function createCaseStudy(
       body: JSON.stringify(prompt),
     });
 
-    // sendEvent(controller, "status", c?.["saving study case..."]);
     const id = generateIdFromEntropySize(10);
     await db.$transaction(async (tx) => {
       await tx.caseStudy.create({
@@ -138,54 +125,64 @@ export async function createCaseStudy(
           deletedAt: null,
         },
       });
-      console.log(refImages?.["length"]);
+
+      console.log(refImages);
       if (refImages?.["length"]) {
         const imgs = await Promise.all(
           refImages
-            ?.map((e) =>
-              sharp(Buffer.from(e, "base64"))
-                .resize({ width: 800 }) // Resize to a more manageable size if necessary
-                .png({ quality: 85 }) // Compress the PNG to 80% quality
-                .toBuffer(),
-            )
-            .map((e) => uploadIntoSpace(`case-${Date.now()}.png`, e)),
+            ?.map((e) => base64ToBuffer(e))
+            .map((e) =>
+              uploadIntoSpace(`case-${Date.now()}.png`, e).then((r) => {
+                // TODO: handle errors of uploading failled
+                if (typeof r === "object" && "error" in r) {
+                  console.log(r?.["error"]);
+                  return null;
+                }
+                return r;
+              }),
+            ),
         );
 
         await tx.caseStudy.update({
-          data: { refImages: imgs },
+          data: { refImages: imgs?.filter((e) => e != null) },
           where: { id },
         });
       }
     });
 
-    // sendEvent(controller, "completed", c?.["created study case..."]);
     revalidatePath("/", "layout");
-    // }
   } catch (error: any) {
     console.log(error?.["message"]);
     if (error instanceof z.ZodError)
-      return { error: await t(new ZodError(error)?.["message"], locale) };
+      return {
+        error: await t(new ZodError(error)?.["message"], {
+          from: "en",
+          to: locale,
+        }),
+      };
+
     return {
       error: error?.["message"]
-        ? await t(error?.["message"], locale)
+        ? await t(error?.["message"], { from: "en", to: locale })
         : c?.["your study case was not created. please try again."],
     };
   }
-  // finally {
-  //   controller.close();
-  // }
 }
 
 export async function updateCaseStudy({
   id,
   ...data
 }: z.infer<typeof caseStudyUpdateSchema | typeof caseStudyBinSchema>) {
-  const { actions: c } = await getDictionary(await getLocale());
+  const locale = await getLocale();
+  const { actions: c } = await getDictionary(locale);
 
   try {
     const { user } = await getAuth();
 
-    if (!user) throw new RequiresLoginError();
+    if (!user)
+      return {
+        error: c?.["this action needs you to be logged in."],
+      };
 
     await db.caseStudy.update({
       data,
@@ -195,37 +192,53 @@ export async function updateCaseStudy({
     });
 
     revalidatePath("/", "layout");
-
-    return c?.["updated successfully."];
   } catch (error: any) {
     console.log(error?.["message"]);
-    if (error instanceof z.ZodError) return new ZodError(error);
-    throw Error(
-      error?.["message"] ??
-        c?.["your study case was not updated. please try again."],
-    );
+    if (error instanceof z.ZodError)
+      return {
+        error: await t(new ZodError(error)?.["message"], {
+          from: "en",
+          to: locale,
+        }),
+      };
+    return {
+      error: error?.["message"]
+        ? await t(error?.["message"], { from: "en", to: locale })
+        : c?.["your study case was not updated. please try again."],
+    };
   }
 }
 
 export async function deleteCaseStudy({
   id,
 }: z.infer<typeof caseStudyDeleteSchema>) {
-  const { actions: c } = await getDictionary(await getLocale());
+  const locale = await getLocale();
+  const { actions: c } = await getDictionary(locale);
+
   try {
     const { user } = await getAuth();
 
-    if (!user) throw new RequiresLoginError();
+    if (!user)
+      return {
+        error: c?.["this action needs you to be logged in."],
+      };
 
     await db.caseStudy.delete({ where: { id } });
 
     revalidatePath("/", "layout");
-    return c?.["deleted successfully."];
   } catch (error: any) {
     console.log(error?.["message"]);
-    if (error instanceof z.ZodError) return new ZodError(error);
-    throw Error(
-      error?.["message"] ??
-        c?.["your study case was not deleted. please try again."],
-    );
+    if (error instanceof z.ZodError)
+      return {
+        error: await t(new ZodError(error)?.["message"], {
+          from: "en",
+          to: locale,
+        }),
+      };
+    return {
+      error: error?.["message"]
+        ? await t(error?.["message"], { from: "en", to: locale })
+        : c?.["your study case was not deleted. please try again."],
+    };
   }
 }

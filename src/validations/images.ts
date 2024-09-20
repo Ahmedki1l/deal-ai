@@ -14,13 +14,14 @@ export const imageSchema = z.object({
   src: z.string("src"),
   prompt: z.string("prompt"),
 
-  deletedAt: z.date("deletedAt").optional().nullable(),
+  deletedAt: z.date("deletedAt").nullable(),
 });
 
-export const imageCreateSchema = imageSchema.omit({
-  id: true,
-  deletedAt: true,
+export const imageCreateSchema = imageSchema.pick({
+  src: true,
+  prompt: true,
 });
+
 export const imageUpdateSchema = imageSchema;
 export const imageUpdateFormSchema = imageSchema
   .pick({ src: true, prompt: true })

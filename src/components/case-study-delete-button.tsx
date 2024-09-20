@@ -6,7 +6,7 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
-import { t } from "@/lib/locale";
+import { clientAction } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { caseStudyDeleteSchema } from "@/validations/case-studies";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,21 +40,13 @@ export function CaseStudyDeleteButton({
     },
   });
 
-  function onSubmit(data: z.infer<typeof caseStudyDeleteSchema>) {
-    setLoading(true);
-    toast.promise(deleteCaseStudy(data), {
-      finally: () => setLoading(false),
-      error: async (err) => {
-        const msg = await t(err?.["message"], lang);
-        return msg;
-      },
-      success: () => {
-        router.refresh();
-        form.reset();
-        setOpen(false);
-        return c?.["deleted successfully."];
-      },
-    });
+  async function onSubmit(data: z.infer<typeof caseStudyDeleteSchema>) {
+    await clientAction(async () => await deleteCaseStudy(data), setLoading);
+
+    toast.success(c?.["deleted successfully."]);
+    setOpen(false);
+    form.reset();
+    router.refresh();
   }
 
   return (

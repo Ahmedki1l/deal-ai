@@ -6,7 +6,7 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
-import { t } from "@/lib/locale";
+import { clientAction } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { postBinSchema } from "@/validations/posts";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,21 +41,16 @@ export function PostBinButton({
     },
   });
 
-  function onSubmit(data: z.infer<typeof postBinSchema>) {
-    setLoading(true);
-    toast.promise(updatePostFeature({ ...data, deletedAt: new Date() }), {
-      finally: () => setLoading(false),
-      error: async (err) => {
-        const msg = await t(err?.["message"], lang);
-        return msg;
-      },
-      success: () => {
-        router.refresh();
-        form.reset();
-        setOpen(false);
-        return c?.["deleted successfully."];
-      },
-    });
+  async function onSubmit(data: z.infer<typeof postBinSchema>) {
+    await clientAction(
+      async () => await updatePostFeature({ ...data, deletedAt: new Date() }),
+      setLoading,
+    );
+
+    toast.success(c?.["deleted successfully."]);
+    setOpen(false);
+    form.reset();
+    router.refresh();
   }
 
   return (

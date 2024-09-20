@@ -3,8 +3,8 @@
 import { db } from "@/db";
 import { getAuth } from "@/lib/auth";
 import { ID } from "@/lib/constants";
-import { RequiresLoginError, ZodError } from "@/lib/exceptions";
 import { getDictionary, t } from "@/lib/locale";
+import { ZodError } from "@/lib/zod";
 import {
   projectBinSchema,
   projectCreateFormSchema,
@@ -13,10 +13,9 @@ import {
 } from "@/validations/projects";
 import { generateIdFromEntropySize } from "lucia";
 import { revalidatePath } from "next/cache";
-import Sharp from "sharp";
 import { z } from "zod";
 import { getLocale } from "./helpers";
-import { uploadIntoSpace } from "./images";
+import { base64ToBuffer, uploadIntoSpace } from "./images";
 
 export async function createProject({
   logo,
@@ -26,13 +25,11 @@ export async function createProject({
   ...data
 }: z.infer<typeof projectCreateFormSchema>) {
   const locale = await getLocale();
-  const {
-    actions: { projects: c },
-  } = await getDictionary(locale);
+  const { actions: c } = await getDictionary(locale);
 
   try {
     const { user } = await getAuth();
-    if (!user) throw new RequiresLoginError();
+    if (!user) return { error: c?.["this action needs you to be logged in."] };
 
     const id = ID.generate();
     const properties = types
@@ -69,13 +66,17 @@ export async function createProject({
     let url: string | null = null;
 
     if (logo) {
-      const img = await Sharp(Buffer.from(logo, "base64"))
-        .resize({ width: 800 }) // Resize to a more manageable size if necessary
-        .png({ quality: 85 }) // Compress the PNG to 80% quality
-        .toBuffer();
+      const img = await base64ToBuffer(logo);
 
       console.log("uploading...");
-      url = await uploadIntoSpace(`project-logo-${Date.now()}.png`, img);
+      const r = await uploadIntoSpace(`project-logo-${Date.now()}.png`, img);
+      if (!(typeof r === "string"))
+        return {
+          error: r?.["error"],
+        };
+
+      if (!(typeof r === undefined)) url = r;
+
       console.log("framed url: ", url);
     }
 
@@ -118,12 +119,10 @@ export async function updateProject({
   ...data
 }: z.infer<typeof projectUpdateSchema | typeof projectBinSchema>) {
   const locale = await getLocale();
-  const {
-    actions: { projects: c },
-  } = await getDictionary(locale);
+  const { actions: c } = await getDictionary(locale);
   try {
     const user = await getAuth();
-    if (!user) throw new RequiresLoginError();
+    if (!user) return { error: c?.["this action needs you to be logged in."] };
 
     await db.project.update({
       data,
@@ -154,13 +153,11 @@ export async function deleteProject({
   id,
 }: z.infer<typeof projectDeleteSchema>) {
   const locale = await getLocale();
-  const {
-    actions: { projects: c },
-  } = await getDictionary(locale);
+  const { actions: c } = await getDictionary(locale);
 
   try {
     const user = await getAuth();
-    if (!user) throw new RequiresLoginError();
+    if (!user) return { error: c?.["this action needs you to be logged in."] };
 
     await db.project.delete({ where: { id } });
 
@@ -177,7 +174,7 @@ export async function deleteProject({
     return {
       error: error?.["message"]
         ? await t(error?.["message"], { from: "en", to: locale })
-        : c?.["your project was not updated. please try again."],
+        : c?.["your project was not deleted. please try again."],
     };
   }
 }

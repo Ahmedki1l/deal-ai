@@ -21,7 +21,7 @@ export const caseStudySchema = z.object(
     prompt: z.string("prompt").nullable().optional(),
     caseStudyResponse: z.string("caseStudyResponse").nullable().optional(),
 
-    deletedAt: z.date("deletedAt"),
+    deletedAt: z.date("deletedAt").nullable(),
   },
 );
 

@@ -72,10 +72,12 @@ export function ProjectCreateButton({
       dic={dic}
       open={open}
       setOpen={setOpen}
+      disabled={loading}
       confirmButton={
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Button disabled={loading} className="w-full md:w-fit">
+              {loading && <Icons.spinner />}
               {c?.["submit"]}
             </Button>
           </form>

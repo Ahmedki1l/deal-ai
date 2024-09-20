@@ -27,23 +27,19 @@ export const projectSchema = z.object(
       )
       .min(1, "choose one platform at least."),
 
-    deletedAt: z.date("deletedAt"),
+    deletedAt: z.date("deletedAt").nullable(),
   },
 );
 
 export const projectCreateSchema = projectSchema.pick({
   userId: true,
-
   logo: true,
-
   title: true,
   description: true,
-
   distinct: true,
   city: true,
   country: true,
   spaces: true,
-
   platforms: true,
 });
 export const projectCreateFormSchema = projectCreateSchema

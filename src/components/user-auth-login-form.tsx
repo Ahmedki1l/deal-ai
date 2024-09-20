@@ -113,7 +113,7 @@ export function UserAuthLoginForm({
               await clientAction(
                 async () => await signInWithGoogle(),
                 setIsGoogleLoading,
-              );
+              ).then(() => setIsGoogleLoading(true));
             }}
             disabled={loading || isGoogleLoading || isFacebookLoading}
           >

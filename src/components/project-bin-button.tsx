@@ -6,7 +6,7 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
-import { t } from "@/lib/locale";
+import { clientAction } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { projectBinSchema } from "@/validations/projects";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,21 +41,16 @@ export function ProjectBinButton({
     },
   });
 
-  function onSubmit(data: z.infer<typeof projectBinSchema>) {
-    setLoading(true);
-    toast.promise(updateProject({ ...data, deletedAt: new Date() }), {
-      finally: () => setLoading(false),
-      error: async (err) => {
-        const msg = await t(err?.["message"], lang);
-        return msg;
-      },
-      success: () => {
-        router.refresh();
-        form.reset();
-        setOpen(false);
-        return c?.["deleted successfully."];
-      },
-    });
+  async function onSubmit(data: z.infer<typeof projectBinSchema>) {
+    await clientAction(
+      async () => await updateProject({ ...data, deletedAt: new Date() }),
+      setLoading,
+    );
+
+    toast.success(c?.["deleted successfully."]);
+    setOpen(false);
+    form.reset();
+    router.refresh();
   }
 
   return (

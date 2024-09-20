@@ -7,6 +7,7 @@ import { PostForm } from "@/components/post-form";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
+import { clientAction } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { postCreateSchema } from "@/validations/posts";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,85 +42,18 @@ export function PostCreateButton({
     resolver: zodResolver(postCreateSchema),
     defaultValues: { caseStudyId: caseStudy?.["id"] },
   });
-  // async function onSubmit(data: z.infer<typeof postCreateSchema>) {
-  //   const id = ID.generate();
-  //   const key = `create-${id}`;
-  //   const toastId = toast.loading(c?.["initializing posts..."]);
-
-  //   try {
-  //     setLoading(true);
-  //     await setCookie(key, data);
-
-  //     const eventSource = new EventSource(`/api/posts?key=${key}`);
-  //     eventSource.addEventListener("status", (event) => {
-  //       toast.loading(event.data?.replaceAll('"', ""), {
-  //         id: toastId,
-  //       });
-  //     });
-
-  //     eventSource.addEventListener("completed", (event) => {
-  //       toast.dismiss(toastId);
-  //       eventSource.close();
-  //       toast.success(event.data?.replaceAll('"', ""));
-
-  //       router.refresh();
-  //       setOpen(false);
-  //       form.reset();
-  //       setLoading(false);
-  //     });
-
-  //     eventSource.addEventListener("error", (event) => {
-  //       console.error("Error occurred:", event);
-  //       toast.dismiss(toastId);
-  //       eventSource.close();
-
-  //       setLoading(false);
-  //     });
-
-  //     eventSource.addEventListener("close", () => {
-  //       toast.dismiss(toastId);
-  //       eventSource.close();
-
-  //       setLoading(false);
-  //     });
-  //   } catch (err: any) {
-  //     toast.dismiss(toastId);
-  //     setLoading(false);
-
-  //     toast.error(err?.message);
-  //   } finally {
-  //     await deleteCookie(key);
-  //   }
-  // }
 
   async function onSubmit(data: z.infer<typeof postCreateSchema>) {
-    // setLoading(true);
-    // toast.promise(createPost({ ...data, project, caseStudy }), {
-    //   finally: () => setLoading(false),
-    //   error: async (err) => {
-    //     const msg = await t(err?.["message"], lang);
-    //     return msg;
-    //   },
-    //   success: () => {
-    //     router.refresh();
-    //     form.reset();
-    //     setOpen(false);
-    //     return c?.["created successfully."];
-    //   },
-    // });
+    await clientAction(
+      async () => await createPost({ ...data, project, caseStudy }),
+      setLoading,
+    );
 
-    setLoading(true);
-    toast.promise(createPost({ ...data, project, caseStudy }), {
-      finally: () => setLoading(false),
-      error(data) {
-        return data?.["message"];
-      },
-      success(data) {
-        return c?.["created successfully."];
-      },
-    });
+    toast.success(c?.["created successfully."]);
+    setOpen(false);
+    form.reset();
+    router.refresh();
   }
-
   return (
     <DialogResponsive
       dic={dic}

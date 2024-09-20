@@ -718,67 +718,71 @@ export default {
   },
 
   actions: {
-    "getting info...": "getting info...",
-    "generating using AI...": "generating using AI...",
-    "saving study case...": "saving study case...",
-    "created study case...": "created study case...",
+    // users: {
+    "this email is already used.": "This email is already used.",
+    "incorrect email address.": "Incorrect email address.",
+    "incorrect password": "Incorrect password",
+    "no password setting to that account, login using google.":
+      "No password setting to that account, Login using Google.",
+    "you are not logged in.": "You are not logged in.",
+    "your user account was not logged in. please try again.":
+      "your user account was not logged in. Please try again.",
+    "your user account was not created. please try again.":
+      "your user account was not created. Please try again.",
+    "your user account was not updated. please try again.":
+      "your user account was not updated. Please try again.",
+    "your user account was not deleted. please try again.":
+      "your user account was not deleted. Please try again.",
+
+    // projects: {
+    "your project was not created. please try again.":
+      "your project was not created. Please try again.",
+    "your project was not updated. please try again.":
+      "your project was not updated. Please try again.",
+    "your project was not deleted. please try again.":
+      "your project was not deleted. Please try again.",
+
+    // "study-case": {
     "your study case was not created. please try again.":
       "your study case was not created. Please try again.",
-    "deleted successfully.": "deleted successfully.",
     "your study case was not deleted. please try again.":
       "your study case was not deleted. Please try again.",
-    "updated successfully.": "updated successfully.",
     "your study case was not updated. please try again.":
-      "your study case was not updated. please try again.",
-    "non existing study case.": "non existing study case.",
-    "generating images...": "generating images...",
-    "generating AI prompt for social media...":
-      "generating AI prompt for social media...",
-    "generating social media content...": "generating social media content...",
-    "generating AI images...": "generating AI images...",
-    "adusting posts together...": "adusting posts together...",
-    "saving posts...": "saving posts...",
-    "posts were created.": "posts were created.",
-    "No posts to create.": "No posts to create.",
+      "your study case was not updated. Please try again.",
+
+    // "properties": {
+    "your property was not created. please try again.":
+      "your property was not created. Please try again.",
+    "your property was not deleted. please try again.":
+      "your property was not deleted. Please try again.",
+    "your property was not updated. please try again.":
+      "your property was not updated. Please try again.",
+
+    // posts: {
     "your post was not created. please try again.":
-      "your post was not created. please try again.",
+      "your post was not created. Please try again.",
+    "your post was not updated. please try again.":
+      "your post was not updated. Please try again.",
     "your post was not deleted. please try again.":
       "your post was not deleted. Please try again.",
-    "creating properties...": "creating properties...",
-    "creating platforms...": "creating platforms...",
-    "creating project...": "creating project...",
-    "created successfully.": "created successfully.",
 
-    "one property was created.": "one property was created.",
-    "properties were created.": "properties were created.",
+    // images: {
+    "your image was not created. please try again.":
+      "your image was not created. Please try again.",
+    "your image was not updated. please try again.":
+      "your image was not updated. Please try again.",
+    "your image was not deleted. please try again.":
+      "your image was not deleted. Please try again.",
+    "your image prompt was not updated. please try again.":
+      "your image prompt was not updated. Please try again.",
+    "your image url was not generated. please try again.":
+      "your image url was not generated. Please try again.",
+    "your image url was not uploaded. please try again.":
+      "your image url was not uploaded. Please try again.",
 
-    users: {
-      "this email is already used.": "This email is already used.",
-      "incorrect email address.": "Incorrect email address.",
-      "incorrect password": "Incorrect password",
-      "no password setting to that account, login using google.":
-        "No password setting to that account, Login using Google.",
-      "you are not logged in.": "You are not logged in.",
-      "this action needs you to be logged in.":
-        "this action needs you to be logged in.",
-      "you don't have access to do this action.":
-        "you don't have access to do this action.",
-      "your user account was not updated. please try again.":
-        "your user account was not updated. please try again.",
-    },
-
-    projects: {
-      "this action needs you to be logged in.":
-        "يجب أن تكون مسجل أولاً لهذا الإجراء.",
-      "you don't have access to do this action.":
-        "أنت غير مسموح لك بهذا الإجراء.",
-
-      "your project was not created. please try again.":
-        "your project was not created. Please try again.",
-      "your project was not updated. please try again.":
-        "your project was not updated. please try again.",
-      "your project was not deleted. please try again.":
-        "your project was not deleted. Please try again.",
-    },
+    "this action needs you to be logged in.":
+      "this action needs you to be logged in.",
+    "you don't have access to do this action.":
+      "you don't have access to do this action.",
   },
 };

@@ -761,67 +761,71 @@ export default {
     ] as SelectItem[],
   },
   actions: {
-    "getting info...": "جارٍ الحصول على المعلومات...",
-    "generating using AI...": "جارٍ الإنشاء باستخدام الذكاء الاصطناعي...",
-    "saving study case...": "جارٍ حفظ دراسة الحالة...",
-    "created study case...": "تم إنشاء دراسة الحالة...",
+    // users: {
+    "this email is already used.": "هذا البريد الإلكتروني مستخدم بالفعل.",
+    "incorrect email address.": "عنوان بريد إلكتروني غير صحيح.",
+    "incorrect password": "كلمة المرور غير صحيحة.",
+    "no password setting to that account, login using google.":
+      "لا توجد كلمة مرور لهذا الحساب، سجل عن طريق جوجل.",
+    "you are not logged in.": "لم تقم بتسجيل الدخول.",
+    "your user account was not logged in. please try again.":
+      "لم يتم التسجيل للحساب الخاص بك. الرجاء المحاولة مرة أخرى.",
+    "your user account was not created. please try again.":
+      "لم يتم إنشاء الحساب الخاص بك. الرجاء المحاولة مرة أخرى.",
+    "your user account was not updated. please try again.":
+      "لم يتم تحديث الحساب الخاص بك. الرجاء المحاولة مرة أخرى.",
+    "your user account was not deleted. please try again.":
+      "لم يتم حذف الحساب الخاص بك. الرجاء المحاولة مرة أخرى.",
+
+    // projects: {
+    "your project was not created. please try again.":
+      "لم يتم إنشاء المشروع الخاص بك. الرجاء المحاولة مرة أخرى.",
+    "your project was not updated. please try again.":
+      "لم يتم تحديث المشروع الخاص بك. الرجاء المحاولة مرة أخرى.",
+    "your project was not deleted. please try again.":
+      "لم يتم حذف المشروع الخاص بك. الرجاء المحاولة مرة أخرى.",
+
+    // "study-case": {
     "your study case was not created. please try again.":
       "لم يتم إنشاء دراسة الحالة الخاصة بك. الرجاء المحاولة مرة أخرى.",
-    "deleted successfully.": "تم الحذف بنجاح.",
     "your study case was not deleted. please try again.":
       "لم يتم حذف دراسة الحالة الخاصة بك. الرجاء المحاولة مرة أخرى.",
-    "updated successfully.": "تم التحديث بنجاح.",
     "your study case was not updated. please try again.":
       "لم يتم تحديث دراسة الحالة الخاصة بك. الرجاء المحاولة مرة أخرى.",
-    "non existing study case.": "دراسة حالة غير موجودة.",
-    "generating images...": "جارٍ إنشاء الصور...",
-    "generating AI prompt for social media...":
-      "جارٍ إنشاء النصوص للذكاء الاصطناعي لوسائل التواصل الاجتماعي...",
-    "generating social media content...":
-      "جارٍ إنشاء محتوى لوسائل التواصل الاجتماعي...",
-    "generating AI images...": "جارٍ إنشاء صور بالذكاء الاصطناعي...",
-    "adusting posts together...": "جارٍ تعديل المنشورات معًا...",
-    "saving posts...": "جارٍ حفظ المنشورات...",
-    "posts were created.": "تم إنشاء المنشورات.",
-    "No posts to create.": "لا توجد منشورات لإنشائها.",
+
+    // "properties": {
+    "your property was not created. please try again.":
+      "لم يتم إنشاء الوحدة الخاصة بك. الرجاء المحاولة مرة أخرى.",
+    "your property was not updated. please try again.":
+      "لم يتم تحديث الوحدة الخاصة بك. الرجاء المحاولة مرة أخرى.",
+    "your property was not deleted. please try again.":
+      "لم يتم حذف الوحدة الخاصة بك. الرجاء المحاولة مرة أخرى.",
+
+    // posts: {
     "your post was not created. please try again.":
       "لم يتم إنشاء المنشور الخاص بك. الرجاء المحاولة مرة أخرى.",
+    "your post was not updated. please try again.":
+      "لم يتم تحديث المنشور الخاص بك. الرجاء المحاولة مرة أخرى.",
     "your post was not deleted. please try again.":
       "لم يتم حذف المنشور الخاص بك. الرجاء المحاولة مرة أخرى.",
-    "creating properties...": "جارٍ إنشاء الوحدات...",
-    "creating platforms...": "جارٍ إنشاء المنصات...",
-    "creating project...": "جارٍ إنشاء المشروع...",
-    "created successfully.": "تم الإنشاء بنجاح.",
-    "one property was created.": "تم إنشاء وحدة واحدة.",
-    "properties were created.": "وحدات تم إنشاؤها.",
 
-    users: {
-      "this email is already used.": "هذا البريد الإلكتروني مستخدم بالفعل.",
-      "incorrect email address.": "عنوان بريد إلكتروني غير صحيح.",
-      "incorrect password": "كلمة المرور غير صحيحة.",
-      "no password setting to that account, login using google.":
-        "لا توجد كلمة مرور لهذا الحساب، سجل عن طريق جوجل.",
-      "you are not logged in.": "لم تقم بتسجيل الدخول.",
-      "this action needs you to be logged in.":
-        "يجب أن تكون مسجل أولاً لهذا الإجراء.",
-      "you don't have access to do this action.":
-        "أنت غير مسموح لك بهذا الإجراء.",
-      "your user account was not updated. please try again.":
-        "your user account was not updated. please try again.",
-    },
+    // images: {
+    "your image was not created. please try again.":
+      "لم يتم إنشاء الصورة الخاصة بك. الرجاء المحاولة مرة أخرى.",
+    "your image was not updated. please try again.":
+      "لم يتم تحديث الصورة الخاصة بك. الرجاء المحاولة مرة أخرى.",
+    "your image was not deleted. please try again.":
+      "لم يتم حذف الصورة الخاصة بك. الرجاء المحاولة مرة أخرى.",
+    "your image prompt was not updated. please try again.":
+      "your image prompt was not updated. Please try again.",
+    "your image url was not generated. please try again.":
+      "your image url was not generated. Please try again.",
+    "your image url was not uploaded. please try again.":
+      "your image url was not uploaded. Please try again.",
 
-    projects: {
-      "this action needs you to be logged in.":
-        "يجب أن تكون مسجل أولاً لهذا الإجراء.",
-      "you don't have access to do this action.":
-        "أنت غير مسموح لك بهذا الإجراء.",
-
-      "your project was not created. please try again.":
-        "your project was not created. Please try again.",
-      "your project was not updated. please try again.":
-        "your project was not updated. please try again.",
-      "your project was not deleted. please try again.":
-        "your project was not deleted. Please try again.",
-    },
+    "this action needs you to be logged in.":
+      "يجب أن تكون مسجل أولاً لهذا الإجراء.",
+    "you don't have access to do this action.":
+      "أنت غير مسموح لك بهذا الإجراء.",
   },
 };

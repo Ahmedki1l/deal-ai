@@ -6,7 +6,7 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
-import { t } from "@/lib/locale";
+import { clientAction } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { postRestoreSchema } from "@/validations/posts";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,22 +40,16 @@ export function PostRestoreButton({
     },
   });
 
-  function onSubmit(data: z.infer<typeof postRestoreSchema>) {
-    setLoading(true);
-    // @ts-ignore
-    toast.promise(updatePostFeature({ ...data, deletedAt: null }), {
-      finally: () => setLoading(false),
-      error: async (err) => {
-        const msg = await t(err?.["message"], lang);
-        return msg;
-      },
-      success: () => {
-        router.refresh();
-        form.reset();
-        setOpen(false);
-        return c?.["restored successfully."];
-      },
-    });
+  async function onSubmit(data: z.infer<typeof postRestoreSchema>) {
+    await clientAction(
+      async () => await updatePostFeature({ ...data, deletedAt: null }),
+      setLoading,
+    );
+
+    toast.success(c?.["restored successfully."]);
+    setOpen(false);
+    form.reset();
+    router.refresh();
   }
 
   return (

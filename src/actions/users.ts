@@ -3,8 +3,8 @@
 import { getLocale, hash, verify } from "@/actions/helpers";
 import { db } from "@/db";
 import { getAuth, google, lucia } from "@/lib/auth";
-import { ZodError } from "@/lib/exceptions";
 import { getDictionary, t } from "@/lib/locale";
+import { ZodError } from "@/lib/zod";
 import {
   userAuthLoginSchema,
   userAuthRegisterSchema,
@@ -22,11 +22,8 @@ export async function signUpWithPassword(
   credentials: z.infer<typeof userAuthRegisterSchema>,
 ) {
   const locale = await getLocale();
+  const { actions: c } = await getDictionary(locale);
   try {
-    const {
-      actions: { users: c },
-    } = await getDictionary(locale);
-
     const { name, email, password } = userAuthRegisterSchema.parse(credentials);
     const passwordHash = await hash(password);
 
@@ -60,10 +57,9 @@ export async function signUpWithPassword(
     );
   } catch (error: any) {
     return {
-      error: await t(error?.["message"] ?? "an error occured, try again.", {
-        from: "en",
-        to: locale,
-      }),
+      error: error?.["message"]
+        ? await t(error?.["message"], { from: "en", to: locale })
+        : c?.["your user account was not created. please try again."],
     };
   }
 }
@@ -72,12 +68,8 @@ export async function signInWithPassword(
   credentials: z.infer<typeof userAuthLoginSchema>,
 ) {
   const locale = await getLocale();
-
+  const { actions: c } = await getDictionary(locale);
   try {
-    const {
-      actions: { users: c },
-    } = await getDictionary(locale);
-
     const { email, password } = userAuthLoginSchema.parse(credentials);
     const existingUser = await db.user.findFirst({
       where: {
@@ -105,10 +97,9 @@ export async function signInWithPassword(
     );
   } catch (error: any) {
     return {
-      error: await t(error?.["message"] ?? "an error occured, try again.", {
-        from: "en",
-        to: locale,
-      }),
+      error: error?.["message"]
+        ? await t(error?.["message"], { from: "en", to: locale })
+        : c?.["your user account was not logged in. please try again."],
     };
   }
 }
@@ -143,7 +134,7 @@ export async function signInWithGoogle() {
 
   redirect(url.toString());
 
-  // return { data: url.toString() };
+  // return url.toString()
   // } catch (error: any) {
   //   if (isRedirectError(error))
   //     return { error: await t(error?.["message"], { from: "en", to: locale }) };
@@ -158,9 +149,7 @@ export async function signInWithGoogle() {
 
 export async function logout() {
   const locale = await getLocale();
-  const {
-    actions: { users: c },
-  } = await getDictionary(locale);
+  const { actions: c } = await getDictionary(locale);
 
   const { session } = await getAuth();
 
@@ -186,9 +175,7 @@ export async function updateUser({
   | typeof userUpdateProfilePasswordSchema
 >) {
   const locale = await getLocale();
-  const {
-    actions: { users: c },
-  } = await getDictionary(locale);
+  const { actions: c } = await getDictionary(locale);
   try {
     const user = await getAuth();
     if (!user)
@@ -226,9 +213,7 @@ export async function updatePassword({
   ...data
 }: z.infer<typeof userUpdateProfilePasswordSchema>) {
   const locale = await getLocale();
-  const {
-    actions: { users: c },
-  } = await getDictionary(locale);
+  const { actions: c } = await getDictionary(locale);
 
   try {
     const user = await getAuth();

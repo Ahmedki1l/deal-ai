@@ -54,9 +54,7 @@ export async function fetcher<T>(
 ): Promise<T> {
   const response = await fetch(url, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!response.ok) throw new Error(await response.text());
@@ -70,19 +68,19 @@ export async function fetcher<T>(
 }
 
 export const clientAction = async <T>(
-  func: () => Promise<{ data: T } | { error: string } | void>,
+  func: () => Promise<T | void | { error: string }>,
   setLoading: Dispatch<SetStateAction<boolean>>,
 ) => {
   try {
     setLoading(true);
     const result = await func();
 
-    if (typeof result === "object" && "error" in result) {
+    if (result && typeof result === "object" && "error" in result) {
       toast.error(result?.["error"]);
       return;
     }
 
-    return result?.["data"];
+    return result;
   } catch (error: any) {
     toast.error(error?.["message"]);
   } finally {

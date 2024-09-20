@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteCookie, setCookie } from "@/actions/helpers";
+import { createProperty } from "@/actions/properties";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
 import { Icons } from "@/components/icons";
 import { PropertyForm } from "@/components/property-form";
@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { propertyTypes } from "@/db/enums";
 import { useLocale } from "@/hooks/use-locale";
-import { ID } from "@/lib/constants";
+import { clientAction } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { propertyCreateFormSchema } from "@/validations/properties";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -49,59 +49,18 @@ export function PropertyCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof propertyCreateFormSchema>) {
-    const id = ID.generate();
-    const key = `create-${id}`;
-    const toastId = toast.loading(c?.["initializing property..."]);
+    await clientAction(async () => await createProperty(data), setLoading);
 
-    try {
-      setLoading(true);
-      await setCookie(key, data);
-
-      const eventSource = new EventSource(`/api/properties?key=${key}`);
-      eventSource.addEventListener("status", (event) => {
-        toast.loading(event.data?.replaceAll('"', ""), {
-          id: toastId,
-        });
-      });
-
-      eventSource.addEventListener("completed", (event) => {
-        toast.dismiss(toastId);
-        eventSource.close();
-        toast.success(event.data?.replaceAll('"', ""));
-
-        router.refresh();
-        setOpen(false);
-        form.reset();
-        setLoading(false);
-      });
-
-      eventSource.addEventListener("error", (event) => {
-        console.error("Error occurred:", event);
-        toast.dismiss(toastId);
-        eventSource.close();
-
-        setLoading(false);
-      });
-
-      eventSource.addEventListener("close", () => {
-        toast.dismiss(toastId);
-        eventSource.close();
-
-        setLoading(false);
-      });
-    } catch (err: any) {
-      toast.dismiss(toastId);
-      setLoading(false);
-
-      toast.error(err?.message);
-    } finally {
-      await deleteCookie(key);
-    }
+    toast.success(c?.["created successfully."]);
+    setOpen(false);
+    form.reset();
+    router.refresh();
   }
 
   return (
     <DialogResponsive
       dic={dic}
+      disabled={loading}
       confirmButton={
         <>
           <Form {...form}>

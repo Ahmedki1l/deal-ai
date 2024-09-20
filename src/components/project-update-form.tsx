@@ -7,7 +7,7 @@ import { ProjectForm } from "@/components/project-form";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
-import { t } from "@/lib/locale";
+import { clientAction } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { projectUpdateFormSchema } from "@/validations/projects";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -53,28 +53,21 @@ export function ProjectUpdateForm({
     },
   });
 
-  function onSubmit(data: z.infer<typeof projectUpdateFormSchema>) {
-    setLoading(true);
-    toast.promise(
-      updateProject({
-        ...data,
-        // platforms: data?.["platforms"].map((e) => e?.["value"]),
-        propertyTypes: data?.["propertyTypes"].map((e) => e?.["value"]),
-      }),
-      {
-        finally: () => setLoading(false),
-        error: async (err) => {
-          const msg = await t(err?.["message"], lang);
-          return msg;
-        },
-        success: () => {
-          router.refresh();
-          form.reset();
-          setOpen(false);
-          return c?.["updated successfully."];
-        },
-      },
+  async function onSubmit(data: z.infer<typeof projectUpdateFormSchema>) {
+    await clientAction(
+      async () =>
+        await updateProject({
+          ...data,
+          // platforms: data?.["platforms"].map((e) => e?.["value"]),
+          propertyTypes: data?.["propertyTypes"].map((e) => e?.["value"]),
+        }),
+      setLoading,
     );
+
+    toast.success(c?.["updated successfully."]);
+    setOpen(false);
+    form.reset();
+    router.refresh();
   }
 
   return (

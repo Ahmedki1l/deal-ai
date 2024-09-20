@@ -1,6 +1,12 @@
 // used for simplifying validations.
 import * as zod from "zod";
 
+export class ZodError extends Error {
+  constructor(errors: zod.ZodError<any>) {
+    super(errors?.["issues"]?.pop()?.["message"]);
+  }
+}
+
 const type = (title: string, type: string) => {
   return {
     required_error: `${title} is required.`,

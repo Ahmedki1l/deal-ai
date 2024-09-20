@@ -809,5 +809,19 @@ export default {
       "your user account was not updated. please try again.":
         "your user account was not updated. please try again.",
     },
+
+    projects: {
+      "this action needs you to be logged in.":
+        "يجب أن تكون مسجل أولاً لهذا الإجراء.",
+      "you don't have access to do this action.":
+        "أنت غير مسموح لك بهذا الإجراء.",
+
+      "your project was not created. please try again.":
+        "your project was not created. Please try again.",
+      "your project was not updated. please try again.":
+        "your project was not updated. please try again.",
+      "your project was not deleted. please try again.":
+        "your project was not deleted. Please try again.",
+    },
   },
 };

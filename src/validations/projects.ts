@@ -31,12 +31,22 @@ export const projectSchema = z.object(
   },
 );
 
-export const projectCreateSchema = projectSchema.omit({
-  id: true,
-  deletedAt: true,
+export const projectCreateSchema = projectSchema.pick({
+  userId: true,
+
+  logo: true,
+
+  title: true,
+  description: true,
+
+  distinct: true,
+  city: true,
+  country: true,
+  spaces: true,
+
+  platforms: true,
 });
 export const projectCreateFormSchema = projectCreateSchema
-  .omit({ propertyTypes: true })
   .and(
     z.object({
       map: z.string("map").optional(),
@@ -60,6 +70,7 @@ export const projectUpdateFormSchema = projectUpdateSchema
       ),
     }),
   );
+
 export const projectDeleteSchema = projectSchema.pick({ id: true });
 export const projectBinSchema = projectSchema.pick({
   id: true,

@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
 import { useLocale } from "@/hooks/use-locale";
-import { cn, toastPromise } from "@/lib/utils";
+import { clientAction, cn } from "@/lib/utils";
 import { NavItem } from "@/types";
 import { Dictionary } from "@/types/locale";
 import { User } from "lucia";
@@ -219,10 +219,9 @@ export function ResizableLayout({
                       className="mx-auto w-full"
                       disabled={loading}
                       onClick={async () => {
-                        await toastPromise(
+                        await clientAction(
                           async () => await logout(),
                           setLoading,
-                          lang,
                         );
                       }}
                       size="icon"
@@ -240,10 +239,9 @@ export function ResizableLayout({
                     className="mx-auto w-full justify-start"
                     disabled={loading}
                     onClick={async () => {
-                      await toastPromise(
+                      await clientAction(
                         async () => await logout(),
                         setLoading,
-                        lang,
                       );
                     }}
                     size="sm"

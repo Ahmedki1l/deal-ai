@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { propertyTypes } from "@/db/enums";
 import { useLocale } from "@/hooks/use-locale";
-import { toastPromise } from "@/lib/utils";
+import { clientAction } from "@/lib/utils";
 import { User } from "@/types/db";
 import { Dictionary } from "@/types/locale";
 import { projectCreateFormSchema } from "@/validations/projects";
@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 import { Label } from "./ui/label";
 
@@ -51,69 +52,19 @@ export function ProjectCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof projectCreateFormSchema>) {
-    await toastPromise(
+    await clientAction(
       async () =>
         await createProject({
           ...data,
           logo: data?.["logo"]?.split(",")?.[1] ?? null,
         }),
       setLoading,
-      lang,
     );
-    // const id = ID.generate();
-    // const key = `create-${id}`;
-    // const toastId = toast.loading(c?.["initializing project..."]);
 
-    // try {
-    //   setLoading(true);
-    //   console.log(data?.["logo"]?.["length"]);
-
-    //   await setCookie(key, {
-    //     ...data,
-    //     logo: data?.["logo"]?.split(",")?.["1"] ?? null,
-    //   });
-
-    //   const eventSource = new EventSource(`/api/projects?key=${key}`);
-    //   eventSource.addEventListener("status", (event) => {
-    //     toast.loading(event.data?.replaceAll('"', ""), {
-    //       id: toastId,
-    //     });
-    //   });
-
-    //   eventSource.addEventListener("completed", (event) => {
-    //     toast.dismiss(toastId);
-    //     eventSource.close();
-    //     toast.success(event.data?.replaceAll('"', ""));
-
-    //     router.refresh();
-    //     setOpen(false);
-    //     form.reset();
-    //     setLoading(false);
-    //   });
-
-    //   eventSource.addEventListener("error", (event) => {
-    //     console.error("Error occurred:", event);
-    //     toast.dismiss(toastId);
-    //     eventSource.close();
-
-    //     setLoading(false);
-    //   });
-
-    //   eventSource.addEventListener("close", () => {
-    //     toast.dismiss(toastId);
-    //     eventSource.close();
-
-    //     setLoading(false);
-    //   });
-    // } catch (err: any) {
-    //   toast.dismiss(toastId);
-    //   setLoading(false);
-
-    //   toast.error(err?.message);
-    // } finally {
-    //   toast.dismiss(toastId);
-    //   await deleteCookie(key);
-    // }
+    toast.success(c?.["created successfully."]);
+    setOpen(false);
+    form.reset();
+    router.refresh();
   }
 
   return (

@@ -9,7 +9,7 @@ export function useTranslation(txt: string): string | null {
   useEffect(() => {
     const fetchTranslation = async () => {
       try {
-        setValue(txt ? await t(String(txt), lang) : null);
+        setValue(txt ? await t(String(txt), { from: "en", to: lang }) : null);
       } catch (error) {
         console.error("Translation error:", error);
       }

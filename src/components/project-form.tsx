@@ -431,7 +431,7 @@ export const ProjectForm = {
         {
           finally: () => setConnectLoading(null),
           error: async (err) => {
-            const msg = await t(err?.["message"], lang);
+            const msg = await t(err?.["message"], { from: "en", to: lang });
             return msg;
           },
           success: (data) => {

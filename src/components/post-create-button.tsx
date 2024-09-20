@@ -63,7 +63,7 @@ export function PostCreateButton({
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <Button disabled={loading} className="w-full md:w-fit">
-                {loading && <Icons.spinner />}
+                {!disabled && loading && <Icons.spinner />}
                 {c?.["submit"]}
               </Button>
             </form>

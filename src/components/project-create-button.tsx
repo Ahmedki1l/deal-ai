@@ -34,11 +34,12 @@ export type ProjectCreateButtonProps = { user: User } & Omit<
 export function ProjectCreateButton({
   dic: { "project-create-button": c, ...dic },
   user,
+  disabled,
   ...props
 }: ProjectCreateButtonProps) {
   const lang = useLocale();
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const [open, setOpen] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof projectCreateFormSchema>>({
@@ -77,7 +78,7 @@ export function ProjectCreateButton({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Button disabled={loading} className="w-full md:w-fit">
-              {loading && <Icons.spinner />}
+              {!disabled && loading && <Icons.spinner />}
               {c?.["submit"]}
             </Button>
           </form>

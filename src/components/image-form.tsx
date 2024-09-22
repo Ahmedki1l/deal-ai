@@ -95,7 +95,8 @@ export const ImageForm = {
             const file = e?.["target"]?.["files"]?.[0];
             if (file) {
               const base64 = (await fileToBase64(file))!?.toString();
-              editor?.["current"]?.addBase64({ base64 });
+              const { photoNode } = editor?.["current"]!.addBase64({ base64 });
+              form.setValue("editor.photo", photoNode);
             }
           }}
           disabled={loading}
@@ -130,6 +131,7 @@ export const ImageForm = {
       form.setValue("prompt", r);
       toast.success(c?.["regenerate-image"]?.["enhanced successfully."]);
     }
+
     async function regenerateImage() {
       setImageLoading(true);
       const r = await clientAction(
@@ -143,7 +145,9 @@ export const ImageForm = {
 
       setOpen(false);
       form.setValue("src", r);
-      editor?.["current"]?.addPhoto({ url: r });
+      const { photoNode } = editor?.["current"]!.addPhoto({ url: r });
+      form.setValue("editor.photo", photoNode);
+
       toast.success(c?.["regenerate-image"]?.["generated successfully."]);
     }
 
@@ -223,10 +227,10 @@ export const ImageForm = {
     return (
       <FormField
         control={form.control}
-        name="frame"
+        name="filledFrame"
         render={({ field }) => (
           <FormItem>
-            {/* <FormLabel className="sr-only">{c?.["frame"]}</FormLabel> */}
+            {/* <FormLabel className="sr-only">{c?.["filledFrame"]}</FormLabel> */}
 
             <Popover>
               <PopoverTrigger asChild>
@@ -242,20 +246,19 @@ export const ImageForm = {
                   className="grid grid-cols-3 gap-4"
                   disabled={loading}
                   onValueChange={(e) => {
-                    editor?.["current"]?.addFrame({
-                      url: FRAMES?.[Number(e)]?.["src"],
+                    const { frameNode, textNodes } = editor?.[
+                      "current"
+                    ]!.addFrame({
+                      n: Number(e),
                       data: {
                         title: "x project",
                         website: "www.x.com",
                         phone: "0102 218 4878",
                       },
                     });
-                    console.log(editor?.["current"]?.getTextNodes());
                     field.onChange(FRAMES?.[Number(e)]?.["filled"]);
-                    form.setValue(
-                      "texts",
-                      editor?.["current"]?.getTextNodes() ?? [],
-                    );
+                    form.setValue("editor.frame", frameNode);
+                    form.setValue("editor.textNodes", textNodes);
                   }}
                 >
                   {FRAMES?.map((f, i) => (
@@ -293,10 +296,10 @@ export const ImageForm = {
   //   return (
   //     <FormField
   //       control={form.control}
-  //       name="frame"
+  //       name="filledFrame"
   //       render={({ field }) => (
   //         <FormItem>
-  //           {/* <FormLabel className="sr-only">{c?.["frame"]}</FormLabel> */}
+  //           {/* <FormLabel className="sr-only">{c?.["filledFrame"]}</FormLabel> */}
 
   //           <Popover>
   //             <PopoverTrigger asChild>

@@ -21,7 +21,6 @@ import { toast } from "sonner";
 import * as z from "zod";
 import { Image } from "./image";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Input } from "./ui/input";
 
 export type ImageEditorProps = {
   image: ImageType & {
@@ -49,7 +48,11 @@ export function ImageEditor({
   const form = useForm<z.infer<typeof imageUpdateFormSchema>>({
     // mode: "onSubmit",
     resolver: zodResolver(imageUpdateFormSchema),
-    defaultValues: { ...image, dimensios: { width: "600", height: "600" } },
+    defaultValues: {
+      id: image?.["id"],
+      prompt: image?.["prompt"],
+      dimensios: { width: "600", height: "600" },
+    },
   });
 
   useEffect(() => {
@@ -60,7 +63,10 @@ export function ImageEditor({
         height: 600,
       });
 
-      editor.current?.addPhoto({ url: image?.["src"] });
+      const { photoNode } = editor.current?.addPhoto({
+        url: image?.["src"],
+      });
+      form.setValue("editor.photo", photoNode);
 
       // const handleResize = () => {
       //   const container = containerRef.current;
@@ -77,15 +83,14 @@ export function ImageEditor({
       //   window.removeEventListener("resize", handleResize);
       // };
     }
-  }, [image]);
+  }, []);
 
   async function onSubmit(data: z.infer<typeof imageUpdateFormSchema>) {
     await clientAction(
       async () =>
         await updateImage({
-          id: data?.["id"],
+          ...data,
           src: editor?.["current"]?.getResult()!,
-          prompt: data?.["prompt"],
         }),
       setLoading,
     );
@@ -128,7 +133,7 @@ export function ImageEditor({
                   size="sm"
                   onClick={() => {
                     form.reset();
-                    editor?.["current"]?.reset();
+                    editor?.current?.reset();
                   }}
                 >
                   clear
@@ -185,10 +190,10 @@ export function ImageEditor({
               </CardHeader>
 
               <CardContent className="p-2 pt-0">
-                {form.watch("frame") && (
+                {form.watch("filledFrame") && (
                   <CardContent className="p-2 pt-0">
                     <Image
-                      src={form.watch("frame")!}
+                      src={form.watch("filledFrame")!}
                       alt=""
                       className="aspect-square"
                     />
@@ -197,7 +202,7 @@ export function ImageEditor({
               </CardContent>
             </Card>
 
-            <Card className="space-y-1">
+            {/* <Card className="space-y-1">
               <CardHeader className="flex flex-row items-center justify-between p-0 px-2">
                 <CardTitle>Edit Text</CardTitle>
 
@@ -206,12 +211,13 @@ export function ImageEditor({
                     <Button
                       disabled={loading}
                       type="button"
+                      variant="outline"
                       size="icon"
                       onClick={() => {
-                        const node = editor?.["current"]?.addText({})!;
-                        form.setValue("texts", [
-                          ...form.getValues("texts"),
-                          node,
+                        const { textNode } = editor?.["current"]?.addText({})!;
+                        form.setValue("editor.textNodes", [
+                          ...form.getValues("editor.textNodes"),
+                          textNode,
                         ]);
                       }}
                     >
@@ -222,22 +228,20 @@ export function ImageEditor({
               </CardHeader>
 
               <CardContent className="p-2 pt-0">
-                {form.watch("texts") &&
-                  form.getValues("texts")?.map((txt, i) => (
+                {form.watch("editor.textNodes") &&
+                  form.getValues("editor.textNodes")?.map((txt, i) => (
                     <div key={i}>
                       <Input
                         defaultValue={txt?.text()}
-                        onChange={(e) => {
-                          console.log(e?.target?.value);
-                          txt?.setText(e?.target?.value);
-                        }}
+                        onChange={(e) => txt?.setText(e?.target?.value)}
                       />
                     </div>
                   ))}
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
-          <div className="flex items-center bg-green-800">
+
+          <div className="flex items-center justify-center bg-muted/50">
             <div
               id="photo-editor-container"
               ref={containerRef}

@@ -1,5 +1,5 @@
 import { z } from "@/lib/zod";
-import { Text } from "konva/lib/shapes/Text";
+import Konva from "konva";
 
 export const MAX_UPLOAD_SIZE = 1024 * 1024 * 5; // 5MB
 export const ACCEPTED_IMAGE_TYPES = [
@@ -23,20 +23,23 @@ export const imageCreateSchema = imageSchema.pick({
   prompt: true,
 });
 
-export const imageUpdateSchema = imageSchema
-  .pick({
-    id: true,
-    src: true,
-    prompt: true,
-  })
-  .and(z.object({ frame: z.string("frame")?.optional()?.nullable() }));
+export const imageUpdateSchema = imageSchema.pick({
+  id: true,
+  src: true,
+  prompt: true,
+});
 export const imageUpdateFormSchema = imageUpdateSchema.and(
   z.object({
     dimensios: z.object({
       width: z.string("width").min(1, "set height").max(4, "too long"),
       height: z.string("height").min(1, "set height").max(4, "too long"),
     }),
-    texts: z.array(z.instanceof(Text)).default([]),
+    filledFrame: z.string("filledFrame")?.nullable()?.default(null),
+    editor: z.object({
+      photo: z.instanceof(Konva.Image).nullable().default(null),
+      frame: z.instanceof(Konva.Image).nullable().default(null),
+      textNodes: z.array(z.instanceof(Konva.Text)).default([]),
+    }),
   }),
 );
 // .and(

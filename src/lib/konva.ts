@@ -1,4 +1,5 @@
 import Konva from "konva";
+import { FRAMES } from "./constants";
 
 type AcceptedFileTypes = string[];
 
@@ -9,7 +10,7 @@ class PhotoEditor {
   private transformer: Konva.Transformer;
 
   private photo: Konva.Image | null = null;
-  private theme: Konva.Image | null = null;
+  private frame: Konva.Image | null = null;
   private textNodes: Konva.Text[] = [];
   private history: Konva.Node[] = [];
 
@@ -37,7 +38,7 @@ class PhotoEditor {
 
       if (
         e.target === this.photo ||
-        e.target === this.theme ||
+        e.target === this.frame ||
         this.textNodes.includes(target as Konva.Text)
       )
         this.transformer.nodes([target]);
@@ -47,14 +48,16 @@ class PhotoEditor {
     });
   }
 
-  addPhoto({ url }: { url: string; width?: number; height?: number }) {
-    Konva.Image.fromURL(url, (imageNode: Konva.Image) => {
+  addPhoto({ url }: { url: string }) {
+    let photoNode: Konva.Image | null = null;
+
+    Konva.Image.fromURL(url, (loadedImageNode: Konva.Image) => {
       const { x, y, width, height } = this.scaledDimentions({
-        width: imageNode.width(),
-        height: imageNode.height(),
+        width: loadedImageNode.width(),
+        height: loadedImageNode.height(),
       });
 
-      imageNode.setAttrs({
+      loadedImageNode.setAttrs({
         x,
         y,
         width,
@@ -64,13 +67,18 @@ class PhotoEditor {
 
       if (this.photo) this.photo.destroy();
 
-      this.photo = imageNode;
-      this.layer.add(imageNode);
+      this.photo = loadedImageNode;
+      this.layer.add(loadedImageNode);
       this.layer.draw();
+
+      photoNode = loadedImageNode;
     });
+
+    return { photoNode };
   }
 
   addBase64({ base64 }: { base64: string; width?: number; height?: number }) {
+    let photoNode: Konva.Image | null = null;
     const image = new Image();
     image.src = base64; // set the base64 string as the image source
 
@@ -95,16 +103,20 @@ class PhotoEditor {
       this.photo = imageNode;
       this.layer.add(imageNode);
       this.layer.draw();
+
+      photoNode = imageNode;
     };
+
+    return { photoNode };
   }
 
   addFrame({
-    url,
+    n,
     width = this.stage.width(),
     height = this.stage.height(),
     data,
   }: {
-    url: string;
+    n: number;
     width?: number;
     height?: number;
     data: { title: string; website: string; phone: string };
@@ -128,15 +140,17 @@ class PhotoEditor {
     //     draggable: this.isEditorEnabled,
     //   });
 
-    //   if (this.theme) this.theme.destroy();
+    //   if (this.frame) this.frame.destroy();
 
-    //   this.theme = imageNode;
+    //   this.frame = imageNode;
     //   this.layer.add(imageNode);
     //   this.layer.draw();
     // });
 
-    // frames?.[n]?.["src"]
-    Konva.Image.fromURL(url, (imageNode: Konva.Image) => {
+    let frameNode: Konva.Image | null = null;
+    let textNodes: Konva.Text[] = [];
+
+    Konva.Image.fromURL(FRAMES?.[n]?.["src"], (imageNode: Konva.Image) => {
       imageNode.setAttrs({
         x: 0,
         y: 0,
@@ -146,104 +160,122 @@ class PhotoEditor {
         opacity: 1,
       });
 
-      if (this.theme) {
-        [this.theme, ...this.textNodes].forEach((node) => {
+      if (this.frame) {
+        [this.frame, ...this.textNodes].forEach((node) => {
           if (node) node.destroy();
         });
       }
 
-      this.theme = imageNode;
+      this.frame = imageNode;
       this.layer.add(imageNode);
 
-      // if (n === 0) {
-      const titleArr = data?.["title"].split(" ");
+      if (n === 0) {
+        const titleArr = data?.["title"].split(" ");
 
-      // Specify the starting position and spacing
-      let currentY = 100; // Starting Y position
-      const startX = 20;
-      const spacing = 55; // Vertical spacing between each word
+        // Specify the starting position and spacing
+        let currentY = 100; // Starting Y position
+        const startX = 20;
+        const spacing = 55; // Vertical spacing between each word
 
-      if (titleArr?.[0]) {
-        this.addText({
-          text: titleArr?.[0],
-          fontSize: 32,
-          fontFamily: "Calibri",
-          x: startX,
-          y: currentY,
+        if (titleArr?.[0]) {
+          const { textNode: tn1 } = this.addText({
+            text: titleArr?.[0],
+            fontSize: 32,
+            fontFamily: "Calibri",
+            x: startX,
+            y: currentY,
+          });
+          currentY += spacing; // Move Y down for the next word
+          textNodes.push(tn1);
+        }
+
+        if (titleArr?.[1]) {
+          const { textNode: tn2 } = this.addText({
+            text: titleArr?.[1],
+            fontSize: 50,
+            fill: "yellow",
+            x: startX,
+            y: currentY,
+          });
+
+          currentY += spacing; // Move Y down for the next word
+          textNodes.push(tn2);
+        }
+
+        if (titleArr?.[2]) {
+          const { textNode: tn3 } = this.addText({
+            text: titleArr?.slice(2).join(" "),
+            fontSize: 32,
+            fontFamily: "Calibri",
+            x: startX,
+            y: currentY,
+            maxWidth: 250,
+          });
+          textNodes.push(tn3);
+        }
+
+        const { textNode: tn4 } = this.addText({
+          text: data?.["phone"],
+          x: startX + 40,
+          y: 520,
         });
-        currentY += spacing; // Move Y down for the next word
+        const { textNode: tn5 } = this.addText({
+          text: data?.["website"],
+          x: startX + 18,
+          y: 550,
+        });
+
+        textNodes.push(tn4);
+        textNodes.push(tn5);
       }
 
-      if (titleArr?.[1]) {
+      if (n === 1) {
         this.addText({
-          text: titleArr?.[1],
-          fontSize: 50,
-          fill: "yellow",
-          x: startX,
-          y: currentY,
+          text: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse nemo quisquam eveniet sed rem distinctio.",
+          x: this.stage.width() / 2 + 100,
+          y: 150,
+          maxWidth: this.stage.width() - (this.stage.width() / 2 + 100),
         });
 
-        currentY += spacing; // Move Y down for the next word
+        this.addText({
+          text: data?.["website"],
+          x: 120,
+          y: this.stage.height() - 80,
+        });
       }
+      if (n === 2) {
+        this.addText({
+          text: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse nemo quisquam eveniet sed rem distinctio.",
+          maxWidth: 250,
+        });
 
-      //         if (titleArr?.[2]) {
-      //           this.addText({
-      //             text: titleArr?.slice(2).join(" "),
-      //             fontSize: 32,
-      //             fontFamily: "Calibri",
-      //             x: startX,
-      //             y: currentY,
-      //             maxWidth: 250,
-      //           });
-      //         }
+        this.addText({
+          text: data?.["website"],
+          x: this.stage.width() - 200,
+          y: this.stage.height() - 50,
+        });
+      }
+      if (n === 3) {
+        this.addText({
+          text: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse nemo quisquam eveniet sed rem distinctio.",
+          x: this.stage.width() / 2 + 50,
+          y: 150,
+          maxWidth: 250,
+        });
 
-      //         this.addText({ text: data?.["phone"], x: startX + 40, y: 520 });
-      //         this.addText({ text: data?.["website"], x: startX + 18, y: 550 });
-      //       }
-
-      //       if (n === 1) {
-      //         this.addText({
-      //           text: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse nemo quisquam eveniet sed rem distinctio.",
-      //           x: this.stage.width() / 2 + 100,
-      //           y: 150,
-      //           maxWidth: this.stage.width() - (this.stage.width() / 2 + 100),
-      //         });
-
-      //         this.addText({
-      //           text: data?.["website"],
-      //           x: 120,
-      //           y: this.stage.height() - 80,
-      //         });
-      //       }
-      //       if (n === 2) {
-      //         this.addText({
-      //           text: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse nemo quisquam eveniet sed rem distinctio.",
-      //           maxWidth: 250,
-      //         });
-
-      //         this.addText({
-      //           text: data?.["website"],
-      //           x: this.stage.width() - 200,
-      //           y: this.stage.height() - 50,
-      //         });
-      //       }
-      //       if (n === 3) {
-      //         this.addText({
-      //           text: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse nemo quisquam eveniet sed rem distinctio.",
-      //           x: this.stage.width() / 2 + 50,
-      //           y: 150,
-      //           maxWidth: 250,
-      //         });
-
-      // this.addText({
-      //   text: data?.["website"],
-      //   x: 50,
-      //   y: this.stage.height() - 70,
-      // });
-      // }
+        this.addText({
+          text: data?.["website"],
+          x: 50,
+          y: this.stage.height() - 70,
+        });
+      }
 
       this.layer.draw();
+
+      frameNode = imageNode;
     });
+
+    return { frameNode, textNodes };
   }
 
   scaledDimentions({ width, height }: { width: number; height: number }) {
@@ -301,9 +333,9 @@ class PhotoEditor {
   //       imageNode.size({ width: w, height: h });
   //       imageNode.position({ x, y });
 
-  //       if (this.theme) this.theme.destroy();
+  //       if (this.frame) this.frame.destroy();
 
-  //       this.theme = imageNode;
+  //       this.frame = imageNode;
   //       this.layer.add(imageNode);
   //       this.layer.draw();
   //     };
@@ -448,7 +480,7 @@ class PhotoEditor {
 
     this.layer.draw();
 
-    return textNode;
+    return { textNode };
   } // Helper function to wrap text based on stage width
   wrapText(
     text: string,
@@ -494,13 +526,13 @@ class PhotoEditor {
   //       opacity: 1,
   //     });
 
-  //     if (this.theme) {
-  //       [this.theme, ...this.textNodes].forEach((node) => {
+  //     if (this.frame) {
+  //       [this.frame, ...this.textNodes].forEach((node) => {
   //         if (node) node.destroy();
   //       });
   //     }
 
-  //     this.theme = imageNode;
+  //     this.frame = imageNode;
   //     this.layer.add(imageNode);
 
   //     if (n === 0) {
@@ -619,7 +651,7 @@ class PhotoEditor {
     format: "png" | "jpeg" = "png",
     quality: number = 1,
   ) {
-    // if (!this.theme && !this.photo) return null;
+    // if (!this.frame && !this.photo) return null;
     this.transformer.nodes([]);
 
     // Generate the data URL
@@ -639,7 +671,7 @@ class PhotoEditor {
   }
 
   reset() {
-    [this.photo, this.theme, , ...this.textNodes].forEach((node) => {
+    [this.photo, this.frame, , ...this.textNodes].forEach((node) => {
       if (node) node.destroy();
     });
 
@@ -755,7 +787,7 @@ class PhotoEditor {
   // this.isEditorEnabled = !this.isEditorEnabled;
   // [
   //   this.photo,
-  //   this.theme,
+  //   this.frame,
   //   // , ...this.textNodes
   // ].forEach((node) => {
   //   if (node) {

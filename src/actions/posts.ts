@@ -6,7 +6,6 @@ import { getAuth } from "@/lib/auth";
 import { getDictionary } from "@/lib/dictionaries";
 import { t } from "@/lib/locale";
 import { fetchImage } from "@/lib/uploader";
-import { fetcher } from "@/lib/utils";
 import { ZodError } from "@/lib/zod";
 import {
   postBinSchema,
@@ -19,6 +18,7 @@ import {
   postUpdateSchema,
 } from "@/validations/posts";
 import { CaseStudy, Image, Platform, Project } from "@prisma/client";
+import axios from "axios";
 import { generateIdFromEntropySize } from "lucia";
 import { revalidatePath } from "next/cache";
 import Sharp from "sharp";
@@ -38,13 +38,11 @@ function containsArabic(text: string | null) {
 
 async function generateImg(prompt: string) {
   const request = { prompt: prompt };
-  const imageObject = await fetcher<{ data: { data: { url: string }[] } }>(
-    "https://elsamalotyapis-production.up.railway.app/api/generateImage",
-    {
-      method: "POST",
-      body: JSON.stringify(request),
-    },
-  );
+  const { data: imageObject }: { data: { data: { data: { url: string }[] } } } =
+    await axios.post(
+      "https://elsamalotyapis-production.up.railway.app/api/generateImage",
+      request,
+    );
 
   return imageObject.data.data[0].url;
 }
@@ -121,10 +119,10 @@ export async function createPost({
 
     console.log("social_media_response prompt: ", prompt);
 
-    const social_media_response = await fetcher<any>(social_media_endpoint, {
-      method: "POST",
-      body: JSON.stringify(prompt),
-    });
+    const { data: social_media_response } = await axios.post(
+      social_media_endpoint,
+      prompt,
+    );
 
     const daysToPost = noOfPostsPerWeek === 3 ? [0, 2, 4] : [0, 1, 2, 3, 4];
     const imageApiEndpoint =
@@ -161,12 +159,11 @@ export async function createPost({
         };
 
         console.log("prompt_generator_prompt: ", prompt_generator_prompt);
-        const prompt_generator_response = await fetcher<{ prompt: string }>(
+        const {
+          data: prompt_generator_response,
+        }: { data: { prompt: string } } = await axios.post(
           prompt_generator_endpoint,
-          {
-            method: "POST",
-            body: JSON.stringify(prompt_generator_prompt),
-          },
+          prompt_generator_prompt,
         );
         const imagePrompt = {
           input:
@@ -180,13 +177,8 @@ export async function createPost({
         };
 
         console.log("adjusted_image_prompt: ", adjusted_image_prompt);
-        const adjusted_image_response = await fetcher<{ prompt: string }>(
-          prompt_generator_endpoint,
-          {
-            method: "POST",
-            body: JSON.stringify(adjusted_image_prompt),
-          },
-        );
+        const { data: adjusted_image_response }: { data: { prompt: string } } =
+          await axios.post(prompt_generator_endpoint, adjusted_image_prompt);
 
         const adjusted_image = { prompt: adjusted_image_response?.prompt };
 

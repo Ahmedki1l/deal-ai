@@ -292,6 +292,14 @@ export default {
       },
     },
   },
+  editors: {
+    images: {
+      image: {
+        "back to": "back to",
+        "post of project": "post of project",
+      },
+    },
+  },
 
   "appearance-form": {
     theme: "Theme",
@@ -417,22 +425,24 @@ export default {
     cancel: "Cancel",
   },
 
+  "image-editor": {
+    "save changes": "save changes",
+  },
   "image-form": {
     src: {
       label: "Image Source",
       url: "url",
     },
-    prompt: {
-      label: "Prompt",
+    "regenerate-image": {
+      prompt: "Prompt",
+      "enhance prompt": "enhance prompt",
+      "generate image": "generate image",
       "enhanced successfully.": "enhanced successfully.",
       "generated successfully.": "generated successfully.",
-      "enhance prompt": "enhance prompt",
-      "new image": "new image",
-      enhance: "enhance",
-      generate: "generate",
     },
     frame: {
       frame: "Frame",
+      "add frame": "Add Frame",
       "applying frames...": "Applying Frames...",
       "no frames to be applied...": "No frames to be applied...",
     },

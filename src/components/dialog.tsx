@@ -25,6 +25,15 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { Dictionary } from "@/types/locale";
 import { AlertDialogTriggerProps } from "@radix-ui/react-alert-dialog";
 import * as React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
 
 export type DialogResponsiveProps = {
   confirmButton?: React.ReactNode;
@@ -33,7 +42,8 @@ export type DialogResponsiveProps = {
   description?: string | React.ReactNode;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
-} & Omit<AlertDialogTriggerProps, "content" | "open" | "setOpen"> &
+  type?: "dialog" | "alert";
+} & Omit<AlertDialogTriggerProps, "content" | "open" | "setOpen" | "type"> &
   Dictionary["dialog"];
 
 export function DialogResponsive({
@@ -45,9 +55,35 @@ export function DialogResponsive({
   setOpen,
   open,
   disabled,
+  type,
   ...props
 }: DialogResponsiveProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  if (isDesktop && type === "dialog") {
+    return (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild {...props} />
+        <DialogContent className="max-h-[95vh] overflow-auto">
+          <DialogHeader>
+            <DialogTitle className="justify-start">
+              {title ?? c?.["are you sure you want to proceed?"]}
+            </DialogTitle>
+            <DialogDescription className="max-w-prose">
+              {description ??
+                c?.[
+                  "please confirm that all the provided information is accurate. This action cannot be undone."
+                ]}
+            </DialogDescription>
+          </DialogHeader>
+          {content}
+          {confirmButton && (
+            <DialogFooter className="gap-2">{confirmButton}</DialogFooter>
+          )}
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   if (isDesktop) {
     return (

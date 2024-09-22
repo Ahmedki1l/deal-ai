@@ -286,6 +286,14 @@ export default {
       },
     },
   },
+  editors: {
+    images: {
+      image: {
+        "back to": "العودة إلي",
+        "post of project": "المنشور الخاص بـ مشروع",
+      },
+    },
+  },
 
   "appearance-form": {
     theme: "الثيم",
@@ -415,22 +423,24 @@ export default {
       "يرجى تأكيد أن جميع المعلومات المقدمة دقيقة. لا يمكن التراجع عن هذا الإجراء.",
     cancel: "إلغاء",
   },
+  "image-editor": {
+    "save changes": "save changes",
+  },
   "image-form": {
     src: {
       label: "مصدر الصورة",
       url: "الرابط",
     },
-    prompt: {
-      label: "الوصف",
+    "regenerate-image": {
+      prompt: "وصف الصورة",
+      "enhance prompt": "تحسين الوصف",
+      "generate image": "إنشاء صورة",
       "enhanced successfully.": "تم تحسينه بنجاح.",
       "generated successfully.": "تم إنشاؤه بنجاح.",
-      "enhance prompt": "تحسين الوصف",
-      "new image": "صورة جديدة",
-      enhance: "تحسين الوصف",
-      generate: "إنشاء صورة",
     },
     frame: {
-      frame: "Frame",
+      frame: "الإطار",
+      "add frame": "إضافة إطار",
       "applying frames...": "يتم التطبيق...",
       "no frames to be applied...": "لا يوجد فريم للإختيا...",
     },

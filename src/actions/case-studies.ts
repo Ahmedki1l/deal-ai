@@ -4,7 +4,6 @@ import { db } from "@/db";
 import { getAuth } from "@/lib/auth";
 import { getDictionary } from "@/lib/dictionaries";
 import { t } from "@/lib/locale";
-import { fetcher } from "@/lib/utils";
 import { ZodError } from "@/lib/zod";
 import {
   caseStudyBinSchema,
@@ -12,6 +11,7 @@ import {
   caseStudyDeleteSchema,
   caseStudyUpdateSchema,
 } from "@/validations/case-studies";
+import axios from "axios";
 import { generateIdFromEntropySize } from "lucia";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -90,20 +90,21 @@ export async function createCaseStudy({
       process.env.NEXT_PUBLIC_AI_API + `/${endpoint_language}/chat/casestudy`;
 
     // Send data to the server
-    const response = await fetcher<{
-      Case_Study: string;
-      Target_Audience: any;
-      Pros: any;
-      Cons: any;
-      Market_Strategy: any;
-      Performance_Metrics: any;
-      ROI_Calculation: any;
-      Strategic_Insights: any;
-      Recommendations: any;
-    }>(endpoint, {
-      method: "POST",
-      body: JSON.stringify(prompt),
-    });
+    const {
+      data: response,
+    }: {
+      data: {
+        Case_Study: string;
+        Target_Audience: any;
+        Pros: any;
+        Cons: any;
+        Market_Strategy: any;
+        Performance_Metrics: any;
+        ROI_Calculation: any;
+        Strategic_Insights: any;
+        Recommendations: any;
+      };
+    } = await axios.post(endpoint, prompt);
 
     const id = generateIdFromEntropySize(10);
     await db.$transaction(async (tx) => {

@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export async function convertBase64(
+export async function fileToBase64(
   file: File,
 ): Promise<string | ArrayBuffer | null> {
   return new Promise((resolve, reject) => {
@@ -46,25 +46,6 @@ export function isValidUrl(src: string) {
   } catch (e) {
     return false;
   }
-}
-
-export async function fetcher<T>(
-  url: RequestInfo | URL,
-  options?: RequestInit | undefined,
-): Promise<T> {
-  const response = await fetch(url, {
-    ...options,
-    headers: { "Content-Type": "application/json" },
-  });
-
-  if (!response.ok) throw new Error(await response.text());
-
-  const contentType = response.headers.get("content-type");
-  if (!contentType || !contentType.includes("application/json"))
-    throw new Error("Expected JSON response: " + (await response.text()));
-
-  const data = await response.json();
-  return data as T;
 }
 
 export const clientAction = async <T>(

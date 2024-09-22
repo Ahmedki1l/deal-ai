@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { convertBase64 } from "@/lib/utils";
+import { fileToBase64 } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import {
   caseStudyCreateFormSchema,
@@ -103,9 +103,7 @@ export const CaseStudyForm = {
                       onChange={async (e) => {
                         const file = e?.["target"]?.["files"]?.[0];
                         if (file) {
-                          const base64 = (
-                            await convertBase64(file)
-                          )?.toString();
+                          const base64 = (await fileToBase64(file))?.toString();
 
                           field.onChange(file);
                           form.setValue(`refImages.${i}.base64`, base64 ?? "");

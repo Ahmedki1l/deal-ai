@@ -6,7 +6,7 @@ import { PostBinButton } from "@/components/post-bin-button";
 import { PostForm } from "@/components/post-form";
 import { PostRestoreButton } from "@/components/post-restore-button";
 import { Tooltip } from "@/components/tooltip";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { Image } from "./image";
+import { Link } from "./link";
 
 export type PostUpdateFormProps = {
   post: Post & {
@@ -127,13 +129,22 @@ export function PostUpdateForm({
                 )}
               >
                 {/* <div className="absolute inset-0" /> */}
+                <Image src={post?.["image"]?.["src"]!} alt="" />
 
-                {/* <Image /> */}
                 <div className="absolute right-4 top-4 z-50 flex items-center gap-4 text-lg font-medium">
                   <Tooltip text={"edit image"}>
-                    <Button type="button" size="icon" disabled={loading}>
-                      <Icons.edit />
-                    </Button>
+                    <div>
+                      <Link
+                        href={`/editors/images/${post?.["image"]?.["id"]}`}
+                        disabled={loading}
+                        className={buttonVariants({
+                          variant: "outline",
+                          size: "icon",
+                        })}
+                      >
+                        <Icons.edit />
+                      </Link>
+                    </div>
                   </Tooltip>
                 </div>
               </div>

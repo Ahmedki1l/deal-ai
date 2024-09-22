@@ -54,7 +54,10 @@ export default async function RootLayout({
       )}
       suppressHydrationWarning
     >
-      <body suppressHydrationWarning className="h-screen overflow-hidden">
+      <body
+        suppressHydrationWarning
+        // className="h-screen overflow-hidden"
+      >
         <SessionProvider value={session}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <TooltipProvider delayDuration={0} disableHoverableContent={true}>

@@ -1,291 +1,350 @@
-// "use client";
+"use client";
 
-// import { generateImage, regenerateImagePrompt } from "@/actions/images";
-// import {
-//   FormControl,
-//   FormField,
-//   FormItem,
-//   FormLabel,
-//   FormMessage,
-// } from "@/components/ui/form";
-// import { Input } from "@/components/ui/input";
-// import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-// import { useLocale } from "@/hooks/use-locale";
-// import { FRAMES_URL } from "@/lib/constants";
-// import { t } from "@/lib/locale";
-// import { convertBase64 } from "@/lib/utils";
-// import { Dictionary } from "@/types/locale";
-// import { postUpdateSchema } from "@/validations/posts";
-// import { Dispatch, SetStateAction, useState } from "react";
-// import { UseFormReturn } from "react-hook-form";
-// import { toast } from "sonner";
-// import * as z from "zod";
-// import frame0 from "../../public/frames/filled/frame-00.png";
-// import frame2 from "../../public/frames/filled/frame-02.png";
-// import frame3 from "../../public/frames/filled/frame-03.png";
-// import frame4 from "../../public/frames/filled/frame-04.png";
-// import frame5 from "../../public/frames/filled/frame-05.png";
-// import frame6 from "../../public/frames/filled/frame-06.png";
-// import frame7 from "../../public/frames/filled/frame-07.png";
-// import frame8 from "../../public/frames/filled/frame-08.png";
-// import frame9 from "../../public/frames/filled/frame-09.png";
-// import frame10 from "../../public/frames/filled/frame-10.png";
-// import frame11 from "../../public/frames/filled/frame-11.png";
-// import frame12 from "../../public/frames/filled/frame-12.png";
-// import frame13 from "../../public/frames/filled/frame-13.png";
-// import frame14 from "../../public/frames/filled/frame-14.png";
-// import frame15 from "../../public/frames/filled/frame-15.png";
-// import frame16 from "../../public/frames/filled/frame-16.png";
-// import { Icons } from "./icons";
-// import { Image } from "./image";
-// import { Tooltip } from "./tooltip";
-// import { Button } from "./ui/button";
-// import { Textarea } from "./ui/textarea";
+import { generateImage, regenerateImagePrompt } from "@/actions/images";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { FRAMES } from "@/lib/constants";
+import { PhotoEditor } from "@/lib/konva";
+import { clientAction, fileToBase64 } from "@/lib/utils";
+import { Dictionary } from "@/types/locale";
+import { imageUpdateFormSchema } from "@/validations/images";
+import { MutableRefObject, useState } from "react";
+import { UseFormReturn } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
+import { DialogResponsive, DialogResponsiveProps } from "./dialog";
+import { Icons } from "./icons";
+import { Image } from "./image";
+import { Tooltip } from "./tooltip";
+import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
+import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 
-// export const frames = [
-//   frame0,
-//   // frame1,
-//   frame2,
-//   frame3,
-//   frame4,
-//   frame5,
-//   frame6,
-//   frame7,
-//   frame8,
-//   frame9,
-//   frame10,
-//   frame11,
-//   frame12,
-//   frame13,
-//   frame14,
-//   frame15,
-//   frame16,
-// ];
+export type ImageFormProps = {
+  loading: boolean;
+  form: UseFormReturn<z.infer<typeof imageUpdateFormSchema>, any, undefined>;
+} & Dictionary["image-form"];
 
-// export type ImageFormProps = {
-//   loading: boolean;
-//   form: UseFormReturn<z.infer<typeof postUpdateSchema>, any, undefined>;
-// } & Dictionary["image-form"];
+export const ImageForm = {
+  width: function Component({
+    dic: { "image-form": c },
+    loading,
+    form,
+  }: ImageFormProps) {
+    return (
+      <FormField
+        control={form.control}
+        name="dimensios.width"
+        render={({ field }) => (
+          <FormItem>
+            {/* <FormLabel className="sr-only">{c?.["width"]?.['width']}</FormLabel> */}
+            <FormControl>
+              <Input type="text" {...field} disabled={loading} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  },
+  height: function Component({
+    dic: { "image-form": c },
+    loading,
+    form,
+  }: ImageFormProps) {
+    return (
+      <FormField
+        control={form.control}
+        name="dimensios.height"
+        render={({ field }) => (
+          <FormItem>
+            {/* <FormLabel className="sr-only">{c?.["height"]?.['height']}</FormLabel> */}
+            <FormControl>
+              <Input type="text" {...field} disabled={loading} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  },
+  uploadFile: function Component({
+    dic: { "image-form": c },
+    loading,
+    form,
+    editor,
+  }: ImageFormProps & { editor: MutableRefObject<PhotoEditor | null> }) {
+    return (
+      <FormItem>
+        {/* <FormLabel className="sr-only">{c?.["height"]?.['height']}</FormLabel> */}
 
-// export const ImageForm = {
-//   src: ({
-//     dic,
-//     loading,
-//     form,
-//     setSrc,
-//   }: ImageFormProps & { setSrc: Dispatch<SetStateAction<string | null>> }) => (
-//     <FormField
-//       control={form?.["control"]}
-//       name="image.file"
-//       render={({ field }) => (
-//         <FormItem>
-//           <FormControl>
-//             <div className="flex items-center justify-center gap-2">
-//               <Input
-//                 type="file"
-//                 {...field}
-//                 value={undefined}
-//                 onChange={async (e) => {
-//                   form.resetField("image");
+        <Input
+          type="file"
+          onChange={async (e) => {
+            const file = e?.["target"]?.["files"]?.[0];
+            if (file) {
+              const base64 = (await fileToBase64(file))!?.toString();
+              editor?.["current"]?.addBase64({ base64 });
+            }
+          }}
+          disabled={loading}
+        />
+      </FormItem>
+    );
+  },
+  regenerateImage: function Component({
+    dic: { "image-form": c, ...dic },
+    loading,
+    form,
+    editor,
+  }: ImageFormProps & { editor: MutableRefObject<PhotoEditor | null> } & Pick<
+      DialogResponsiveProps,
+      "dic"
+    >) {
+    const [promptLoading, setPromptLoading] = useState<boolean>(false);
+    const [imageLoading, setImageLoading] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
 
-//                   const file = e?.["target"]?.["files"]?.[0];
+    async function regeneratePrompt() {
+      setPromptLoading(true);
+      const r = await clientAction(
+        async () =>
+          await regenerateImagePrompt({
+            prompt: form.getValues("prompt") ?? "",
+          }),
+        setPromptLoading,
+      );
+      if (r === undefined) return;
 
-//                   if (file) {
-//                     const base64 = (await convertBase64(file))!?.toString();
+      form.setValue("prompt", r);
+      toast.success(c?.["regenerate-image"]?.["enhanced successfully."]);
+    }
+    async function regenerateImage() {
+      setImageLoading(true);
+      const r = await clientAction(
+        async () =>
+          await generateImage({
+            prompt: form.getValues("prompt") ?? "",
+          }),
+        setImageLoading,
+      );
+      if (r === undefined) return;
 
-//                     field.onChange(file);
-//                     form.setValue("image.base64", base64);
-//                     setSrc(base64);
-//                   }
-//                 }}
-//                 disabled={loading}
-//               />
-//               {!!form.watch("image.base64") ? (
-//                 <>
-//                   <Image
-//                     src={form.getValues("image.base64")!}
-//                     alt=""
-//                     className="h-8 w-8"
-//                   />
+      setOpen(false);
+      form.setValue("src", r);
+      editor?.["current"]?.addPhoto({ url: r });
+      toast.success(c?.["regenerate-image"]?.["generated successfully."]);
+    }
 
-//                   <Button
-//                     type="button"
-//                     variant="outline"
-//                     size="icon"
-//                     onClick={() => form.resetField("image")}
-//                     disabled={loading}
-//                   >
-//                     <Icons.x />
-//                   </Button>
-//                 </>
-//               ) : null}
-//             </div>
-//           </FormControl>
-//           <FormMessage />
-//         </FormItem>
-//       )}
-//     />
-//   ),
-//   prompt: function Component({
-//     dic: {
-//       "image-form": { prompt: c },
-//     },
-//     loading,
-//     form,
-//     setSrc,
-//   }: ImageFormProps & { setSrc: Dispatch<SetStateAction<string | null>> }) {
-//     const lang = useLocale();
-//     const [generatingPrompt, setGeneratingPrompt] = useState(false);
-//     const [generating, setGenerating] = useState(false);
+    return (
+      <DialogResponsive
+        dic={dic}
+        open={open}
+        setOpen={setOpen}
+        disabled={promptLoading || imageLoading}
+        confirmButton={
+          <Button
+            type="button"
+            onClick={regenerateImage}
+            disabled={promptLoading || imageLoading}
+          >
+            {imageLoading && <Icons.spinner />}
+            generate Image using AI
+          </Button>
+        }
+        content={
+          <>
+            <FormField
+              control={form.control}
+              name="prompt"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center justify-between pb-2">
+                    <FormLabel>{c?.["regenerate-image"]?.["prompt"]}</FormLabel>
 
-//     async function enhance() {
-//       setGeneratingPrompt(true);
-//       toast.promise(
-//         regenerateImagePrompt({
-//           prompt: form.getValues("image.prompt") ?? "",
-//         }),
-//         {
-//           finally: () => setGeneratingPrompt(false),
-//           error: async (err) => {
-//             const msg = await t(err?.["message"], lang);
-//             return msg;
-//           },
-//           success: (newPrompt: string) => {
-//             form.setValue("image.prompt", newPrompt);
+                    <Tooltip text={c?.["regenerate-image"]?.["enhance prompt"]}>
+                      <div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={regeneratePrompt}
+                          disabled={promptLoading || imageLoading}
+                        >
+                          {promptLoading ? <Icons.spinner /> : <Icons.reload />}
+                        </Button>
+                      </div>
+                    </Tooltip>
+                  </div>
+                  <FormControl>
+                    <Textarea
+                      className="min-h-40"
+                      {...field}
+                      disabled={loading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
+        }
+      >
+        <div>
+          <Tooltip text={c?.["regenerate-image"]?.["generate image"]}>
+            <Button type="button" variant="outline" size="icon">
+              <Icons.reload />
+            </Button>
+          </Tooltip>
+        </div>
+      </DialogResponsive>
+    );
+  },
+  frame: function Component({
+    dic: { "image-form": c, ...dic },
+    loading,
+    form,
+    editor,
+  }: ImageFormProps & { editor: MutableRefObject<PhotoEditor | null> } & Pick<
+      DialogResponsiveProps,
+      "dic"
+    >) {
+    return (
+      <FormField
+        control={form.control}
+        name="frame"
+        render={({ field }) => (
+          <FormItem>
+            {/* <FormLabel className="sr-only">{c?.["frame"]}</FormLabel> */}
 
-//             return c?.["enhanced successfully."];
-//           },
-//         },
-//       );
-//     }
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button type="button" variant="outline" size="icon">
+                  <Icons.add />
+                </Button>
+              </PopoverTrigger>
 
-//     async function generate() {
-//       setGenerating(true);
-//       toast.promise(
-//         generateImage({
-//           prompt: form.getValues("image.prompt") ?? "",
-//         }),
-//         {
-//           finally: () => setGenerating(false),
-//           error: async (err) => {
-//             const msg = await t(err?.["message"], lang);
-//             return msg;
-//           },
-//           success: async (src: string) => {
-//             form.resetField("image.base64");
-//             form.resetField("image.file");
+              <PopoverContent align="end">
+                <ToggleGroup
+                  type="single"
+                  variant="outline"
+                  className="grid grid-cols-3 gap-4"
+                  disabled={loading}
+                  onValueChange={(e) => {
+                    editor?.["current"]?.addFrame({
+                      url: FRAMES?.[Number(e)]?.["src"],
+                      data: {
+                        title: "x project",
+                        website: "www.x.com",
+                        phone: "0102 218 4878",
+                      },
+                    });
+                    console.log(editor?.["current"]?.getTextNodes());
+                    field.onChange(FRAMES?.[Number(e)]?.["filled"]);
+                    form.setValue(
+                      "texts",
+                      editor?.["current"]?.getTextNodes() ?? [],
+                    );
+                  }}
+                >
+                  {FRAMES?.map((f, i) => (
+                    <ToggleGroupItem
+                      key={i}
+                      value={i?.toString()}
+                      className="h-fit w-fit"
+                    >
+                      <Image
+                        src={f?.["src"]}
+                        alt=""
+                        className="h-20 rounded-none border-none"
+                      />
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              </PopoverContent>
+            </Popover>
 
-//             form?.setValue("image.src", src);
-//             form.setValue("image.base64", null);
-//             setSrc(src);
-//             return c?.["generated successfully."];
-//           },
-//         },
-//       );
-//     }
-//     return (
-//       <div className="mb-10 grid gap-4">
-//         <FormField
-//           control={form.control}
-//           name="image.prompt"
-//           render={({ field }) => (
-//             <FormItem>
-//               <div className="mb-2 flex items-center justify-between gap-4">
-//                 <FormLabel>{c?.["label"]}</FormLabel>
-//                 <Tooltip text={c?.["enhance prompt"]}>
-//                   <Button
-//                     type="button"
-//                     size="icon"
-//                     onClick={enhance}
-//                     disabled={loading || generating || generatingPrompt}
-//                   >
-//                     {generatingPrompt ? <Icons.spinner /> : <Icons.reload />}
-//                   </Button>
-//                 </Tooltip>
-//               </div>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  },
+  // text: function Component({
+  //   dic: { "image-form": c, ...dic },
+  //   loading,
+  //   form,
+  //   editor,
+  // }: ImageFormProps & { editor: MutableRefObject<PhotoEditor | null> } & Pick<
+  //     DialogResponsiveProps,
+  //     "dic"
+  //   >) {
+  //   return (
+  //     <FormField
+  //       control={form.control}
+  //       name="frame"
+  //       render={({ field }) => (
+  //         <FormItem>
+  //           {/* <FormLabel className="sr-only">{c?.["frame"]}</FormLabel> */}
 
-//               <FormControl>
-//                 <Textarea
-//                   className="min-h-56 w-full"
-//                   disabled={loading || generating || generatingPrompt}
-//                   {...field}
-//                 />
-//               </FormControl>
-//               <FormMessage />
-//             </FormItem>
-//           )}
-//         />
+  //           <Popover>
+  //             <PopoverTrigger asChild>
+  //               <Button type="button" variant="outline" size="icon">
+  //                 <Icons.add />
+  //               </Button>
+  //             </PopoverTrigger>
 
-//         <div>
-//           <div className="mb-2 flex items-center justify-between gap-4">
-//             <FormLabel>{c?.["new image"]}</FormLabel>
-//             <Tooltip text={c?.["new image"]}>
-//               <Button
-//                 type="button"
-//                 size="icon"
-//                 onClick={generate}
-//                 disabled={loading || generating || generatingPrompt}
-//               >
-//                 {generating ? <Icons.spinner /> : <Icons.reload />}
-//               </Button>
-//             </Tooltip>
-//           </div>
+  //             <PopoverContent align="end">
+  //               <ToggleGroup
+  //                 type="single"
+  //                 variant="outline"
+  //                 className="grid grid-cols-3 gap-4"
+  //                 disabled={loading}
+  //                 onValueChange={(e) => {
+  //                   field.onChange(FRAMES?.[Number(e)]?.["filled"]);
 
-//           <Image
-//             src={form.watch("image.src")!}
-//             alt=""
-//             className="aspect-auto h-60"
-//           />
-//         </div>
-//       </div>
-//     );
-//   },
-//   frame: function Component({
-//     dic: {
-//       "image-form": { frame: c },
-//     },
-//     loading,
-//     form,
-//     setFrame,
-//   }: ImageFormProps & { setFrame: Dispatch<SetStateAction<string | null>> }) {
-//     return (
-//       <FormField
-//         control={form.control}
-//         name="frame"
-//         render={({ field }) => (
-//           <FormItem>
-//             <FormLabel className="sr-only">{c?.["frame"]}</FormLabel>
+  //                   editor?.["current"]?.addFrame({
+  //                     url: FRAMES?.[Number(e)]?.["src"],
+  //                     data: {
+  //                       title: "x project",
+  //                       website: "www.x.com",
+  //                       phone: "0102 218 4878",
+  //                     },
+  //                   });
+  //                 }}
+  //               >
+  //                 {FRAMES?.map((f, i) => (
+  //                   <ToggleGroupItem
+  //                     key={i}
+  //                     value={i?.toString()}
+  //                     className="h-fit w-fit"
+  //                   >
+  //                     <Image
+  //                       src={f?.["src"]}
+  //                       alt=""
+  //                       className="h-20 rounded-none border-none"
+  //                     />
+  //                   </ToggleGroupItem>
+  //                 ))}
+  //               </ToggleGroup>
+  //             </PopoverContent>
+  //           </Popover>
 
-//             <ToggleGroup
-//               type="single"
-//               variant="outline"
-//               onValueChange={(e) => {
-//                 field.onChange(e);
-//                 setFrame(e);
-//               }}
-//               defaultValue={field?.["value"]}
-//               disabled={loading}
-//               className="grid grid-cols-3 gap-4"
-//             >
-//               {FRAMES_URL?.map((fi, i) => (
-//                 <ToggleGroupItem
-//                   key={i}
-//                   value={i?.toString()}
-//                   className="h-fit w-fit"
-//                 >
-//                   <Image
-//                     src={frames?.[i]?.src}
-//                     alt=""
-//                     className="h-40 rounded-none border-none"
-//                   />
-//                 </ToggleGroupItem>
-//               ))}
-//             </ToggleGroup>
-
-//             <FormMessage />
-//           </FormItem>
-//         )}
-//       />
-//     );
-//   },
-// };
+  //           <FormMessage />
+  //         </FormItem>
+  //       )}
+  //     />
+  //   );
+  // },
+};

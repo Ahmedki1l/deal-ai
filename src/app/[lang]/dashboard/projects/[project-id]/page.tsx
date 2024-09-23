@@ -8,6 +8,7 @@ import { Map } from "@/components/map";
 import { ProjectBinButton } from "@/components/project-bin-button";
 import { ProjectRestoreButton } from "@/components/project-restore-button";
 import { PropertyCreateButton } from "@/components/property-create-button";
+import { Tooltip } from "@/components/tooltip";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
@@ -132,12 +133,22 @@ export default async function Project({
               )}
 
               <div>
-                <h2 className="text-2xl font-bold tracking-tight">
+                <h2 className="flex items-center gap-4 text-2xl font-bold tracking-tight">
                   {project?.["title"]}{" "}
                   {project?.["pdf"] ? (
-                    <Link href={project?.["pdf"]}>
-                      <></>
-                    </Link>
+                    <Tooltip text={c?.["view pdf"]}>
+                      <div>
+                        <Link
+                          href={project?.["pdf"]}
+                          className={buttonVariants({
+                            variant: "outline",
+                            size: "icon",
+                          })}
+                        >
+                          <></>
+                        </Link>
+                      </div>
+                    </Tooltip>
                   ) : null}
                 </h2>
                 <p className="text-sm text-muted-foreground">

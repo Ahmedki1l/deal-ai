@@ -598,7 +598,7 @@ export default {
     logo: { label: "اللوجو" },
     pdf: {
       label: "الملف",
-      "fill fields using ai": "ملئ الخانات بإستخدام الـ AI",
+      "fill fields using ai": "ملئ الخانات بالـ AI",
       "after confirming a pdf, you can't choose another one.":
         "بعد التوثيق، لا يمكنك إختيار ملف آخر.",
     },

@@ -220,12 +220,12 @@ export async function uploadIntoSpace({
   const locale = await getLocale();
   const { actions: c } = await getDictionary(locale);
   try {
-    const imgProps = {
-      Key: `imgs/${Date.now()}${name ? `_${name}` : null}`, // Unique key for the file
+    const img = {
+      Key: `imgs/${name ? `${name}-` : null}${Date.now()}`, // Unique key for the file
       ContentType: "image/png", // or 'image/jpeg', depending on the file type
     };
-    const pdfProps = {
-      Key: `pdfs/${Date.now()}${name ? `_${name}` : null}`,
+    const pdf = {
+      Key: `pdfs/${name ? `${name}-` : null}${Date.now()}`,
       ContentType: "application/pdf",
     };
 
@@ -237,7 +237,7 @@ export async function uploadIntoSpace({
         // ContentEncoding: "base64", // Required when uploading Base64 data
         ACL: "public-read", // Make the file publicly accessible
       },
-      ...(type === "pdf" ? pdfProps : imgProps),
+      ...(type === "pdf" ? pdf : img),
     };
 
     await s3Client.upload(params).promise();

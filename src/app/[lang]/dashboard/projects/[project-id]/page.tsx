@@ -133,9 +133,11 @@ export default async function Project({
 
               <div>
                 <h2 className="text-2xl font-bold tracking-tight">
-                  {project?.["title"]}
+                  {project?.["title"]}{" "}
                   {project?.["pdf"] ? (
-                    <Link href={project?.["pdf"]}>{c?.["view pdf"]}</Link>
+                    <Link href={project?.["pdf"]}>
+                      <></>
+                    </Link>
                   ) : null}
                 </h2>
                 <p className="text-sm text-muted-foreground">

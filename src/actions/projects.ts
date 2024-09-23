@@ -77,12 +77,13 @@ export async function createProject({
     }
 
     if (pdf && !pdf.includes("http")) {
-      console.log("uploading...");
+      const pdfBuffer = await base64ToBuffer(pdf);
       const r = await uploadIntoSpace({
         type: "pdf",
         name: "projects",
-        body: pdf,
+        body: pdfBuffer,
       });
+
       if (!(typeof r === "string")) return { error: r?.["error"] };
       if (!(typeof r === undefined)) pdfUrl = r;
       console.log("pdf url: ", pdfUrl);

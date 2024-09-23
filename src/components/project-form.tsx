@@ -23,7 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { platforms } from "@/db/enums";
 import { useLocale } from "@/hooks/use-locale";
 import { t } from "@/lib/locale";
-import { clientAction, fileToBase64, readFileAsBuffer } from "@/lib/utils";
+import { clientAction, fileToBase64 } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import {
   projectCreateFormSchema,
@@ -177,8 +177,8 @@ export const ProjectForm = {
                     const file = e?.["target"]?.["files"]?.[0];
                     if (file) {
                       // field.onChange(file);
-                      const buffer = (await readFileAsBuffer(file))?.toString();
-                      form.setValue("pdf", buffer ?? "");
+                      const base64 = (await fileToBase64(file))?.toString();
+                      form.setValue("pdf", base64 ?? "");
                     }
                   }}
                   disabled={loading || confirmPdf}

@@ -18,7 +18,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { toast } from "sonner";
 import * as z from "zod";
 import { Label } from "./ui/label";
 
@@ -55,10 +54,10 @@ export function ProjectCreateButton({
   async function onSubmit(data: z.infer<typeof projectCreateFormSchema>) {
     await clientAction(async () => await createProject(data), setLoading);
 
-    toast.success(c?.["created successfully."]);
-    setOpen(false);
-    form.reset();
-    router.refresh();
+    // toast.success(c?.["created successfully."]);
+    // setOpen(false);
+    // form.reset();
+    // router.refresh();
   }
 
   return (

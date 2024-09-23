@@ -128,7 +128,7 @@ export async function base64ToBuffer({
   const r = base64?.split(",")?.[1];
   if (!r) throw Error("NO BASE64");
   if (type === "pdf") {
-    return sharp(Buffer.from(r, "base64")).toBuffer();
+    return Buffer.from(r, "base64");
   }
 
   return sharp(Buffer.from(r, "base64"))

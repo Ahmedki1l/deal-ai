@@ -40,7 +40,7 @@ export async function createCaseStudy({
 
     const actualProject = await db.project.findFirst({
       include: {
-        // caseStudy: { include: { posts: true } },
+        caseStudy: { include: { posts: true } },
         properties: true,
         platforms: true,
       },
@@ -103,6 +103,7 @@ export async function createCaseStudy({
         ROI_Calculation: any;
         Strategic_Insights: any;
         Recommendations: any;
+        Post_Frequency: any;
       };
     } = await axios.post(endpoint, prompt);
 
@@ -110,18 +111,16 @@ export async function createCaseStudy({
     const imgs = refImages?.["length"]
       ? (
           await Promise.all(
-            refImages
-              ?.map((e) => base64ToBuffer(e))
-              .map((e) =>
-                uploadIntoSpace(`case-${Date.now()}.png`, e).then((r) => {
-                  // TODO: handle errors of uploading failled
-                  if (typeof r === "object" && "error" in r) {
-                    console.log(r?.["error"]);
-                    return null;
-                  }
-                  return r;
-                }),
-              ),
+            refImages?.map(async (e) => {
+              const buffer = await base64ToBuffer(e);
+              const r = await uploadIntoSpace(`case-${Date.now()}.png`, buffer);
+              // TODO: handle errors of uploading failled
+              if (typeof r === "object" && "error" in r) {
+                console.log(r?.["error"]);
+                return null;
+              }
+              return r;
+            }),
           )
         )?.filter((r) => r != null)
       : [];
@@ -140,6 +139,7 @@ export async function createCaseStudy({
         ROI_Calculation: JSON.stringify(response["ROI_Calculation"]),
         Strategic_Insights: JSON.stringify(response["Strategic_Insights"]),
         Recommendations: JSON.stringify(response["Recommendations"]),
+        Post_Frequency: JSON.stringify(response["Post_Frequency"]),
         caseStudyResponse: JSON.stringify(response),
         prompt: prompt.input,
         deletedAt: null,

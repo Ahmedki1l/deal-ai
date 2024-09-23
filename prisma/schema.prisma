@@ -102,6 +102,7 @@ model CaseStudy {
   ROI_Calculation     String
   Strategic_Insights  String
   Recommendations     String
+  Post_Frequency      String?
   prompt              String?
   caseStudyResponse   String?
 

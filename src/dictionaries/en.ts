@@ -159,6 +159,12 @@ export default {
               "no valid recommendations data available.":
                 "no valid recommendations data available.",
 
+              "Post Frequency": "Post Frequency",
+              "error loading Post Frequency data.":
+                "error loading Post Frequency data.",
+              "no valid Post Frequency data available.":
+                "no valid Post Frequency data available.",
+
               "it's project is deleted, once you restore it all will be editable.":
                 "it's project is deleted, once you restore it all will be editable.",
               "oops, no such study case.": "oops, no such study case.",

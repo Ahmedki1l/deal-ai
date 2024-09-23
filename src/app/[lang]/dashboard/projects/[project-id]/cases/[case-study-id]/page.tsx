@@ -380,7 +380,54 @@ export default async function CaseStudy({
                 {caseStudy?.["Recommendations"]?.replace(/"/g, "")}
               </AccordionContent>
             </AccordionItem>
+            {caseStudy?.["Post_Frequency"] ? (
+              <AccordionItem value="Post Frequency">
+                <AccordionTrigger>{c?.["Post Frequency"]}</AccordionTrigger>
+                <AccordionContent>
+                  {(() => {
+                    try {
+                      // Parse the JSON string into an object
+                      const postFreq = caseStudy?.["Post_Frequency"]
+                        ? JSON.parse(caseStudy["Post_Frequency"])
+                        : null;
 
+                      // Function to render key-value pairs
+                      const renderKeyValuePairs = (
+                        data: Record<string, any>,
+                      ) => (
+                        <ul className="list-decimal ltr:pl-5 rtl:pr-5">
+                          {Object.entries(data).map(([key, value]) => (
+                            <li key={key} className="mb-1">
+                              <strong>{key}:</strong>{" "}
+                              {typeof value === "object" && value !== null
+                                ? renderKeyValuePairs(value)
+                                : value}
+                            </li>
+                          ))}
+                        </ul>
+                      );
+
+                      if (
+                        postFreq &&
+                        typeof postFreq === "object" &&
+                        !Array.isArray(postFreq)
+                      ) {
+                        return renderKeyValuePairs(postFreq);
+                      } else {
+                        return (
+                          <p>
+                            {c?.["no valid Post Frequency data available."]}.
+                          </p>
+                        );
+                      }
+                    } catch (e) {
+                      console.error("Failed to parse Post Frequency JSON", e);
+                      return <p>{c?.["error loading Post Frequency data."]}</p>;
+                    }
+                  })()}
+                </AccordionContent>
+              </AccordionItem>
+            ) : null}
             <AccordionItem value="images">
               <AccordionTrigger>{c?.["reference images"]}</AccordionTrigger>
               <AccordionContent className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">

@@ -107,48 +107,43 @@ export async function createCaseStudy({
     } = await axios.post(endpoint, prompt);
 
     const id = generateIdFromEntropySize(10);
-    await db.$transaction(async (tx) => {
-      await tx.caseStudy.create({
-        data: {
-          id,
-          ...data,
-          content: response["Case_Study"],
-          targetAudience: JSON.stringify(response["Target_Audience"]),
-          pros: JSON.stringify(response["Pros"]),
-          cons: JSON.stringify(response["Cons"]),
-          Market_Strategy: JSON.stringify(response["Market_Strategy"]),
-          Performance_Metrics: JSON.stringify(response["Performance_Metrics"]),
-          ROI_Calculation: JSON.stringify(response["ROI_Calculation"]),
-          Strategic_Insights: JSON.stringify(response["Strategic_Insights"]),
-          Recommendations: JSON.stringify(response["Recommendations"]),
-          caseStudyResponse: JSON.stringify(response),
-          prompt: prompt.input,
-          deletedAt: null,
-        },
-      });
+    const imgs = refImages?.["length"]
+      ? (
+          await Promise.all(
+            refImages
+              ?.map((e) => base64ToBuffer(e))
+              .map((e) =>
+                uploadIntoSpace(`case-${Date.now()}.png`, e).then((r) => {
+                  // TODO: handle errors of uploading failled
+                  if (typeof r === "object" && "error" in r) {
+                    console.log(r?.["error"]);
+                    return null;
+                  }
+                  return r;
+                }),
+              ),
+          )
+        )?.filter((r) => r != null)
+      : [];
 
-      console.log(refImages);
-      if (refImages?.["length"]) {
-        const imgs = await Promise.all(
-          refImages
-            ?.map((e) => base64ToBuffer(e))
-            .map((e) =>
-              uploadIntoSpace(`case-${Date.now()}.png`, e).then((r) => {
-                // TODO: handle errors of uploading failled
-                if (typeof r === "object" && "error" in r) {
-                  console.log(r?.["error"]);
-                  return null;
-                }
-                return r;
-              }),
-            ),
-        );
-
-        await tx.caseStudy.update({
-          data: { refImages: imgs?.filter((e) => e != null) },
-          where: { id },
-        });
-      }
+    await db.caseStudy.create({
+      data: {
+        id,
+        ...data,
+        refImages: imgs,
+        content: response["Case_Study"],
+        targetAudience: JSON.stringify(response["Target_Audience"]),
+        pros: JSON.stringify(response["Pros"]),
+        cons: JSON.stringify(response["Cons"]),
+        Market_Strategy: JSON.stringify(response["Market_Strategy"]),
+        Performance_Metrics: JSON.stringify(response["Performance_Metrics"]),
+        ROI_Calculation: JSON.stringify(response["ROI_Calculation"]),
+        Strategic_Insights: JSON.stringify(response["Strategic_Insights"]),
+        Recommendations: JSON.stringify(response["Recommendations"]),
+        caseStudyResponse: JSON.stringify(response),
+        prompt: prompt.input,
+        deletedAt: null,
+      },
     });
 
     revalidatePath("/", "layout");

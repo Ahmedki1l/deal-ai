@@ -12,6 +12,11 @@ import { LocaleProps } from "@/types/locale";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 
+const montserrat = localFont({
+  src: "../../../public/fonts/montserrat.ttf",
+  variable: "--font-montserrat",
+  weight: "100 900",
+});
 const cairo = localFont({
   src: "../../../public/fonts/cairo.ttf",
   variable: "--font-cairo",
@@ -51,6 +56,7 @@ export default async function RootLayout({
       className={cn(
         // "leading-relaxed tracking-tight",
         cairo?.["className"],
+        montserrat?.["variable"],
       )}
       suppressHydrationWarning
     >

@@ -17,3 +17,9 @@ export type SelectItem = {
   icon?: keyof typeof Icons;
   children?: React.ReactNode;
 };
+
+export type ShortContents = {
+  short: string;
+  Medium: string;
+  Long: string;
+};

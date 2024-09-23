@@ -4,7 +4,10 @@ import { Link } from "@/components/link";
 import { buttonVariants } from "@/components/ui/button";
 import { db } from "@/db";
 import { getDictionary } from "@/lib/dictionaries";
+import { t } from "@/lib/locale";
+import { ShortContents } from "@/types";
 import { LocaleProps } from "@/types/locale";
+import axios from "axios";
 import type { Metadata } from "next";
 
 type ImageEditorProps = Readonly<{
@@ -28,6 +31,19 @@ export default async function ImageEditorPage({
 
   // TODO: for many pages, handle now just one page
   const post = image?.["posts"]?.pop()!;
+  const contents = await axios
+    .post("http://takamol-advanced-ai-mu.vercel.app/shortcontent", {
+      input: `project title: ${post?.["title"]}, post content: ${post?.["content"]}`,
+    })
+    ?.then(
+      async ({ data }) =>
+        ({
+          short: await t(data?.["short"], { from: "en", to: lang }),
+          Medium: await t(data?.["Medium"], { from: "en", to: lang }),
+          Long: await t(data?.["Long"], { from: "en", to: lang }),
+        }) satisfies ShortContents,
+    );
+
   return (
     <div className="flex flex-1 flex-col gap-6 py-4">
       <div className="container flex flex-col gap-5">
@@ -82,6 +98,7 @@ export default async function ImageEditorPage({
           post,
         }}
         disabled={!!post?.["deletedAt"]}
+        contents={contents}
       />
     </div>
   );

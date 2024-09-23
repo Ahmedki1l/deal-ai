@@ -1,3 +1,4 @@
+import { ShortContents } from "@/types";
 import Konva from "konva";
 import { FRAMES } from "./constants";
 
@@ -9,6 +10,7 @@ class PhotoEditor {
   private layer: Konva.Layer;
   private transformer: Konva.Transformer;
 
+  private contents: ShortContents | null = null;
   private photo: Konva.Image | null = null;
   private frame: Konva.Image | null = null;
   private textNodes: Konva.Text[] = [];
@@ -48,66 +50,95 @@ class PhotoEditor {
     });
   }
 
-  addPhoto({ url }: { url: string }) {
-    let photoNode: Konva.Image | null = null;
-
-    Konva.Image.fromURL(url, (loadedImageNode: Konva.Image) => {
-      const { x, y, width, height } = this.scaledDimentions({
-        width: loadedImageNode.width(),
-        height: loadedImageNode.height(),
-      });
-
-      loadedImageNode.setAttrs({
-        x,
-        y,
-        width,
-        height,
-        draggable: this.isEditorEnabled,
-      });
-
-      if (this.photo) this.photo.destroy();
-
-      this.photo = loadedImageNode;
-      this.layer.add(loadedImageNode);
-      this.layer.draw();
-
-      photoNode = loadedImageNode;
-    });
-
-    return { photoNode };
+  addContents({ contents }: { contents: ShortContents }) {
+    this.contents = contents;
   }
 
-  addBase64({ base64 }: { base64: string; width?: number; height?: number }) {
-    let photoNode: Konva.Image | null = null;
-    const image = new Image();
-    image.src = base64; // set the base64 string as the image source
+  addPhoto({
+    url,
+  }: {
+    url: string;
+  }): Promise<{ photoNode: Konva.Image | null }> {
+    return new Promise((resolve, reject) => {
+      Konva.Image.fromURL(
+        url,
+        (loadedImageNode: Konva.Image) => {
+          const { x, y, width, height } = this.scaledDimentions({
+            width: loadedImageNode.width(),
+            height: loadedImageNode.height(),
+          });
 
-    image.onload = () => {
-      const imageNode = new Konva.Image({
-        image: image,
-        draggable: this.isEditorEnabled,
-      });
+          loadedImageNode.setAttrs({
+            x,
+            y,
+            width,
+            height,
+            draggable: this.isEditorEnabled,
+          });
 
-      const { x, y, width, height } = this.scaledDimentions({
-        width: imageNode?.width() ?? 0,
-        height: imageNode?.height() ?? 0,
-      });
+          if (this.photo) this.photo.destroy();
 
-      imageNode.size({ width, height });
-      imageNode.position({ x, y });
+          this.photo = loadedImageNode;
+          this.layer.add(loadedImageNode);
+          this.layer.draw();
 
-      // Remove the previous photo if it exists
-      if (this.photo) this.photo.destroy();
+          resolve({ photoNode: loadedImageNode });
+        },
+        (err) => {
+          reject(err); // Handle error case if image fails to load
+        },
+      );
+    });
+  }
 
-      // Add the new image to the layer
-      this.photo = imageNode;
-      this.layer.add(imageNode);
-      this.layer.draw();
+  addBase64({
+    base64,
+  }: {
+    base64: string;
+    width?: number;
+    height?: number;
+  }): Promise<{
+    photoNode: Konva.Image | null;
+  }> {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.src = base64; // set the base64 string as the image source
 
-      photoNode = imageNode;
-    };
+      image.onload = () => {
+        const imageNode = new Konva.Image({
+          image: image,
+          draggable: this.isEditorEnabled,
+        });
 
-    return { photoNode };
+        const { x, y, width, height } = this.scaledDimentions({
+          width: imageNode?.width() ?? 0,
+          height: imageNode?.height() ?? 0,
+        });
+
+        imageNode.size({ width, height });
+        imageNode.position({ x, y });
+
+        // Remove the previous photo if it exists
+        if (this.photo) this.photo.destroy();
+
+        // Add the new image to the layer
+        this.photo = imageNode;
+        this.layer.add(imageNode);
+        this.layer.draw();
+
+        resolve({ photoNode: imageNode });
+      };
+
+      // Konva.Image.fromURL(
+      //   FRAMES?.[n]?.["src"],
+      //   (imageNode: Konva.Image) => {
+      //     resolve({ photoNode: imageNode });
+      //   },
+      //   (err) => {
+      //     reject(err); // Handle error case if image fails to load
+      //   },
+      // );
+    });
   }
 
   addFrame({
@@ -120,162 +151,130 @@ class PhotoEditor {
     width?: number;
     height?: number;
     data: { title: string; website: string; phone: string };
-  }) {
-    // Konva.Image.fromURL(url, (imageNode: Konva.Image) => {
-    //   const {
-    //     x,
-    //     y,
-    //     width: w,
-    //     height: h,
-    //   } = this.scaledDimentions({
-    //     width,
-    //     height,
-    //   });
-
-    //   imageNode.setAttrs({
-    //     x,
-    //     y,
-    //     width: w,
-    //     height: h,
-    //     draggable: this.isEditorEnabled,
-    //   });
-
-    //   if (this.frame) this.frame.destroy();
-
-    //   this.frame = imageNode;
-    //   this.layer.add(imageNode);
-    //   this.layer.draw();
-    // });
-
-    let frameNode: Konva.Image | null = null;
-    let textNodes: Konva.Text[] = [];
-
-    Konva.Image.fromURL(FRAMES?.[n]?.["src"], (imageNode: Konva.Image) => {
-      imageNode.setAttrs({
-        x: 0,
-        y: 0,
-        width: this.stage.width(),
-        height: this.stage.height(),
-        draggable: this.isEditorEnabled,
-        opacity: 1,
-      });
-
-      if (this.frame) {
-        [this.frame, ...this.textNodes].forEach((node) => {
-          if (node) node.destroy();
-        });
-      }
-
-      this.frame = imageNode;
-      this.layer.add(imageNode);
-
-      if (n === 0) {
-        const titleArr = data?.["title"].split(" ");
-
-        // Specify the starting position and spacing
-        let currentY = 100; // Starting Y position
-        const startX = 20;
-        const spacing = 55; // Vertical spacing between each word
-
-        if (titleArr?.[0]) {
-          const { textNode: tn1 } = this.addText({
-            text: titleArr?.[0],
-            fontSize: 32,
-            fontFamily: "Calibri",
-            x: startX,
-            y: currentY,
-          });
-          currentY += spacing; // Move Y down for the next word
-          textNodes.push(tn1);
-        }
-
-        if (titleArr?.[1]) {
-          const { textNode: tn2 } = this.addText({
-            text: titleArr?.[1],
-            fontSize: 50,
-            fill: "yellow",
-            x: startX,
-            y: currentY,
+  }): Promise<{
+    frameNode: Konva.Image | null;
+    textNodes: Konva.Text[];
+  }> {
+    return new Promise((resolve, reject) => {
+      Konva.Image.fromURL(
+        FRAMES?.[n]?.["src"],
+        (imageNode: Konva.Image) => {
+          imageNode.setAttrs({
+            x: 0,
+            y: 0,
+            width: this.stage.width(),
+            height: this.stage.height(),
+            draggable: this.isEditorEnabled,
+            opacity: 1,
           });
 
-          currentY += spacing; // Move Y down for the next word
-          textNodes.push(tn2);
-        }
+          [this.frame, ...this.textNodes].forEach((node) => node?.destroy());
 
-        if (titleArr?.[2]) {
-          const { textNode: tn3 } = this.addText({
-            text: titleArr?.slice(2).join(" "),
-            fontSize: 32,
-            fontFamily: "Calibri",
-            x: startX,
-            y: currentY,
-            maxWidth: 250,
-          });
-          textNodes.push(tn3);
-        }
+          this.frame = imageNode;
+          this.textNodes = [];
+          this.layer.add(imageNode);
 
-        const { textNode: tn4 } = this.addText({
-          text: data?.["phone"],
-          x: startX + 40,
-          y: 520,
-        });
-        const { textNode: tn5 } = this.addText({
-          text: data?.["website"],
-          x: startX + 18,
-          y: 550,
-        });
+          if (n === 0) {
+            const titleArr = data?.["title"].split(" ");
 
-        textNodes.push(tn4);
-        textNodes.push(tn5);
-      }
+            // Specify the starting position and spacing
+            let currentY = 100; // Starting Y position
+            const startX = 20;
+            const spacing = 55; // Vertical spacing between each word
 
-      if (n === 1) {
-        this.addText({
-          text: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse nemo quisquam eveniet sed rem distinctio.",
-          x: this.stage.width() / 2 + 100,
-          y: 150,
-          maxWidth: this.stage.width() - (this.stage.width() / 2 + 100),
-        });
+            if (titleArr?.[0]) {
+              this.addText({
+                text: titleArr?.[0],
+                fontSize: 32,
+                x: startX,
+                y: currentY,
+              });
+              currentY += spacing; // Move Y down for the next word
+            }
 
-        this.addText({
-          text: data?.["website"],
-          x: 120,
-          y: this.stage.height() - 80,
-        });
-      }
-      if (n === 2) {
-        this.addText({
-          text: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse nemo quisquam eveniet sed rem distinctio.",
-          maxWidth: 250,
-        });
+            if (titleArr?.[1]) {
+              this.addText({
+                text: titleArr?.[1],
+                fontSize: 50,
+                fill: "yellow",
+                x: startX,
+                y: currentY,
+              });
 
-        this.addText({
-          text: data?.["website"],
-          x: this.stage.width() - 200,
-          y: this.stage.height() - 50,
-        });
-      }
-      if (n === 3) {
-        this.addText({
-          text: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse nemo quisquam eveniet sed rem distinctio.",
-          x: this.stage.width() / 2 + 50,
-          y: 150,
-          maxWidth: 250,
-        });
+              currentY += spacing; // Move Y down for the next word
+            }
 
-        this.addText({
-          text: data?.["website"],
-          x: 50,
-          y: this.stage.height() - 70,
-        });
-      }
+            if (titleArr?.[2]) {
+              this.addText({
+                text: titleArr?.slice(2).join(" "),
+                fontSize: 32,
+                x: startX,
+                y: currentY,
+                maxWidth: 250,
+              });
+            }
 
-      this.layer.draw();
+            this.addText({
+              text: data?.["phone"],
+              x: startX + 40,
+              y: 520,
+            });
+            this.addText({
+              text: data?.["website"],
+              x: startX + 18,
+              y: 550,
+            });
+          }
+          if (n === 1) {
+            this.addText({
+              text: this.contents?.Long,
+              x: this.stage.width() / 2 + 100,
+              y: 150,
+              maxWidth: this.stage.width() - (this.stage.width() / 2 + 100),
+            });
 
-      frameNode = imageNode;
+            this.addText({
+              text: data?.["website"],
+              x: 120,
+              y: this.stage.height() - 80,
+            });
+          }
+          if (n === 2) {
+            this.addText({
+              text: this.contents?.Long,
+              maxWidth: 250,
+            });
+
+            this.addText({
+              text: data?.["website"],
+              x: this.stage.width() - 200,
+              y: this.stage.height() - 50,
+            });
+          }
+          if (n === 3) {
+            this.addText({
+              text: this.contents?.Long,
+              x: this.stage.width() / 2 + 50,
+              y: 150,
+              maxWidth: 250,
+            });
+
+            this.addText({
+              text: data?.["website"],
+              x: 50,
+              y: this.stage.height() - 70,
+            });
+          }
+
+          this.layer.draw();
+
+          resolve({ frameNode: imageNode, textNodes: this.textNodes });
+        },
+        (err) => {
+          reject(err); // Handle error case if image fails to load
+        },
+      );
     });
-
-    return { frameNode, textNodes };
   }
 
   scaledDimentions({ width, height }: { width: number; height: number }) {
@@ -390,7 +389,7 @@ class PhotoEditor {
   addText({
     text = "double click to edit",
     fontSize = 24,
-    fontFamily = "Cairo",
+    fontFamily = "montserrat",
     fill = "black",
     x = this.stage.width() / 2, // Default position centered
     y = this.stage.height() / 2, // Default position centered
@@ -408,9 +407,9 @@ class PhotoEditor {
 
     const textNode = new Konva.Text({
       text: wrappedText,
-      fontSize: fontSize,
-      fontFamily: fontFamily,
-      fill: fill,
+      fontSize,
+      fontFamily,
+      fill,
       draggable: true,
       width: maxWidth, // Set the maximum width for the text
     });
@@ -547,7 +546,6 @@ class PhotoEditor {
   //         this.addText({
   //           text: titleArr?.[0],
   //           fontSize: 32,
-  //           fontFamily: "Calibri",
   //           x: startX,
   //           y: currentY,
   //         });
@@ -570,7 +568,6 @@ class PhotoEditor {
   //         this.addText({
   //           text: titleArr?.slice(2).join(" "),
   //           fontSize: 32,
-  //           fontFamily: "Calibri",
   //           x: startX,
   //           y: currentY,
   //           maxWidth: 250,

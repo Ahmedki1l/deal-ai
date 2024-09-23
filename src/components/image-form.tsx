@@ -95,7 +95,9 @@ export const ImageForm = {
             const file = e?.["target"]?.["files"]?.[0];
             if (file) {
               const base64 = (await fileToBase64(file))!?.toString();
-              const { photoNode } = editor?.["current"]!.addBase64({ base64 });
+              const { photoNode } = await editor?.["current"]!.addBase64({
+                base64,
+              });
               form.setValue("editor.photo", photoNode);
             }
           }}
@@ -145,7 +147,7 @@ export const ImageForm = {
 
       setOpen(false);
       form.setValue("src", r);
-      const { photoNode } = editor?.["current"]!.addPhoto({ url: r });
+      const { photoNode } = await editor?.["current"]!.addPhoto({ url: r });
       form.setValue("editor.photo", photoNode);
 
       toast.success(c?.["regenerate-image"]?.["generated successfully."]);
@@ -220,10 +222,9 @@ export const ImageForm = {
     loading,
     form,
     editor,
-  }: ImageFormProps & { editor: MutableRefObject<PhotoEditor | null> } & Pick<
-      DialogResponsiveProps,
-      "dic"
-    >) {
+  }: ImageFormProps & {
+    editor: MutableRefObject<PhotoEditor | null>;
+  } & Pick<DialogResponsiveProps, "dic">) {
     return (
       <FormField
         control={form.control}
@@ -245,8 +246,10 @@ export const ImageForm = {
                   variant="outline"
                   className="grid grid-cols-3 gap-4"
                   disabled={loading}
-                  onValueChange={(e) => {
-                    const { frameNode, textNodes } = editor?.[
+                  onValueChange={async (e) => {
+                    form.resetField("editor.frame");
+                    form.resetField("editor.textNodes");
+                    const { frameNode, textNodes } = await editor?.[
                       "current"
                     ]!.addFrame({
                       n: Number(e),
@@ -257,6 +260,7 @@ export const ImageForm = {
                       },
                     });
                     field.onChange(FRAMES?.[Number(e)]?.["filled"]);
+
                     form.setValue("editor.frame", frameNode);
                     form.setValue("editor.textNodes", textNodes);
                   }}
@@ -284,6 +288,32 @@ export const ImageForm = {
       />
     );
   },
+  // text: function Component({
+  //   dic: { "image-form": c },
+  //   loading,
+  //   form,
+  // }: ImageFormProps) {
+  //   return (
+  //     <FormField
+  //       control={form.control}
+  //       name={`editor.textNodes.${0}.text`}
+  //       render={({ field }) => (
+  //         <FormItem>
+  //           {/* <FormLabel className="sr-only">{c?.["width"]?.['width']}</FormLabel> */}
+  //           <FormControl>
+  //             <Input type="text"
+
+  //             defaultValue={txt?.text()}
+  //             onChange={(e) => txt?.setText(e?.target?.value)}
+
+  //             />
+  //           </FormControl>
+  //           <FormMessage />
+  //         </FormItem>
+  //       )}
+  //     />
+  //   );
+  // },
   // text: function Component({
   //   dic: { "image-form": c, ...dic },
   //   loading,

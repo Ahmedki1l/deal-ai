@@ -271,7 +271,6 @@ export default async function CaseStudy({
                 })()}
               </AccordionContent>
             </AccordionItem>
-
             <AccordionItem value="Performance_Metrics">
               <AccordionTrigger>{c?.["performance metrics"]}</AccordionTrigger>
               <AccordionContent>
@@ -321,7 +320,6 @@ export default async function CaseStudy({
                 })()}
               </AccordionContent>
             </AccordionItem>
-
             <AccordionItem value="ROI_Calculation">
               <AccordionTrigger>{c?.["ROI calculation"]}</AccordionTrigger>
               <AccordionContent>

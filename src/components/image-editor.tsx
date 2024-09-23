@@ -10,6 +10,7 @@ import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
 import { PhotoEditor } from "@/lib/konva";
 import { clientAction, cn } from "@/lib/utils";
+import { ShortContents } from "@/types";
 import { Dictionary } from "@/types/locale";
 import { imageUpdateFormSchema } from "@/validations/images";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,6 +22,7 @@ import { toast } from "sonner";
 import * as z from "zod";
 import { Image } from "./image";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Input } from "./ui/input";
 
 export type ImageEditorProps = {
   image: ImageType & {
@@ -29,6 +31,7 @@ export type ImageEditorProps = {
     };
   };
   disabled?: boolean;
+  contents: ShortContents;
 } & Dictionary["image-editor"] &
   Pick<ImageFormProps, "dic"> &
   Pick<DialogResponsiveProps, "dic">;
@@ -36,6 +39,7 @@ export type ImageEditorProps = {
 export function ImageEditor({
   dic: { "image-editor": c, ...dic },
   image: { post, ...image },
+  contents,
   disabled,
 }: ImageEditorProps) {
   const lang = useLocale();
@@ -63,10 +67,15 @@ export function ImageEditor({
         height: 600,
       });
 
-      const { photoNode } = editor.current?.addPhoto({
-        url: image?.["src"],
-      });
-      form.setValue("editor.photo", photoNode);
+      const init = async () => {
+        editor.current?.addContents({ contents });
+        const { photoNode } = await editor?.["current"]!.addPhoto({
+          url: image?.["src"],
+        });
+        form.setValue("editor.photo", photoNode);
+      };
+
+      init();
 
       // const handleResize = () => {
       //   const container = containerRef.current;
@@ -202,7 +211,7 @@ export function ImageEditor({
               </CardContent>
             </Card>
 
-            {/* <Card className="space-y-1">
+            <Card className="space-y-1">
               <CardHeader className="flex flex-row items-center justify-between p-0 px-2">
                 <CardTitle>Edit Text</CardTitle>
 
@@ -229,16 +238,19 @@ export function ImageEditor({
 
               <CardContent className="p-2 pt-0">
                 {form.watch("editor.textNodes") &&
-                  form.getValues("editor.textNodes")?.map((txt, i) => (
-                    <div key={i}>
+                  form.watch("editor.textNodes")?.map((txt, i) => {
+                    return (
                       <Input
+                        key={txt?.id()}
+                        type="text"
+                        disabled={loading}
                         defaultValue={txt?.text()}
                         onChange={(e) => txt?.setText(e?.target?.value)}
                       />
-                    </div>
-                  ))}
+                    );
+                  })}
               </CardContent>
-            </Card> */}
+            </Card>
           </div>
 
           <div className="flex items-center justify-center bg-muted/50">

@@ -36,14 +36,24 @@ function containsArabic(text: string | null) {
   return arabicRegex.test(text ? text : "");
 }
 
-async function generateImg(prompt: string) {
-  const request = { prompt: prompt };
-  const { data: imageObject }: { data: { data: { data: { url: string }[] } } } =
-    await axios.post(
-      "https://elsamalotyapis-production.up.railway.app/api/generateImage",
-      request,
-    );
-
+async function generateImg(prompt: { prompt: any }) {
+  let request = {
+    // prompt: Please a beautiful ${propertyType} view from "outside" at day time with beautiful detailed background and please create a realistic design with detailed background with properties at background and use floors data from "${5}" and build a ${propertyType} in ${landArea} square metre area with a detailed and beautiful background matching with city and a front view from outside thanks.,
+    prompt: prompt,
+    // input: please use this data to generate an image to be a background image for a presentation, it should be a building containing the number of floors in these data and put in a title in the bottom of the image with a margin bottom of 50px, data: ${JSON.stringify(data['تقرير_تحليل_الاستثمار']['معايير_التطوير'])},
+  };
+  let response = await fetch(
+    "https://elsamalotyapis-production.up.railway.app/api/generateImage",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request),
+    },
+  );
+  let imageObject = await response.json();
+  console.log(imageObject.data.data[0].url);
   return imageObject.data.data[0].url;
 }
 
@@ -159,12 +169,18 @@ export async function createPost({
         };
 
         console.log("prompt_generator_prompt: ", prompt_generator_prompt);
-        const {
-          data: prompt_generator_response,
-        }: { data: { prompt: string } } = await axios.post(
-          prompt_generator_endpoint,
-          prompt_generator_prompt,
-        );
+        const prompt_generator_response = await axios
+          .post(prompt_generator_endpoint, prompt_generator_prompt, {
+            headers: { "Content-Type": "application/json" },
+          })
+          .then((response) => response.data)
+          .catch(async (error) => {
+            if (error.response) {
+              console.log("prompt_generator_prompt: ", error.response.data);
+            } else {
+              console.log("Error: ", error.message);
+            }
+          });
         const imagePrompt = {
           input:
             image_analyzer_response?.prompt +
@@ -177,8 +193,21 @@ export async function createPost({
         };
 
         console.log("adjusted_image_prompt: ", adjusted_image_prompt);
-        const { data: adjusted_image_response }: { data: { prompt: string } } =
-          await axios.post(prompt_generator_endpoint, adjusted_image_prompt);
+        const adjusted_image_response = await fetch(prompt_generator_endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(adjusted_image_prompt),
+        }).then(async (r) => {
+          try {
+            return await r?.json();
+          } catch {
+            console.log("adjusted_image_response: ", await r?.text());
+          }
+        });
+
+        console.log("adjusted_image_response: ", adjusted_image_response);
+
+        let imageResponse;
 
         const adjusted_image = { prompt: adjusted_image_response?.prompt };
 

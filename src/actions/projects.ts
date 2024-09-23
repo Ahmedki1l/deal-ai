@@ -70,7 +70,7 @@ export async function createProject({
     if (logo && !logo.includes("http")) {
       console.log("uploading...");
       const img = await base64ToBuffer(logo);
-      const r = await uploadIntoSpace({ body: img });
+      const r = await uploadIntoSpace({ name: "projects", body: img });
       if (!(typeof r === "string")) return { error: r?.["error"] };
       if (!(typeof r === undefined)) url = r;
       console.log("logo url: ", url);
@@ -80,6 +80,7 @@ export async function createProject({
       console.log("uploading...");
       const r = await uploadIntoSpace({
         type: "pdf",
+        name: "projects",
         body: pdf,
       });
       if (!(typeof r === "string")) return { error: r?.["error"] };

@@ -12,7 +12,7 @@ import {
   imageRegeneratePromptSchema,
   imageUpdateSchema,
 } from "@/validations/images";
-import S3, { Body, ObjectKey } from "aws-sdk/clients/s3";
+import S3, { Body } from "aws-sdk/clients/s3";
 import axios from "axios";
 import { generateIdFromEntropySize } from "lucia";
 import { revalidatePath } from "next/cache";
@@ -213,7 +213,8 @@ export async function uploadIntoSpace({
   type = "img",
 }: {
   body: Body;
-  name?: ObjectKey;
+  name?: "projects" | "cases" | "posts" | "properties";
+  // | ObjectKey;
   type?: "img" | "pdf";
 }) {
   const locale = await getLocale();

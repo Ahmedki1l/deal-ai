@@ -113,7 +113,10 @@ export async function createCaseStudy({
           await Promise.all(
             refImages?.map(async (e) => {
               const buffer = await base64ToBuffer(e);
-              const r = await uploadIntoSpace(`case-${Date.now()}.png`, buffer);
+              const r = await uploadIntoSpace({
+                name: "cases",
+                body: buffer,
+              });
               // TODO: handle errors of uploading failled
               if (typeof r === "object" && "error" in r) {
                 console.log(r?.["error"]);

@@ -596,6 +596,12 @@ export default {
       "health center": "مركز صحي",
     },
     logo: { label: "اللوجو" },
+    pdf: {
+      label: "الملف",
+      "fill fields using ai": "ملئ الخانات بإستخدام الـ AI",
+      "after confirming a pdf, you can't choose another one.":
+        "بعد التوثيق، لا يمكنك إختيار ملف آخر.",
+    },
     map: {
       label: "الخريطة",
       "choose on map": "إختر علي الخريطة",

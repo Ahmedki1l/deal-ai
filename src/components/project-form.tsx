@@ -129,13 +129,13 @@ export const ProjectForm = {
       )}
     />
   ),
-  pdf: ({
+  pdf: function Component({
     dic: {
       "project-form": { pdf: c },
     },
     loading,
     form,
-  }: ProjectFormProps) => {
+  }: ProjectFormProps) {
     const [confirmPdf, setConfirmPdf] = useState<boolean>(false);
 
     async function uploadPdf() {
@@ -147,6 +147,7 @@ export const ProjectForm = {
         async () =>
           await uploadIntoSpace({
             type: "pdf",
+            name: "projects",
             body: form?.getValues("pdf")!,
           }),
         setConfirmPdf,
@@ -199,14 +200,15 @@ export const ProjectForm = {
                       onClick={uploadPdf}
                       disabled={loading || confirmPdf}
                     >
-                      fill using AI
+                      {c?.["fill fields using ai"]}
                     </Button>
                   </>
                 ) : null}
               </div>
             </FormControl>
             <FormDescription>
-              after confirming a pdf, you can't choose another one.
+              {" "}
+              {c?.["after confirming a pdf, you can't choose another one."]}
             </FormDescription>
             <FormMessage />
           </FormItem>

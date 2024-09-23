@@ -592,7 +592,12 @@ export default {
   "project-form": {
     title: { label: "Title", "health center": "health center" },
     logo: { label: "Logo" },
-    pdf: { label: "PDF" },
+    pdf: {
+      label: "PDF",
+      "fill fields using ai": "Fill fields using AI",
+      "after confirming a pdf, you can't choose another one.":
+        "after confirming a pdf, you can't choose another one.",
+    },
     map: { label: "Map", "choose on map": "Choose on map" },
     description: {
       label: "Description",

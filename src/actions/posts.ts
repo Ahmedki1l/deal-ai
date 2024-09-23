@@ -189,10 +189,10 @@ export async function createPost({
             const fetchedImage = await fetchImage(imageResponse);
             // const framedImage = await applyFrame(fetchedImage, FRAMES_URL?.[0]);
             const bufferedImage = await Sharp(fetchedImage).toBuffer();
-            const url = await uploadIntoSpace(
-              `post-${Date.now()}.png`,
-              bufferedImage,
-            );
+            const url = await uploadIntoSpace({
+              name: "posts",
+              body: bufferedImage,
+            });
             console.log("url: ", url);
 
             if (!url || (url && typeof url === "object" && "error" in url))

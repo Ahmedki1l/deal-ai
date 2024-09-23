@@ -157,6 +157,8 @@ export const ProjectForm = {
       form.setValue("pdf", url);
       toast.success("pdf has been confirmed.");
       setConfirmPdf(true);
+
+      // TODO: send an http req, get data from AI, update form using form.setValue()
     }
 
     return (

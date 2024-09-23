@@ -238,11 +238,11 @@ export async function uploadIntoSpace({
         : null;
 
     const img = {
-      Key: `imgs/${name ? `${name}-` : null}${Date.now()}`, // Unique key for the file
+      Key: `imgs/${name ? `${name}_` : null}${Date.now()}`, // Unique key for the file
       ContentType: "image/png", // or 'image/jpeg', depending on the file type
     };
     const pdf = {
-      Key: `pdfs/${name ? `${name}-` : null}${Date.now()}`,
+      Key: `pdfs/${name ? `${name}_` : null}${Date.now()}`,
       ContentType: "application/pdf",
     };
 

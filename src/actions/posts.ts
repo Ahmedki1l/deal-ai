@@ -36,25 +36,20 @@ function containsArabic(text: string | null) {
   return arabicRegex.test(text ? text : "");
 }
 
-async function generateImg(prompt: { prompt: any }) {
-  let request = {
-    // prompt: Please a beautiful ${propertyType} view from "outside" at day time with beautiful detailed background and please create a realistic design with detailed background with properties at background and use floors data from "${5}" and build a ${propertyType} in ${landArea} square metre area with a detailed and beautiful background matching with city and a front view from outside thanks.,
-    prompt: prompt,
-    // input: please use this data to generate an image to be a background image for a presentation, it should be a building containing the number of floors in these data and put in a title in the bottom of the image with a margin bottom of 50px, data: ${JSON.stringify(data['تقرير_تحليل_الاستثمار']['معايير_التطوير'])},
-  };
-  let response = await fetch(
-    "https://elsamalotyapis-production.up.railway.app/api/generateImage",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
-    },
-  );
-  let imageObject = await response.json();
-  console.log(imageObject.data.data[0].url);
-  return imageObject.data.data[0].url;
+async function generateImg(prompt: { prompt: string }) {
+  const r = await axios
+    .post("https://shark-app-thdw4.ondigitalocean.app/api/generateImage", {
+      prompt,
+    })
+    .then((r) => r?.["data"])
+    .catch((err) => {
+      console.error(
+        "generate_image error: ",
+        err?.["response"] ? err?.["response"]?.["data"] : err?.["message"],
+      );
+    });
+  console.log(r);
+  return r?.["data"]?.["data"]?.[0]?.url;
 }
 
 export async function createPost({
@@ -93,29 +88,19 @@ export async function createPost({
 
     let image_analyzer_response;
 
-    if (caseStudy.refImages.length > 0) {
-      let image_anaylzer_prompt = { input: "" };
-
-      caseStudy.refImages.forEach((url) => {
-        image_anaylzer_prompt.input += url + ", ";
-      });
-
-      // sendEvent(controller, "status", c?.["generating images..."]);
+    if (caseStudy?.["refImages"]?.["length"] > 0) {
       const image_analyzer_endpoint = domain + `/en/image-analyzer`;
+      const image_anaylzer_prompt = { input: caseStudy.refImages?.join(", ") };
 
-      console.log("image_anaylzer_prompt: ", image_anaylzer_prompt);
-      image_analyzer_response = await fetch(image_analyzer_endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(image_anaylzer_prompt),
-      }).then(async (r) => {
-        try {
-          return await r?.json();
-        } catch {
-          console.log("image_analyzer_response: ", await r?.text());
-        }
-      });
-      console.log("image_analyzer_response: ", image_analyzer_response);
+      image_analyzer_response = await axios
+        .post(image_analyzer_endpoint, image_anaylzer_prompt)
+        .then((r) => r?.["data"])
+        .catch((err) => {
+          console.error(
+            "image_analyzer_response error: ",
+            err?.["response"] ? err?.["response"]?.["data"] : err?.["message"],
+          );
+        });
     }
 
     const prompt = {
@@ -127,24 +112,17 @@ export async function createPost({
     const social_media_endpoint =
       domain + `/${endpoint_language}/chat/socialmediaplan`;
 
-    console.log("social_media_response prompt: ", prompt);
-
     const social_media_response = await axios
-      .post(social_media_endpoint, prompt, {
-        headers: { "Content-Type": "application/json" },
-      })
-      .then((response) => response.data)
-      .catch(async (error) => {
-        if (error.response) {
-          console.log("social_media_response: ", error.response.data);
-        } else {
-          console.log("Error: ", error.message);
-        }
+      .post(social_media_endpoint, prompt)
+      .then((r) => r?.["data"])
+      .catch((err) => {
+        console.error(
+          "social_media_response error: ",
+          err?.["response"] ? err?.["response"]?.["data"] : err?.["message"],
+        );
       });
 
     const daysToPost = noOfPostsPerWeek === 3 ? [0, 2, 4] : [0, 1, 2, 3, 4];
-    const imageApiEndpoint =
-      "https://elsamalotyapis-production.up.railway.app/api/generateImage";
 
     let imageFetchPromises = [];
     let allPostDetails: any[] = [];
@@ -161,66 +139,47 @@ export async function createPost({
 
     for (const acc of platformsArr) {
       const accountPosts = responseData?.[acc];
-
       if (!accountPosts?.["length"]) continue;
 
       // Calculate the starting date for each account to ensure unique dates
       let currentDate = new Date();
 
       for (let i = 0; i < accountPosts.length; i++) {
-        if (i % 6 === 0 && i !== 0) {
-          await delay(60000); // Wait for 60 seconds after every 6 images
-        }
+        if (i % 6 === 0 && i !== 0) await delay(60000); // Wait for 60 seconds after every 6 images
+
         const prompt_generator_endpoint = domain + `/en/prompt-generator`;
-
-        const prompt_generator_prompt = {
-          input: accountPosts[i][`Post${i + 1}`],
-        };
-
-        console.log("prompt_generator_prompt: ", prompt_generator_prompt);
         const prompt_generator_response = await axios
-          .post(prompt_generator_endpoint, prompt_generator_prompt, {
-            headers: { "Content-Type": "application/json" },
+          .post(prompt_generator_endpoint, {
+            input: accountPosts[i][`Post${i + 1}`],
           })
-          .then((response) => response.data)
-          .catch(async (error) => {
-            if (error.response) {
-              console.log("prompt_generator_prompt: ", error.response.data);
-            } else {
-              console.log("Error: ", error.message);
-            }
+          .then((r) => r?.["data"])
+          .catch((err) => {
+            console.error(
+              "prompt_generator_response error: ",
+              err?.["response"]
+                ? err?.["response"]?.["data"]
+                : err?.["message"],
+            );
           });
 
-        const imagePrompt = {
-          input:
-            image_analyzer_response?.prompt +
-            " " +
-            prompt_generator_response?.prompt,
-        };
-
-        const adjusted_image_prompt = {
-          input: `you must adjust this prompt to be only 1000 characters long at max: ${imagePrompt?.input}`,
-        };
-
-        console.log("adjusted_image_prompt: ", adjusted_image_prompt);
-        const adjusted_image_response = await fetch(prompt_generator_endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(adjusted_image_prompt),
-        }).then(async (r) => {
-          try {
-            return await r?.json();
-          } catch {
-            console.log("adjusted_image_response: ", await r?.text());
-          }
-        });
-        console.log("adjusted_image_response: ", adjusted_image_response);
-
-        let imageResponse;
+        const adjusted_image_response = await axios
+          .post(prompt_generator_endpoint, {
+            input: `you must adjust this prompt to be only 1000 characters long at max: ${[
+              image_analyzer_response?.["prompt"],
+              prompt_generator_response?.["prompt"],
+            ].join(" ")}`,
+          })
+          .then((r) => r?.["data"])
+          .catch((err) => {
+            console.error(
+              "prompt_generator_response error: ",
+              err?.["response"]
+                ? err?.["response"]?.["data"]
+                : err?.["message"],
+            );
+          });
 
         const adjusted_image = { prompt: adjusted_image_response?.prompt };
-
-        console.log("adjusted_image: ", adjusted_image);
         const fetchPromise = generateImg(adjusted_image.prompt).then(
           async (imageResponse) => {
             // console.log("image prompt: ", adjusted_image);
@@ -237,7 +196,8 @@ export async function createPost({
             );
             console.log("url: ", url);
 
-            if (!url) return null;
+            if (!url || (url && typeof url === "object" && "error" in url))
+              return null;
 
             return db.image.create({
               data: {

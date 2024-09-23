@@ -61,8 +61,7 @@ export default async function CaseStudy({
           },
         },
         // where: {
-        //    deletedAt: null
-
+        //   deletedAt: null,
         // },
       },
       project: {

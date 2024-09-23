@@ -38,7 +38,7 @@ function containsArabic(text: string | null) {
 
 async function generateImg(prompt: { prompt: any }) {
   let request = {
-    // prompt: Please a beautiful ${propertyType} view from "outside" at day time with beautiful detailed background and please create a realistic design with detailed background with properties at background and use floors data from "${5}" and build a ${propertyType} in ${landArea} square metre area with a detailed and beautiful background matching with city and a front view from outside thanks.,
+    // prompt: Please a beautiful ${propertyType} view from "outside" at day time with beautiful detailed background and please create a realistic design with detailed background with properties at background and use floors data from "${5}" and build a ${propertyType} in ${landArea} square metre area with a detailed and beautiful background matching with city and a front view from outside thanks.,
     prompt: prompt,
     // input: please use this data to generate an image to be a background image for a presentation, it should be a building containing the number of floors in these data and put in a title in the bottom of the image with a margin bottom of 50px, data: ${JSON.stringify(data['تقرير_تحليل_الاستثمار']['معايير_التطوير'])},
   };
@@ -70,12 +70,11 @@ export async function createPost({
 
   try {
     const user = await getAuth();
-    if (!user)
-      return {
-        error: c?.["this action needs you to be logged in."],
-      };
+    if (!user) return { error: c?.["this action needs you to be logged in."] };
+    // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
 
     let endpoint_language = "en";
+
     if (
       containsArabic(caseStudy?.["prompt"]) ||
       containsArabic(caseStudy?.["caseStudyResponse"])
@@ -85,22 +84,23 @@ export async function createPost({
     //defaults
     const domain = process.env.NEXT_PUBLIC_AI_API;
 
-    let weeks = data?.["noOfWeeks"] ? parseInt(data?.["noOfWeeks"], 10) : 0;
+    let weeks = data.noOfWeeks ? parseInt(data.noOfWeeks, 10) : 0;
     let noOfPostsPerWeek =
-      data?.["campaignType"] === "BRANDING_AWARENESS" ||
-      data?.["campaignType"] === "ENGAGEMENT"
+      data.campaignType === "BRANDING_AWARENESS" ||
+      data.campaignType === "ENGAGEMENT"
         ? 5
         : 3;
 
     let image_analyzer_response;
 
-    if (caseStudy?.refImages?.length > 0) {
+    if (caseStudy.refImages.length > 0) {
       let image_anaylzer_prompt = { input: "" };
 
-      caseStudy?.refImages?.forEach((url) => {
+      caseStudy.refImages.forEach((url) => {
         image_anaylzer_prompt.input += url + ", ";
       });
 
+      // sendEvent(controller, "status", c?.["generating images..."]);
       const image_analyzer_endpoint = domain + `/en/image-analyzer`;
 
       console.log("image_anaylzer_prompt: ", image_anaylzer_prompt);
@@ -129,10 +129,18 @@ export async function createPost({
 
     console.log("social_media_response prompt: ", prompt);
 
-    const { data: social_media_response } = await axios.post(
-      social_media_endpoint,
-      prompt,
-    );
+    const social_media_response = await axios
+      .post(social_media_endpoint, prompt, {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((response) => response.data)
+      .catch(async (error) => {
+        if (error.response) {
+          console.log("social_media_response: ", error.response.data);
+        } else {
+          console.log("Error: ", error.message);
+        }
+      });
 
     const daysToPost = noOfPostsPerWeek === 3 ? [0, 2, 4] : [0, 1, 2, 3, 4];
     const imageApiEndpoint =
@@ -160,8 +168,9 @@ export async function createPost({
       let currentDate = new Date();
 
       for (let i = 0; i < accountPosts.length; i++) {
-        if (i % 6 === 0 && i !== 0) await delay(60000); // Wait for 60 seconds after every 6 images
-
+        if (i % 6 === 0 && i !== 0) {
+          await delay(60000); // Wait for 60 seconds after every 6 images
+        }
         const prompt_generator_endpoint = domain + `/en/prompt-generator`;
 
         const prompt_generator_prompt = {
@@ -181,6 +190,7 @@ export async function createPost({
               console.log("Error: ", error.message);
             }
           });
+
         const imagePrompt = {
           input:
             image_analyzer_response?.prompt +
@@ -204,7 +214,6 @@ export async function createPost({
             console.log("adjusted_image_response: ", await r?.text());
           }
         });
-
         console.log("adjusted_image_response: ", adjusted_image_response);
 
         let imageResponse;
@@ -212,18 +221,21 @@ export async function createPost({
         const adjusted_image = { prompt: adjusted_image_response?.prompt };
 
         console.log("adjusted_image: ", adjusted_image);
-        const fetchPromise = generateImg(adjusted_image?.["prompt"]!).then(
+        const fetchPromise = generateImg(adjusted_image.prompt).then(
           async (imageResponse) => {
+            // console.log("image prompt: ", adjusted_image);
             console.log("imageResponse: ", imageResponse);
 
             if (!imageResponse) return null;
 
             const fetchedImage = await fetchImage(imageResponse);
+            // const framedImage = await applyFrame(fetchedImage, FRAMES_URL?.[0]);
             const bufferedImage = await Sharp(fetchedImage).toBuffer();
             const url = await uploadIntoSpace(
               `post-${Date.now()}.png`,
               bufferedImage,
             );
+            console.log("url: ", url);
 
             if (!url) return null;
 
@@ -241,6 +253,7 @@ export async function createPost({
         imageFetchPromises.push(fetchPromise);
 
         fetchPromise.then((imageData) => {
+          // console.log("image Data: ", imageData);
           console.log(currentDate.getDay());
           currentDate.setDate(currentDate.getDate() + 1);
           console.log(currentDate.getDay());
@@ -264,7 +277,7 @@ export async function createPost({
             platform: acc,
             postAt: new Date(currentDate),
             imageId: imageData?.["id"] ?? null,
-            framedImageURL: null,
+            // framedImageURL: null,
             deletedAt: null,
           });
           indicator++;
@@ -272,8 +285,15 @@ export async function createPost({
       }
     }
 
+    // sendEvent(controller, "status", c?.["adusting posts together..."]);
     await Promise.all(imageFetchPromises);
 
+    if (!allPostDetails?.["length"]) {
+      // sendEvent(controller, "completed", c?.["No posts to create."]);
+      return;
+    }
+
+    // sendEvent(controller, "status", c?.["saving posts..."]);
     await db.post.createMany({
       data: allPostDetails,
     });

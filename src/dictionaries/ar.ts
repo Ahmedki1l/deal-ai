@@ -155,11 +155,11 @@ export default {
               "no valid recommendations data available.":
                 "لا توجد بيانات صالحة للتوصيات.",
 
-              "Post Frequency": "حساب العائد على الاستثمار",
+              "Post Frequency": "التكرار الأسبوعي للمنشورات",
               "error loading Post Frequency data.":
-                "خطأ في تحميل بيانات حساب العائد على الاستثمار.",
+                "خطأ في تحميل بيانات التكرار الأسبوعي للمنشورات.",
               "no valid Post Frequency data available.":
-                "لا توجد بيانات صالحة لحساب العائد على الاستثمار.",
+                "لا توجد بيانات صالحة لـ تكرار الأسبوعي للمنشورات.",
 
               "it's project is deleted, once you restore it all will be editable.":
                 "تم حذف المشروع، بمجرد استعادته سيكون كل شيء قابلاً للتعديل.",

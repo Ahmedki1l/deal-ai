@@ -127,9 +127,12 @@ export async function base64ToBuffer({
 }) {
   const r = base64?.split(",")?.[1];
   if (!r) throw Error("NO BASE64");
-  if (type === "pdf") {
-    return Buffer.from(r, "base64");
-  }
+  // if (type === "pdf") {
+  //   return sharp(Buffer.from(r, "base64"))
+  //     .resize({ width: 800 })
+  //     .png({ quality: 80 })
+  //     .toBuffer();
+  // }
 
   return sharp(Buffer.from(r, "base64"))
     .resize({ width: 800 })
@@ -239,11 +242,11 @@ export async function uploadIntoSpace({
 
     const img = {
       Key: `imgs/${name ? `${name}_` : null}${Date.now()}`, // Unique key for the file
-      ContentType: "image/png", // or 'image/jpeg', depending on the file type
+      // ContentType: "image/png", // or 'image/jpeg', depending on the file type
     };
     const pdf = {
       Key: `pdfs/${name ? `${name}_` : null}${Date.now()}`,
-      ContentType: "application/pdf",
+      // ContentType: "application/pdf",
     };
 
     // Set up S3 upload parameters

@@ -12,18 +12,25 @@ export async function fileToBase64(
   file: File,
 ): Promise<string | ArrayBuffer | null> {
   return new Promise((resolve, reject) => {
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(file);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
 
-    fileReader.onload = () => {
-      resolve(fileReader?.["result"]);
-    };
-
-    fileReader.onerror = (error) => {
-      reject(error);
-    };
+    reader.onload = () => resolve(reader?.["result"]);
+    reader.onerror = (error) => reject(error);
   });
 }
+export async function readFileAsArrayBuffer(
+  file: File,
+): Promise<string | ArrayBuffer | null> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+    reader.readAsArrayBuffer(file);
+  });
+}
+
 export function getMonth(month = dayjs().month()) {
   month = Math.floor(month);
   const year = dayjs().year();

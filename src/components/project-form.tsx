@@ -444,10 +444,16 @@ export const ProjectForm = {
                   // Close the window after successful authentication
                   authWindow?.close();
 
+                  // Remove the message event listener
+                  window.removeEventListener("message", receiveMessage);
+
                   // Resolve the promise
                   resolve({ clientId: event.data.accessToken });
                 }
               };
+
+              // Add the message event listener
+              window.addEventListener("message", receiveMessage);
             } else if (platform.value === "LINKEDIN") {
               console.log("Opening LinkedIn sign-in in a new window");
 

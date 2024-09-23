@@ -1,0 +1,14 @@
+@font-face {
+  font-family: "montserrat";
+  src: url("../../public/fonts/montserrat.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "cairo";
+  src: url("../../public/fonts/cairo.ttf") format("truetype");
+}
+
+/* @font-face {
+  font-family: "poppins";
+  src: url("../../public/fonts/poppins.ttf") format("truetype");
+} */

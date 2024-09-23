@@ -44,15 +44,15 @@ export const imageUpdateFormSchema = imageUpdateSchema.and(
 );
 // .and(
 //   z.object({
-//     file: z
-//       .instanceof(File)
-//       .refine((file) => {
-//         return !file || file.size <= MAX_UPLOAD_SIZE;
-//       }, "File size must be less than 5MB")
-//       .refine((file) => {
-//         return ACCEPTED_IMAGE_TYPES.includes(file.type);
-//       }, "File must be a PNG")
-//       .optional(),
+// file: z
+//   .instanceof(File)
+//   .refine((file) => {
+//     return !file || file.size <= MAX_UPLOAD_SIZE;
+//   }, "File size must be less than 5MB")
+//   .refine((file) => {
+//     return ACCEPTED_IMAGE_TYPES.includes(file.type);
+//   }, "File must be a PNG")
+//   .optional(),
 //     base64: z.string("base64").nullable().optional(),
 //   }),
 // );

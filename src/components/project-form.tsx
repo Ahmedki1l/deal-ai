@@ -127,6 +127,54 @@ export const ProjectForm = {
       )}
     />
   ),
+  pdf: ({
+    dic: {
+      "project-form": { pdf: c },
+    },
+    loading,
+    form,
+  }: ProjectFormProps) => (
+    <FormField
+      control={form?.["control"]}
+      name="pdf"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{c?.["label"]}</FormLabel>
+          <FormControl>
+            <div className="flex items-center justify-center gap-2">
+              <Input
+                type="file"
+                accept="application/pdf"
+                {...field}
+                value={undefined}
+                onChange={async (e) => {
+                  const file = e?.["target"]?.["files"]?.[0];
+                  if (file) field.onChange(file);
+                }}
+                disabled={loading}
+              />
+
+              {!!form.watch("pdf") ? (
+                <>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => form.resetField("pdf")}
+                    disabled={loading}
+                  >
+                    <Icons.x />
+                  </Button>
+                </>
+              ) : null}
+            </div>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  ),
+
   map: ({
     dic: {
       "project-form": { map: c },

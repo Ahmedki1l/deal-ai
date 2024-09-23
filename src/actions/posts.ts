@@ -182,7 +182,6 @@ export async function createPost({
         const adjusted_image = { prompt: adjusted_image_response?.prompt };
         const fetchPromise = generateImg(adjusted_image.prompt).then(
           async (imageResponse) => {
-            // console.log("image prompt: ", adjusted_image);
             console.log("imageResponse: ", imageResponse);
 
             if (!imageResponse) return null;
@@ -213,21 +212,14 @@ export async function createPost({
         imageFetchPromises.push(fetchPromise);
 
         fetchPromise.then((imageData) => {
-          // console.log("image Data: ", imageData);
-          console.log(currentDate.getDay());
           currentDate.setDate(currentDate.getDate() + 1);
-          console.log(currentDate.getDay());
-          // Adjust currentDate to the next valid posting day
-          while (!daysToPost.includes(currentDate.getDay())) {
-            currentDate.setDate(currentDate.getDate() + 1);
-          }
 
-          console.log(currentDate.getDay());
+          // Adjust currentDate to the next valid posting day
+          while (!daysToPost.includes(currentDate.getDay()))
+            currentDate.setDate(currentDate.getDate() + 1);
 
           const randomHour = Math.floor(Math.random() * (20 - 11) + 11);
           currentDate.setHours(randomHour, 0, 0);
-
-          console.log(`post ${i + 1}`);
 
           allPostDetails.push({
             ...data,
@@ -240,6 +232,7 @@ export async function createPost({
             // framedImageURL: null,
             deletedAt: null,
           });
+
           indicator++;
         });
       }

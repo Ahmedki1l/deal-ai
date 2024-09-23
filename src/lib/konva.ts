@@ -225,18 +225,48 @@ class PhotoEditor {
               y: 550,
             });
           }
+
           if (n === 1) {
             this.addText({
-              text: this.contents?.Long,
-              x: this.stage.width() / 2 + 100,
-              y: 150,
-              maxWidth: this.stage.width() - (this.stage.width() / 2 + 100),
+              text: "Architecture Agencies",
+              x: 1133,
+              y: 160,
+              width: 619,
+              // height: 195,
+              fontFamily: "Poppins",
+              fontSize: 100,
+              fontVariant: "700",
+              rotationDeg: 90,
+              wrap: "true",
             });
-
+            this.addText({
+              text: "Reservation",
+              x: 847,
+              y: 874,
+              // width: 297,
+              // height: 41,
+              fontFamily: "Poppins",
+              fontSize: 51.78,
+              fill: "white",
+            });
+            this.addText({
+              text: "+123 546 8910",
+              x: 601,
+              y: 968,
+              // width: 546,
+              // height: 63,
+              fontFamily: "Poppins",
+              fontSize: 80.73,
+              fill: "white",
+            });
             this.addText({
               text: data?.["website"],
-              x: 120,
-              y: this.stage.height() - 80,
+              x: 129,
+              y: 1110,
+              // width: 344,
+              // height: 24,
+              fontFamily: "Poppins",
+              fontSize: 30,
             });
           }
           if (n === 2) {
@@ -389,33 +419,22 @@ class PhotoEditor {
   addText({
     text = "double click to edit",
     fontSize = 24,
-    fontFamily = "montserrat",
     fill = "black",
-    x = this.stage.width() / 2, // Default position centered
-    y = this.stage.height() / 2, // Default position centered
-    maxWidth = this.stage.width() - 20, // Leave some padding for width
-  }: {
-    text?: string;
-    fontSize?: number;
-    fontFamily?: string;
-    fill?: string;
-    x?: number;
-    y?: number;
-    maxWidth?: number;
-  }) {
-    const wrappedText = this.wrapText(text, fontSize, fontFamily, maxWidth);
-
+    fontFamily = "Poppins",
+    x = this.stage.width() / 2,
+    y = this.stage.height() / 2,
+    ...props
+  }: Konva.TextConfig) {
     const textNode = new Konva.Text({
-      text: wrappedText,
+      text,
+      x,
+      y,
       fontSize,
       fontFamily,
       fill,
       draggable: true,
-      width: maxWidth, // Set the maximum width for the text
+      ...props,
     });
-
-    // Set the position
-    textNode.position({ x: x, y: y });
 
     // Add text to layer and render it
     this.layer.add(textNode);
@@ -424,96 +443,10 @@ class PhotoEditor {
 
     // Store the text node
     this.textNodes.push(textNode);
-    this.history.push(textNode);
-
-    const createTextArea = (node: Konva.Text) => {
-      const textPosition = node.getClientRect();
-      const stage = node.getStage();
-      const container = stage?.container();
-
-      if (container) {
-        const textarea = document.createElement("textarea");
-        container.appendChild(textarea);
-
-        textarea.value = node.text();
-        textarea.style.position = "absolute";
-        textarea.style.top = textPosition.y + "px";
-        textarea.style.left = textPosition.x + "px";
-        textarea.style.width = textPosition.width + "px";
-        textarea.style.height = textPosition.height + "px";
-        textarea.style.fontSize = fontSize + "px";
-        textarea.style.fontFamily = fontFamily;
-        textarea.style.color = fill;
-        textarea.style.background = "transparent";
-        textarea.style.border = "1px solid gray";
-        textarea.style.outline = "none";
-        textarea.style.resize = "none";
-        textarea.style.overflow = "hidden";
-        textarea.style.zIndex = "100";
-
-        node.hide();
-        this.layer.draw();
-        textarea.focus();
-
-        textarea.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-            node.text(textarea?.value);
-            container?.removeChild(textarea);
-            node.show();
-            this.layer.draw();
-          }
-        });
-
-        textarea.addEventListener("blur", () => {
-          node.text(textarea.value);
-          container?.removeChild(textarea);
-          node.show();
-          this.layer.draw();
-        });
-      }
-    };
-
-    textNode.on("dblclick", () => {
-      createTextArea(textNode);
-    });
-
     this.layer.draw();
 
     return { textNode };
-  } // Helper function to wrap text based on stage width
-  wrapText(
-    text: string,
-    fontSize: number,
-    fontFamily: string,
-    maxWidth: number,
-  ) {
-    const dummyTextNode = new Konva.Text({
-      text: "",
-      fontSize: fontSize,
-      fontFamily: fontFamily,
-    });
-
-    const words = text.split(" ");
-    let line = "";
-    let wrappedText = "";
-
-    words.forEach((word, index) => {
-      let testLine = line + word + " ";
-      dummyTextNode.text(testLine);
-
-      if (dummyTextNode.width() > maxWidth && index > 0) {
-        wrappedText += line + "\n"; // Wrap the line
-        line = word + " "; // Start a new line with the current word
-      } else {
-        line = testLine;
-      }
-    });
-
-    wrappedText += line; // Add the last line
-
-    return wrappedText;
   }
-
   // addFrame(n: number, data: { title: string; phone: string; website: string }) {
   //   Konva.Image.fromURL(frames?.[n]?.["src"], (imageNode: Konva.Image) => {
   //     imageNode.setAttrs({
@@ -583,7 +516,7 @@ class PhotoEditor {
   //         text: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse nemo quisquam eveniet sed rem distinctio.",
   //         x: this.stage.width() / 2 + 100,
   //         y: 150,
-  //         maxWidth: this.stage.width() - (this.stage.width() / 2 + 100),
+  //
   //       });
 
   //       this.addText({

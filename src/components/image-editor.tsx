@@ -63,8 +63,8 @@ export function ImageEditor({
     if (containerRef?.current) {
       editor.current = new PhotoEditor({
         containerId: containerRef?.["current"]?.["id"],
-        width: 600,
-        height: 600,
+        width: 1200,
+        height: 1200,
       });
 
       const init = async () => {
@@ -257,7 +257,7 @@ export function ImageEditor({
             <div
               id="photo-editor-container"
               ref={containerRef}
-              className={cn("h-[604px] w-[604px] border-2 bg-muted")}
+              className={cn("h-[1204px] w-[1204px] border-2 bg-muted")}
             />
           </div>
           {/* 

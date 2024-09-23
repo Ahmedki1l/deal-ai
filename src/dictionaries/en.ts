@@ -591,6 +591,7 @@ export default {
   "project-form": {
     title: { label: "Title", "health center": "health center" },
     logo: { label: "Logo" },
+    pdf: { label: "PDF" },
     map: { label: "Map", "choose on map": "Choose on map" },
     description: {
       label: "Description",

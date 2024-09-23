@@ -17,6 +17,11 @@ const montserrat = localFont({
   variable: "--font-montserrat",
   weight: "100 900",
 });
+const poppins = localFont({
+  src: "../../../public/fonts/poppins.ttf",
+  variable: "--font-poppins",
+  weight: "100 900",
+});
 const cairo = localFont({
   src: "../../../public/fonts/cairo.ttf",
   variable: "--font-cairo",
@@ -57,6 +62,7 @@ export default async function RootLayout({
         // "leading-relaxed tracking-tight",
         cairo?.["className"],
         montserrat?.["variable"],
+        poppins?.["variable"],
       )}
       suppressHydrationWarning
     >

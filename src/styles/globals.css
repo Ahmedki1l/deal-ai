@@ -7,6 +7,16 @@
   src: url("../../public/fonts/montserrat.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "cairo";
+  src: url("../../public/fonts/cairo.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("../../public/fonts/poppins.ttf") format("truetype");
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

@@ -255,8 +255,8 @@ export const ImageForm = {
                       n: Number(e),
                       data: {
                         title: "x project",
-                        website: "www.x.com",
-                        phone: "0102 218 4878",
+                        website: "www.domainname.com",
+                        phone: "+123 546 8910",
                       },
                     });
                     field.onChange(FRAMES?.[Number(e)]?.["filled"]);

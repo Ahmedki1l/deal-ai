@@ -23,6 +23,7 @@ const config = {
       fontFamily: {
         cairo: ["var(--font-cairo)", ...fontFamily.sans],
         montserrat: ["var(--font-montserrat)", ...fontFamily.sans],
+        poppins: ["var(--font-poppins)", ...fontFamily.sans],
       },
       colors: {
         border: "hsl(var(--border))",

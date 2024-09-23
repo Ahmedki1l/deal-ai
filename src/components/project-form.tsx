@@ -1,9 +1,11 @@
 "use client";
 
+import { uploadIntoSpace } from "@/actions/images";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,7 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { platforms } from "@/db/enums";
 import { useLocale } from "@/hooks/use-locale";
 import { t } from "@/lib/locale";
-import { fileToBase64 } from "@/lib/utils";
+import { clientAction, fileToBase64, readFileAsBuffer } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import {
   projectCreateFormSchema,
@@ -86,6 +88,7 @@ export const ProjectForm = {
             <div className="flex items-center justify-center gap-2">
               <Input
                 type="file"
+                accept="image/png, image/jpeg, image/jpg"
                 {...field}
                 value={undefined}
                 onChange={async (e) => {
@@ -93,9 +96,8 @@ export const ProjectForm = {
                   const file = e?.["target"]?.["files"]?.[0];
 
                   if (file) {
-                    const base64 = (await fileToBase64(file))?.toString();
-
                     // field.onChange(file);
+                    const base64 = (await fileToBase64(file))?.toString();
                     form.setValue("logo", base64 ?? "");
                   }
                 }}
@@ -133,47 +135,85 @@ export const ProjectForm = {
     },
     loading,
     form,
-  }: ProjectFormProps) => (
-    <FormField
-      control={form?.["control"]}
-      name="pdf"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>{c?.["label"]}</FormLabel>
-          <FormControl>
-            <div className="flex items-center justify-center gap-2">
-              <Input
-                type="file"
-                accept="application/pdf"
-                {...field}
-                value={undefined}
-                onChange={async (e) => {
-                  const file = e?.["target"]?.["files"]?.[0];
-                  if (file) field.onChange(file);
-                }}
-                disabled={loading}
-              />
+  }: ProjectFormProps) => {
+    const [confirmPdf, setConfirmPdf] = useState<boolean>(false);
 
-              {!!form.watch("pdf") ? (
-                <>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => form.resetField("pdf")}
-                    disabled={loading}
-                  >
-                    <Icons.x />
-                  </Button>
-                </>
-              ) : null}
-            </div>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  ),
+    async function uploadPdf() {
+      if (!form?.getValues("pdf")) {
+        toast.error("first choose a pdf");
+        return;
+      }
+      const url = await clientAction(
+        async () =>
+          await uploadIntoSpace({
+            type: "pdf",
+            body: form?.getValues("pdf")!,
+          }),
+        setConfirmPdf,
+      );
+      if (!url) return;
+
+      form.setValue("pdf", url);
+      toast.success("pdf has been confirmed.");
+      setConfirmPdf(true);
+    }
+
+    return (
+      <FormField
+        control={form?.["control"]}
+        name="pdf"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{c?.["label"]}</FormLabel>
+            <FormControl>
+              <div className="flex items-center justify-center gap-2">
+                <Input
+                  type="file"
+                  accept="application/pdf"
+                  {...field}
+                  value={undefined}
+                  onChange={async (e) => {
+                    const file = e?.["target"]?.["files"]?.[0];
+                    if (file) {
+                      // field.onChange(file);
+                      const buffer = (await readFileAsBuffer(file))?.toString();
+                      form.setValue("pdf", buffer ?? "");
+                    }
+                  }}
+                  disabled={loading || confirmPdf}
+                />
+
+                {!!form.watch("pdf") ? (
+                  <>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => form.resetField("pdf")}
+                      disabled={loading || confirmPdf}
+                    >
+                      <Icons.x />
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={uploadPdf}
+                      disabled={loading || confirmPdf}
+                    >
+                      fill using AI
+                    </Button>
+                  </>
+                ) : null}
+              </div>
+            </FormControl>
+            <FormDescription>
+              after confirming a pdf, you can't choose another one.
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  },
 
   map: ({
     dic: {

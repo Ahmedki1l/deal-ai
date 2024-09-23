@@ -53,14 +53,7 @@ export function ProjectCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof projectCreateFormSchema>) {
-    await clientAction(
-      async () =>
-        await createProject({
-          ...data,
-          logo: data?.["logo"]?.split(",")?.[1] ?? null,
-        }),
-      setLoading,
-    );
+    await clientAction(async () => await createProject(data), setLoading);
 
     toast.success(c?.["created successfully."]);
     setOpen(false);

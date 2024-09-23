@@ -104,6 +104,7 @@ export default {
           deletedAt: "Deleted At",
         },
         project: {
+          "view pdf": "view pdf",
           "oops, no such project.": "oops, no such project.",
           "you have not created you project yet.":
             "you have not created you project yet.",
@@ -796,6 +797,8 @@ export default {
       "your image url was not generated. Please try again.",
     "your image url was not uploaded. please try again.":
       "your image url was not uploaded. Please try again.",
+    "your file was not uploaded. please try again.":
+      "your file was not uploaded. please try again.",
 
     "this action needs you to be logged in.":
       "this action needs you to be logged in.",

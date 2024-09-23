@@ -102,6 +102,7 @@ export default {
           deletedAt: "تاريخ الحذف",
         },
         project: {
+          "view pdf": "إظهار الملف",
           "oops, no such project.": "عذرًا، لا يوجد مشروع بهذا الاسم.",
           "you have not created you project yet.": "لم تقم بإنشاء مشروعك بعد.",
           projects: "المشاريع",
@@ -833,11 +834,13 @@ export default {
     "your image was not deleted. please try again.":
       "لم يتم حذف الصورة الخاصة بك. الرجاء المحاولة مرة أخرى.",
     "your image prompt was not updated. please try again.":
-      "your image prompt was not updated. Please try again.",
+      "لم يتم تحديث الوصف الخاص بك. الرجاء المحاولة مرة أخرى.",
     "your image url was not generated. please try again.":
-      "your image url was not generated. Please try again.",
+      "لم يتم إنشاء الصورة الخاصة بك. الرجاء المحاولة مرة أخرى.",
     "your image url was not uploaded. please try again.":
-      "your image url was not uploaded. Please try again.",
+      "لم يتم رفع الصورة الخاصة بك. الرجاء المحاولة مرة أخرى.",
+    "your file was not uploaded. please try again.":
+      "لم يتم رفع الملف الخاص بك. الرجاء المحاولة مرة أخرى.",
 
     "this action needs you to be logged in.":
       "يجب أن تكون مسجل أولاً لهذا الإجراء.",

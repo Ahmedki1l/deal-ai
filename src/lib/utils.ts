@@ -25,6 +25,19 @@ export async function fileToBase64(
   });
 }
 
+export async function readFileAsBuffer(file: File): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const arrayBuffer = reader.result as ArrayBuffer;
+      const buffer = Buffer.from(arrayBuffer);
+      resolve(buffer);
+    };
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(file);
+  });
+}
+
 export function getMonth(month = dayjs().month()) {
   month = Math.floor(month);
   const year = dayjs().year();

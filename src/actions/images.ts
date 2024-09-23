@@ -12,7 +12,7 @@ import {
   imageRegeneratePromptSchema,
   imageUpdateSchema,
 } from "@/validations/images";
-import { Body, ObjectKey } from "aws-sdk/clients/s3";
+import S3, { Body, ObjectKey } from "aws-sdk/clients/s3";
 import axios from "axios";
 import { generateIdFromEntropySize } from "lucia";
 import { revalidatePath } from "next/cache";
@@ -61,10 +61,9 @@ export async function updateImage({
     if (!user) return { error: c?.["this action needs you to be logged in."] };
 
     if (data?.["src"] && data?.["src"]?.includes(",")) {
-      const r = await uploadIntoSpace(
-        `img-${Date.now()}.png`,
-        await base64ToBuffer(data?.["src"]),
-      );
+      const r = await uploadIntoSpace({
+        body: await base64ToBuffer(data?.["src"]),
+      });
 
       if (typeof r == "object" && "error" in r) return { error: r?.["error"] };
       data.src = r;
@@ -208,21 +207,38 @@ export async function generateImage({
   }
 }
 
-export async function uploadIntoSpace(name: ObjectKey, body: Body) {
+export async function uploadIntoSpace({
+  body,
+  name,
+  type = "img",
+}: {
+  body: Body;
+  name?: ObjectKey;
+  type?: "img" | "pdf";
+}) {
   const locale = await getLocale();
   const { actions: c } = await getDictionary(locale);
   try {
-    // Set up S3 upload parameters
-    const params = {
-      Bucket: process.env.DO_SPACE_BUCKET!,
-      Key: name, // Unique key for the file
-      Body: body,
-      // ContentEncoding: "base64", // Required when uploading Base64 data
+    const imgProps = {
+      Key: `imgs/${Date.now()}${name ? `_${name}` : null}`, // Unique key for the file
       ContentType: "image/png", // or 'image/jpeg', depending on the file type
-      ACL: "public-read", // Make the file publicly accessible
+    };
+    const pdfProps = {
+      Key: `pdfs/${Date.now()}${name ? `_${name}` : null}`,
+      ContentType: "application/pdf",
     };
 
-    // Upload the file to the bucket using a promise
+    // Set up S3 upload parameters
+    const params: S3.PutObjectRequest = {
+      ...{
+        Bucket: process.env.DO_SPACE_BUCKET!,
+        Body: body,
+        // ContentEncoding: "base64", // Required when uploading Base64 data
+        ACL: "public-read", // Make the file publicly accessible
+      },
+      ...(type === "pdf" ? pdfProps : imgProps),
+    };
+
     await s3Client.upload(params).promise();
 
     // Return the uploaded file URL
@@ -232,7 +248,9 @@ export async function uploadIntoSpace(name: ObjectKey, body: Body) {
     return {
       error: error?.["message"]
         ? await t(error?.["message"], { from: "en", to: locale })
-        : c?.["your image url was not uploaded. please try again."],
+        : type === "pdf"
+          ? c?.["your file was not uploaded. please try again."]
+          : c?.["your image url was not uploaded. please try again."],
     };
   }
 }

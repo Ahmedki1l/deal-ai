@@ -19,6 +19,7 @@ import { base64ToBuffer, uploadIntoSpace } from "./images";
 
 export async function createProject({
   logo,
+  pdf,
   types,
   platforms: plattformArr,
   map,
@@ -64,20 +65,26 @@ export async function createProject({
     };
 
     let url: string | null = null;
+    let pdfUrl: string | null = null;
 
-    if (logo) {
-      const img = await base64ToBuffer(logo);
-
+    if (logo && !logo.includes("http")) {
       console.log("uploading...");
-      const r = await uploadIntoSpace(`project-logo-${Date.now()}.png`, img);
-      if (!(typeof r === "string"))
-        return {
-          error: r?.["error"],
-        };
-
+      const img = await base64ToBuffer(logo);
+      const r = await uploadIntoSpace({ body: img });
+      if (!(typeof r === "string")) return { error: r?.["error"] };
       if (!(typeof r === undefined)) url = r;
+      console.log("logo url: ", url);
+    }
 
-      console.log("framed url: ", url);
+    if (pdf && !pdf.includes("http")) {
+      console.log("uploading...");
+      const r = await uploadIntoSpace({
+        type: "pdf",
+        body: pdf,
+      });
+      if (!(typeof r === "string")) return { error: r?.["error"] };
+      if (!(typeof r === undefined)) pdfUrl = r;
+      console.log("pdf url: ", pdfUrl);
     }
 
     await db.$transaction(async (tx) => {
@@ -93,7 +100,9 @@ export async function createProject({
         });
       }
 
-      await tx.project.create({ data: { ...project, logo: url } });
+      await tx.project.create({
+        data: { ...project, logo: url, pdf: pdfUrl },
+      });
     });
 
     revalidatePath("/", "layout");

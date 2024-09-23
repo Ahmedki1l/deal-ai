@@ -1,6 +1,5 @@
 import { platformsArr, propertyTypesArr } from "@/db/enums";
 import { z } from "@/lib/zod";
-import { MAX_UPLOAD_SIZE } from "./images";
 import { propertyCreateFormSchema } from "./properties";
 
 export const projectSchema = z.object(
@@ -9,7 +8,8 @@ export const projectSchema = z.object(
     id: z.string("id"),
     userId: z.string("userId"),
     title: z.string("title"),
-    logo: z.string("logo").nullable().optional(),
+    logo: z.string("logo").nullable().default(null),
+    pdf: z.string("pdf").nullable().default(null),
     description: z.string("description").optional(),
 
     distinct: z.string("distinct"),
@@ -35,6 +35,7 @@ export const projectSchema = z.object(
 export const projectCreateSchema = projectSchema.pick({
   userId: true,
   logo: true,
+  pdf: true,
   title: true,
   description: true,
   distinct: true,
@@ -47,14 +48,6 @@ export const projectCreateFormSchema = projectCreateSchema
   .and(
     z.object({
       map: z.string("map").optional(),
-      pdf: z
-        .instanceof(File)
-        .refine(
-          (file) => !file || file.size <= MAX_UPLOAD_SIZE,
-          "File size must be less than 5MB",
-        )
-        .nullable()
-        .default(null),
     }),
   )
   .and(propertyCreateFormSchema);

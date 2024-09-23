@@ -61,9 +61,8 @@ export async function updateImage({
     if (!user) return { error: c?.["this action needs you to be logged in."] };
 
     if (data?.["src"] && data?.["src"]?.includes(",")) {
-      const r = await uploadIntoSpace({
-        body: await base64ToBuffer(data?.["src"]),
-      });
+      const buffer = await base64ToBuffer({ base64: data?.["src"] });
+      const r = await uploadIntoSpace({ body: buffer });
 
       if (typeof r == "object" && "error" in r) return { error: r?.["error"] };
       data.src = r;
@@ -119,14 +118,20 @@ export async function deleteImage({ id }: z.infer<typeof imageDeleteSchema>) {
   }
 }
 
-export async function base64ToBuffer(str: string) {
-  const base64 = str?.split(",")?.pop();
-  if (!base64) throw Error("NO BASE64");
+export async function base64ToBuffer({
+  base64,
+  type = "img",
+}: {
+  base64: string;
+  type?: "img" | "pdf";
+}) {
+  const r = base64?.split(",")?.[1];
+  if (!r) throw Error("NO BASE64");
+  if (type === "pdf") {
+    return Buffer.from(r, "base64");
+  }
 
-  return sharp(Buffer.from(base64, "base64"))
-    .resize({ width: 800 })
-    .png({ quality: 80 })
-    .toBuffer();
+  return sharp(r).resize({ width: 800 }).png({ quality: 80 }).toBuffer();
 }
 
 export async function regenerateImagePrompt({
@@ -219,7 +224,15 @@ export async function uploadIntoSpace({
 }) {
   const locale = await getLocale();
   const { actions: c } = await getDictionary(locale);
+
   try {
+    const newBody = body?.toString()?.includes(",")
+      ? await base64ToBuffer({
+          type,
+          base64: body?.toString(),
+        })
+      : null;
+
     const img = {
       Key: `imgs/${name ? `${name}-` : null}${Date.now()}`, // Unique key for the file
       ContentType: "image/png", // or 'image/jpeg', depending on the file type
@@ -233,7 +246,7 @@ export async function uploadIntoSpace({
     const params: S3.PutObjectRequest = {
       ...{
         Bucket: process.env.DO_SPACE_BUCKET!,
-        Body: body,
+        Body: newBody ?? body,
         // ContentEncoding: "base64", // Required when uploading Base64 data
         ACL: "public-read", // Make the file publicly accessible
       },

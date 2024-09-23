@@ -24,7 +24,6 @@ export async function fileToBase64(
     };
   });
 }
-
 export function getMonth(month = dayjs().month()) {
   month = Math.floor(month);
   const year = dayjs().year();

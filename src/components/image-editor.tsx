@@ -60,11 +60,11 @@ export function ImageEditor({
   });
 
   useEffect(() => {
-    if (containerRef?.current) {
+    if (containerRef?.["current"]) {
       editor.current = new PhotoEditor({
-        containerId: containerRef?.["current"]?.["id"],
-        width: 1200,
-        height: 1200,
+        containerId: containerRef?.["current"]?.["id"]!,
+        width: containerRef?.["current"]?.["offsetWidth"]!,
+        height: containerRef?.["current"]?.["offsetHeight"]!,
       });
 
       const init = async () => {
@@ -75,22 +75,21 @@ export function ImageEditor({
         form.setValue("editor.photo", photoNode);
       };
 
+      const handleResize = () => {
+        editor.current?.setEditorSize({
+          width: containerRef?.["current"]?.["offsetWidth"] ?? 0,
+          height: containerRef?.["current"]?.["offsetHeight"] ?? 0,
+        });
+      };
+
+      window.addEventListener("resize", handleResize);
+
       init();
+      handleResize();
 
-      // const handleResize = () => {
-      //   const container = containerRef.current;
-      //   editor.current?.setEditorSize({
-      //     width: container?.["offsetWidth"] ?? 0,
-      //     height: container?.["offsetHeight"] ?? 0,
-      //   });
-      // };
-
-      // window.addEventListener("resize", handleResize);
-      // handleResize();
-
-      // return () => {
-      //   window.removeEventListener("resize", handleResize);
-      // };
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
     }
   }, []);
 
@@ -162,8 +161,8 @@ export function ImageEditor({
           </div>
         </div>
 
-        <div className="grid grid-cols-[300px,1fr]">
-          <div className="container space-y-4">
+        <div className="relative flex flex-1 flex-col">
+          <div className="container absolute left-2 top-2 z-50 max-h-96 max-w-xs space-y-4 overflow-auto">
             <Card className="space-y-1">
               <CardHeader className="flex flex-row items-center justify-between p-0 px-2">
                 <CardTitle>Photo</CardTitle>
@@ -253,20 +252,15 @@ export function ImageEditor({
             </Card>
           </div>
 
-          <div className="flex items-center justify-center bg-muted/50">
-            <div
-              id="photo-editor-container"
-              ref={containerRef}
-              className={cn("h-[1204px] w-[1204px] border-2 bg-muted")}
-            />
+          <div
+            id="photo-editor-container"
+            ref={containerRef}
+            className={cn(
+              "relative flex w-full flex-1 items-center justify-center bg-muted",
+            )}
+          >
+            <div className="h-[600px] w-[600px] border-2 border-dashed border-green-600 bg-muted/40" />
           </div>
-          {/* 
-
-            // <div
-            //   id="photo-editor-container"
-            //   ref={containerRef}
-            //   className={cn("relative w-full flex-1 border-2 bg-muted")}
-            // /> */}
         </div>
       </form>
     </Form>

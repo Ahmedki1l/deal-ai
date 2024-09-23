@@ -177,7 +177,9 @@ export const ProjectForm = {
                     const file = e?.["target"]?.["files"]?.[0];
                     if (file) {
                       // field.onChange(file);
+
                       const base64 = (await fileToBase64(file))?.toString();
+                      console.log(base64);
                       form.setValue("pdf", base64 ?? "");
                     }
                   }}

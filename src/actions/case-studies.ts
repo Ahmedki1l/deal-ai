@@ -112,7 +112,7 @@ export async function createCaseStudy({
       ? (
           await Promise.all(
             refImages?.map(async (e) => {
-              const buffer = await base64ToBuffer(e);
+              const buffer = await base64ToBuffer({ base64: e });
               const r = await uploadIntoSpace({
                 name: "cases",
                 body: buffer,

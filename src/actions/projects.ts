@@ -69,15 +69,21 @@ export async function createProject({
 
     if (logo && !logo.includes("http")) {
       console.log("uploading...");
-      const img = await base64ToBuffer(logo);
-      const r = await uploadIntoSpace({ name: "projects", body: img });
+      const img = await base64ToBuffer({ base64: logo });
+      const r = await uploadIntoSpace({
+        name: "projects",
+        body: img,
+      });
       if (!(typeof r === "string")) return { error: r?.["error"] };
       if (!(typeof r === undefined)) url = r;
       console.log("logo url: ", url);
     }
 
     if (pdf && !pdf.includes("http")) {
-      const pdfBuffer = await base64ToBuffer(pdf);
+      const pdfBuffer = await base64ToBuffer({
+        type: "pdf",
+        base64: pdf,
+      });
       const r = await uploadIntoSpace({
         type: "pdf",
         name: "projects",

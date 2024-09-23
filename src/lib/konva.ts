@@ -128,16 +128,6 @@ class PhotoEditor {
 
         resolve({ photoNode: imageNode });
       };
-
-      // Konva.Image.fromURL(
-      //   FRAMES?.[n]?.["src"],
-      //   (imageNode: Konva.Image) => {
-      //     resolve({ photoNode: imageNode });
-      //   },
-      //   (err) => {
-      //     reject(err); // Handle error case if image fails to load
-      //   },
-      // );
     });
   }
 
@@ -609,42 +599,10 @@ class PhotoEditor {
     this.layer.draw();
   }
 
-  //   setEditorSize({ width, height }: { width: number; height: number }) {
-  //     const editorRatio = this.ratio; // 16/9
-  //     let newWidth = width;
-  //     let newHeight = height;
-
-  //     if (width / height > editorRatio) {
-  //       newWidth = height * editorRatio; // Constrain width
-  //     } else {
-  //       newHeight = width / editorRatio; // Constrain height
-  //     }
-
-  //     this.stage.size({ width: newWidth, height: newHeight });
-
-  //     if (this.photo) {
-  //       // Maintain the aspect ratio of the photo
-  //       const imageRatio = this.photo.width() / this.photo.height();
-  //       let photoWidth, photoHeight;
-
-  //       if (imageRatio > editorRatio) {
-  //         photoWidth = newWidth;
-  //         photoHeight = newWidth / imageRatio;
-  //       } else {
-  //         photoHeight = newHeight;
-  //         photoWidth = newHeight * imageRatio;
-  //       }
-
-  //       // Center the photo in the editor space
-  //       const x = (newWidth - photoWidth) / 2;
-  //       const y = (newHeight - photoHeight) / 2;
-
-  // this.photo.size({ width: photoWidth, height: photoHeight });
-  // this.photo.position({ x, y });
-  //     }
-
-  //     this.layer.draw(); // Ensure the layer is redrawn with new dimensions
-  //   }
+  setEditorSize({ width, height }: { width: number; height: number }) {
+    this.stage.size({ width, height });
+    this.layer.draw();
+  }
   //   attachViewerToBody() {
   //     const viewerContainer = document.createElement("div");
   //     viewerContainer.id = "photo-editor-viewer";

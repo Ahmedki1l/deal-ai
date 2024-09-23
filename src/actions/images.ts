@@ -128,10 +128,13 @@ export async function base64ToBuffer({
   const r = base64?.split(",")?.[1];
   if (!r) throw Error("NO BASE64");
   if (type === "pdf") {
-    return Buffer.from(r, "base64");
+    return sharp(Buffer.from(r, "base64")).toBuffer();
   }
 
-  return sharp(r).resize({ width: 800 }).png({ quality: 80 }).toBuffer();
+  return sharp(Buffer.from(r, "base64"))
+    .resize({ width: 800 })
+    .png({ quality: 80 })
+    .toBuffer();
 }
 
 export async function regenerateImagePrompt({
@@ -226,12 +229,13 @@ export async function uploadIntoSpace({
   const { actions: c } = await getDictionary(locale);
 
   try {
-    const newBody = body?.toString()?.includes(",")
-      ? await base64ToBuffer({
-          type,
-          base64: body?.toString(),
-        })
-      : null;
+    const newBody =
+      typeof body === "string" && body?.includes("base64,")
+        ? await base64ToBuffer({
+            type,
+            base64: body,
+          })
+        : null;
 
     const img = {
       Key: `imgs/${name ? `${name}-` : null}${Date.now()}`, // Unique key for the file

@@ -54,6 +54,7 @@ export function ImageEditor({
     resolver: zodResolver(imageUpdateFormSchema),
     defaultValues: {
       id: image?.["id"],
+      src: image?.["src"],
       prompt: image?.["prompt"],
       dimensios: { width: "600", height: "600" },
     },
@@ -63,8 +64,6 @@ export function ImageEditor({
     if (containerRef?.["current"]) {
       editor.current = new PhotoEditor({
         containerId: containerRef?.["current"]?.["id"]!,
-        width: containerRef?.["current"]?.["offsetWidth"]!,
-        height: containerRef?.["current"]?.["offsetHeight"]!,
       });
 
       const init = async () => {
@@ -258,9 +257,7 @@ export function ImageEditor({
             className={cn(
               "relative flex w-full flex-1 items-center justify-center bg-muted",
             )}
-          >
-            <div className="h-[600px] w-[600px] border-2 border-dashed border-green-600 bg-muted/40" />
-          </div>
+          />
         </div>
       </form>
     </Form>

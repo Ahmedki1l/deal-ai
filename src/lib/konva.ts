@@ -9,36 +9,33 @@ class PhotoEditor {
   private stage: Konva.Stage;
   private layer: Konva.Layer;
   private transformer: Konva.Transformer;
+  private cropRect: Konva.Rect | null = null;
 
   private contents: ShortContents | null = null;
   private photo: Konva.Image | null = null;
   private frame: Konva.Image | null = null;
   private textNodes: Konva.Text[] = [];
-  private history: Konva.Node[] = [];
 
   private isEditorEnabled: boolean = true;
 
-  constructor({
-    containerId,
-    width,
-    height,
-  }: {
-    containerId: string;
-    width: number;
-    height: number;
-  }) {
-    this.stage = new Konva.Stage({ container: containerId, width, height });
+  constructor({ containerId }: { containerId: string }) {
+    this.stage = new Konva.Stage({ container: containerId });
     this.layer = new Konva.Layer();
     this.transformer = new Konva.Transformer();
 
     this.layer.add(this.transformer);
     this.stage.add(this.layer);
+
+    // Initialize the cropping rectangle
+    this.initCropRect();
+
     this.stage.on("click", (e: Konva.KonvaEventObject<MouseEvent>) => {
       if (!this.isEditorEnabled) return;
 
       const target = e.target as Konva.Image | Konva.Text;
 
       if (
+        e.target === this.cropRect ||
         e.target === this.photo ||
         e.target === this.frame ||
         this.textNodes.includes(target as Konva.Text)
@@ -49,7 +46,62 @@ class PhotoEditor {
       this.layer.draw();
     });
   }
+  private initCropRect() {
+    const editorRatio = this.stage.width() / this.stage.height();
+    const cropWidth = this.stage.width() * 0.5; // Initial crop width (50% of stage)
+    const cropHeight = cropWidth / editorRatio;
 
+    // Create the crop rectangle
+    this.cropRect = new Konva.Rect({
+      x: (this.stage.width() - cropWidth) / 2, // Center horizontally
+      y: (this.stage.height() - cropHeight) / 2, // Center vertically
+      width: cropWidth,
+      height: cropHeight,
+      stroke: "black",
+      strokeWidth: 1,
+      draggable: true,
+    });
+
+    // Limit movement to stay within stage bounds
+    this.cropRect.on("dragmove", () => {
+      const rect = this.cropRect!;
+      const stageWidth = this.stage.width();
+      const stageHeight = this.stage.height();
+
+      // Keep the crop rect within the bounds of the stage
+      if (rect.x() < 0) rect.x(0);
+      if (rect.y() < 0) rect.y(0);
+
+      if (rect.x() + rect.width() > stageWidth)
+        rect.x(stageWidth - rect.width());
+
+      if (rect.y() + rect.height() > stageHeight)
+        rect.y(stageHeight - rect.height());
+    });
+
+    this.layer.add(this.cropRect);
+    this.layer.draw();
+  }
+
+  private adjustCropRect() {
+    const editorRatio = this.stage.width() / this.stage.height();
+    const newWidth = this.stage.width() * 0.5;
+    const newHeight = newWidth / editorRatio;
+
+    this.cropRect?.size({ width: newWidth, height: newHeight });
+    this.cropRect?.position({
+      x: (this.stage.width() - newWidth) / 2,
+      y: (this.stage.height() - newHeight) / 2,
+    });
+
+    this.layer.draw();
+  }
+
+  setEditorSize({ width, height }: { width: number; height: number }) {
+    this.stage.size({ width, height });
+    this.adjustCropRect();
+    this.layer.draw(); // Ensure the layer is redrawn
+  }
   addContents({ contents }: { contents: ShortContents }) {
     this.contents = contents;
   }
@@ -79,9 +131,10 @@ class PhotoEditor {
           if (this.photo) this.photo.destroy();
 
           this.photo = loadedImageNode;
+          this.cropRect?.moveToTop();
           this.layer.add(loadedImageNode);
+          this.cropRect?.moveToTop();
           this.layer.draw();
-
           resolve({ photoNode: loadedImageNode });
         },
         (err) => {
@@ -574,8 +627,14 @@ class PhotoEditor {
     // if (!this.frame && !this.photo) return null;
     this.transformer.nodes([]);
 
+    const cropArea = this.cropRect!.getClientRect(); // Get the cropping rectangle coordinates
+
     // Generate the data URL
     const dataURL = this.stage.toDataURL({
+      x: cropArea.x,
+      y: cropArea.y,
+      width: cropArea.width,
+      height: cropArea.height,
       pixelRatio: pixelRatio,
       mimeType: format === "jpeg" ? "image/jpeg" : "image/png",
       quality: quality,
@@ -599,10 +658,6 @@ class PhotoEditor {
     this.layer.draw();
   }
 
-  setEditorSize({ width, height }: { width: number; height: number }) {
-    this.stage.size({ width, height });
-    this.layer.draw();
-  }
   //   attachViewerToBody() {
   //     const viewerContainer = document.createElement("div");
   //     viewerContainer.id = "photo-editor-viewer";

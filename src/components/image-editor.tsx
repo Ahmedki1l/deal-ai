@@ -1,5 +1,6 @@
 "use client";
 
+import { updateImage } from "@/actions/images";
 import { DialogResponsiveProps } from "@/components/dialog";
 import { Icons } from "@/components/icons";
 import { Image } from "@/components/image";
@@ -17,7 +18,7 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useLocale } from "@/hooks/use-locale";
 import { PhotoEditor } from "@/lib/konva";
-import { cn } from "@/lib/utils";
+import { clientAction, cn } from "@/lib/utils";
 import { ShortContents } from "@/types";
 import { Dictionary } from "@/types/locale";
 import { imageUpdateFormSchema } from "@/validations/images";
@@ -26,6 +27,7 @@ import { CaseStudy, Image as ImageType, Post, Project } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 import { Label } from "./ui/label";
 
@@ -110,7 +112,7 @@ export function ImageEditor({
       setLoading,
     );
 
-    toast.success("done");
+    toast.success("saved");
   }
 
   return (

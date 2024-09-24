@@ -114,7 +114,7 @@ export function ImageEditor({
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-1 flex-col space-y-4"
       >
-        <div className="container flex items-center justify-between gap-4">
+        {/* <div className="container flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2">
               <h2>dimensions</h2>
@@ -161,10 +161,10 @@ export function ImageEditor({
               {c?.["save changes"]}
             </Button>
           </div>
-        </div>
+        </div> */}
 
         <div className="relative flex flex-1 flex-col">
-          <div className="container absolute left-2 top-2 z-50 max-h-96 max-w-xs space-y-4 overflow-auto">
+          <div className="container absolute left-2 top-2 z-50 max-h-[100%] max-w-xs space-y-4 overflow-auto">
             <Card className="space-y-1">
               <CardHeader className="flex flex-row items-center justify-between p-0 px-2">
                 <CardTitle>Photo</CardTitle>
@@ -237,7 +237,7 @@ export function ImageEditor({
                 </Tooltip>
               </CardHeader>
 
-              <CardContent className="p-2 pt-0">
+              <CardContent className="space-y-2 p-2 pt-0">
                 {form.watch("editor.textNodes") &&
                   form.watch("editor.textNodes")?.map((txt, i) => {
                     return (
@@ -346,14 +346,10 @@ export function ImageEditor({
             id="photo-editor-container"
             ref={containerRef}
             className={cn(
-              "relative flex w-full flex-1 items-center justify-center bg-muted",
+              "bg-grid relative flex w-full flex-1 items-center justify-center overflow-hidden",
             )}
           />
         </div>
-        {/* 
-        <div>
-          <Image src={form.watch("src")} alt="" />
-        </div> */}
       </form>
     </Form>
   );

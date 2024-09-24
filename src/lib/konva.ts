@@ -267,8 +267,8 @@ class PhotoEditor {
     };
   }
   reorderLayers() {
-    if (this.cropRect) this.cropRect.setZIndex(0);
-    if (this.photo) this.photo.setZIndex(1);
+    if (this.photo) this.photo.setZIndex(0);
+    if (this.cropRect) this.cropRect.setZIndex(1);
     if (this.frame) this.frame.setZIndex(2);
     this.textNodes.forEach((txtNode, i) => txtNode.setZIndex(3 + i));
 

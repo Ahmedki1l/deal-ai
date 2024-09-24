@@ -139,6 +139,7 @@ class PhotoEditor {
           this.cropRect?.moveToTop();
           this.layer.add(loadedImageNode);
           this.cropRect?.moveToTop();
+          this.reorderLayers();
           this.layer.draw();
           resolve({ photoNode: loadedImageNode });
         },
@@ -182,6 +183,7 @@ class PhotoEditor {
         // Add the new image to the layer
         this.photo = imageNode;
         this.layer.add(imageNode);
+        this.reorderLayers();
         this.layer.draw();
 
         resolve({ photoNode: imageNode });
@@ -218,13 +220,14 @@ class PhotoEditor {
             opacity: 1,
           });
 
-          [this.frame, ...this.textNodes].forEach((node) => node?.destroy());
+          [this.frame, ...this.textNodes].map((node) => node?.destroy());
 
           this.frame = imageNode;
           this.textNodes = [];
           this.layer.add(imageNode);
           FRAMES?.[n]?.applyFrame({ data, editor });
 
+          this.reorderLayers(); // Keep the order consistent
           this.layer.draw();
           resolve({ frameNode: imageNode, textNodes: this.textNodes });
         },
@@ -256,6 +259,14 @@ class PhotoEditor {
       x: centerizedX,
       y: centerizedY,
     };
+  }
+  reorderLayers() {
+    if (this.photo) this.photo.setZIndex(0);
+    if (this.frame) this.frame.setZIndex(1);
+    this.textNodes.forEach((txtNode, i) => txtNode.setZIndex(2 + i));
+
+    // Redraw the layer to reflect changes
+    this.layer.draw();
   }
 
   //   addFrame({
@@ -346,7 +357,7 @@ class PhotoEditor {
   addText({
     text = "double click to edit",
     fontSize = 24,
-    fill = "black",
+    fill = "#000000",
     fontFamily = "Poppins",
     x = this.stage.width() / 2,
     y = this.stage.height() / 2,
@@ -365,8 +376,11 @@ class PhotoEditor {
 
     this.layer.add(textNode);
     textNode.moveToTop();
+    this.reorderLayers(); // Keep the order consistent
+
     this.layer.draw();
 
+    this.reorderLayers(); // Keep the order consistent
     this.textNodes.push(textNode);
     this.layer.draw();
 
@@ -537,6 +551,8 @@ class PhotoEditor {
     });
 
     this.transformer.nodes([]);
+    this.reorderLayers(); // Keep the order consistent
+
     this.layer.draw();
   }
 

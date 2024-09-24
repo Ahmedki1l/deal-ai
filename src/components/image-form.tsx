@@ -21,7 +21,8 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { FRAMES } from "@/lib/constants";
+import { useLocale } from "@/hooks/use-locale";
+import { ApplyFrameProps, FRAMES } from "@/lib/constants";
 import { PhotoEditor } from "@/lib/konva";
 import { clientAction, cn, fileToBase64 } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
@@ -115,11 +116,13 @@ export const ImageForm = {
           }),
         setImageLoading,
       );
+      console.log(r);
       if (r === undefined) return;
 
       setOpen(false);
-      form.setValue("src", r);
       const { photoNode } = await editor?.["current"]!.addPhoto({ url: r });
+
+      form.setValue("src", r);
       form.setValue("editor.photo", photoNode);
 
       toast.success(c?.["regenerate-image"]?.["generated successfully."]);
@@ -196,7 +199,9 @@ export const ImageForm = {
     editor,
   }: ImageFormProps & {
     editor: MutableRefObject<PhotoEditor | null>;
-  } & Pick<DialogResponsiveProps, "dic">) {
+  } & Pick<DialogResponsiveProps, "dic"> &
+    Pick<ApplyFrameProps, "dic">) {
+    const lang = useLocale();
     return (
       <FormField
         control={form.control}
@@ -231,9 +236,10 @@ export const ImageForm = {
                         phone: "+123 546 8910",
                       },
                       editor: editor!?.["current"]!,
+                      dic,
+                      lang,
                     });
                     field.onChange(FRAMES?.[Number(e)]?.["filled"]);
-
                     form.setValue("editor.frame", frameNode);
                     form.setValue("editor.textNodes", textNodes);
                   }}

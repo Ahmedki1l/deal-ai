@@ -760,6 +760,9 @@ export default {
       { value: "FRI", label: "الجمعة" },
       { value: "SAT", label: "السبت" },
     ] as SelectItem[],
+    frames: {
+      reservation: "إحجز وحدتك:",
+    },
   },
   db: {
     platforms: [

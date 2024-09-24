@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/popover";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useLocale } from "@/hooks/use-locale";
+import { ApplyFrameProps } from "@/lib/constants";
 import { PhotoEditor } from "@/lib/konva";
 import { clientAction, cn } from "@/lib/utils";
 import { ShortContents } from "@/types";
@@ -41,7 +42,8 @@ export type ImageEditorProps = {
   contents: ShortContents;
 } & Dictionary["image-editor"] &
   Pick<ImageFormProps, "dic"> &
-  Pick<DialogResponsiveProps, "dic">;
+  Pick<DialogResponsiveProps, "dic"> &
+  Pick<ApplyFrameProps, "dic">;
 
 export function ImageEditor({
   dic: { "image-editor": c, ...dic },
@@ -156,7 +158,6 @@ export function ImageEditor({
                 >
                   9:16
                 </ToggleGroupItem>
-                <ToggleGroupItem value="free">free</ToggleGroupItem>
               </ToggleGroup>
             </div>
           </div>
@@ -404,7 +405,9 @@ export function ImageEditor({
                       variant="outline"
                       size="icon"
                       onClick={() => {
-                        const { textNode } = editor?.["current"]?.addText({})!;
+                        const { textNode } = editor?.["current"]?.addText({
+                          lang,
+                        })!;
                         form.setValue("editor.textNodes", [
                           ...form.getValues("editor.textNodes"),
                           textNode,
@@ -421,101 +424,107 @@ export function ImageEditor({
                 {form.watch("editor.textNodes") &&
                   form.watch("editor.textNodes")?.map((txt, i) => {
                     return (
-                      <Popover key={i}>
-                        <PopoverTrigger className="w-full">
-                          <Input
-                            type="text"
-                            disabled={loading}
-                            defaultValue={txt?.text()}
-                            onChange={(e) => txt?.setText(e?.target?.value)}
-                          />
-                        </PopoverTrigger>
-                        <PopoverContent className="flex flex-col gap-2">
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="flex flex-col gap-1">
-                              <Label>Color</Label>
-                              <Input
-                                type="color"
-                                disabled={loading}
-                                // @ts-ignore
-                                defaultValue={txt?.fill()!}
-                                onChange={(e) => txt?.fill(e?.target?.value)}
-                                className="m-0 p-0"
-                              />
+                      <div key={i} className="flex items-center gap-2">
+                        <Input
+                          type="text"
+                          disabled={loading}
+                          defaultValue={txt?.text()}
+                          onChange={(e) => txt?.setText(e?.target?.value)}
+                        />
+
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="outline" size="icon">
+                              <Icons.edit />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="flex flex-col gap-2">
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="flex flex-col gap-1">
+                                <Label>Color</Label>
+                                <Input
+                                  type="color"
+                                  disabled={loading}
+                                  // @ts-ignore
+                                  defaultValue={txt?.fill()!}
+                                  onChange={(e) => txt?.fill(e?.target?.value)}
+                                  className="m-0 p-0"
+                                />
+                              </div>
+
+                              <div className="flex flex-col gap-1">
+                                <Label>Font Size</Label>
+
+                                <Input
+                                  type="number"
+                                  disabled={loading}
+                                  defaultValue={Number(txt?.fontSize()! ?? "0")}
+                                  onChange={(e) =>
+                                    txt?.fontSize(Number(e?.target?.value))
+                                  }
+                                  className="m-0 p-0"
+                                />
+                              </div>
                             </div>
 
-                            <div className="flex flex-col gap-1">
-                              <Label>Font Size</Label>
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="flex flex-col gap-1">
+                                <Label>Width</Label>
+                                <Input
+                                  type="number"
+                                  disabled={loading}
+                                  defaultValue={Number(txt?.width()! ?? "0")}
+                                  onChange={(e) =>
+                                    txt?.width(Number(e?.target?.value))
+                                  }
+                                  className="m-0 p-0"
+                                />
+                              </div>
 
-                              <Input
-                                type="number"
-                                disabled={loading}
-                                defaultValue={Number(txt?.fontSize()! ?? "0")}
-                                onChange={(e) =>
-                                  txt?.fontSize(Number(e?.target?.value))
-                                }
-                                className="m-0 p-0"
-                              />
-                            </div>
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="flex flex-col gap-1">
-                              <Label>Width</Label>
-                              <Input
-                                type="number"
-                                disabled={loading}
-                                defaultValue={Number(txt?.width()! ?? "0")}
-                                onChange={(e) =>
-                                  txt?.width(Number(e?.target?.value))
-                                }
-                                className="m-0 p-0"
-                              />
-                            </div>
-
-                            <div className="flex flex-col gap-1">
-                              <Label>Height</Label>
-                              <Input
-                                type="number"
-                                disabled={loading}
-                                defaultValue={Number(txt?.height()! ?? "0")}
-                                onChange={(e) =>
-                                  txt?.height(Number(e?.target?.value))
-                                }
-                                className="m-0 p-0"
-                              />
-                            </div>
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="flex flex-col gap-1">
-                              <Label>X</Label>
-                              <Input
-                                type="number"
-                                disabled={loading}
-                                defaultValue={Number(txt?.x()! ?? "0")}
-                                onChange={(e) =>
-                                  txt?.x(Number(e?.target?.value))
-                                }
-                                className="m-0 p-0"
-                              />
+                              <div className="flex flex-col gap-1">
+                                <Label>Height</Label>
+                                <Input
+                                  type="number"
+                                  disabled={loading}
+                                  defaultValue={Number(txt?.height()! ?? "0")}
+                                  onChange={(e) =>
+                                    txt?.height(Number(e?.target?.value))
+                                  }
+                                  className="m-0 p-0"
+                                />
+                              </div>
                             </div>
 
-                            <div className="flex flex-col gap-1">
-                              <Label>Y</Label>
-                              <Input
-                                type="number"
-                                disabled={loading}
-                                defaultValue={Number(txt?.y()! ?? "0")}
-                                onChange={(e) =>
-                                  txt?.y(Number(e?.target?.value))
-                                }
-                                className="m-0 p-0"
-                              />
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="flex flex-col gap-1">
+                                <Label>X</Label>
+                                <Input
+                                  type="number"
+                                  disabled={loading}
+                                  defaultValue={Number(txt?.x()! ?? "0")}
+                                  onChange={(e) =>
+                                    txt?.x(Number(e?.target?.value))
+                                  }
+                                  className="m-0 p-0"
+                                />
+                              </div>
+
+                              <div className="flex flex-col gap-1">
+                                <Label>Y</Label>
+                                <Input
+                                  type="number"
+                                  disabled={loading}
+                                  defaultValue={Number(txt?.y()! ?? "0")}
+                                  onChange={(e) =>
+                                    txt?.y(Number(e?.target?.value))
+                                  }
+                                  className="m-0 p-0"
+                                />
+                              </div>
                             </div>
-                          </div>
-                        </PopoverContent>
-                      </Popover>
+                          </PopoverContent>
+                        </Popover>
+                      </div>
                     );
                   })}
               </CardContent>

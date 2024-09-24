@@ -1,3 +1,4 @@
+import { Dictionary, LocaleProps } from "@/types/locale";
 import { generateIdFromEntropySize } from "lucia";
 import ff01 from "../../public/frames/filled/frame-01.png";
 import ff02 from "../../public/frames/filled/frame-02.png";
@@ -14,17 +15,19 @@ import { PhotoEditor } from "./konva";
 export const ID = {
   generate: (len?: number) => generateIdFromEntropySize(len ?? 10),
 };
-type ApplyFrameProps = {
+
+export type ApplyFrameProps = {
   data: { title: string; phone: string; website: string };
   editor: PhotoEditor;
-};
+} & Dictionary["constants"] &
+  LocaleProps;
 
 export const FRAMES = [
   // {
   //   value: "/frames/frame-00.png",
   //   src: f00?.["src"],
   //   filled: ff00?.["src"],
-  //   applyFrame: ({ data, editor }: ApplyFrameProps) => {
+  //   applyFrame: ({ data, editor , di:{constants: {frames:c}}c}: ApplyFrameProps) => {
   //     const titleArr = data?.["title"].split(" ");
 
   //     // Specify the starting position and spacing
@@ -33,7 +36,7 @@ export const FRAMES = [
   //     const spacing = 55; // Vertical spacing between each word
 
   //     if (titleArr?.[0]) {
-  //       editor.addText({
+  //       editor.addText({lang,
   //         text: titleArr?.[0],
   //         fontSize: 32,
   //         x: startX,
@@ -43,7 +46,7 @@ export const FRAMES = [
   //     }
 
   //     if (titleArr?.[1]) {
-  //       editor.addText({
+  //       editor.addText({lang,
   //         text: titleArr?.[1],
   //         fontSize: 50,
   //         fill: "yellow",
@@ -55,7 +58,7 @@ export const FRAMES = [
   //     }
 
   //     if (titleArr?.[2]) {
-  //       editor.addText({
+  //       editor.addText({lang,
   //         text: titleArr?.slice(2).join(" "),
   //         fontSize: 32,
   //         x: startX,
@@ -64,12 +67,12 @@ export const FRAMES = [
   //       });
   //     }
 
-  //     editor.addText({
-  //       text: data?.["phone"],
+  //     editor.addText({lang :'en',
+  //       text: data?.["phone"],align: "left",
   //       x: startX + 40,
   //       y: 520,
   //     });
-  //     editor.addText({
+  //     editor : 'en'.addText({lang,
   //       text: data?.["website"],
   //       x: startX + 18,
   //       y: 550,
@@ -80,7 +83,14 @@ export const FRAMES = [
     value: "/frames/frame-01.png",
     src: f01?.["src"],
     filled: ff01?.["src"],
-    applyFrame: ({ data, editor }: ApplyFrameProps) => {
+    applyFrame: ({
+      data,
+      editor,
+      lang,
+      dic: {
+        constants: { frames: c },
+      },
+    }: ApplyFrameProps) => {
       const originalWidth = 1200;
       const originalHeight = 1200;
 
@@ -101,18 +111,19 @@ export const FRAMES = [
         Number(((n / originalWidth) * newWidth)?.toFixed(2));
 
       editor.addText({
-        text: "Architecture Agencies",
+        lang: "ar",
+        text: editor?.["contents"]?.["Medium"],
         x: scaleX(1133),
         y: scaleY(160),
         width: scaleW(619),
         // height: 195,
         fontSize: scaleW(100),
-        fontVariant: "700",
         rotation: 90,
         wrap: "word",
       });
       editor.addText({
-        text: "Reservation",
+        lang: "ar",
+        text: "إحجز وحدتك", // c?.["reservation"],
         x: scaleX(847),
         y: scaleY(874),
         // width: 297,
@@ -121,7 +132,9 @@ export const FRAMES = [
         fill: "#ffffff",
       });
       editor.addText({
-        text: "+123 546 8910",
+        lang: "en",
+        text: data?.["phone"],
+        align: "left",
         x: scaleX(601),
         y: scaleY(968),
         // width: 546,
@@ -130,6 +143,7 @@ export const FRAMES = [
         fill: "#ffffff",
       });
       editor.addText({
+        lang: "en",
         text: data?.["website"],
         x: scaleX(129),
         y: scaleY(1110),
@@ -143,7 +157,14 @@ export const FRAMES = [
     value: "/frames/frame-02.png",
     src: f02?.["src"],
     filled: ff02?.["src"],
-    applyFrame: ({ data, editor }: ApplyFrameProps) => {
+    applyFrame: ({
+      data,
+      editor,
+      lang,
+      dic: {
+        constants: { frames: c },
+      },
+    }: ApplyFrameProps) => {
       const originalWidth = 1200;
       const originalHeight = 1200;
 
@@ -164,7 +185,8 @@ export const FRAMES = [
         Number(((n / originalWidth) * newWidth)?.toFixed(2));
 
       editor.addText({
-        text: "If a building becomes architecture, then it s art.",
+        lang: "ar",
+        text: editor?.["contents"]?.["Long"],
         x: scaleX(795),
         y: scaleY(254),
         width: scaleW(338),
@@ -174,6 +196,7 @@ export const FRAMES = [
         fill: "#ffffff",
       });
       editor.addText({
+        lang: "en",
         text: data?.["website"],
         x: scaleX(183),
         y: scaleY(1006),
@@ -187,7 +210,14 @@ export const FRAMES = [
     value: "/frames/frame-03.png",
     src: f03?.["src"],
     filled: ff03?.["src"],
-    applyFrame: ({ data, editor }: ApplyFrameProps) => {
+    applyFrame: ({
+      data,
+      editor,
+      lang,
+      dic: {
+        constants: { frames: c },
+      },
+    }: ApplyFrameProps) => {
       const originalWidth = 1200;
       const originalHeight = 1200;
 
@@ -208,7 +238,8 @@ export const FRAMES = [
         Number(((n / originalWidth) * newWidth)?.toFixed(2));
 
       editor.addText({
-        text: "Architecture is the thoughtful making of space.",
+        lang: "ar",
+        text: editor?.["contents"]?.["Long"],
         x: scaleX(602),
         y: scaleY(657),
         width: scaleW(459),
@@ -218,6 +249,7 @@ export const FRAMES = [
       });
 
       editor.addText({
+        lang: "en",
         text: data?.["website"],
         x: scaleX(788),
         y: scaleY(1097),
@@ -232,7 +264,14 @@ export const FRAMES = [
     value: "/frames/frame-04.png",
     src: f04?.["src"],
     filled: ff04?.["src"],
-    applyFrame: ({ data, editor }: ApplyFrameProps) => {
+    applyFrame: ({
+      data,
+      editor,
+      lang,
+      dic: {
+        constants: { frames: c },
+      },
+    }: ApplyFrameProps) => {
       const originalWidth = 1200;
       const originalHeight = 1200;
 
@@ -253,7 +292,8 @@ export const FRAMES = [
         Number(((n / originalWidth) * newWidth)?.toFixed(2));
 
       editor.addText({
-        text: "Light, God's eldest daughter, is a principal beauty in a building.",
+        lang: "ar",
+        text: editor?.["contents"]?.["Long"],
         x: scaleX(753),
         y: scaleY(165),
         width: scaleW(313),
@@ -264,6 +304,7 @@ export const FRAMES = [
       });
 
       editor.addText({
+        lang: "en",
         text: data?.["website"],
         x: scaleX(130),
         y: scaleY(1059),
@@ -277,7 +318,14 @@ export const FRAMES = [
     value: "/frames/frame-05.png",
     src: f05?.["src"],
     filled: ff05?.["src"],
-    applyFrame: ({ data, editor }: ApplyFrameProps) => {
+    applyFrame: ({
+      data,
+      editor,
+      lang,
+      dic: {
+        constants: { frames: c },
+      },
+    }: ApplyFrameProps) => {
       const originalWidth = 1200;
       const originalHeight = 1200;
 
@@ -298,18 +346,19 @@ export const FRAMES = [
         Number(((n / originalWidth) * newWidth)?.toFixed(2));
 
       editor.addText({
-        text: "Architecture Agencies",
+        lang: "ar",
+        text: editor?.["contents"]?.["Medium"],
         x: scaleX(350),
         y: scaleY(200),
         width: scaleW(599),
         // height: 188,
         fontSize: scaleW(97),
-        fontVariant: "700",
         rotation: 90,
         wrap: "word",
       });
       editor.addText({
-        text: "Reservation",
+        lang: "ar",
+        text: "إحجز وحدتك", // c?.["reservation"],
         x: scaleX(750),
         y: scaleY(925),
         // width: 297,
@@ -318,7 +367,9 @@ export const FRAMES = [
         fill: "#ffffff",
       });
       editor.addText({
-        text: "+123 546 8910",
+        lang: "en",
+        text: data?.["phone"],
+        align: "left",
         x: scaleX(529),
         y: scaleY(1013),
         // width: 546,
@@ -328,6 +379,7 @@ export const FRAMES = [
         fill: "#ffffff",
       });
       editor.addText({
+        lang: "en",
         text: data?.["website"],
         x: scaleX(1170),
         y: scaleY(80),
@@ -340,66 +392,66 @@ export const FRAMES = [
   //   value: "/frames/frame-06.png",
   //   src: f06?.["src"],
   //   filled: ff06?.["src"],
-  //   applyFrame: ({ data, editor }: ApplyFrameProps) => {},
+  //   applyFrame: ({ data, editor , di:{constants: {frames:c}}c}: ApplyFrameProps) => {},
   // },
   // {
   //   value: "/frames/frame-07.png",
   //   src: f07?.["src"],
   //   filled: ff07?.["src"],
-  //   applyFrame: ({ data, editor }: ApplyFrameProps) => {},
+  //   applyFrame: ({ data, editor , di:{constants: {frames:c}}c}: ApplyFrameProps) => {},
   // },
   // {
   //   value: "/frames/frame-08.png",
   //   src: f08?.["src"],
   //   filled: ff08?.["src"],
-  //   applyFrame: ({ data, editor }: ApplyFrameProps) => {},
+  //   applyFrame: ({ data, editor , di:{constants: {frames:c}}c}: ApplyFrameProps) => {},
   // },
   // {
   //   value: "/frames/frame-09.png",
   //   src: f09?.["src"],
   //   filled: ff09?.["src"],
-  //   applyFrame: ({ data, editor }: ApplyFrameProps) => {},
+  //   applyFrame: ({ data, editor , di:{constants: {frames:c}}c}: ApplyFrameProps) => {},
   // },
   // {
   //   value: "/frames/frame-10.png",
   //   src: f10?.["src"],
   //   filled: ff10?.["src"],
-  //   applyFrame: ({ data, editor }: ApplyFrameProps) => {},
+  //   applyFrame: ({ data, editor , di:{constants: {frames:c}}c}: ApplyFrameProps) => {},
   // },
   // {
   //   value: "/frames/frame-11.png",
   //   src: f11?.["src"],
   //   filled: ff11?.["src"],
-  //   applyFrame: ({ data, editor }: ApplyFrameProps) => {},
+  //   applyFrame: ({ data, editor , di:{constants: {frames:c}}c}: ApplyFrameProps) => {},
   // },
   // {
   //   value: "/frames/frame-12.png",
   //   src: f12?.["src"],
   //   filled: ff12?.["src"],
-  //   applyFrame: ({ data, editor }: ApplyFrameProps) => {},
+  //   applyFrame: ({ data, editor , di:{constants: {frames:c}}c}: ApplyFrameProps) => {},
   // },
   // {
   //   value: "/frames/frame-13.png",
   //   src: f13?.["src"],
   //   filled: ff13?.["src"],
-  //   applyFrame: ({ data, editor }: ApplyFrameProps) => {},
+  //   applyFrame: ({ data, editor , di:{constants: {frames:c}}c}: ApplyFrameProps) => {},
   // },
   // {
   //   value: "/frames/frame-14.png",
   //   src: f14?.["src"],
   //   filled: ff14?.["src"],
-  //   applyFrame: ({ data, editor }: ApplyFrameProps) => {},
+  //   applyFrame: ({ data, editor , di:{constants: {frames:c}}c}: ApplyFrameProps) => {},
   // },
   // {
   //   value: "/frames/frame-15.png",
   //   src: f15?.["src"],
   //   filled: ff15?.["src"],
-  //   applyFrame: ({ data, editor }: ApplyFrameProps) => {},
+  //   applyFrame: ({ data, editor , di:{constants: {frames:c}}c}: ApplyFrameProps) => {},
   // },
   // {
   //   value: "/frames/frame-16.png",
   //   src: f16?.["src"],
   //   filled: ff16?.["src"],
-  //   applyFrame: ({ data, editor }: ApplyFrameProps) => {},
+  //   applyFrame: ({ data, editor , di:{constants: {frames:c}}c}: ApplyFrameProps) => {},
   // },
 ];

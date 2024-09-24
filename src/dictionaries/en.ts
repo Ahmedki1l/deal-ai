@@ -716,6 +716,9 @@ export default {
       { value: "FRI", label: "FRI" },
       { value: "SAT", label: "SAT" },
     ] as SelectItem[],
+    frames: {
+      reservation: "Reservation",
+    },
   },
   db: {
     platforms: [

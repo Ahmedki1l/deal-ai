@@ -1,6 +1,7 @@
 import { ShortContents } from "@/types";
+import { LocaleProps } from "@/types/locale";
 import Konva from "konva";
-import { FRAMES } from "./constants";
+import { ApplyFrameProps, FRAMES } from "./constants";
 
 type AcceptedFileTypes = string[];
 
@@ -45,7 +46,7 @@ class PhotoEditor {
       const target = e.target as Konva.Image | Konva.Text;
 
       if (
-        e.target === this.cropRect ||
+        // e.target === this.cropRect ||
         e.target === this.photo ||
         e.target === this.frame ||
         this.textNodes.includes(target as Konva.Text)
@@ -74,21 +75,21 @@ class PhotoEditor {
     });
 
     // Limit movement to stay within stage bounds
-    this.cropRect.on("dragmove", () => {
-      const rect = this.cropRect!;
-      const stageWidth = this.stage.width();
-      const stageHeight = this.stage.height();
+    // this.cropRect.on("dragmove", () => {
+    //   const rect = this.cropRect!;
+    //   const stageWidth = this.stage.width();
+    //   const stageHeight = this.stage.height();
 
-      // Keep the crop rect within the bounds of the stage
-      if (rect.x() < 0) rect.x(0);
-      if (rect.y() < 0) rect.y(0);
+    //   // Keep the crop rect within the bounds of the stage
+    //   if (rect.x() < 0) rect.x(0);
+    //   if (rect.y() < 0) rect.y(0);
 
-      if (rect.x() + rect.width() > stageWidth)
-        rect.x(stageWidth - rect.width());
+    //   if (rect.x() + rect.width() > stageWidth)
+    //     rect.x(stageWidth - rect.width());
 
-      if (rect.y() + rect.height() > stageHeight)
-        rect.y(stageHeight - rect.height());
-    });
+    //   if (rect.y() + rect.height() > stageHeight)
+    //     rect.y(stageHeight - rect.height());
+    // });
 
     this.layer.add(this.cropRect);
     this.cropRect.moveToBottom();
@@ -203,15 +204,12 @@ class PhotoEditor {
     n,
     width = this.stage.width(),
     height = this.stage.height(),
-    data,
-    editor,
+    ...applyFrameProps
   }: {
     n: number;
     width?: number;
     height?: number;
-    data: { title: string; website: string; phone: string };
-    editor: PhotoEditor;
-  }): Promise<{
+  } & ApplyFrameProps): Promise<{
     frameNode: Konva.Image | null;
     textNodes: Konva.Text[];
   }> {
@@ -234,7 +232,7 @@ class PhotoEditor {
           this.frame = imageNode;
           this.textNodes = [];
           this.layer.add(imageNode);
-          FRAMES?.[n]?.applyFrame({ data, editor });
+          FRAMES?.[n]?.applyFrame({ ...applyFrameProps });
 
           this.reorderLayers(); // Keep the order consistent
           this.layer.draw();
@@ -279,21 +277,32 @@ class PhotoEditor {
   }
 
   addText({
+    lang,
+    fontStyle,
+    strokeWidth,
+    align,
+    fontFamily,
+
     text = "double click to edit",
     fontSize = 24,
     fill = "#000000",
-    fontFamily = "Poppins",
     x = this.stage.width() / 2,
     y = this.stage.height() / 2,
     ...props
-  }: Konva.TextConfig) {
+  }: Konva.TextConfig & LocaleProps) {
+    const langCheck = (ar: any, en: any) => (lang === "ar" ? ar : en);
+
     const textNode = new Konva.Text({
       text,
       x,
       y,
       fontSize,
-      fontFamily,
       fill,
+      fontFamily: fontFamily ?? langCheck("Cairo", "Poppins"),
+      align: align ?? langCheck("right", "left"),
+      fontStyle: fontStyle ?? langCheck("bold", "normal"),
+      strokeWidth: strokeWidth ?? langCheck(1, 0.5),
+
       draggable: true,
       ...props,
     });

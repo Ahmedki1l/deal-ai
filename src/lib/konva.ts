@@ -93,7 +93,6 @@ class PhotoEditor {
     // });
 
     this.layer.add(this.cropRect);
-    this.cropRect.moveToBottom();
     this.reorderLayers();
     this.layer.draw();
   }
@@ -146,11 +145,9 @@ class PhotoEditor {
           if (this.photo) this.photo.destroy();
 
           this.photo = loadedImageNode;
-          this.cropRect?.moveToTop();
           this.layer.add(loadedImageNode);
-          this.cropRect?.moveToTop();
-          this.reorderLayers();
 
+          this.reorderLayers();
           this.layer.draw();
           resolve({ photoNode: loadedImageNode });
         },
@@ -270,8 +267,8 @@ class PhotoEditor {
     };
   }
   reorderLayers() {
-    if (this.photo) this.photo.setZIndex(0);
-    if (this.cropRect) this.cropRect.setZIndex(1);
+    if (this.cropRect) this.cropRect.setZIndex(0);
+    if (this.photo) this.photo.setZIndex(1);
     if (this.frame) this.frame.setZIndex(2);
     this.textNodes.forEach((txtNode, i) => txtNode.setZIndex(3 + i));
 
@@ -311,12 +308,10 @@ class PhotoEditor {
     });
 
     this.layer.add(textNode);
-    textNode.moveToTop();
-    this.reorderLayers(); // Keep the order consistent
-
+    this.reorderLayers();
     this.layer.draw();
 
-    this.reorderLayers(); // Keep the order consistent
+    this.reorderLayers();
     this.textNodes.push(textNode);
     this.layer.draw();
 

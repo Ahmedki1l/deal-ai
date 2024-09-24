@@ -120,7 +120,7 @@ export function PostUpdateForm({
             </div>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-[616px,1fr]">
+          <div className="grid gap-4 lg:grid-cols-[0.8fr,1fr]">
             <div>
               <div
                 className={cn(

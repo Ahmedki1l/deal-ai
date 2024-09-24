@@ -100,19 +100,17 @@ export function ImageEditor({
   }, []);
 
   async function onSubmit(data: z.infer<typeof imageUpdateFormSchema>) {
-    // await clientAction(
-    //   async () =>
-    //     await updateImage({
-    //       id: data?.["id"],
-    //       prompt: data?.["prompt"],
-    //       src: editor?.["current"]?.getResult()!,
-    //     }),
-    //   setLoading,
-    // );
+    await clientAction(
+      async () =>
+        await updateImage({
+          id: data?.["id"],
+          prompt: data?.["prompt"],
+          src: editor?.["current"]?.getResult()!,
+        }),
+      setLoading,
+    );
 
-    // toast.success("done");
-
-    form.setValue("src", editor?.["current"]?.getResult()!);
+    toast.success("done");
   }
 
   return (

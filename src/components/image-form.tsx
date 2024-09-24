@@ -5,7 +5,7 @@ import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
 import { Icons } from "@/components/icons";
 import { Image } from "@/components/image";
 import { Tooltip } from "@/components/tooltip";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   FormControl,
   FormField,
@@ -23,7 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { FRAMES } from "@/lib/constants";
 import { PhotoEditor } from "@/lib/konva";
-import { clientAction, fileToBase64 } from "@/lib/utils";
+import { clientAction, cn, fileToBase64 } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { imageUpdateFormSchema } from "@/validations/images";
 import { MutableRefObject, useState } from "react";
@@ -37,48 +37,6 @@ export type ImageFormProps = {
 } & Dictionary["image-form"];
 
 export const ImageForm = {
-  width: function Component({
-    dic: { "image-form": c },
-    loading,
-    form,
-  }: ImageFormProps) {
-    return (
-      <FormField
-        control={form.control}
-        name="dimensios.width"
-        render={({ field }) => (
-          <FormItem>
-            {/* <FormLabel className="sr-only">{c?.["width"]?.['width']}</FormLabel> */}
-            <FormControl>
-              <Input type="text" {...field} disabled={loading} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    );
-  },
-  height: function Component({
-    dic: { "image-form": c },
-    loading,
-    form,
-  }: ImageFormProps) {
-    return (
-      <FormField
-        control={form.control}
-        name="dimensios.height"
-        render={({ field }) => (
-          <FormItem>
-            {/* <FormLabel className="sr-only">{c?.["height"]?.['height']}</FormLabel> */}
-            <FormControl>
-              <Input type="text" {...field} disabled={loading} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    );
-  },
   uploadFile: function Component({
     dic: { "image-form": c },
     loading,
@@ -87,9 +45,22 @@ export const ImageForm = {
   }: ImageFormProps & { editor: MutableRefObject<PhotoEditor | null> }) {
     return (
       <FormItem>
-        {/* <FormLabel className="sr-only">{c?.["height"]?.['height']}</FormLabel> */}
+        <FormLabel
+          htmlFor="file"
+          className={cn(buttonVariants({ variant: "outline", size: "icon" }))}
+        >
+          <div>
+            <Tooltip text="new image">
+              <div>
+                <Icons.add />
+              </div>
+            </Tooltip>
+          </div>
+          {/* {c?.["height"]?.["height"]} */}
+        </FormLabel>
 
         <Input
+          id="file"
           type="file"
           onChange={async (e) => {
             const file = e?.["target"]?.["files"]?.[0];
@@ -102,6 +73,7 @@ export const ImageForm = {
             }
           }}
           disabled={loading}
+          className="hidden"
         />
       </FormItem>
     );

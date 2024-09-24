@@ -9,6 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useLocale } from "@/hooks/use-locale";
 import { PhotoEditor } from "@/lib/konva";
 import { cn } from "@/lib/utils";
@@ -22,7 +28,6 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Label } from "./ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 export type ImageEditorProps = {
   image: ImageType & {
@@ -63,11 +68,13 @@ export function ImageEditor({
   useEffect(() => {
     if (containerRef?.["current"]) {
       editor.current = new PhotoEditor({
+        contents,
         containerId: containerRef?.["current"]?.["id"]!,
+        width: containerRef?.["current"]?.["offsetWidth"]!,
+        height: containerRef?.["current"]?.["offsetHeight"]!,
       });
 
       const init = async () => {
-        editor.current?.addContents({ contents });
         const { photoNode } = await editor?.["current"]!.addPhoto({
           url: image?.["src"],
         });
@@ -76,8 +83,8 @@ export function ImageEditor({
 
       const handleResize = () => {
         editor.current?.setEditorSize({
-          width: containerRef?.["current"]?.["offsetWidth"] ?? 0,
-          height: containerRef?.["current"]?.["offsetHeight"] ?? 0,
+          width: containerRef?.["current"]?.["offsetWidth"]!,
+          height: containerRef?.["current"]?.["offsetHeight"]!,
         });
       };
 
@@ -114,15 +121,43 @@ export function ImageEditor({
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-1 flex-col space-y-4"
       >
-        {/* <div className="container flex items-center justify-between gap-4">
+        <div className="container flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2">
               <h2>dimensions</h2>
-              <div className="flex max-w-40 items-start gap-2">
-                <ImageForm.width dic={dic} form={form} loading={true} />
-                <Icons.x className="mt-3" />
-                <ImageForm.height dic={dic} form={form} loading={true} />
-              </div>
+              <ToggleGroup type="single" defaultValue="1:1">
+                <ToggleGroupItem
+                  value="1:1"
+                  onClick={() => {
+                    editor?.["current"]?.adjustCropRect({
+                      ratio: 1 / 1,
+                    });
+                  }}
+                >
+                  1:1
+                </ToggleGroupItem>
+                <ToggleGroupItem
+                  value="3:4"
+                  onClick={() => {
+                    editor?.["current"]?.adjustCropRect({
+                      ratio: 3 / 4,
+                    });
+                  }}
+                >
+                  3:4
+                </ToggleGroupItem>
+                <ToggleGroupItem
+                  value="9:16"
+                  onClick={() => {
+                    editor?.["current"]?.adjustCropRect({
+                      ratio: 9 / 16,
+                    });
+                  }}
+                >
+                  9:16
+                </ToggleGroupItem>
+                <ToggleGroupItem value="free">free</ToggleGroupItem>
+              </ToggleGroup>
             </div>
           </div>
 
@@ -161,7 +196,7 @@ export function ImageEditor({
               {c?.["save changes"]}
             </Button>
           </div>
-        </div> */}
+        </div>
 
         <div className="relative flex flex-1 flex-col">
           <div className="container absolute left-2 top-2 z-50 max-h-[100%] max-w-xs space-y-4 overflow-auto">
@@ -169,21 +204,94 @@ export function ImageEditor({
               <CardHeader className="flex flex-row items-center justify-between p-0 px-2">
                 <CardTitle>Photo</CardTitle>
 
-                <ImageForm.regenerateImage
-                  dic={dic}
-                  form={form}
-                  loading={loading}
-                  editor={editor}
-                />
+                <div className="flex items-center gap-2">
+                  <ImageForm.regenerateImage
+                    dic={dic}
+                    form={form}
+                    loading={loading}
+                    editor={editor}
+                  />
+                  <ImageForm.uploadFile
+                    dic={dic}
+                    form={form}
+                    loading={loading}
+                    editor={editor}
+                  />
+                </div>
               </CardHeader>
 
               <CardContent className="p-2 pt-0">
-                <ImageForm.uploadFile
-                  dic={dic}
-                  form={form}
-                  loading={loading}
-                  editor={editor}
-                />
+                {form.watch("editor.photo") ? (
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="flex flex-col gap-1">
+                      <Label>Width</Label>
+                      <Input
+                        type="number"
+                        disabled={loading}
+                        defaultValue={Number(
+                          form.watch("editor.photo")!?.width()! ?? "0",
+                        )}
+                        onChange={(e) =>
+                          form
+                            .watch("editor.photo")!
+                            ?.width(Number(e?.target?.value))
+                        }
+                        className="m-0 p-0"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <Label>Height</Label>
+                      <Input
+                        type="number"
+                        disabled={loading}
+                        defaultValue={Number(
+                          form.watch("editor.photo")!?.height()! ?? "0",
+                        )}
+                        onChange={(e) =>
+                          form
+                            .watch("editor.photo")!
+                            ?.height(Number(e?.target?.value))
+                        }
+                        className="m-0 p-0"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <Label>X</Label>
+                      <Input
+                        type="number"
+                        disabled={loading}
+                        defaultValue={Number(
+                          form.watch("editor.photo")!?.x()! ?? "0",
+                        )}
+                        onChange={(e) =>
+                          form
+                            .watch("editor.photo")!
+                            ?.x(Number(e?.target?.value))
+                        }
+                        className="m-0 p-0"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <Label>Y</Label>
+                      <Input
+                        type="number"
+                        disabled={loading}
+                        defaultValue={Number(
+                          form.watch("editor.photo")!?.y()! ?? "0",
+                        )}
+                        onChange={(e) =>
+                          form
+                            .watch("editor.photo")!
+                            ?.y(Number(e?.target?.value))
+                        }
+                        className="m-0 p-0"
+                      />
+                    </div>
+                  </div>
+                ) : null}
               </CardContent>
             </Card>
 
@@ -209,6 +317,78 @@ export function ImageEditor({
                     />
                   </CardContent>
                 )}
+
+                {!!form.watch("editor.frame") ? (
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="flex flex-col gap-1">
+                      <Label>Width</Label>
+                      <Input
+                        type="number"
+                        disabled={loading}
+                        defaultValue={Number(
+                          form!?.watch("editor.frame")!?.width()! ?? "0",
+                        )}
+                        onChange={(e) =>
+                          form
+                            .watch("editor.frame")!
+                            ?.width(Number(e?.target?.value))
+                        }
+                        className="m-0 p-0"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <Label>Height</Label>
+                      <Input
+                        type="number"
+                        disabled={loading}
+                        defaultValue={Number(
+                          form.watch("editor.frame")!?.height()! ?? "0",
+                        )}
+                        onChange={(e) =>
+                          form
+                            .watch("editor.frame")!
+                            ?.height(Number(e?.target?.value))
+                        }
+                        className="m-0 p-0"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <Label>X</Label>
+                      <Input
+                        type="number"
+                        disabled={loading}
+                        defaultValue={Number(
+                          form.watch("editor.frame")!?.x()! ?? "0",
+                        )}
+                        onChange={(e) =>
+                          form
+                            .watch("editor.frame")!
+                            ?.x(Number(e?.target?.value))
+                        }
+                        className="m-0 p-0"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <Label>Y</Label>
+                      <Input
+                        type="number"
+                        disabled={loading}
+                        defaultValue={Number(
+                          form.watch("editor.frame")!?.y()! ?? "0",
+                        )}
+                        onChange={(e) =>
+                          form
+                            .watch("editor.frame")!
+                            ?.y(Number(e?.target?.value))
+                        }
+                        className="m-0 p-0"
+                      />
+                    </div>
+                  </div>
+                ) : null}
               </CardContent>
             </Card>
 
@@ -346,7 +526,7 @@ export function ImageEditor({
             id="photo-editor-container"
             ref={containerRef}
             className={cn(
-              "bg-grid relative flex w-full flex-1 items-center justify-center overflow-hidden",
+              "bg-grid relative flex flex-1 items-center justify-center",
             )}
           />
         </div>

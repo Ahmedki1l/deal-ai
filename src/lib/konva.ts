@@ -18,10 +18,20 @@ class PhotoEditor {
 
   public isEditorEnabled: boolean = true;
 
-  constructor({ containerId }: { containerId: string }) {
-    this.stage = new Konva.Stage({ container: containerId });
+  constructor({
+    contents,
+    containerId,
+    ...props
+  }: {
+    containerId: string;
+    width: number;
+    height: number;
+    contents: ShortContents;
+  }) {
+    this.stage = new Konva.Stage({ container: containerId, ...props });
     this.layer = new Konva.Layer();
     this.transformer = new Konva.Transformer();
+    this.contents = contents;
 
     this.layer.add(this.transformer);
     this.stage.add(this.layer);
@@ -47,21 +57,20 @@ class PhotoEditor {
     });
   }
   private initCropRect() {
-    // const editorRatio = 1 / 1;
-    // const cropWidth = this.stage.width() * 0.5; // Initial crop width (50% of stage)
-    // const cropHeight = cropWidth / editorRatio;
+    const editorRatio = 1 / 1; // ratio: 1:1, 3:4, 9:16, full
+    const cropHeight = this.stage.height() * 0.9;
+    const cropWidth = cropHeight / editorRatio;
 
-    const cropWidth = 550;
-    const cropHeight = 550;
     // Create the crop rectangle
     this.cropRect = new Konva.Rect({
-      x: (this.stage.width() - cropWidth) / 2, // Center horizontally
-      y: (this.stage.height() - cropHeight) / 2, // Center vertically
+      x: (this.stage.width() - cropWidth) / 2,
+      y: (this.stage.height() - cropHeight) / 2,
       width: cropWidth,
       height: cropHeight,
-      stroke: "black",
-      strokeWidth: 1,
-      draggable: false,
+      stroke: "black", // Border color
+      strokeWidth: 0.5,
+      dash: [4, 4], // Dashed line pattern [dash length, gap length]
+      draggable: true,
     });
 
     // Limit movement to stay within stage bounds
@@ -82,18 +91,15 @@ class PhotoEditor {
     });
 
     this.layer.add(this.cropRect);
+    this.cropRect.moveToBottom();
     this.layer.draw();
   }
 
-  private adjustCropRect() {
-    // const editorRatio = 1 / 1;
-    // const newWidth = this.stage.width() * 0.5;
-    // const newHeight = newWidth / editorRatio;
+  public adjustCropRect({ ratio }: { ratio: number }) {
+    const newHeight = this.stage.height() * 0.9;
+    const newWidth = newHeight / ratio;
 
-    const newWidth = 550;
-    const newHeight = 550;
-
-    // this.cropRect?.size({ width: newWidth, height: newHeight });
+    this.cropRect?.size({ width: newWidth, height: newHeight });
     this.cropRect?.position({
       x: (this.stage.width() - newWidth) / 2,
       y: (this.stage.height() - newHeight) / 2,
@@ -104,11 +110,10 @@ class PhotoEditor {
 
   setEditorSize({ width, height }: { width: number; height: number }) {
     this.stage.size({ width, height });
-    this.adjustCropRect();
+    this.adjustCropRect({
+      ratio: this.cropRect!.width() / this.cropRect!.height(),
+    });
     this.layer.draw(); // Ensure the layer is redrawn
-  }
-  addContents({ contents }: { contents: ShortContents }) {
-    this.contents = contents;
   }
 
   addPhoto({
@@ -237,21 +242,20 @@ class PhotoEditor {
       );
     });
   }
-
   scaledDimentions({ width, height }: { width: number; height: number }) {
     const imageRatio = width / height;
-    const editorRatio = this.cropRect!?.width() / this.cropRect!?.height();
+    const editorRatio = this.stage!?.width() / this.stage!?.height();
 
     const scaleFactor =
       (imageRatio > editorRatio
-        ? this.stage.width() / width
-        : this.stage.height() / height) ?? 1;
+        ? this.stage!?.width() / width
+        : this.stage!?.height() / height) ?? 1;
 
     const scaledWidth = width * scaleFactor;
     const scaledHeight = height * scaleFactor;
 
-    const centerizedX = (this.cropRect!?.width() - scaledWidth) / 2;
-    const centerizedY = (this.cropRect!?.height() - scaledHeight) / 2;
+    const centerizedX = (this.stage!?.width() - scaledWidth) / 2;
+    const centerizedY = (this.stage!?.height() - scaledHeight) / 2;
 
     return {
       width: scaledWidth,
@@ -262,97 +266,13 @@ class PhotoEditor {
   }
   reorderLayers() {
     if (this.photo) this.photo.setZIndex(0);
-    if (this.frame) this.frame.setZIndex(1);
-    this.textNodes.forEach((txtNode, i) => txtNode.setZIndex(2 + i));
+    if (this.cropRect) this.cropRect.setZIndex(1);
+    if (this.frame) this.frame.setZIndex(2);
+    this.textNodes.forEach((txtNode, i) => txtNode.setZIndex(3 + i));
 
     // Redraw the layer to reflect changes
     this.layer.draw();
   }
-
-  //   addFrame({
-  //     base64,
-  //     width = this.stage.width(),
-  //     height = this.stage.height(),
-  //   }: {
-  //     base64: string;
-  //     width?: number;
-  //     height?: number;
-  //   }) {
-  //     const image = new Image();
-  //     image.src = base64; // set the base64 string as the image source
-
-  //     image.onload = () => {
-  //       const imageNode = new Konva.Image({
-  //         image: image,
-  //         draggable: this.isEditorEnabled,
-  //       });
-
-  //       const {
-  //         x,
-  //         y,
-  //         width: w,
-  //         height: h,
-  //       } = this.scaledDimentions({
-  //         width,
-  //         height,
-  //       });
-
-  //       imageNode.size({ width: w, height: h });
-  //       imageNode.position({ x, y });
-
-  //       if (this.frame) this.frame.destroy();
-
-  //       this.frame = imageNode;
-  //       this.layer.add(imageNode);
-  //       this.layer.draw();
-  //     };
-  //   }
-
-  //   addPhoto({
-  //     url,
-  //     width, // Desired width of the result image
-  //     height, // Desired height of the result image
-  //   }: {
-  //     url: string;
-  //     width?: number;
-  //     height?: number;
-  //   }) {
-  //     Konva.Image.fromURL(url, (imageNode: Konva.Image) => {
-  // const editorRatio = this.photoRatio;
-
-  // // Get original image dimensions
-  // const originalWidth = imageNode.width();
-  // const originalHeight = imageNode.height();
-  // const imageRatio = originalWidth / originalHeight;
-
-  // // Scale the image to fit within the editor's 16:9 bounds while maintaining the image's aspect ratio
-  // let scaleFactor = 1;
-  // if (imageRatio > editorRatio)
-  //   scaleFactor = this.stage.width() / originalWidth;
-  // else scaleFactor = this.stage.height() / originalHeight;
-
-  // const scaledWidth = originalWidth * scaleFactor;
-  // const scaledHeight = originalHeight * scaleFactor;
-
-  // // Center the image in the editor
-  // const x = (this.stage.width() - scaledWidth) / 2;
-  // const y = (this.stage.height() - scaledHeight) / 2;
-
-  //       imageNode.setAttrs({
-  //         x: x,
-  //         y: y,
-  //         width: scaledWidth,
-  //         height: scaledHeight,
-  //         draggable: this.isEditorEnabled,
-  //       });
-
-  //       if (this.photo) this.photo.destroy();
-
-  //       this.photo = imageNode;
-  //       this.layer.add(imageNode);
-  //       this.layer.draw();
-  //     });
-  //   }
 
   addText({
     text = "double click to edit",
@@ -386,134 +306,6 @@ class PhotoEditor {
 
     return { textNode };
   }
-  // addFrame(n: number, data: { title: string; phone: string; website: string }) {
-  //   Konva.Image.fromURL(frames?.[n]?.["src"], (imageNode: Konva.Image) => {
-  //     imageNode.setAttrs({
-  //       x: 0,
-  //       y: 0,
-  //       width: this.stage.width(),
-  //       height: this.stage.height(),
-  //       draggable: this.isEditorEnabled,
-  //       opacity: 1,
-  //     });
-
-  //     if (this.frame) {
-  //       [this.frame, ...this.textNodes].forEach((node) => {
-  //         if (node) node.destroy();
-  //       });
-  //     }
-
-  //     this.frame = imageNode;
-  //     this.layer.add(imageNode);
-
-  //     if (n === 0) {
-  //       const titleArr = data?.["title"].split(" ");
-
-  //       // Specify the starting position and spacing
-  //       let currentY = 100; // Starting Y position
-  //       const startX = 20;
-  //       const spacing = 55; // Vertical spacing between each word
-
-  //       if (titleArr?.[0]) {
-  //         this.addText({
-  //           text: titleArr?.[0],
-  //           fontSize: 32,
-  //           x: startX,
-  //           y: currentY,
-  //         });
-  //         currentY += spacing; // Move Y down for the next word
-  //       }
-
-  //       if (titleArr?.[1]) {
-  //         this.addText({
-  //           text: titleArr?.[1],
-  //           fontSize: 50,
-  //           fill: "yellow",
-  //           x: startX,
-  //           y: currentY,
-  //         });
-
-  //         currentY += spacing; // Move Y down for the next word
-  //       }
-
-  //       if (titleArr?.[2]) {
-  //         this.addText({
-  //           text: titleArr?.slice(2).join(" "),
-  //           fontSize: 32,
-  //           x: startX,
-  //           y: currentY,
-  //           maxWidth: 250,
-  //         });
-  //       }
-
-  //       this.addText({ text: data?.["phone"], x: startX + 40, y: 520 });
-  //       this.addText({ text: data?.["website"], x: startX + 18, y: 550 });
-  //     }
-
-  //     if (n === 1) {
-  //       this.addText({
-  //         text: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse nemo quisquam eveniet sed rem distinctio.",
-  //         x: this.stage.width() / 2 + 100,
-  //         y: 150,
-  //
-  //       });
-
-  //       this.addText({
-  //         text: data?.["website"],
-  //         x: 120,
-  //         y: this.stage.height() - 80,
-  //       });
-  //     }
-  //     if (n === 2) {
-  //       this.addText({
-  //         text: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse nemo quisquam eveniet sed rem distinctio.",
-  //         maxWidth: 250,
-  //       });
-
-  //       this.addText({
-  //         text: data?.["website"],
-  //         x: this.stage.width() - 200,
-  //         y: this.stage.height() - 50,
-  //       });
-  //     }
-  //     if (n === 3) {
-  //       this.addText({
-  //         text: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse nemo quisquam eveniet sed rem distinctio.",
-  //         x: this.stage.width() / 2 + 50,
-  //         y: 150,
-  //         maxWidth: 250,
-  //       });
-
-  //       this.addText({
-  //         text: data?.["website"],
-  //         x: 50,
-  //         y: this.stage.height() - 70,
-  //       });
-  //     }
-
-  //     this.layer.draw();
-  //   });
-  // }
-
-  // downloadFinalProduct(
-  //   pixelRatio: number = 2,
-  //   format: "png" | "jpeg" = "png",
-  //   quality: number = 1,
-  // ) {
-  //   this.transformer.nodes([]);
-  //   const dataURL = this.stage.toDataURL({
-  //     pixelRatio: pixelRatio,
-  //     mimeType: format === "jpeg" ? "image/jpeg" : "image/png",
-  //     quality: quality,
-  //   });
-
-  //   const link = document.createElement("a");
-  //   link.href = dataURL;
-  //   link.download = `final_image.${format}`;
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-  // }
 
   getResult(
     pixelRatio: number = 2,
@@ -555,74 +347,6 @@ class PhotoEditor {
 
     this.layer.draw();
   }
-
-  //   attachViewerToBody() {
-  //     const viewerContainer = document.createElement("div");
-  //     viewerContainer.id = "photo-editor-viewer";
-  //     viewerContainer.style.border = "1px solid #ccc";
-  //     viewerContainer.style.width = `${this.stage.width()}px`;
-  //     viewerContainer.style.height = `${this.stage.height()}px`;
-  //     document.body.appendChild(viewerContainer);
-
-  //     const viewerStage = new Konva.Stage({
-  //       container: "photo-editor-viewer",
-  //       width: this.stage.width(),
-  //       height: this.stage.height(),
-  //     });
-
-  //     const viewerLayer = new Konva.Layer();
-  //     viewerStage.add(viewerLayer);
-
-  //     const clonedLayer = this.layer.clone();
-  //     viewerLayer.add(clonedLayer);
-  //     viewerLayer.draw();
-  //   }
-
-  //   uploadPhoto(
-  //     acceptedFileTypes: AcceptedFileTypes = [
-  //       "image/jpeg",
-  //       "image/png",
-  //       "image/gif",
-  //     ],
-  //   ) {
-  //     const input = document.createElement("input");
-  //     input.type = "file";
-  //     input.accept = acceptedFileTypes.join(",");
-  //     input.onchange = (event: Event) => {
-  //       const target = event.target as HTMLInputElement;
-  //       const file = target.files ? target.files[0] : null;
-  //       if (file) {
-  //         const reader = new FileReader();
-  //         reader.onload = (e: ProgressEvent<FileReader>) => {
-  //           const result = e.target?.result as string;
-  //           this.addPhoto(result);
-  //         };
-  //         reader.readAsDataURL(file);
-  //       }
-  //     };
-  //     input.click();
-  //   }
-
-  //   uploadTheme(
-  //     acceptedFileTypes: AcceptedFileTypes = ["image/jpeg", "image/png"],
-  //   ) {
-  //     const input = document.createElement("input");
-  //     input.type = "file";
-  //     input.accept = acceptedFileTypes.join(",");
-  //     input.onchange = (event: Event) => {
-  //       const target = event.target as HTMLInputElement;
-  //       const file = target.files ? target.files[0] : null;
-  //       if (file) {
-  //         const reader = new FileReader();
-  //         reader.onload = (e: ProgressEvent<FileReader>) => {
-  //           const result = e.target?.result as string;
-  //           this.addTheme(result);
-  //         };
-  //         reader.readAsDataURL(file);
-  //       }
-  //     };
-  //     input.click();
-  //   }
 
   //   toggleEditorMode() {
   // this.isEditorEnabled = !this.isEditorEnabled;

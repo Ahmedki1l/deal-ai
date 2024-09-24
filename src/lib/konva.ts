@@ -39,6 +39,7 @@ class PhotoEditor {
 
     // Initialize the cropping rectangle
     this.initCropRect();
+    this.reorderLayers();
 
     this.stage.on("click", (e: Konva.KonvaEventObject<MouseEvent>) => {
       // if (!this.isEditorEnabled) return;
@@ -93,6 +94,7 @@ class PhotoEditor {
 
     this.layer.add(this.cropRect);
     this.cropRect.moveToBottom();
+    this.reorderLayers();
     this.layer.draw();
   }
 
@@ -105,7 +107,7 @@ class PhotoEditor {
       x: (this.stage.width() - newWidth) / 2,
       y: (this.stage.height() - newHeight) / 2,
     });
-
+    this.reorderLayers();
     this.layer.draw();
   }
 
@@ -114,6 +116,7 @@ class PhotoEditor {
     this.adjustCropRect({
       ratio: this.cropRect!.width() / this.cropRect!.height(),
     });
+    this.reorderLayers();
     this.layer.draw(); // Ensure the layer is redrawn
   }
 
@@ -352,8 +355,6 @@ class PhotoEditor {
     });
 
     this.transformer.nodes([]);
-    this.reorderLayers(); // Keep the order consistent
-
     this.layer.draw();
   }
 

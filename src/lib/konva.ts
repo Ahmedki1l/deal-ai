@@ -16,7 +16,7 @@ class PhotoEditor {
   public frame: Konva.Image | null = null;
   public textNodes: Konva.Text[] = [];
 
-  public isEditorEnabled: boolean = true;
+  // public isEditorEnabled: boolean = true;
 
   constructor({
     contents,
@@ -40,7 +40,7 @@ class PhotoEditor {
     this.initCropRect();
 
     this.stage.on("click", (e: Konva.KonvaEventObject<MouseEvent>) => {
-      if (!this.isEditorEnabled) return;
+      // if (!this.isEditorEnabled) return;
 
       const target = e.target as Konva.Image | Konva.Text;
 
@@ -70,7 +70,7 @@ class PhotoEditor {
       stroke: "black", // Border color
       strokeWidth: 0.5,
       dash: [4, 4], // Dashed line pattern [dash length, gap length]
-      draggable: true,
+      draggable: false,
     });
 
     // Limit movement to stay within stage bounds
@@ -135,7 +135,8 @@ class PhotoEditor {
             y,
             width,
             height,
-            draggable: this.isEditorEnabled,
+            draggable: true,
+            // this.isEditorEnabled,
           });
 
           if (this.photo) this.photo.destroy();
@@ -145,6 +146,7 @@ class PhotoEditor {
           this.layer.add(loadedImageNode);
           this.cropRect?.moveToTop();
           this.reorderLayers();
+
           this.layer.draw();
           resolve({ photoNode: loadedImageNode });
         },
@@ -171,7 +173,8 @@ class PhotoEditor {
       image.onload = () => {
         const imageNode = new Konva.Image({
           image: image,
-          draggable: this.isEditorEnabled,
+          draggable: true,
+          // this.isEditorEnabled,
         });
 
         const { x, y, width, height } = this.scaledDimentions({
@@ -221,7 +224,8 @@ class PhotoEditor {
             y: this.cropRect?.y(),
             width: this.cropRect?.width(),
             height: this.cropRect?.height(),
-            draggable: this.isEditorEnabled,
+            draggable: true,
+            // this.isEditorEnabled,
             opacity: 1,
           });
 
@@ -331,10 +335,6 @@ class PhotoEditor {
     const buffer = Buffer.from(base64Data, "base64");
 
     return "data:image/png;base64," + buffer.toString("base64");
-  }
-
-  getTextNodes() {
-    return this.textNodes;
   }
 
   reset() {

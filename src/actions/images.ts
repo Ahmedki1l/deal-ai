@@ -67,6 +67,7 @@ export async function updateImage({
       if (typeof r == "object" && "error" in r) return { error: r?.["error"] };
       data.src = r;
     }
+
     await db.image.update({
       data,
       where: { id },
@@ -134,10 +135,12 @@ export async function base64ToBuffer({
   //     .toBuffer();
   // }
 
-  return sharp(Buffer.from(r, "base64"))
-    .resize({ width: 800 })
-    .png({ quality: 80 })
-    .toBuffer();
+  return (
+    sharp(Buffer.from(r, "base64"))
+      // .resize({ width: 800 })
+      .png({ quality: 80 })
+      .toBuffer()
+  );
 }
 
 export async function regenerateImagePrompt({

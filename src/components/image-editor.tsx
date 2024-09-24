@@ -3,10 +3,13 @@
 import { updateImage } from "@/actions/images";
 import { DialogResponsiveProps } from "@/components/dialog";
 import { Icons } from "@/components/icons";
+import { Image } from "@/components/image";
 import { ImageForm, ImageFormProps } from "@/components/image-form";
 import { Tooltip } from "@/components/tooltip";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { useLocale } from "@/hooks/use-locale";
 import { PhotoEditor } from "@/lib/konva";
 import { clientAction, cn } from "@/lib/utils";
@@ -20,9 +23,6 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { Image } from "./image";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Input } from "./ui/input";
 
 export type ImageEditorProps = {
   image: ImageType & {
@@ -96,7 +96,8 @@ export function ImageEditor({
     await clientAction(
       async () =>
         await updateImage({
-          ...data,
+          id: data?.["id"],
+          prompt: data?.["prompt"],
           src: editor?.["current"]?.getResult()!,
         }),
       setLoading,
@@ -258,6 +259,10 @@ export function ImageEditor({
               "relative flex w-full flex-1 items-center justify-center bg-muted",
             )}
           />
+        </div>
+
+        <div>
+          <Image src={form.watch("src")} alt="" />
         </div>
       </form>
     </Form>

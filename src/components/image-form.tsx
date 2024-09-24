@@ -1,6 +1,11 @@
 "use client";
 
 import { generateImage, regenerateImagePrompt } from "@/actions/images";
+import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
+import { Icons } from "@/components/icons";
+import { Image } from "@/components/image";
+import { Tooltip } from "@/components/tooltip";
+import { Button } from "@/components/ui/button";
 import {
   FormControl,
   FormField,
@@ -14,6 +19,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { FRAMES } from "@/lib/constants";
 import { PhotoEditor } from "@/lib/konva";
 import { clientAction, fileToBase64 } from "@/lib/utils";
@@ -23,13 +30,6 @@ import { MutableRefObject, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { DialogResponsive, DialogResponsiveProps } from "./dialog";
-import { Icons } from "./icons";
-import { Image } from "./image";
-import { Tooltip } from "./tooltip";
-import { Button } from "./ui/button";
-import { Textarea } from "./ui/textarea";
-import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 
 export type ImageFormProps = {
   loading: boolean;
@@ -258,6 +258,7 @@ export const ImageForm = {
                         website: "www.domainname.com",
                         phone: "+123 546 8910",
                       },
+                      editor: editor!?.["current"]!,
                     });
                     field.onChange(FRAMES?.[Number(e)]?.["filled"]);
 

@@ -6,17 +6,17 @@ type AcceptedFileTypes = string[];
 
 // { value: Konva.Image; editable: boolean }
 class PhotoEditor {
-  private stage: Konva.Stage;
-  private layer: Konva.Layer;
-  private transformer: Konva.Transformer;
-  private cropRect: Konva.Rect | null = null;
+  public stage: Konva.Stage;
+  public layer: Konva.Layer;
+  public transformer: Konva.Transformer;
+  public cropRect: Konva.Rect | null = null;
 
-  private contents: ShortContents | null = null;
-  private photo: Konva.Image | null = null;
-  private frame: Konva.Image | null = null;
-  private textNodes: Konva.Text[] = [];
+  public contents: ShortContents | null = null;
+  public photo: Konva.Image | null = null;
+  public frame: Konva.Image | null = null;
+  public textNodes: Konva.Text[] = [];
 
-  private isEditorEnabled: boolean = true;
+  public isEditorEnabled: boolean = true;
 
   constructor({ containerId }: { containerId: string }) {
     this.stage = new Konva.Stage({ container: containerId });
@@ -47,10 +47,12 @@ class PhotoEditor {
     });
   }
   private initCropRect() {
-    const editorRatio = this.stage.width() / this.stage.height();
-    const cropWidth = this.stage.width() * 0.5; // Initial crop width (50% of stage)
-    const cropHeight = cropWidth / editorRatio;
+    // const editorRatio = 1 / 1;
+    // const cropWidth = this.stage.width() * 0.5; // Initial crop width (50% of stage)
+    // const cropHeight = cropWidth / editorRatio;
 
+    const cropWidth = 550;
+    const cropHeight = 550;
     // Create the crop rectangle
     this.cropRect = new Konva.Rect({
       x: (this.stage.width() - cropWidth) / 2, // Center horizontally
@@ -59,7 +61,7 @@ class PhotoEditor {
       height: cropHeight,
       stroke: "black",
       strokeWidth: 1,
-      draggable: true,
+      draggable: false,
     });
 
     // Limit movement to stay within stage bounds
@@ -84,11 +86,14 @@ class PhotoEditor {
   }
 
   private adjustCropRect() {
-    const editorRatio = this.stage.width() / this.stage.height();
-    const newWidth = this.stage.width() * 0.5;
-    const newHeight = newWidth / editorRatio;
+    // const editorRatio = 1 / 1;
+    // const newWidth = this.stage.width() * 0.5;
+    // const newHeight = newWidth / editorRatio;
 
-    this.cropRect?.size({ width: newWidth, height: newHeight });
+    const newWidth = 550;
+    const newHeight = 550;
+
+    // this.cropRect?.size({ width: newWidth, height: newHeight });
     this.cropRect?.position({
       x: (this.stage.width() - newWidth) / 2,
       y: (this.stage.height() - newHeight) / 2,
@@ -189,11 +194,13 @@ class PhotoEditor {
     width = this.stage.width(),
     height = this.stage.height(),
     data,
+    editor,
   }: {
     n: number;
     width?: number;
     height?: number;
     data: { title: string; website: string; phone: string };
+    editor: PhotoEditor;
   }): Promise<{
     frameNode: Konva.Image | null;
     textNodes: Konva.Text[];
@@ -203,10 +210,10 @@ class PhotoEditor {
         FRAMES?.[n]?.["src"],
         (imageNode: Konva.Image) => {
           imageNode.setAttrs({
-            x: 0,
-            y: 0,
-            width: this.stage.width(),
-            height: this.stage.height(),
+            x: this.cropRect?.x(),
+            y: this.cropRect?.y(),
+            width: this.cropRect?.width(),
+            height: this.cropRect?.height(),
             draggable: this.isEditorEnabled,
             opacity: 1,
           });
@@ -216,131 +223,9 @@ class PhotoEditor {
           this.frame = imageNode;
           this.textNodes = [];
           this.layer.add(imageNode);
-
-          if (n === 0) {
-            const titleArr = data?.["title"].split(" ");
-
-            // Specify the starting position and spacing
-            let currentY = 100; // Starting Y position
-            const startX = 20;
-            const spacing = 55; // Vertical spacing between each word
-
-            if (titleArr?.[0]) {
-              this.addText({
-                text: titleArr?.[0],
-                fontSize: 32,
-                x: startX,
-                y: currentY,
-              });
-              currentY += spacing; // Move Y down for the next word
-            }
-
-            if (titleArr?.[1]) {
-              this.addText({
-                text: titleArr?.[1],
-                fontSize: 50,
-                fill: "yellow",
-                x: startX,
-                y: currentY,
-              });
-
-              currentY += spacing; // Move Y down for the next word
-            }
-
-            if (titleArr?.[2]) {
-              this.addText({
-                text: titleArr?.slice(2).join(" "),
-                fontSize: 32,
-                x: startX,
-                y: currentY,
-                maxWidth: 250,
-              });
-            }
-
-            this.addText({
-              text: data?.["phone"],
-              x: startX + 40,
-              y: 520,
-            });
-            this.addText({
-              text: data?.["website"],
-              x: startX + 18,
-              y: 550,
-            });
-          }
-
-          if (n === 1) {
-            this.addText({
-              text: "Architecture Agencies",
-              x: 1133,
-              y: 160,
-              width: 619,
-              // height: 195,
-              fontFamily: "Poppins",
-              fontSize: 100,
-              fontVariant: "700",
-              rotationDeg: 90,
-              wrap: "true",
-            });
-            this.addText({
-              text: "Reservation",
-              x: 847,
-              y: 874,
-              // width: 297,
-              // height: 41,
-              fontFamily: "Poppins",
-              fontSize: 51.78,
-              fill: "white",
-            });
-            this.addText({
-              text: "+123 546 8910",
-              x: 601,
-              y: 968,
-              // width: 546,
-              // height: 63,
-              fontFamily: "Poppins",
-              fontSize: 80.73,
-              fill: "white",
-            });
-            this.addText({
-              text: data?.["website"],
-              x: 129,
-              y: 1110,
-              // width: 344,
-              // height: 24,
-              fontFamily: "Poppins",
-              fontSize: 30,
-            });
-          }
-          if (n === 2) {
-            this.addText({
-              text: this.contents?.Long,
-              maxWidth: 250,
-            });
-
-            this.addText({
-              text: data?.["website"],
-              x: this.stage.width() - 200,
-              y: this.stage.height() - 50,
-            });
-          }
-          if (n === 3) {
-            this.addText({
-              text: this.contents?.Long,
-              x: this.stage.width() / 2 + 50,
-              y: 150,
-              maxWidth: 250,
-            });
-
-            this.addText({
-              text: data?.["website"],
-              x: 50,
-              y: this.stage.height() - 70,
-            });
-          }
+          FRAMES?.[n]?.applyFrame({ data, editor });
 
           this.layer.draw();
-
           resolve({ frameNode: imageNode, textNodes: this.textNodes });
         },
         (err) => {
@@ -352,19 +237,18 @@ class PhotoEditor {
 
   scaledDimentions({ width, height }: { width: number; height: number }) {
     const imageRatio = width / height;
-    const editorRatio = this.stage.width() / this.stage.height();
+    const editorRatio = this.cropRect!?.width() / this.cropRect!?.height();
 
-    // Scale the image to fit within the editor's 16:9 bounds while maintaining the image's aspect ratio
-    let scaleFactor = 1;
-    if (imageRatio > editorRatio) scaleFactor = this.stage.width() / width;
-    else scaleFactor = this.stage.height() / height;
+    const scaleFactor =
+      (imageRatio > editorRatio
+        ? this.stage.width() / width
+        : this.stage.height() / height) ?? 1;
 
     const scaledWidth = width * scaleFactor;
     const scaledHeight = height * scaleFactor;
 
-    // Center the image in the editor
-    const centerizedX = (this.stage.width() - scaledWidth) / 2;
-    const centerizedY = (this.stage.height() - scaledHeight) / 2;
+    const centerizedX = (this.cropRect!?.width() - scaledWidth) / 2;
+    const centerizedY = (this.cropRect!?.height() - scaledHeight) / 2;
 
     return {
       width: scaledWidth,
@@ -479,12 +363,10 @@ class PhotoEditor {
       ...props,
     });
 
-    // Add text to layer and render it
     this.layer.add(textNode);
-    textNode.moveToTop(); // Ensure the text is on top
+    textNode.moveToTop();
     this.layer.draw();
 
-    // Store the text node
     this.textNodes.push(textNode);
     this.layer.draw();
 

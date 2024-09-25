@@ -154,6 +154,13 @@ enum POST_CONTENT_LENGTH {
   LONG
 }
 
+enum POST_STATUS {
+  PENDING
+  CONFIRMED
+  PUBLISHED
+  SUSPENDED // not published, got an erorr at that time
+}
+
 model Image {
   id     String @id @map("_id")
   src    String
@@ -176,6 +183,7 @@ model Post {
   noOfWeeks String @map("no-of-weeks")
   content   String
 
+  status        POST_STATUS         @default(PENDING)
   platform      PLATFORM
   contentLength POST_CONTENT_LENGTH @map("content-length")
   campaignType  POST_CAMPAIGN       @map("campaign-type")

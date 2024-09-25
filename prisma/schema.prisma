@@ -123,17 +123,17 @@ model Property {
   projectId String @map("project-id")
   title     String
 
-  type       PROPERTY_TYPE
-  units      String
-  space      String
-  finishing  String
-  floors     String
-  rooms      String
-  bathrooms  String
-  receptions String?
-  garden     String?
-  pool       String?
-  view       String?
+  type        PROPERTY_TYPE
+  units       String
+  space       String
+  finishing   String
+  floors      String
+  rooms       String
+  bathrooms   String
+  livingrooms String?
+  garden      String?
+  pool        String?
+  view        String?
 
   deletedAt DateTime? @map("deleted-at")
 

@@ -144,7 +144,11 @@ export const PropertyForm = {
       name={`types.${typeIndex}.properties.${propertyIndex}.units`}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{c?.["units"]?.["label"]}</FormLabel>
+          <FormLabel>
+            {form.getValues("types")?.[typeIndex]?.["value"] === "VILLA"
+              ? c?.["units"]?.["no. of villas"]
+              : c?.["units"]?.["units"]}
+          </FormLabel>
           <FormControl>
             <Input type="text" disabled={loading} {...field} />
           </FormControl>
@@ -258,7 +262,7 @@ export const PropertyForm = {
       )}
     />
   ),
-  receptions: ({
+  livingrooms: ({
     dic: { "property-form": c },
     loading,
     form,
@@ -267,10 +271,10 @@ export const PropertyForm = {
   }: PropertyFormProps & { typeIndex: number; propertyIndex: number }) => (
     <FormField
       control={form.control}
-      name={`types.${typeIndex}.properties.${propertyIndex}.receptions`}
+      name={`types.${typeIndex}.properties.${propertyIndex}.livingrooms`}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{c?.["receptions"]?.["label"]}</FormLabel>
+          <FormLabel>{c?.["livingrooms"]?.["living rooms"]}</FormLabel>
           <FormControl>
             <Input type="text" disabled={loading} {...field} />
           </FormControl>

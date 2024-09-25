@@ -239,7 +239,7 @@ export default {
               floors: "الطوابق",
               rooms: "الغرف",
               bathrooms: "الحمامات",
-              receptions: "صالات الاستقبال",
+              livingrooms: "غرفة المعيشة",
               garden: "الحديقة",
               pool: "المسبح",
               view: "الإطلالة",
@@ -672,43 +672,24 @@ export default {
     "delete property": "حذف العقار",
   },
   "property-form": {
-    type: {
-      "select your property type": "حدد نوع العقار",
-    },
+    type: { "select your property type": "حدد نوع العقار" },
     title: {
       label: "العنوان",
       "health center": "مركز صحي",
     },
     units: {
-      label: "الوحدات",
+      units: "الوحدات",
+      "no. of villas": "عدد الڤلل",
     },
-    space: {
-      label: "المساحة",
-    },
-    finishing: {
-      label: "التشطيب",
-    },
-    floors: {
-      label: "الأدوار",
-    },
-    rooms: {
-      label: "الغرف",
-    },
-    bathrooms: {
-      label: "الحمامات",
-    },
-    receptions: {
-      label: "الاستقبالات",
-    },
-    garden: {
-      label: "الحديقة",
-    },
-    pool: {
-      label: "المسبح",
-    },
-    view: {
-      label: "الإطلالة",
-    },
+    space: { label: "المساحة" },
+    finishing: { label: "التشطيب" },
+    floors: { label: "الأدوار" },
+    rooms: { label: "الغرف" },
+    bathrooms: { label: "الحمامات" },
+    livingrooms: { "living rooms": "غرفة المعيشة" },
+    garden: { label: "الحديقة" },
+    pool: { label: "المسبح" },
+    view: { label: "الإطلالة" },
   },
   "property-restore-button": {
     "restoring this property will bring back all its data and settings, making it appear as if it was never deleted. all related information will be fully reinstated, allowing you to pick up right where you left off.":

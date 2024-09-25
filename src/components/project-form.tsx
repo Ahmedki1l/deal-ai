@@ -237,7 +237,12 @@ export const ProjectForm = {
             <Dialog>
               <DialogTrigger>
                 <Tooltip text={c?.["choose on map"]} align="end">
-                  <Button type="button" variant="outline" size="icon">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    disabled={loading}
+                  >
                     <Icons.mapPicker />
                   </Button>
                 </Tooltip>
@@ -546,6 +551,7 @@ export const ProjectForm = {
         <div className="flex items-center justify-between gap-4">
           <FormLabel>{c?.["label"]}</FormLabel>
           <Button
+            // type="button"
             size="icon"
             // @ts-ignore
             onClick={() => append({})}

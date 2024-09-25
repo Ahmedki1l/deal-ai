@@ -209,8 +209,7 @@ export function PropertyCreateButton({
                               form={form as any}
                               loading={loading}
                             />
-
-                            <PropertyForm.receptions
+                            <PropertyForm.livingrooms
                               dic={dic}
                               typeIndex={i}
                               propertyIndex={j}

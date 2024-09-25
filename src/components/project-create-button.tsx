@@ -156,6 +156,7 @@ export function ProjectCreateButton({
                       })
                     }
                     disabled={
+                      loading ||
                       fields?.["length"] === propertyTypes(lang)?.["length"]
                       // ||
                       // (limit ? fields?.["length"] == 4 : false)
@@ -165,7 +166,7 @@ export function ProjectCreateButton({
                   </Button>
                 </div>
 
-                {fields?.map((field, i) => (
+                {form?.watch("types")?.map((field, i) => (
                   <Card key={i}>
                     <CardHeader>
                       <div className="flex items-center justify-between gap-4">
@@ -189,6 +190,7 @@ export function ProjectCreateButton({
                                 projectId: i.toString(),
                               })
                             }
+                            disabled={loading}
                           >
                             <Icons.add />
                           </Button>
@@ -219,6 +221,7 @@ export function ProjectCreateButton({
                                           ?.filter((_, k) => k != j) ?? [],
                                       )
                                     }
+                                    disabled={loading}
                                   >
                                     <Icons.x />
                                   </Button>
@@ -276,7 +279,7 @@ export function ProjectCreateButton({
                                   loading={loading}
                                 />
 
-                                <PropertyForm.receptions
+                                <PropertyForm.livingrooms
                                   dic={dic}
                                   typeIndex={i}
                                   propertyIndex={j}

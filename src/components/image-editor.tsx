@@ -230,12 +230,16 @@ export function ImageEditor({
                         type="number"
                         disabled={loading}
                         defaultValue={Number(
-                          form.watch("editor.photo")!?.width()! ?? "0",
+                          Number(
+                            form.watch("editor.photo")!?.width()! ?? 0,
+                          )?.toFixed(0),
                         )}
                         onChange={(e) =>
                           form
                             .watch("editor.photo")!
-                            ?.width(Number(e?.target?.value))
+                            ?.width(
+                              Number(Number(e?.target?.value)?.toFixed(0)),
+                            )
                         }
                         className="m-0 p-0"
                       />
@@ -247,12 +251,16 @@ export function ImageEditor({
                         type="number"
                         disabled={loading}
                         defaultValue={Number(
-                          form.watch("editor.photo")!?.height()! ?? "0",
+                          Number(
+                            form.watch("editor.photo")!?.height()! ?? 0,
+                          )?.toFixed(0),
                         )}
                         onChange={(e) =>
                           form
                             .watch("editor.photo")!
-                            ?.height(Number(e?.target?.value))
+                            ?.height(
+                              Number(Number(e?.target?.value)?.toFixed(0)),
+                            )
                         }
                         className="m-0 p-0"
                       />
@@ -264,12 +272,14 @@ export function ImageEditor({
                         type="number"
                         disabled={loading}
                         defaultValue={Number(
-                          form.watch("editor.photo")!?.x()! ?? "0",
+                          Number(
+                            form.watch("editor.photo")!?.x()! ?? 0,
+                          )?.toFixed(0),
                         )}
                         onChange={(e) =>
                           form
                             .watch("editor.photo")!
-                            ?.x(Number(e?.target?.value))
+                            ?.x(Number(Number(e?.target?.value)?.toFixed(0)))
                         }
                         className="m-0 p-0"
                       />
@@ -281,12 +291,14 @@ export function ImageEditor({
                         type="number"
                         disabled={loading}
                         defaultValue={Number(
-                          form.watch("editor.photo")!?.y()! ?? "0",
+                          Number(
+                            form.watch("editor.photo")!?.y()! ?? 0,
+                          )?.toFixed(0),
                         )}
                         onChange={(e) =>
                           form
                             .watch("editor.photo")!
-                            ?.y(Number(e?.target?.value))
+                            ?.y(Number(Number(e?.target?.value)?.toFixed(0)))
                         }
                         className="m-0 p-0"
                       />
@@ -327,12 +339,16 @@ export function ImageEditor({
                         type="number"
                         disabled={loading}
                         defaultValue={Number(
-                          form!?.watch("editor.frame")!?.width()! ?? "0",
+                          Number(
+                            form.watch("editor.frame")!?.width()! ?? 0,
+                          )?.toFixed(0),
                         )}
                         onChange={(e) =>
                           form
                             .watch("editor.frame")!
-                            ?.width(Number(e?.target?.value))
+                            ?.width(
+                              Number(Number(e?.target?.value)?.toFixed(0)),
+                            )
                         }
                         className="m-0 p-0"
                       />
@@ -344,12 +360,16 @@ export function ImageEditor({
                         type="number"
                         disabled={loading}
                         defaultValue={Number(
-                          form.watch("editor.frame")!?.height()! ?? "0",
+                          Number(
+                            form.watch("editor.frame")!?.height()! ?? 0,
+                          )?.toFixed(0),
                         )}
                         onChange={(e) =>
                           form
                             .watch("editor.frame")!
-                            ?.height(Number(e?.target?.value))
+                            ?.height(
+                              Number(Number(e?.target?.value)?.toFixed(0)),
+                            )
                         }
                         className="m-0 p-0"
                       />
@@ -361,12 +381,14 @@ export function ImageEditor({
                         type="number"
                         disabled={loading}
                         defaultValue={Number(
-                          form.watch("editor.frame")!?.x()! ?? "0",
+                          Number(
+                            form.watch("editor.frame")!?.x()! ?? 0,
+                          )?.toFixed(0),
                         )}
                         onChange={(e) =>
                           form
                             .watch("editor.frame")!
-                            ?.x(Number(e?.target?.value))
+                            ?.x(Number(Number(e?.target?.value)?.toFixed(0)))
                         }
                         className="m-0 p-0"
                       />
@@ -378,12 +400,14 @@ export function ImageEditor({
                         type="number"
                         disabled={loading}
                         defaultValue={Number(
-                          form.watch("editor.frame")!?.y()! ?? "0",
+                          Number(
+                            form.watch("editor.frame")!?.y()! ?? 0,
+                          )?.toFixed(0),
                         )}
                         onChange={(e) =>
                           form
                             .watch("editor.frame")!
-                            ?.y(Number(e?.target?.value))
+                            ?.y(Number(Number(e?.target?.value)?.toFixed(0)))
                         }
                         className="m-0 p-0"
                       />
@@ -458,9 +482,15 @@ export function ImageEditor({
                                 <Input
                                   type="number"
                                   disabled={loading}
-                                  defaultValue={Number(txt?.fontSize()! ?? "0")}
+                                  defaultValue={Number(
+                                    Number(txt?.fontSize()! ?? 0)?.toFixed(0),
+                                  )}
                                   onChange={(e) =>
-                                    txt?.fontSize(Number(e?.target?.value))
+                                    txt?.fontSize(
+                                      Number(
+                                        Number(e?.target?.value)?.toFixed(0),
+                                      ),
+                                    )
                                   }
                                   className="m-0 p-0"
                                 />
@@ -473,9 +503,15 @@ export function ImageEditor({
                                 <Input
                                   type="number"
                                   disabled={loading}
-                                  defaultValue={Number(txt?.width()! ?? "0")}
+                                  defaultValue={Number(
+                                    Number(txt?.width()! ?? 0)?.toFixed(0),
+                                  )}
                                   onChange={(e) =>
-                                    txt?.width(Number(e?.target?.value))
+                                    txt?.width(
+                                      Number(
+                                        Number(e?.target?.value)?.toFixed(0),
+                                      ),
+                                    )
                                   }
                                   className="m-0 p-0"
                                 />
@@ -486,9 +522,15 @@ export function ImageEditor({
                                 <Input
                                   type="number"
                                   disabled={loading}
-                                  defaultValue={Number(txt?.height()! ?? "0")}
+                                  defaultValue={Number(
+                                    Number(txt?.height()! ?? 0)?.toFixed(0),
+                                  )}
                                   onChange={(e) =>
-                                    txt?.height(Number(e?.target?.value))
+                                    txt?.height(
+                                      Number(
+                                        Number(e?.target?.value)?.toFixed(0),
+                                      ),
+                                    )
                                   }
                                   className="m-0 p-0"
                                 />
@@ -501,9 +543,15 @@ export function ImageEditor({
                                 <Input
                                   type="number"
                                   disabled={loading}
-                                  defaultValue={Number(txt?.x()! ?? "0")}
+                                  defaultValue={Number(
+                                    Number(txt?.x()! ?? 0)?.toFixed(0),
+                                  )}
                                   onChange={(e) =>
-                                    txt?.x(Number(e?.target?.value))
+                                    txt?.x(
+                                      Number(
+                                        Number(e?.target?.value)?.toFixed(0),
+                                      ),
+                                    )
                                   }
                                   className="m-0 p-0"
                                 />
@@ -514,9 +562,15 @@ export function ImageEditor({
                                 <Input
                                   type="number"
                                   disabled={loading}
-                                  defaultValue={Number(txt?.y()! ?? "0")}
+                                  defaultValue={Number(
+                                    Number(txt?.y()! ?? 0)?.toFixed(0),
+                                  )}
                                   onChange={(e) =>
-                                    txt?.y(Number(e?.target?.value))
+                                    txt?.y(
+                                      Number(
+                                        Number(e?.target?.value)?.toFixed(0),
+                                      ),
+                                    )
                                   }
                                   className="m-0 p-0"
                                 />

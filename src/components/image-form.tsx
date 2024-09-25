@@ -53,7 +53,9 @@ export const ImageForm = {
           <div>
             <Tooltip text="new image">
               <div>
-                <Icons.add />
+                <Button disabled={loading} variant="outline" size="icon">
+                  <Icons.add />
+                </Button>
               </div>
             </Tooltip>
           </div>
@@ -133,12 +135,12 @@ export const ImageForm = {
         dic={dic}
         open={open}
         setOpen={setOpen}
-        disabled={promptLoading || imageLoading}
+        disabled={promptLoading || imageLoading || loading}
         confirmButton={
           <Button
             type="button"
             onClick={regenerateImage}
-            disabled={promptLoading || imageLoading}
+            disabled={promptLoading || imageLoading || loading}
           >
             {imageLoading && <Icons.spinner />}
             generate Image using AI
@@ -161,7 +163,7 @@ export const ImageForm = {
                           variant="outline"
                           size="icon"
                           onClick={regeneratePrompt}
-                          disabled={promptLoading || imageLoading}
+                          disabled={promptLoading || imageLoading || loading}
                         >
                           {promptLoading ? <Icons.spinner /> : <Icons.reload />}
                         </Button>
@@ -172,7 +174,7 @@ export const ImageForm = {
                     <Textarea
                       className="min-h-40"
                       {...field}
-                      disabled={loading}
+                      disabled={promptLoading || imageLoading || loading}
                     />
                   </FormControl>
                   <FormMessage />
@@ -184,7 +186,12 @@ export const ImageForm = {
       >
         <div>
           <Tooltip text={c?.["regenerate-image"]?.["generate image"]}>
-            <Button type="button" variant="outline" size="icon">
+            <Button
+              disabled={promptLoading || imageLoading || loading}
+              type="button"
+              variant="outline"
+              size="icon"
+            >
               <Icons.reload />
             </Button>
           </Tooltip>
@@ -212,7 +219,12 @@ export const ImageForm = {
 
             <Popover>
               <PopoverTrigger asChild>
-                <Button type="button" variant="outline" size="icon">
+                <Button
+                  disabled={loading}
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                >
                   <Icons.add />
                 </Button>
               </PopoverTrigger>

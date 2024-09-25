@@ -104,11 +104,11 @@ export const FRAMES = [
       const scaleY = (n: number) =>
         Number(
           ((n / originalHeight) * newHeight + editor?.cropRect!?.y())?.toFixed(
-            2,
+            0,
           ),
         );
       const scaleW = (n: number) =>
-        Number(((n / originalWidth) * newWidth)?.toFixed(2));
+        Number(((n / originalWidth) * newWidth)?.toFixed(0));
 
       editor.addText({
         lang: "ar",
@@ -123,7 +123,7 @@ export const FRAMES = [
       });
       editor.addText({
         lang: "ar",
-        text: "إحجز وحدتك", // c?.["reservation"],
+        text: "إحجز", // c?.["reservation"],
         x: scaleX(847),
         y: scaleY(874),
         // width: 297,
@@ -178,11 +178,11 @@ export const FRAMES = [
       const scaleY = (n: number) =>
         Number(
           ((n / originalHeight) * newHeight + editor?.cropRect!?.y())?.toFixed(
-            2,
+            0,
           ),
         );
       const scaleW = (n: number) =>
-        Number(((n / originalWidth) * newWidth)?.toFixed(2));
+        Number(((n / originalWidth) * newWidth)?.toFixed(0));
 
       editor.addText({
         lang: "ar",
@@ -231,11 +231,11 @@ export const FRAMES = [
       const scaleY = (n: number) =>
         Number(
           ((n / originalHeight) * newHeight + editor?.cropRect!?.y())?.toFixed(
-            2,
+            0,
           ),
         );
       const scaleW = (n: number) =>
-        Number(((n / originalWidth) * newWidth)?.toFixed(2));
+        Number(((n / originalWidth) * newWidth)?.toFixed(0));
 
       editor.addText({
         lang: "ar",
@@ -285,11 +285,11 @@ export const FRAMES = [
       const scaleY = (n: number) =>
         Number(
           ((n / originalHeight) * newHeight + editor?.cropRect!?.y())?.toFixed(
-            2,
+            0,
           ),
         );
       const scaleW = (n: number) =>
-        Number(((n / originalWidth) * newWidth)?.toFixed(2));
+        Number(((n / originalWidth) * newWidth)?.toFixed(0));
 
       editor.addText({
         lang: "ar",
@@ -339,11 +339,11 @@ export const FRAMES = [
       const scaleY = (n: number) =>
         Number(
           ((n / originalHeight) * newHeight + editor?.cropRect!?.y())?.toFixed(
-            2,
+            0,
           ),
         );
       const scaleW = (n: number) =>
-        Number(((n / originalWidth) * newWidth)?.toFixed(2));
+        Number(((n / originalWidth) * newWidth)?.toFixed(0));
 
       editor.addText({
         lang: "ar",
@@ -358,7 +358,7 @@ export const FRAMES = [
       });
       editor.addText({
         lang: "ar",
-        text: "إحجز وحدتك", // c?.["reservation"],
+        text: "إحجز", // c?.["reservation"],
         x: scaleX(750),
         y: scaleY(925),
         // width: 297,

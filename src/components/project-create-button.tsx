@@ -8,9 +8,10 @@ import { PropertyForm } from "@/components/property-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
 import { propertyTypes } from "@/db/enums";
 import { useLocale } from "@/hooks/use-locale";
-import { clientAction } from "@/lib/utils";
+import { clientAction, fileToBase64 } from "@/lib/utils";
 import { User } from "@/types/db";
 import { Dictionary } from "@/types/locale";
 import { projectCreateFormSchema } from "@/validations/projects";
@@ -20,7 +21,6 @@ import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { Label } from "./ui/label";
 
 export type ProjectCreateButtonProps = { user: User } & Omit<
   DialogResponsiveProps,
@@ -53,7 +53,21 @@ export function ProjectCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof projectCreateFormSchema>) {
-    await clientAction(async () => await createProject(data), setLoading);
+    const base64 = data?.["pdf"]?.["file"]
+      ? (await fileToBase64(data?.["pdf"]?.["file"]))!?.toString()
+      : null;
+
+    await clientAction(
+      async () =>
+        await createProject({
+          ...data,
+          pdf: {
+            file: undefined,
+            base64: base64 ?? null,
+          },
+        }),
+      setLoading,
+    );
 
     toast.success(c?.["created successfully."]);
     setOpen(false);
@@ -61,6 +75,8 @@ export function ProjectCreateButton({
     router.refresh();
   }
 
+  // console.log(form.formState.errors);
+  // console.log(form.getValues());
   return (
     <DialogResponsive
       dic={dic}

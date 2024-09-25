@@ -67,7 +67,7 @@ export async function createProject({
     let url: string | null = null;
     let pdfUrl: string | null = null;
 
-    if (logo && !logo.includes("http")) {
+    if (logo && !logo.includes("https")) {
       console.log("uploading...");
       const img = await base64ToBuffer({ base64: logo });
       const r = await uploadIntoSpace({
@@ -79,21 +79,21 @@ export async function createProject({
       console.log("logo url: ", url);
     }
 
-    if (pdf && !pdf.includes("http")) {
-      const pdfBuffer = await base64ToBuffer({
-        type: "pdf",
-        base64: pdf,
-      });
-      const r = await uploadIntoSpace({
-        type: "pdf",
-        name: "projects",
-        body: pdfBuffer,
-      });
+    // if (pdf?.["base64"]) {
+    //   const pdfBuffer = await base64ToBuffer({
+    //     type: "pdf",
+    //     base64: pdf?.["base64"],
+    //   });
+    //   const r = await uploadIntoSpace({
+    //     type: "pdf",
+    //     name: "projects",
+    //     body: pdfBuffer,
+    //   });
 
-      if (!(typeof r === "string")) return { error: r?.["error"] };
-      if (!(typeof r === undefined)) pdfUrl = r;
-      console.log("pdf url: ", pdfUrl);
-    }
+    //   if (!(typeof r === "string")) return { error: r?.["error"] };
+    //   if (!(typeof r === undefined)) pdfUrl = r;
+    //   console.log("pdf url: ", pdfUrl);
+    // }
 
     await db.$transaction(async (tx) => {
       if (properties?.["length"]) {
@@ -109,7 +109,11 @@ export async function createProject({
       }
 
       await tx.project.create({
-        data: { ...project, logo: url, pdf: pdfUrl },
+        data: {
+          ...project,
+          logo: url,
+          //  pdf: pdfUrl
+        },
       });
     });
 

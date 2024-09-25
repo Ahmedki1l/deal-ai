@@ -45,8 +45,13 @@ export const projectCreateSchema = projectSchema.pick({
   platforms: true,
 });
 export const projectCreateFormSchema = projectCreateSchema
+  .omit({ pdf: true })
   .and(
     z.object({
+      pdf: z.object({
+        file: z.instanceof(File).optional(),
+        base64: z.string("base64").nullable().default(null),
+      }),
       map: z.string("map").optional(),
     }),
   )

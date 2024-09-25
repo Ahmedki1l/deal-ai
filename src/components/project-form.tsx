@@ -1,8 +1,11 @@
 "use client";
 
-import { uploadIntoSpace } from "@/actions/images";
 import { Icons } from "@/components/icons";
+import { Image } from "@/components/image";
+import { MapPicker } from "@/components/map";
+import { Tooltip } from "@/components/tooltip";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
   FormControl,
   FormDescription,
@@ -29,15 +32,13 @@ import {
   projectCreateFormSchema,
   projectUpdateFormSchema,
 } from "@/validations/projects";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
+import { extractImagesFromPdf } from "sinsintro-pdf-extractor";
 import { toast } from "sonner";
 import * as z from "zod";
-import { Image } from "./image";
-import { MapPicker } from "./map";
-import { Tooltip } from "./tooltip";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 
 export type ProjectFormProps = {
   loading: boolean;
@@ -137,28 +138,141 @@ export const ProjectForm = {
     form,
   }: ProjectFormProps) {
     const [confirmPdf, setConfirmPdf] = useState<boolean>(false);
+    const [loadingPdf, setLoadingPdf] = useState<boolean>(false);
 
     async function uploadPdf() {
-      if (!form?.getValues("pdf")) {
+      if (!form?.getValues("pdf.file")) {
         toast.error("first choose a pdf");
         return;
       }
-      const url = await clientAction(
-        async () =>
-          await uploadIntoSpace({
-            type: "pdf",
-            name: "projects",
-            body: form?.getValues("pdf")!,
-          }),
-        setConfirmPdf,
-      );
-      if (!url) return;
+      await clientAction(async () => {
+        const base64 = await extractImagesFromPdf(
+          form.getValues("pdf.file"),
+          600,
+          700,
+        );
 
-      form.setValue("pdf", url);
-      toast.success("pdf has been confirmed.");
-      setConfirmPdf(true);
+        const data: {
+          Title: string;
+          Description: string;
+          District: string;
+          City: string;
+          Country: string;
+          Land_Area: string;
+          Project_Assets: {
+            Asset_Type: "Apartment" | "Villa";
+            Title: string;
+            No_Of_Units: string;
+            Space: string;
+            Finishing: string;
+            Floors: string;
+            Rooms: string;
+            Bathrooms: string;
+            Livingrooms: string;
+          }[];
+        } = await axios
+          .post(process.env.NEXT_PUBLIC_AI_API! + "/ar/pdf-data-extractor", {
+            images: base64,
+          })
+          .then((r) => r?.["data"])
+          .catch((err) => {
+            console.error(
+              "ai pdf error: ",
+              err?.["response"]
+                ? err?.["response"]?.["data"]
+                : err?.["message"],
+            );
+          });
 
-      // TODO: send an http req, get data from AI, update form using form.setValue()
+        if (data?.["Title"] != "0") form.setValue("title", data?.["Title"]);
+        if (data?.["Description"] != "0")
+          form.setValue("description", data?.["Description"]);
+        if (data?.["District"] != "0")
+          form.setValue("distinct", data?.["District"]);
+        if (data?.["City"] != "0") form.setValue("city", data?.["City"]);
+        if (data?.["Country"] != "0")
+          form.setValue("country", data?.["Country"]);
+        if (data?.["Land_Area"] != "0")
+          form.setValue("spaces", data?.["Land_Area"]);
+
+        if (data?.["Project_Assets"]?.["length"]) {
+          // TODO: make sure type as validation
+          type FormProperty = Record<
+            keyof z.infer<
+              typeof projectCreateFormSchema
+            >["types"]["0"]["properties"]["0"],
+            any
+          >;
+
+          const formAprts = form
+            .getValues("types")
+            ?.filter((e) => e?.["value"] === "APARTMENT")
+            ?.map((e) => e?.["properties"])
+            ?.flat();
+          const formVillas = form
+            .getValues("types")
+            ?.filter((e) => e?.["value"] === "VILLA")
+            ?.map((e) => e?.["properties"])
+            ?.flat();
+
+          const aprts = data?.["Project_Assets"]
+            ?.filter((e) => e?.["Asset_Type"] === "Apartment")
+            ?.map(
+              (e) =>
+                ({
+                  projectId: "x",
+                  title: e?.["Title"] !== "0" ? e?.["Title"] : undefined,
+                  bathrooms:
+                    e?.["Bathrooms"] !== "0" ? e?.["Bathrooms"] : undefined,
+                  finishing:
+                    e?.["Finishing"] !== "0" ? e?.["Finishing"] : undefined,
+                  floors: e?.["Floors"] !== "0" ? e?.["Floors"] : undefined,
+                  livingrooms:
+                    e?.["Livingrooms"] !== "0" ? e?.["Livingrooms"] : undefined,
+                  units:
+                    e?.["No_Of_Units"] !== "0" ? e?.["No_Of_Units"] : undefined,
+                  rooms: e?.["Rooms"] !== "0" ? e?.["Rooms"] : undefined,
+                  space: e?.["Space"] !== "0" ? e?.["Space"] : undefined,
+                }) as FormProperty,
+            );
+
+          const villas = data?.["Project_Assets"]
+            ?.filter((e) => e?.["Asset_Type"] === "Villa")
+            ?.map(
+              (e) =>
+                ({
+                  projectId: "x",
+                  title: e?.["Title"] ?? undefined,
+                  bathrooms: e?.["Bathrooms"] ?? undefined,
+                  finishing: e?.["Finishing"] ?? undefined,
+                  floors: e?.["Floors"] ?? undefined,
+                  livingrooms: e?.["Livingrooms"] ?? undefined,
+                  units: e?.["No_Of_Units"] ?? undefined,
+                  rooms: e?.["Rooms"] ?? undefined,
+                  space: e?.["Space"] ?? undefined,
+                }) as FormProperty,
+            );
+
+          const allAprts = [...formAprts, ...aprts];
+          const allVillas = [...formVillas, ...villas];
+          if (allAprts?.["length"] && allVillas?.["length"])
+            form.setValue("types", [
+              { value: "APARTMENT", properties: allAprts },
+              { value: "VILLA", properties: allVillas },
+            ]);
+          else if (allAprts?.["length"])
+            form.setValue("types", [
+              { value: "APARTMENT", properties: allAprts },
+            ]);
+          else if (allVillas?.["length"])
+            form.setValue("types", [{ value: "VILLA", properties: allVillas }]);
+        }
+
+        console.log(data);
+      }, setLoadingPdf).then(() => {
+        toast.success("pdf has been confirmed.");
+        setConfirmPdf(true);
+      });
     }
 
     return (
@@ -179,38 +293,38 @@ export const ProjectForm = {
                     const file = e?.["target"]?.["files"]?.[0];
                     if (file) {
                       // field.onChange(file);
-
-                      const base64 = (await fileToBase64(file))?.toString();
-                      form.setValue("pdf", base64 ?? "");
+                      form.setValue("pdf.file", file);
                     }
                   }}
-                  disabled={loading || confirmPdf}
+                  disabled={loading || confirmPdf || loadingPdf}
                 />
-
-                {!!form.watch("pdf") ? (
-                  <>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => form.resetField("pdf")}
-                      disabled={loading || confirmPdf}
-                    >
-                      <Icons.x />
-                    </Button>
-                    <Button
-                      type="button"
-                      onClick={uploadPdf}
-                      disabled={loading || confirmPdf}
-                    >
-                      {c?.["fill fields using ai"]}
-                    </Button>
-                  </>
+                {!!form.watch("pdf.file") ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => form.resetField("pdf.file")}
+                    disabled={loading || confirmPdf || loadingPdf}
+                  >
+                    <Icons.x />
+                  </Button>
                 ) : null}
+                <Button
+                  type="button"
+                  onClick={uploadPdf}
+                  disabled={
+                    loading ||
+                    confirmPdf ||
+                    loadingPdf ||
+                    !form.watch("pdf.file")
+                  }
+                >
+                  {loadingPdf && <Icons.spinner />}
+                  {c?.["fill fields using ai"]}
+                </Button>
               </div>
             </FormControl>
             <FormDescription>
-              {" "}
               {c?.["after confirming a pdf, you can't choose another one."]}
             </FormDescription>
             <FormMessage />

@@ -239,7 +239,7 @@ export default {
               floors: "الطوابق",
               rooms: "الغرف",
               bathrooms: "الحمامات",
-              livingrooms: "غرفة المعيشة",
+              livingrooms: "غرف المعيشة",
               garden: "الحديقة",
               pool: "المسبح",
               view: "الإطلالة",
@@ -601,6 +601,7 @@ export default {
       "fill fields using ai": "ملئ الخانات بالـ AI",
       "after confirming a pdf, you can't choose another one.":
         "بعد التوثيق، لا يمكنك إختيار ملف آخر.",
+      "fields are filled using AI.": "تم ملئ الحقول تلقائيا.",
     },
     map: {
       label: "الخريطة",
@@ -686,7 +687,7 @@ export default {
     floors: { label: "الأدوار" },
     rooms: { label: "الغرف" },
     bathrooms: { label: "الحمامات" },
-    livingrooms: { "living rooms": "غرفة المعيشة" },
+    livingrooms: { "living rooms": "غرف المعيشة" },
     garden: { label: "الحديقة" },
     pool: { label: "المسبح" },
     view: { label: "الإطلالة" },

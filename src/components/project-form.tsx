@@ -270,7 +270,7 @@ export const ProjectForm = {
 
         console.log(data);
       }, setLoadingPdf).then(() => {
-        toast.success("pdf has been confirmed.");
+        toast.success(c?.["fields are filled using AI."]);
         setConfirmPdf(true);
       });
     }

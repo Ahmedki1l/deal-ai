@@ -597,6 +597,7 @@ export default {
       "fill fields using ai": "Fill fields using AI",
       "after confirming a pdf, you can't choose another one.":
         "after confirming a pdf, you can't choose another one.",
+      "fields are filled using AI.": "Fields are filled using AI.",
     },
     map: { label: "Map", "choose on map": "Choose on map" },
     description: {

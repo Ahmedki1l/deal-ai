@@ -70,7 +70,8 @@ export async function createCaseStudy({
         ", number of bathrooms " +
         property?.bathrooms +
         ", number of Reception rooms: " +
-        property?.receptions +
+        1 +
+        // property?.receptions +
         ", finishing:  " +
         property?.finishing +
         ", floors: " +

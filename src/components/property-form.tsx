@@ -95,6 +95,7 @@ export const PropertyForm = {
                   variant="outline"
                   size="icon"
                   onClick={() => remove(typeIndex)}
+                  disabled={loading}
                 >
                   <Icons.x />
                 </Button>

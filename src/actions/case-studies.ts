@@ -70,12 +70,12 @@ export async function createCaseStudy({
         ", number of bathrooms " +
         property?.bathrooms +
         ", number of Reception rooms: " +
-        1 +
-        // property?.receptions +
+        property?.livingrooms +
         ", finishing:  " +
         property?.finishing +
         ", floors: " +
         property?.floors;
+
       prompt.input += property?.garden
         ? ", includes number of gardens: " + property?.garden
         : "";

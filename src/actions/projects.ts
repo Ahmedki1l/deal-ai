@@ -67,7 +67,7 @@ export async function createProject({
     let url: string | null = null;
     let pdfUrl: string | null = null;
 
-    if (logo && !logo.includes("https")) {
+    if (logo) {
       console.log("uploading...");
       const img = await base64ToBuffer({ base64: logo });
       const r = await uploadIntoSpace({

@@ -135,12 +135,10 @@ export async function base64ToBuffer({
   //     .toBuffer();
   // }
 
-  return (
-    sharp(Buffer.from(r, "base64"))
-      // .resize({ width: 800 })
-      .png({ quality: 80 })
-      .toBuffer()
-  );
+  return sharp(Buffer.from(r, "base64"))
+    .resize({ width: 800 })
+    .png({ quality: 80 })
+    .toBuffer();
 }
 
 export async function regenerateImagePrompt({
@@ -235,32 +233,35 @@ export async function uploadIntoSpace({
   const { actions: c } = await getDictionary(locale);
 
   try {
-    const newBody =
-      typeof body === "string" && body?.includes("base64,")
-        ? await base64ToBuffer({
-            type,
-            base64: body,
-          })
-        : null;
+    // const newBody =
+    //   typeof body === "string" && body?.includes("base64,")
+    //     ? await base64ToBuffer({
+    //         type,
+    //         base64: body,
+    //       })
+    //     : null;
 
     const img = {
       Key: `imgs/${name ? `${name}_` : null}${Date.now()}`, // Unique key for the file
-      // ContentType: "image/png", // or 'image/jpeg', depending on the file type
+      ContentType: "image/png", // or 'image/jpeg', depending on the file type
     };
-    const pdf = {
-      Key: `pdfs/${name ? `${name}_` : null}${Date.now()}`,
-      // ContentType: "application/pdf",
-    };
+    // const pdf = {
+    //   Key: `pdfs/${name ? `${name}_` : null}${Date.now()}`,
+    //   // ContentType: "application/pdf",
+    // };
 
     // Set up S3 upload parameters
     const params: S3.PutObjectRequest = {
       ...{
         Bucket: process.env.DO_SPACE_BUCKET!,
-        Body: newBody ?? body,
+        Body:
+          //  newBody ??
+          body,
         // ContentEncoding: "base64", // Required when uploading Base64 data
         ACL: "public-read", // Make the file publicly accessible
       },
-      ...(type === "pdf" ? pdf : img),
+      ...// type === "pdf" ? pdf :
+      img,
     };
 
     await s3Client.upload(params).promise();

@@ -285,7 +285,7 @@ export function Day({
             >
               <Button
                 disabled={
-                  evt?.["postAt"] < new Date() ||
+                  // evt?.["postAt"] < new Date() ||
                   evt?.["status"] === "PUBLISHED"
                 }
                 className="relative justify-between gap-2 px-1 text-xs"

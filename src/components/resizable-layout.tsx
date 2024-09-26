@@ -10,7 +10,6 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
-import { useLocale } from "@/hooks/use-locale";
 import { clientAction, cn } from "@/lib/utils";
 import { NavItem } from "@/types";
 import { Dictionary } from "@/types/locale";
@@ -50,11 +49,9 @@ export function ResizableLayout({
   links,
   children,
   defaultLayout = [265, 440, 655],
-  defaultCollapsed = false,
+  defaultCollapsed = true,
   navCollapsedSize,
 }: ResizableLayoutProps) {
-  const lang = useLocale();
-  // const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(
     defaultCollapsed ?? false,

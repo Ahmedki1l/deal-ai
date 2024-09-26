@@ -284,6 +284,7 @@ export async function updatePost({
       data: {
         ...data,
         confirmedAt: confirm ? new Date() : null,
+        status: confirm ? "CONFIRMED" : "PENDING",
       },
       where: { id },
     });

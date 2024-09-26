@@ -19,9 +19,12 @@ export default async function Calender({ params: { lang } }: CalenderProps) {
       caseStudy: { include: { project: { include: { platforms: true } } } },
     },
     where: {
+      deletedAt: null,
       confirmedAt: { not: null },
       caseStudy: {
+        deletedAt: null,
         project: {
+          deletedAt: null,
           userId: user?.["id"],
         },
       },

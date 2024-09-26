@@ -48,7 +48,6 @@ async function generateImg(prompt: { prompt: string }) {
         err?.["response"] ? err?.["response"]?.["data"] : err?.["message"],
       );
     });
-  console.log(r);
   return r?.["data"]?.["data"]?.[0]?.url;
 }
 
@@ -182,8 +181,6 @@ export async function createPost({
         const adjusted_image = { prompt: adjusted_image_response?.prompt };
         const fetchPromise = generateImg(adjusted_image.prompt).then(
           async (imageResponse) => {
-            console.log("imageResponse: ", imageResponse);
-
             if (!imageResponse) return null;
 
             const fetchedImage = await fetchImage(imageResponse);
@@ -193,7 +190,6 @@ export async function createPost({
               name: "posts",
               body: bufferedImage,
             });
-            console.log("url: ", url);
 
             if (!url || (url && typeof url === "object" && "error" in url))
               return null;

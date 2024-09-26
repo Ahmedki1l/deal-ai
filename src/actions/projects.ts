@@ -21,7 +21,7 @@ export async function createProject({
   logo,
   pdf,
   types,
-  platforms: plattformArr,
+  platforms: platformArr,
   map,
   ...data
 }: z.infer<typeof projectCreateFormSchema>) {
@@ -45,13 +45,14 @@ export async function createProject({
       )
       .flat();
 
-    const platforms = plattformArr
+    const platforms = platformArr
       .map((t) => ({
         ...t,
         projectId: id,
         id: generateIdFromEntropySize(10),
         urn: t?.["urn"] ?? null,
         clientId: t?.["clientId"] ?? null,
+        refreshToken: t?.["refreshToken"] ?? null,
       }))
 
       .flat();

@@ -18,16 +18,15 @@ export const projectSchema = z.object(
     spaces: z.string("spaces"),
 
     propertyTypes: z.array(z.enum(propertyTypesArr)),
-    platforms: z
-      .array(
-        z.object({
-          value: z.enum(platformsArr),
-          clientId: z.string("client id").optional(),
-          urn: z.string("urn").optional(),
-        }),
-      )
-      .min(1, "choose one platform at least."),
-
+    platforms: z.array(
+      z.object({
+        value: z.enum(platformsArr),
+        clientId: z.string("client id").optional(),
+        refreshToken: z.string("refresh token").optional(),
+        urn: z.string("urn").optional(),
+      }),
+    ),
+    // .min(1, "choose one platform at least.")
     deletedAt: z.date("deletedAt").nullable(),
   },
 );

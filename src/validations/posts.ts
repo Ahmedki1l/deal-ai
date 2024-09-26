@@ -4,24 +4,26 @@ import {
   postContentLengthArr,
 } from "@/db/enums";
 import { z } from "@/lib/zod";
-import { Post } from "@prisma/client";
 
-export const postSchema = z.object<Record<keyof Omit<Post, "createdAt">, any>>({
-  id: z.string("id"),
-  caseStudyId: z.string("caseStudyId"),
-  imageId: z.string("imageId").optional().nullable(),
-  framedImageURL: z.stringNotRequired("framed-image").optional().nullable(),
-  title: z.string("title"),
-  content: z.string("content"),
-  noOfWeeks: z.string("no of weeks"),
-  campaignType: z.enum(postCampaignArr),
-  contentLength: z.enum(postContentLengthArr),
-  platform: z.enum(platformsArr),
-  postAt: z.date("post at"),
+export const postSchema = z.object(
+  // <Record<keyof Omit<Post, "createdAt">, any>>
+  {
+    id: z.string("id"),
+    caseStudyId: z.string("caseStudyId"),
+    imageId: z.string("imageId").optional().nullable(),
+    framedImageURL: z.stringNotRequired("framed-image").optional().nullable(),
+    title: z.string("title"),
+    content: z.string("content"),
+    noOfWeeks: z.string("no of weeks"),
+    campaignType: z.enum(postCampaignArr),
+    contentLength: z.enum(postContentLengthArr),
+    platform: z.enum(platformsArr),
+    postAt: z.date("post at"),
 
-  deletedAt: z.date("deletedAt").nullable(),
-  confirmedAt: z.date("confirmedAt").optional(),
-});
+    deletedAt: z.date("deletedAt").nullable(),
+    confirmedAt: z.date("confirmedAt").optional(),
+  },
+);
 
 export const postCreateSchema = postSchema.pick({
   caseStudyId: true,

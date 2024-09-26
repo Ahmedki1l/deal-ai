@@ -558,11 +558,19 @@ export const ProjectForm = {
 
                 if (event.data.type === "TWITTER_AUTH_SUCCESS") {
                   console.log("Twitter access token: ", event.data.accessToken);
+                  console.log(
+                    "Twitter access token: ",
+                    event.data.refreshToken,
+                  );
 
                   // Set the client ID in the form
                   form.setValue(
                     `platforms.${i}.clientId`,
                     event.data.accessToken,
+                  );
+                  form.setValue(
+                    `platforms.${i}.refreshToken`,
+                    event.data.refreshToken,
                   );
 
                   // Close the window after successful authentication
@@ -572,7 +580,10 @@ export const ProjectForm = {
                   window.removeEventListener("message", receiveMessage);
 
                   // Resolve the promise
-                  resolve({ clientId: event.data.accessToken });
+                  resolve({
+                    clientId: event.data.accessToken,
+                    refreshToken: event.data.refreshToken,
+                  });
                 }
               };
 

@@ -16,6 +16,7 @@ import { Fragment, useEffect, useState } from "react";
 import { DialogResponsive } from "./dialog";
 import { Icons } from "./icons";
 import { PostUpdateForm } from "./post-update-form";
+import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 
 export type SchedulerProps = {
@@ -283,9 +284,20 @@ export function Day({
               setOpen={setOpen}
             >
               <Button
-                disabled={evt?.["postAt"] < new Date()}
-                className="justify-between gap-2 px-1 text-xs"
+                disabled={
+                  evt?.["postAt"] < new Date() ||
+                  evt?.["status"] === "PUBLISHED"
+                }
+                className="relative justify-between gap-2 px-1 text-xs"
               >
+                <Badge
+                  variant={
+                    evt?.["status"] === "PUBLISHED" ? "highlight" : "secondary"
+                  }
+                  className="absolute left-0 top-0 -translate-x-1/2 -translate-y-full"
+                >
+                  {evt?.["status"]}
+                </Badge>
                 <div className="flex flex-col items-start">
                   <h6>{evt?.["caseStudy"]?.["project"]?.["title"]}</h6>
                   <p className="text-[9px] text-muted-foreground">

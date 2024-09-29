@@ -162,6 +162,43 @@ export function ImageEditor({
                   9:16
                 </ToggleGroupItem>
               </ToggleGroup>
+
+              {form.watch("editor.cropRect") ||
+              form.watch("editor.cropRect") ? (
+                <div className="flex items-center gap-1">
+                  <Input
+                    type="number"
+                    disabled={loading}
+                    defaultValue={Number(
+                      Number(
+                        form.watch("editor.cropRect")?.width() ?? 0,
+                      )?.toFixed(0),
+                    )}
+                    onChange={(e) =>
+                      form
+                        .watch("editor.cropRect")
+                        ?.width(Number(Number(e?.target?.value)?.toFixed(0)))
+                    }
+                    className="m-0 w-14 p-0"
+                  />
+                  <span>x</span>
+                  <Input
+                    type="number"
+                    disabled={loading}
+                    defaultValue={Number(
+                      Number(
+                        form.watch("editor.cropRect")!?.height()! ?? 0,
+                      )?.toFixed(0),
+                    )}
+                    onChange={(e) =>
+                      form
+                        .watch("editor.cropRect")
+                        ?.height(Number(Number(e?.target?.value)?.toFixed(0)))
+                    }
+                    className="m-0 w-14 p-0"
+                  />
+                </div>
+              ) : null}
             </div>
           </div>
 
@@ -215,6 +252,7 @@ export function ImageEditor({
                     <>
                       {[form.getValues("editor.cropRect")].map((node, i) => (
                         <ToggleGroupItem
+                          key={`rect-${i + 1}`}
                           value={`rect-${i + 1}`}
                           onClick={() => editor?.["current"]!.dragNode(node)}
                         >
@@ -229,6 +267,7 @@ export function ImageEditor({
                     <>
                       {[form.getValues("editor.photo")].map((node, i) => (
                         <ToggleGroupItem
+                          key={`photo-${i + 1}`}
                           value={`photo-${i + 1}`}
                           onClick={() => editor?.["current"]!.dragNode(node)}
                         >
@@ -243,6 +282,7 @@ export function ImageEditor({
                     <>
                       {[form.getValues("editor.frame")].map((node, i) => (
                         <ToggleGroupItem
+                          key={`frame-${i + 1}`}
                           value={`frame-${i + 1}`}
                           onClick={() => editor?.["current"]!.dragNode(node)}
                         >
@@ -256,6 +296,7 @@ export function ImageEditor({
                   {form.watch("editor.textNodes")
                     ? [...form.getValues("editor.textNodes")].map((node, i) => (
                         <ToggleGroupItem
+                          key={`text-${i + 1}`}
                           value={`text-${i + 1}`}
                           onClick={() => editor?.["current"]!.dragNode(node)}
                         >

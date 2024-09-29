@@ -31,6 +31,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { Label } from "./ui/label";
+import { Separator } from "./ui/separator";
 
 export type ImageEditorProps = {
   image: ImageType & {
@@ -79,6 +80,8 @@ export function ImageEditor({
       });
 
       const init = async () => {
+        form.setValue("editor.cropRect", editor?.["current"]!.cropRect!);
+
         const { photoNode } = await editor?.["current"]!.addPhoto({
           url: image?.["src"],
         });
@@ -201,6 +204,69 @@ export function ImageEditor({
 
         <div className="relative flex flex-1 flex-col">
           <div className="container absolute left-2 top-2 z-50 max-h-[100%] max-w-xs space-y-4 overflow-auto">
+            <Card className="space-y-1">
+              <CardHeader className="flex flex-row items-center justify-between p-0 px-2">
+                <CardTitle>Layers</CardTitle>
+              </CardHeader>
+
+              <CardContent className="p-2 pt-0">
+                <ToggleGroup type="single" className="flex-col">
+                  {form.watch("editor.cropRect") ? (
+                    <>
+                      {[form.getValues("editor.cropRect")].map((node, i) => (
+                        <ToggleGroupItem
+                          value={`rect-${i + 1}`}
+                          onClick={() => editor?.["current"]!.dragNode(node)}
+                        >
+                          Image Size
+                        </ToggleGroupItem>
+                      ))}
+                      <Separator className="my-2" />
+                    </>
+                  ) : null}
+
+                  {form.watch("editor.photo") ? (
+                    <>
+                      {[form.getValues("editor.photo")].map((node, i) => (
+                        <ToggleGroupItem
+                          value={`photo-${i + 1}`}
+                          onClick={() => editor?.["current"]!.dragNode(node)}
+                        >
+                          <Image src={form.getValues("src")} alt="" />
+                        </ToggleGroupItem>
+                      ))}
+
+                      <Separator className="my-2" />
+                    </>
+                  ) : null}
+                  {form.watch("editor.frame") ? (
+                    <>
+                      {[form.getValues("editor.frame")].map((node, i) => (
+                        <ToggleGroupItem
+                          value={`frame-${i + 1}`}
+                          onClick={() => editor?.["current"]!.dragNode(node)}
+                        >
+                          <Image src={form.getValues("filledFrame")!} alt="" />
+                        </ToggleGroupItem>
+                      ))}
+                      <Separator className="my-2" />
+                    </>
+                  ) : null}
+
+                  {form.watch("editor.textNodes")
+                    ? [...form.getValues("editor.textNodes")].map((node, i) => (
+                        <ToggleGroupItem
+                          value={`text-${i + 1}`}
+                          onClick={() => editor?.["current"]!.dragNode(node)}
+                        >
+                          {node?.text()}
+                        </ToggleGroupItem>
+                      ))
+                    : null}
+                </ToggleGroup>
+              </CardContent>
+            </Card>
+
             <Card className="space-y-1">
               <CardHeader className="flex flex-row items-center justify-between p-0 px-2">
                 <CardTitle>Photo</CardTitle>

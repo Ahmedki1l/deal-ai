@@ -50,15 +50,18 @@ export const ImageForm = {
           htmlFor="file"
           className={cn(buttonVariants({ variant: "outline", size: "icon" }))}
         >
-          <div>
-            <Tooltip text="new image">
-              <div>
-                <Button disabled={loading} variant="outline" size="icon">
-                  <Icons.add />
-                </Button>
-              </div>
-            </Tooltip>
-          </div>
+          <Tooltip text="new image">
+            <div>
+              <Button
+                type="button"
+                disabled={loading}
+                variant="outline"
+                size="icon"
+              >
+                <Icons.add />
+              </Button>
+            </div>
+          </Tooltip>
           {/* {c?.["height"]?.["height"]} */}
         </FormLabel>
 

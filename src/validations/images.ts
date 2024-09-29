@@ -36,6 +36,7 @@ export const imageUpdateFormSchema = imageUpdateSchema.and(
     }),
     filledFrame: z.string("filledFrame")?.nullable()?.default(null),
     editor: z.object({
+      cropRect: z.instanceof(Konva.Rect).nullable().default(null),
       photo: z.instanceof(Konva.Image).nullable().default(null),
       frame: z.instanceof(Konva.Image).nullable().default(null),
       textNodes: z.array(z.instanceof(Konva.Text)).default([]),

@@ -3,8 +3,6 @@ import { LocaleProps } from "@/types/locale";
 import Konva from "konva";
 import { ApplyFrameProps, FRAMES } from "./constants";
 
-type AcceptedFileTypes = string[];
-
 // { value: Konva.Image; editable: boolean }
 class PhotoEditor {
   public stage: Konva.Stage;
@@ -16,8 +14,6 @@ class PhotoEditor {
   public photo: Konva.Image | null = null;
   public frame: Konva.Image | null = null;
   public textNodes: Konva.Text[] = [];
-
-  // public isEditorEnabled: boolean = true;
 
   constructor({
     contents,
@@ -41,22 +37,18 @@ class PhotoEditor {
     this.initCropRect();
     this.reorderLayers();
 
-    this.stage.on("click", (e: Konva.KonvaEventObject<MouseEvent>) => {
-      // if (!this.isEditorEnabled) return;
+    // this.stage.on("click", (e: Konva.KonvaEventObject<MouseEvent>) => {
+    //   const target = e.target as Konva.Image | Konva.Text | Konva.Rect;
 
-      const target = e.target as Konva.Image | Konva.Text;
-
-      if (
-        // e.target === this.cropRect ||
-        e.target === this.photo ||
-        e.target === this.frame ||
-        this.textNodes.includes(target as Konva.Text)
-      )
-        this.transformer.nodes([target]);
-      else this.transformer.nodes([]);
-
-      this.layer.draw();
-    });
+    //   if (
+    //     target === this.cropRect ||
+    //     target === this.photo ||
+    //     target === this.frame ||
+    //     this.textNodes.includes(target as Konva.Text)
+    //   )
+    //     this.dragNode(target);
+    //   else this.transformer.nodes([]);
+    // });
   }
   private initCropRect() {
     const editorRatio = 1 / 1; // ratio: 1:1, 3:4, 9:16, full
@@ -70,27 +62,27 @@ class PhotoEditor {
       width: cropWidth,
       height: cropHeight,
       stroke: "black", // Border color
-      strokeWidth: 0.5,
+      strokeWidth: 2,
       dash: [4, 4], // Dashed line pattern [dash length, gap length]
       draggable: false,
     });
 
     // Limit movement to stay within stage bounds
-    // this.cropRect.on("dragmove", () => {
-    //   const rect = this.cropRect!;
-    //   const stageWidth = this.stage.width();
-    //   const stageHeight = this.stage.height();
+    this.cropRect.on("dragmove", () => {
+      const rect = this.cropRect!;
+      const stageWidth = this.stage.width();
+      const stageHeight = this.stage.height();
 
-    //   // Keep the crop rect within the bounds of the stage
-    //   if (rect.x() < 0) rect.x(0);
-    //   if (rect.y() < 0) rect.y(0);
+      // Keep the crop rect within the bounds of the stage
+      if (rect.x() < 0) rect.x(0);
+      if (rect.y() < 0) rect.y(0);
 
-    //   if (rect.x() + rect.width() > stageWidth)
-    //     rect.x(stageWidth - rect.width());
+      if (rect.x() + rect.width() > stageWidth)
+        rect.x(stageWidth - rect.width());
 
-    //   if (rect.y() + rect.height() > stageHeight)
-    //     rect.y(stageHeight - rect.height());
-    // });
+      if (rect.y() + rect.height() > stageHeight)
+        rect.y(stageHeight - rect.height());
+    });
 
     this.layer.add(this.cropRect);
     this.reorderLayers();
@@ -138,8 +130,7 @@ class PhotoEditor {
             y,
             width,
             height,
-            draggable: true,
-            // this.isEditorEnabled,
+            draggable: false,
           });
 
           if (this.photo) this.photo.destroy();
@@ -174,8 +165,7 @@ class PhotoEditor {
       image.onload = () => {
         const imageNode = new Konva.Image({
           image: image,
-          draggable: true,
-          // this.isEditorEnabled,
+          draggable: false,
         });
 
         const { x, y, width, height } = this.scaledDimentions({
@@ -222,8 +212,7 @@ class PhotoEditor {
             y: this.cropRect?.y(),
             width: this.cropRect?.width(),
             height: this.cropRect?.height(),
-            draggable: true,
-            // this.isEditorEnabled,
+            draggable: false,
             opacity: 1,
           });
 
@@ -303,7 +292,7 @@ class PhotoEditor {
       fontStyle: fontStyle ?? langCheck("bold", "normal"),
       strokeWidth: strokeWidth ?? langCheck(1, 0.5),
 
-      draggable: true,
+      draggable: false,
       ...props,
     });
 
@@ -353,26 +342,26 @@ class PhotoEditor {
     this.layer.draw();
   }
 
-  //   toggleEditorMode() {
-  // this.isEditorEnabled = !this.isEditorEnabled;
-  // [
-  //   this.photo,
-  //   this.frame,
-  //   // , ...this.textNodes
-  // ].forEach((node) => {
-  //   if (node) {
-  //     node.draggable(this.isEditorEnabled);
-  //   }
-  // });
+  dragNode(
+    node: any,
+    // Konva.Rect | Konva.Image | Konva.Text
+  ) {
+    // Disable dragging for all nodes
+    [this.cropRect, this.photo, this.frame, ...this.textNodes].forEach((n) => {
+      if (n === node) {
+        node?.draggable(true);
+        node?.listening(true);
+      } else {
+        n?.draggable(false);
+        n?.listening(false);
+      }
+    });
 
-  // if (!this.isEditorEnabled) {
-  //   this.transformer.nodes([]);
-  // }
+    this.transformer.nodes([node]);
 
-  // this.layer.draw();
-
-  // return this.isEditorEnabled;
-  //   }
+    // Redraw the layer
+    this.layer.draw();
+  }
 }
 
 export { PhotoEditor };

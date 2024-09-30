@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -144,7 +143,6 @@ export const ProjectForm = {
     loading,
     form,
   }: ProjectFormProps) {
-    const [confirmPdf, setConfirmPdf] = useState<boolean>(false);
     const [loadingPdf, setLoadingPdf] = useState<boolean>(false);
     const { append } = useFieldArray({
       name: "properties",
@@ -251,66 +249,71 @@ export const ProjectForm = {
         console.log(data);
       }, setLoadingPdf).then(() => {
         toast.success(c?.["fields are filled using AI."]);
-        setConfirmPdf(true);
       });
     }
 
     return (
-      <FormField
-        control={form?.["control"]}
-        name="pdf"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>{c?.["label"]}</FormLabel>
-            <FormControl>
-              <div className="flex items-center justify-center gap-2">
-                <Input
-                  type="file"
-                  accept="application/pdf"
-                  {...field}
-                  value={undefined}
-                  onChange={async (e) => {
-                    const file = e?.["target"]?.["files"]?.[0];
-                    if (file) {
-                      // field.onChange(file);
-                      form.setValue("pdf.file", file);
-                    }
-                  }}
-                  disabled={loading || confirmPdf || loadingPdf}
-                />
-                {!!form.watch("pdf.file") ? (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => form.resetField("pdf.file")}
-                    disabled={loading || confirmPdf || loadingPdf}
-                  >
-                    <Icons.x />
-                  </Button>
-                ) : null}
-                <Button
-                  type="button"
-                  onClick={uploadPdf}
-                  disabled={
-                    loading ||
-                    confirmPdf ||
-                    loadingPdf ||
-                    !form.watch("pdf.file")
-                  }
-                >
-                  {loadingPdf && <Icons.spinner />}
-                  {c?.["fill fields using ai"]}
-                </Button>
+      <div className="flex flex-col items-center gap-4">
+        <FormField
+          control={form?.["control"]}
+          name="pdf.file"
+          render={({ field }) => (
+            <FormItem>
+              <div className="relative flex aspect-square h-20 cursor-pointer items-center justify-center rounded-full border border-dashed p-0 transition-all hover:bg-gray-50">
+                <div>
+                  <Icons.file className="text-gray-500" />
+                  {form.getValues("pdf.file") && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      className="absolute -right-5 -top-5 h-6 w-6"
+                      disabled={loading || loadingPdf}
+                      onClick={() => form.resetField("pdf.file")}
+                    >
+                      <Icons.x />
+                    </Button>
+                  )}
+                </div>
+                <FormLabel className="sr-only">{c?.["label"]} </FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="file"
+                    accept="application/pdf"
+                    {...field}
+                    className="absolute h-full w-full cursor-pointer rounded-full p-0 opacity-0"
+                    disabled={loading || loadingPdf}
+                    value={undefined}
+                    onChange={async (e) => {
+                      form.resetField("pdf");
+                      const file = e?.["target"]?.["files"]?.[0];
+
+                      if (file) {
+                        // field.onChange(file);
+                        form.setValue("pdf.file", file);
+                      }
+                    }}
+                  />
+                </FormControl>
               </div>
-            </FormControl>
-            <FormDescription>
-              {c?.["after confirming a pdf, you can't choose another one."]}
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {form.watch("pdf.file") && (
+          <Button
+            type="button"
+            onClick={uploadPdf}
+            disabled={loading || loadingPdf}
+          >
+            {loadingPdf && <Icons.spinner />}
+            {c?.["fill fields using ai"]}
+          </Button>
         )}
-      />
+      </div>
     );
   },
 

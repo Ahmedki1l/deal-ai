@@ -91,7 +91,7 @@ export function ProjectCreateButton({
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
               <div className="space-y-2">
-                <div className="flex flex-col items-center justify-center gap-4">
+                <div className="flex items-start justify-center gap-10">
                   <ProjectForm.logo
                     dic={dic}
                     form={form as any}

@@ -12,6 +12,7 @@ import {
   Edit,
   ExternalLink,
   Facebook,
+  File,
   Globe,
   Home,
   Image,
@@ -95,6 +96,9 @@ export const Icons = {
   ),
   schedule: ({ className, ...props }: IconProps) => (
     <CalendarCheck2 className={cn(IconsVariants({}), className)} {...props} />
+  ),
+  file: ({ className, ...props }: IconProps) => (
+    <File className={cn(IconsVariants({}), className)} {...props} />
   ),
   scheduleCheck: ({ className, ...props }: IconProps) => (
     <CalendarCheck className={cn(IconsVariants({}), className)} {...props} />

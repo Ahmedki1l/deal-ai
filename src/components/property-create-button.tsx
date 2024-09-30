@@ -172,7 +172,7 @@ export const ApartmentForm = ({
             {form
               .watch("properties")
               ?.filter((e) => e?.["type"] === "APARTMENT")?.["length"] ? (
-              <Accordion type="single">
+              <Accordion type="single" collapsible>
                 {form.watch("properties")?.map((e, i) => {
                   if (e?.["type"] === "VILLA") return;
 
@@ -338,7 +338,7 @@ export const VillaForm = ({
             {form.watch("properties")?.filter((e) => e?.["type"] === "VILLA")?.[
               "length"
             ] ? (
-              <Accordion type="single">
+              <Accordion type="single" collapsible>
                 {form.watch("properties")?.map((e, i) => {
                   if (e?.["type"] === "APARTMENT") return;
 

@@ -178,6 +178,7 @@ export const ApartmentForm = ({
 
                   return (
                     <AccordionItem
+                      key={i}
                       value={`unit-${i}`}
                       className="last:border-none"
                     >
@@ -252,28 +253,6 @@ export const ApartmentForm = ({
                           form={form as any}
                           loading={loading}
                         />
-                        {/* {form.watch(`types.${i}.value`) === "VILLA" ? (
-            <>
-              <PropertyForm.garden
-                dic={dic}
-                 index={i}
-                 form={form as any}
-                loading={loading}
-              />
-              <PropertyForm.pool
-                dic={dic}
-                 index={i}
-                 form={form as any}
-                loading={loading}
-              />
-              <PropertyForm.view
-                dic={dic}
-                 index={i}
-                 form={form as any}
-                loading={loading}
-              />
-            </>
-          ) : null} */}
                       </AccordionContent>
                     </AccordionItem>
                   );
@@ -365,6 +344,7 @@ export const VillaForm = ({
 
                   return (
                     <AccordionItem
+                      key={i}
                       value={`unit-${i}`}
                       className="last:border-none"
                     >

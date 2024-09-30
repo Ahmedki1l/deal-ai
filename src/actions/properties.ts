@@ -26,20 +26,28 @@ export async function createProperty(
     if (!user) return { error: c?.["this action needs you to be logged in."] };
     // if (user?.["id"] != data?.["userId"]) throw new RequiresAccessError();
 
-    const properties = data.types
-      .map((t) =>
-        t.properties.map((p) => ({
-          ...p,
-          id: ID.generate(),
-          type: t?.["value"],
-          deletedAt: null,
-        })),
-      )
-      .flat();
+    const properties = data?.["properties"]?.map((p) => ({
+      ...p,
+      id: ID.generate(),
+      deletedAt: null,
+    }));
 
-    await db.property.createMany({
-      data: properties,
-    });
+    if (properties?.["length"]) {
+      const propertyTypes = Array.from(
+        new Set(properties.map((e) => e?.["type"])),
+      );
+
+      await db.$transaction(async (tx) => {
+        await tx.property.createMany({
+          data: properties,
+        });
+
+        await tx.project.update({
+          data: { propertyTypes: { push: [...propertyTypes] } },
+          where: { id: properties?.[0]?.["projectId"] },
+        });
+      });
+    }
 
     revalidatePath("/", "layout");
   } catch (error: any) {

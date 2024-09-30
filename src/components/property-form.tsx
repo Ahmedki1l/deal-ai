@@ -1,7 +1,5 @@
 "use client";
 
-import { Icons } from "@/components/icons";
-import { Button } from "@/components/ui/button";
 import {
   FormControl,
   FormField,
@@ -10,18 +8,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { propertyTypes } from "@/db/enums";
-import { useLocale } from "@/hooks/use-locale";
 import { Dictionary } from "@/types/locale";
 import { propertyCreateFormSchema } from "@/validations/properties";
-import { UseFieldArrayRemove, UseFormReturn } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import * as z from "zod";
 
 export type PropertyFormProps = {
@@ -36,87 +25,15 @@ export type PropertyFormProps = {
 } & Dictionary["property-form"];
 
 export const PropertyForm = {
-  type: function Component({
-    dic: { "property-form": c },
-    loading,
-    form,
-    typeIndex,
-    remove,
-  }: PropertyFormProps & {
-    typeIndex: number;
-    remove: UseFieldArrayRemove;
-  }) {
-    const lang = useLocale();
-    return (
-      <FormField
-        control={form.control}
-        name={`types.${typeIndex}.value`}
-        render={({ field }) => (
-          <FormItem>
-            <FormControl>
-              <div className="flex items-center justify-center gap-2">
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  disabled={loading}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        placeholder={c?.["type"]?.["select your property type"]}
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {propertyTypes(lang)?.map((e, i) => {
-                      // const Icon = Icons?.[e?.["icon"]] ?? null;
-                      return (
-                        <SelectItem
-                          key={i}
-                          value={e?.["value"]}
-                          disabled={
-                            !!form
-                              ?.getValues("types")
-                              ?.find((p) => p?.["value"] === e?.["value"])
-                          }
-                          className="flex items-center gap-2"
-                        >
-                          {/* {Icon && <Icon />}  */}
-
-                          {e?.["label"]}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={() => remove(typeIndex)}
-                  disabled={loading}
-                >
-                  <Icons.x />
-                </Button>
-              </div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    );
-  },
   title: ({
     dic: { "property-form": c },
     loading,
     form,
-    typeIndex,
-    propertyIndex,
-  }: PropertyFormProps & { typeIndex: number; propertyIndex: number }) => (
+    index,
+  }: PropertyFormProps & { index: number }) => (
     <FormField
       control={form.control}
-      name={`types.${typeIndex}.properties.${propertyIndex}.title`}
+      name={`properties.${index}.title`}
       render={({ field }) => (
         <FormItem>
           <FormLabel>{c?.["title"]?.["label"]}</FormLabel>
@@ -137,16 +54,15 @@ export const PropertyForm = {
     dic: { "property-form": c },
     loading,
     form,
-    typeIndex,
-    propertyIndex,
-  }: PropertyFormProps & { typeIndex: number; propertyIndex: number }) => (
+    index,
+  }: PropertyFormProps & { index: number }) => (
     <FormField
       control={form.control}
-      name={`types.${typeIndex}.properties.${propertyIndex}.units`}
+      name={`properties.${index}.units`}
       render={({ field }) => (
         <FormItem>
           <FormLabel>
-            {form.getValues("types")?.[typeIndex]?.["value"] === "VILLA"
+            {form.getValues("properties")?.[index]?.["type"] === "VILLA"
               ? c?.["units"]?.["no. of villas"]
               : c?.["units"]?.["units"]}
           </FormLabel>
@@ -162,12 +78,11 @@ export const PropertyForm = {
     dic: { "property-form": c },
     loading,
     form,
-    typeIndex,
-    propertyIndex,
-  }: PropertyFormProps & { typeIndex: number; propertyIndex: number }) => (
+    index,
+  }: PropertyFormProps & { index: number }) => (
     <FormField
       control={form.control}
-      name={`types.${typeIndex}.properties.${propertyIndex}.space`}
+      name={`properties.${index}.space`}
       render={({ field }) => (
         <FormItem>
           <FormLabel>{c?.["space"]?.["label"]}</FormLabel>
@@ -183,12 +98,11 @@ export const PropertyForm = {
     dic: { "property-form": c },
     loading,
     form,
-    typeIndex,
-    propertyIndex,
-  }: PropertyFormProps & { typeIndex: number; propertyIndex: number }) => (
+    index,
+  }: PropertyFormProps & { index: number }) => (
     <FormField
       control={form.control}
-      name={`types.${typeIndex}.properties.${propertyIndex}.finishing`}
+      name={`properties.${index}.finishing`}
       render={({ field }) => (
         <FormItem>
           <FormLabel>{c?.["finishing"]?.["label"]}</FormLabel>
@@ -204,12 +118,11 @@ export const PropertyForm = {
     dic: { "property-form": c },
     loading,
     form,
-    typeIndex,
-    propertyIndex,
-  }: PropertyFormProps & { typeIndex: number; propertyIndex: number }) => (
+    index,
+  }: PropertyFormProps & { index: number }) => (
     <FormField
       control={form.control}
-      name={`types.${typeIndex}.properties.${propertyIndex}.floors`}
+      name={`properties.${index}.floors`}
       render={({ field }) => (
         <FormItem>
           <FormLabel>{c?.["floors"]?.["label"]}</FormLabel>
@@ -225,12 +138,11 @@ export const PropertyForm = {
     dic: { "property-form": c },
     loading,
     form,
-    typeIndex,
-    propertyIndex,
-  }: PropertyFormProps & { typeIndex: number; propertyIndex: number }) => (
+    index,
+  }: PropertyFormProps & { index: number }) => (
     <FormField
       control={form.control}
-      name={`types.${typeIndex}.properties.${propertyIndex}.rooms`}
+      name={`properties.${index}.rooms`}
       render={({ field }) => (
         <FormItem>
           <FormLabel>{c?.["rooms"]?.["label"]}</FormLabel>
@@ -246,12 +158,11 @@ export const PropertyForm = {
     dic: { "property-form": c },
     loading,
     form,
-    typeIndex,
-    propertyIndex,
-  }: PropertyFormProps & { typeIndex: number; propertyIndex: number }) => (
+    index,
+  }: PropertyFormProps & { index: number }) => (
     <FormField
       control={form.control}
-      name={`types.${typeIndex}.properties.${propertyIndex}.bathrooms`}
+      name={`properties.${index}.bathrooms`}
       render={({ field }) => (
         <FormItem>
           <FormLabel>{c?.["bathrooms"]?.["label"]}</FormLabel>
@@ -267,12 +178,11 @@ export const PropertyForm = {
     dic: { "property-form": c },
     loading,
     form,
-    typeIndex,
-    propertyIndex,
-  }: PropertyFormProps & { typeIndex: number; propertyIndex: number }) => (
+    index,
+  }: PropertyFormProps & { index: number }) => (
     <FormField
       control={form.control}
-      name={`types.${typeIndex}.properties.${propertyIndex}.livingrooms`}
+      name={`properties.${index}.livingrooms`}
       render={({ field }) => (
         <FormItem>
           <FormLabel>{c?.["livingrooms"]?.["living rooms"]}</FormLabel>
@@ -288,12 +198,11 @@ export const PropertyForm = {
     dic: { "property-form": c },
     loading,
     form,
-    typeIndex,
-    propertyIndex,
-  }: PropertyFormProps & { typeIndex: number; propertyIndex: number }) => (
+    index,
+  }: PropertyFormProps & { index: number }) => (
     <FormField
       control={form.control}
-      name={`types.${typeIndex}.properties.${propertyIndex}.garden`}
+      name={`properties.${index}.garden`}
       render={({ field }) => (
         <FormItem>
           <FormLabel>{c?.["garden"]?.["label"]}</FormLabel>
@@ -309,12 +218,11 @@ export const PropertyForm = {
     dic: { "property-form": c },
     loading,
     form,
-    typeIndex,
-    propertyIndex,
-  }: PropertyFormProps & { typeIndex: number; propertyIndex: number }) => (
+    index,
+  }: PropertyFormProps & { index: number }) => (
     <FormField
       control={form.control}
-      name={`types.${typeIndex}.properties.${propertyIndex}.pool`}
+      name={`properties.${index}.pool`}
       render={({ field }) => (
         <FormItem>
           <FormLabel>{c?.["pool"]?.["label"]}</FormLabel>
@@ -330,12 +238,11 @@ export const PropertyForm = {
     dic: { "property-form": c },
     loading,
     form,
-    typeIndex,
-    propertyIndex,
-  }: PropertyFormProps & { typeIndex: number; propertyIndex: number }) => (
+    index,
+  }: PropertyFormProps & { index: number }) => (
     <FormField
       control={form.control}
-      name={`types.${typeIndex}.properties.${propertyIndex}.view`}
+      name={`properties.${index}.view`}
       render={({ field }) => (
         <FormItem>
           <FormLabel>{c?.["view"]?.["label"]}</FormLabel>

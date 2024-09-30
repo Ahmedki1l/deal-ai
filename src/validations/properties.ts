@@ -41,12 +41,7 @@ export const propertyCreateSchema = propertySchema.pick({
 });
 
 export const propertyCreateFormSchema = z.object({
-  types: z.array(
-    z.object({
-      value: z.enum(propertyTypesArr),
-      properties: z.array(propertyCreateSchema.omit({ type: true })),
-    }),
-  ),
+  properties: z.array(propertyCreateSchema),
 });
 
 export const propertyUpdateSchema = propertySchema.omit({

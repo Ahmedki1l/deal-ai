@@ -77,7 +77,7 @@ export default async function DashboardLayout({
       dic={dic}
       user={user}
       defaultLayout={layout ? JSON.parse(layout) : undefined}
-      defaultCollapsed={collapsed ? JSON.parse(collapsed) : undefined}
+      // defaultCollapsed={collapsed ? JSON.parse(collapsed) : undefined}
       navCollapsedSize={4}
       links={c?.["main-nav"]}
     >

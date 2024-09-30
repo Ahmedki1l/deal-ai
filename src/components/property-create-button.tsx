@@ -3,11 +3,10 @@
 import { createProperty } from "@/actions/properties";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
 import { Icons } from "@/components/icons";
-import { PropertyForm } from "@/components/property-form";
+import { PropertyForm, PropertyFormProps } from "@/components/property-form";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import { propertyTypes } from "@/db/enums";
 import { useLocale } from "@/hooks/use-locale";
 import { clientAction } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
@@ -19,7 +18,14 @@ import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { Label } from "./ui/label";
+import { EmptyPlaceholder } from "./empty-placeholder";
+import { Tooltip } from "./tooltip";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./ui/accordion";
 
 export type PropertyCreateButtonProps = { project: Pick<Project, "id"> } & Omit<
   DialogResponsiveProps,
@@ -41,12 +47,8 @@ export function PropertyCreateButton({
   const [open, setOpen] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof propertyCreateFormSchema>>({
+    mode: "onChange",
     resolver: zodResolver(propertyCreateFormSchema),
-  });
-
-  const { fields, remove, append } = useFieldArray({
-    name: "types",
-    control: form?.["control"],
   });
 
   async function onSubmit(data: z.infer<typeof propertyCreateFormSchema>) {
@@ -57,7 +59,7 @@ export function PropertyCreateButton({
     form.reset();
     router.refresh();
   }
-
+  console.log(form.formState.errors);
   return (
     <DialogResponsive
       dic={dic}
@@ -78,190 +80,25 @@ export function PropertyCreateButton({
         <>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-              <div className="flex items-center justify-between gap-2">
-                <Label>{c?.["type of assets"]}</Label>
-                <Button
-                  type="button"
-                  size="icon"
-                  onClick={() =>
-                    // @ts-ignore
-                    append({
-                      properties: [],
-                    })
-                  }
-                  disabled={
-                    fields?.["length"] === propertyTypes?.["length"]
-                    // ||
-                    // (limit ? fields?.["length"] == 4 : false)
-                  }
-                >
-                  <Icons.add />
-                </Button>
-              </div>
+              <Card>
+                <CardContent className="py-4">
+                  <Accordion type="single" collapsible>
+                    <ApartmentForm
+                      dic={dic}
+                      form={form as any}
+                      loading={loading}
+                      project={project}
+                    />
 
-              {fields?.map((field, i) => (
-                <Card key={i}>
-                  <CardHeader>
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="w-full">
-                        <PropertyForm.type
-                          dic={dic}
-                          typeIndex={i}
-                          remove={remove}
-                          form={form as any}
-                          loading={loading}
-                        />
-                      </div>
-
-                      {form.watch(`types.${i}.value`) && (
-                        <Button
-                          type="button"
-                          size="icon"
-                          onClick={() =>
-                            form.setValue(`types.${i}.properties`, [
-                              // @ts-ignore
-                              ...form.getValues(`types.${i}.properties`),
-                              // @ts-ignore
-                              { projectId: project?.["id"] },
-                            ])
-                          }
-                        >
-                          <Icons.add />
-                        </Button>
-                      )}
-                    </div>
-                  </CardHeader>
-
-                  {form.watch(`types.${i}.properties`)?.["length"] ? (
-                    <CardContent className="space-y-4">
-                      {form.getValues(`types.${i}.properties`)?.map((_, j) => (
-                        <Card key={j} className="border-green-500">
-                          <CardHeader>
-                            <div className="flex items-center justify-between gap-2">
-                              <CardTitle>
-                                {c?.["unit"]} {j + 1}
-                              </CardTitle>
-
-                              <Button
-                                type="button"
-                                size="icon"
-                                onClick={() =>
-                                  form.setValue(
-                                    `types.${i}.properties`,
-                                    form
-                                      .getValues(`types.${i}.properties`)
-                                      ?.filter((_, k) => k != j) ?? [],
-                                  )
-                                }
-                              >
-                                <Icons.x />
-                              </Button>
-                            </div>
-                          </CardHeader>
-
-                          <CardContent className="grid grid-cols-3 gap-2">
-                            <PropertyForm.title
-                              dic={dic}
-                              typeIndex={i}
-                              propertyIndex={j}
-                              form={form as any}
-                              loading={loading}
-                            />
-                            <PropertyForm.units
-                              dic={dic}
-                              typeIndex={i}
-                              propertyIndex={j}
-                              form={form as any}
-                              loading={loading}
-                            />
-                            <PropertyForm.space
-                              dic={dic}
-                              typeIndex={i}
-                              propertyIndex={j}
-                              form={form as any}
-                              loading={loading}
-                            />
-                            <PropertyForm.finishing
-                              dic={dic}
-                              typeIndex={i}
-                              propertyIndex={j}
-                              form={form as any}
-                              loading={loading}
-                            />
-                            <PropertyForm.floors
-                              dic={dic}
-                              typeIndex={i}
-                              propertyIndex={j}
-                              form={form as any}
-                              loading={loading}
-                            />
-                            <PropertyForm.rooms
-                              dic={dic}
-                              typeIndex={i}
-                              propertyIndex={j}
-                              form={form as any}
-                              loading={loading}
-                            />
-                            <PropertyForm.bathrooms
-                              dic={dic}
-                              typeIndex={i}
-                              propertyIndex={j}
-                              form={form as any}
-                              loading={loading}
-                            />
-                            <PropertyForm.livingrooms
-                              dic={dic}
-                              typeIndex={i}
-                              propertyIndex={j}
-                              form={form as any}
-                              loading={loading}
-                            />
-                            {form.watch(`types.${i}.value`) === "VILLA" ? (
-                              <>
-                                <PropertyForm.garden
-                                  dic={dic}
-                                  typeIndex={i}
-                                  propertyIndex={j}
-                                  form={form as any}
-                                  loading={loading}
-                                />
-                                <PropertyForm.pool
-                                  dic={dic}
-                                  typeIndex={i}
-                                  propertyIndex={j}
-                                  form={form as any}
-                                  loading={loading}
-                                />
-                                <PropertyForm.view
-                                  dic={dic}
-                                  typeIndex={i}
-                                  propertyIndex={j}
-                                  form={form as any}
-                                  loading={loading}
-                                />
-                              </>
-                            ) : null}
-                          </CardContent>
-                          {/* <CardFooter>
-                            <Button
-                              type='button'
-                              size="icon"
-                              onClick={() => {
-                                // @ts-ignore
-                                field["properties"] =
-                                  field?.properties?.filter((_, i) => i != j) ??
-                                  [];
-                              }}
-                            >
-                              <Icons.x />
-                            </Button>
-                          </CardFooter> */}
-                        </Card>
-                      ))}
-                    </CardContent>
-                  ) : null}
-                </Card>
-              ))}
+                    <VillaForm
+                      dic={dic}
+                      form={form as any}
+                      loading={loading}
+                      project={project}
+                    />
+                  </Accordion>
+                </CardContent>
+              </Card>
             </form>
           </Form>
         </>
@@ -278,3 +115,373 @@ export function PropertyCreateButton({
     />
   );
 }
+
+export const ApartmentForm = ({
+  dic,
+  form,
+  loading,
+  project,
+}: PropertyFormProps & { project: Pick<Project, "id"> }) => {
+  const { remove, append } = useFieldArray({
+    name: "properties",
+    control: form?.["control"],
+  });
+
+  return (
+    <AccordionItem value="APARTMENT">
+      <div className="flex items-center gap-2">
+        <AccordionTrigger>
+          <p className="items-center justify-start">
+            Apartments{" "}
+            {form
+              .watch("properties")
+              ?.filter((e) => e?.["type"] === "APARTMENT")?.["length"] ? (
+              <span className="text-sm text-muted-foreground">
+                -{" "}
+                {
+                  form
+                    .watch("properties")
+                    ?.filter((e) => e?.["type"] === "APARTMENT")?.["length"]
+                }{" "}
+                unit(s)
+              </span>
+            ) : null}
+          </p>
+        </AccordionTrigger>
+        <Tooltip text="new apartment">
+          <div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              disabled={loading}
+              onClick={() =>
+                // @ts-ignore
+                append({ projectId: project?.["id"], type: "APARTMENT" })
+              }
+            >
+              <Icons.add />
+            </Button>
+          </div>
+        </Tooltip>
+      </div>
+
+      <AccordionContent>
+        <Card>
+          <CardContent>
+            {form
+              .watch("properties")
+              ?.filter((e) => e?.["type"] === "APARTMENT")?.["length"] ? (
+              <Accordion type="single">
+                {form.watch("properties")?.map((e, i) => {
+                  if (e?.["type"] === "VILLA") return;
+
+                  return (
+                    <AccordionItem
+                      value={`unit-${i}`}
+                      className="last:border-none"
+                    >
+                      <div className="flex items-center gap-2">
+                        <AccordionTrigger>
+                          {e?.["title"] ?? "untitled unit"}
+                        </AccordionTrigger>
+
+                        <Tooltip
+                          text={`remove ${e?.["title"] ?? "untitled unit"}}`}
+                        >
+                          <div>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              disabled={loading}
+                              onClick={() => remove(i)}
+                            >
+                              <Icons.x />
+                            </Button>
+                          </div>
+                        </Tooltip>
+                      </div>
+                      <AccordionContent className="grid grid-cols-3 gap-4">
+                        <PropertyForm.title
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+                        <PropertyForm.units
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+                        <PropertyForm.space
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+                        <PropertyForm.finishing
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+                        <PropertyForm.floors
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+                        <PropertyForm.rooms
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+                        <PropertyForm.bathrooms
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+
+                        <PropertyForm.livingrooms
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+                        {/* {form.watch(`types.${i}.value`) === "VILLA" ? (
+            <>
+              <PropertyForm.garden
+                dic={dic}
+                 index={i}
+                 form={form as any}
+                loading={loading}
+              />
+              <PropertyForm.pool
+                dic={dic}
+                 index={i}
+                 form={form as any}
+                loading={loading}
+              />
+              <PropertyForm.view
+                dic={dic}
+                 index={i}
+                 form={form as any}
+                loading={loading}
+              />
+            </>
+          ) : null} */}
+                      </AccordionContent>
+                    </AccordionItem>
+                  );
+                })}
+              </Accordion>
+            ) : (
+              <EmptyPlaceholder className="border-none">
+                <EmptyPlaceholder.Icon name="empty" />
+                <EmptyPlaceholder.Title>no apartment</EmptyPlaceholder.Title>
+
+                <Button
+                  type="button"
+                  disabled={loading}
+                  onClick={() =>
+                    // @ts-ignore
+                    append({ projectId: project?.["id"], type: "APARTMENT" })
+                  }
+                >
+                  <Icons.add /> create new apartment
+                </Button>
+              </EmptyPlaceholder>
+            )}
+          </CardContent>
+        </Card>
+      </AccordionContent>
+    </AccordionItem>
+  );
+};
+
+export const VillaForm = ({
+  dic,
+  form,
+  loading,
+  project,
+}: PropertyFormProps & { project: Pick<Project, "id"> }) => {
+  const { remove, append } = useFieldArray({
+    name: "properties",
+    control: form?.["control"],
+  });
+
+  return (
+    <AccordionItem value="VILLA" className="last:border-none">
+      <div className="flex items-center gap-2">
+        <AccordionTrigger>
+          <p className="items-center justify-start">
+            Villas{" "}
+            {form.watch("properties")?.filter((e) => e?.["type"] === "VILLA")?.[
+              "length"
+            ] ? (
+              <span className="text-sm text-muted-foreground">
+                -{" "}
+                {
+                  form
+                    .watch("properties")
+                    ?.filter((e) => e?.["type"] === "VILLA")?.["length"]
+                }{" "}
+                unit(s)
+              </span>
+            ) : null}
+          </p>
+        </AccordionTrigger>
+        <Tooltip text="new villa">
+          <div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              disabled={loading}
+              onClick={() =>
+                // @ts-ignore
+                append({ projectId: project?.["id"], type: "VILLA" })
+              }
+            >
+              <Icons.add />
+            </Button>
+          </div>
+        </Tooltip>
+      </div>
+
+      <AccordionContent>
+        <Card>
+          <CardContent>
+            {form.watch("properties")?.filter((e) => e?.["type"] === "VILLA")?.[
+              "length"
+            ] ? (
+              <Accordion type="single">
+                {form.watch("properties")?.map((e, i) => {
+                  if (e?.["type"] === "APARTMENT") return;
+
+                  return (
+                    <AccordionItem
+                      value={`unit-${i}`}
+                      className="last:border-none"
+                    >
+                      <div className="flex items-center gap-2">
+                        <AccordionTrigger>
+                          {e?.["title"] ?? "untitled unit"}
+                        </AccordionTrigger>
+
+                        <Tooltip
+                          text={`remove ${e?.["title"] ?? "untitled unit"}`}
+                        >
+                          <div>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              disabled={loading}
+                              onClick={() => remove(i)}
+                            >
+                              <Icons.x />
+                            </Button>
+                          </div>
+                        </Tooltip>
+                      </div>
+                      <AccordionContent className="grid grid-cols-3 gap-4">
+                        <PropertyForm.title
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+                        <PropertyForm.units
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+                        <PropertyForm.space
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+                        <PropertyForm.finishing
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+                        <PropertyForm.floors
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+                        <PropertyForm.rooms
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+                        <PropertyForm.bathrooms
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+
+                        <PropertyForm.livingrooms
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+                        <PropertyForm.garden
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+                        <PropertyForm.pool
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+                        <PropertyForm.view
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
+                      </AccordionContent>
+                    </AccordionItem>
+                  );
+                })}
+              </Accordion>
+            ) : (
+              <EmptyPlaceholder className="border-none">
+                <EmptyPlaceholder.Icon name="empty" />
+                <EmptyPlaceholder.Title>no villa</EmptyPlaceholder.Title>
+
+                <Button
+                  type="button"
+                  disabled={loading}
+                  onClick={() =>
+                    // @ts-ignore
+                    append({ projectId: project?.["id"], type: "VILLA" })
+                  }
+                >
+                  <Icons.add /> create new villa
+                </Button>
+              </EmptyPlaceholder>
+            )}
+          </CardContent>
+        </Card>
+      </AccordionContent>
+    </AccordionItem>
+  );
+};

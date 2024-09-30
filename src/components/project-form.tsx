@@ -39,6 +39,7 @@ import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { extractImagesFromPdf } from "sinsintro-pdf-extractor";
 import { toast } from "sonner";
 import * as z from "zod";
+import { Card, CardContent, CardHeader } from "./ui/card";
 
 export type ProjectFormProps = {
   loading: boolean;
@@ -83,14 +84,39 @@ export const ProjectForm = {
       name="logo"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{c?.["label"]}</FormLabel>
+          <div className="relative flex aspect-square h-20 cursor-pointer items-center justify-center rounded-full border border-dashed p-0 transition-all hover:bg-gray-50">
+            <div className="relative">
+              {form.getValues("logo") ? (
+                <>
+                  <Image
+                    src={form.getValues("logo")!}
+                    alt=""
+                    className="h-full w-full rounded-full"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="absolute -right-5 -top-5 h-6 w-6"
+                    disabled={loading}
+                    onClick={() => form.resetField("logo")}
+                  >
+                    <Icons.x />
+                  </Button>
+                </>
+              ) : (
+                <Icons.image className="text-gray-500" />
+              )}
+            </div>
 
-          <FormControl>
-            <div className="flex items-center justify-center gap-2">
+            <FormLabel className="sr-only">{c?.["label"]} </FormLabel>
+            <FormControl>
               <Input
-                type="file"
-                accept="image/png, image/jpeg, image/jpg"
                 {...field}
+                type="file"
+                accept="image/*"
+                className="absolute h-full w-full cursor-pointer rounded-full p-0 opacity-0"
+                disabled={loading}
                 value={undefined}
                 onChange={async (e) => {
                   form.resetField("logo");
@@ -102,29 +128,10 @@ export const ProjectForm = {
                     form.setValue("logo", base64 ?? "");
                   }
                 }}
-                disabled={loading}
               />
-              {!!form.watch("logo") ? (
-                <>
-                  <Image
-                    src={form.getValues("logo")!}
-                    alt=""
-                    className="h-8 w-8"
-                  />
+            </FormControl>
+          </div>
 
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => form.resetField("logo")}
-                    disabled={loading}
-                  >
-                    <Icons.x />
-                  </Button>
-                </>
-              ) : null}
-            </div>
-          </FormControl>
           <FormMessage />
         </FormItem>
       )}
@@ -139,6 +146,10 @@ export const ProjectForm = {
   }: ProjectFormProps) {
     const [confirmPdf, setConfirmPdf] = useState<boolean>(false);
     const [loadingPdf, setLoadingPdf] = useState<boolean>(false);
+    const { append } = useFieldArray({
+      name: "properties",
+      control: form?.["control"],
+    });
 
     async function uploadPdf() {
       if (!form?.getValues("pdf.file")) {
@@ -196,76 +207,45 @@ export const ProjectForm = {
           form.setValue("spaces", data?.["Land_Area"]);
 
         if (data?.["Project_Assets"]?.["length"]) {
-          // TODO: make sure type as validation
-          type FormProperty = Record<
-            keyof z.infer<
-              typeof projectCreateFormSchema
-            >["types"]["0"]["properties"]["0"],
-            any
-          >;
+          const aprts = data?.["Project_Assets"]?.filter(
+            (e) => e?.["Asset_Type"] === "Apartment",
+          );
 
-          const formAprts = form
-            .getValues("types")
-            ?.filter((e) => e?.["value"] === "APARTMENT")
-            ?.map((e) => e?.["properties"])
-            ?.flat();
-          const formVillas = form
-            .getValues("types")
-            ?.filter((e) => e?.["value"] === "VILLA")
-            ?.map((e) => e?.["properties"])
-            ?.flat();
+          const villas = data?.["Project_Assets"]?.filter(
+            (e) => e?.["Asset_Type"] === "Villa",
+          );
 
-          const aprts = data?.["Project_Assets"]
-            ?.filter((e) => e?.["Asset_Type"] === "Apartment")
-            ?.map(
-              (e) =>
-                ({
-                  projectId: "x",
-                  title: e?.["Title"] !== "0" ? e?.["Title"] : undefined,
-                  bathrooms:
-                    e?.["Bathrooms"] !== "0" ? e?.["Bathrooms"] : undefined,
-                  finishing:
-                    e?.["Finishing"] !== "0" ? e?.["Finishing"] : undefined,
-                  floors: e?.["Floors"] !== "0" ? e?.["Floors"] : undefined,
-                  livingrooms:
-                    e?.["Livingrooms"] !== "0" ? e?.["Livingrooms"] : undefined,
-                  units:
-                    e?.["No_Of_Units"] !== "0" ? e?.["No_Of_Units"] : undefined,
-                  rooms: e?.["Rooms"] !== "0" ? e?.["Rooms"] : undefined,
-                  space: e?.["Space"] !== "0" ? e?.["Space"] : undefined,
-                }) as FormProperty,
+          if (villas?.["length"])
+            append(
+              villas?.map((e) => ({
+                type: "VILLA",
+                projectId: "x",
+                title: e?.["Title"] ?? undefined,
+                bathrooms: e?.["Bathrooms"] ?? undefined,
+                finishing: e?.["Finishing"] ?? undefined,
+                floors: e?.["Floors"] ?? undefined,
+                livingrooms: e?.["Livingrooms"] ?? undefined,
+                units: e?.["No_Of_Units"] ?? undefined,
+                rooms: e?.["Rooms"] ?? undefined,
+                space: e?.["Space"] ?? undefined,
+              })),
             );
 
-          const villas = data?.["Project_Assets"]
-            ?.filter((e) => e?.["Asset_Type"] === "Villa")
-            ?.map(
-              (e) =>
-                ({
-                  projectId: "x",
-                  title: e?.["Title"] ?? undefined,
-                  bathrooms: e?.["Bathrooms"] ?? undefined,
-                  finishing: e?.["Finishing"] ?? undefined,
-                  floors: e?.["Floors"] ?? undefined,
-                  livingrooms: e?.["Livingrooms"] ?? undefined,
-                  units: e?.["No_Of_Units"] ?? undefined,
-                  rooms: e?.["Rooms"] ?? undefined,
-                  space: e?.["Space"] ?? undefined,
-                }) as FormProperty,
+          if (aprts?.["length"])
+            append(
+              aprts?.map((e) => ({
+                type: "APARTMENT",
+                projectId: "x",
+                title: e?.["Title"] ?? undefined,
+                bathrooms: e?.["Bathrooms"] ?? undefined,
+                finishing: e?.["Finishing"] ?? undefined,
+                floors: e?.["Floors"] ?? undefined,
+                livingrooms: e?.["Livingrooms"] ?? undefined,
+                units: e?.["No_Of_Units"] ?? undefined,
+                rooms: e?.["Rooms"] ?? undefined,
+                space: e?.["Space"] ?? undefined,
+              })),
             );
-
-          const allAprts = [...formAprts, ...aprts];
-          const allVillas = [...formVillas, ...villas];
-          if (allAprts?.["length"] && allVillas?.["length"])
-            form.setValue("types", [
-              { value: "APARTMENT", properties: allAprts },
-              { value: "VILLA", properties: allVillas },
-            ]);
-          else if (allAprts?.["length"])
-            form.setValue("types", [
-              { value: "APARTMENT", properties: allAprts },
-            ]);
-          else if (allVillas?.["length"])
-            form.setValue("types", [{ value: "VILLA", properties: allVillas }]);
         }
 
         console.log(data);
@@ -672,22 +652,24 @@ export const ProjectForm = {
     }
 
     return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-between gap-4">
-          <FormLabel>{c?.["label"]}</FormLabel>
-          <Button
-            // type="button"
-            size="icon"
-            // @ts-ignore
-            onClick={() => append({})}
-            disabled={limit ? fields?.["length"] == limit : loading}
-          >
-            <Icons.add />
-          </Button>
-        </div>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between gap-4">
+            <FormLabel>{c?.["label"]}</FormLabel>
+            <Button
+              type="button"
+              size="icon"
+              // @ts-ignore
+              onClick={() => append({})}
+              disabled={limit ? fields?.["length"] == limit : loading}
+            >
+              <Icons.add />
+            </Button>
+          </div>
+        </CardHeader>
 
         {fields.map((field, i) => (
-          <div key={i} className="flex items-start gap-2">
+          <CardContent key={i} className="flex items-start gap-2">
             <FormField
               control={form.control}
               name={`platforms.${i}.value`}
@@ -764,9 +746,9 @@ export const ProjectForm = {
             >
               <Icons.x />
             </Button>
-          </div>
+          </CardContent>
         ))}
-      </div>
+      </Card>
     );
   },
 };

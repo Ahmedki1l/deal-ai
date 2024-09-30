@@ -20,7 +20,7 @@ import { base64ToBuffer, uploadIntoSpace } from "./images";
 export async function createProject({
   logo,
   pdf,
-  types,
+  properties: propertiesArr,
   platforms: platformArr,
   map,
   ...data
@@ -33,17 +33,12 @@ export async function createProject({
     if (!user) return { error: c?.["this action needs you to be logged in."] };
 
     const id = ID.generate();
-    const properties = types
-      .map((t) =>
-        t.properties.map(({ projectId, ...p }) => ({
-          ...p,
-          projectId: id,
-          id: generateIdFromEntropySize(10),
-          type: t?.["value"],
-          deletedAt: null,
-        })),
-      )
-      .flat();
+    const properties = propertiesArr.map(({ projectId, ...p }) => ({
+      ...p,
+      projectId: id,
+      id: generateIdFromEntropySize(10),
+      deletedAt: null,
+    }));
 
     const platforms = platformArr
       .map((t) => ({
@@ -54,14 +49,17 @@ export async function createProject({
         clientId: t?.["clientId"] ?? null,
         refreshToken: t?.["refreshToken"] ?? null,
       }))
-
       .flat();
+
+    const propertyTypes = Array.from(
+      new Set(properties.map((e) => e?.["type"])),
+    );
+
     const project = {
       ...data,
       id,
       userId: user?.["id"],
-      propertyTypes: types?.map((e) => e?.["value"]),
-
+      propertyTypes,
       deletedAt: null,
     };
 

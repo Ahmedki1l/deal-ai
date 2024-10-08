@@ -135,7 +135,7 @@ export async function base64ToBuffer({
   //     .toBuffer();
   // }
 
-  return sharp(Buffer.from(r, "base64"))
+  return sharp(Buffer.from(base64, "base64"))
     .resize({ width: 800 })
     .png({ quality: 80 })
     .toBuffer();

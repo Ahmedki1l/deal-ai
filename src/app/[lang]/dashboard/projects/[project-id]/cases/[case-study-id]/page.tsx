@@ -50,7 +50,7 @@ export default async function CaseStudy({
       "case"
     ];
 
-  const caseStudy = await db.caseStudy.findFirst({
+  const caseStudy = await db.studyCase.findFirst({
     include: {
       posts: {
         include: {

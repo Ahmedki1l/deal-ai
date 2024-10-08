@@ -24,7 +24,7 @@ import { ShortContents } from "@/types";
 import { Dictionary } from "@/types/locale";
 import { imageUpdateFormSchema } from "@/validations/images";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CaseStudy, Image as ImageType, Post, Project } from "@prisma/client";
+import { Image as ImageType, Post, Project, StudyCase } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -36,7 +36,7 @@ import { Separator } from "./ui/separator";
 export type ImageEditorProps = {
   image: ImageType & {
     post: Post & {
-      caseStudy: CaseStudy & { project: Project };
+      caseStudy: StudyCase & { project: Project };
     };
   };
   disabled?: boolean;

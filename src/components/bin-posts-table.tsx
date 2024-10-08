@@ -15,14 +15,14 @@ import {
   DropdownMenuShortcut,
 } from "@/components/ui/dropdown-menu";
 import { Dictionary } from "@/types/locale";
-import { CaseStudy, Post } from "@prisma/client";
+import { Post, StudyCase } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   PostRestoreButton,
   PostRestoreButtonProps,
 } from "./post-restore-button";
 
-type ColumnType = Post & { caseStudy: CaseStudy };
+type ColumnType = Post & { caseStudy: StudyCase };
 
 type BinPostsTableProps = {
   data: ColumnType[];

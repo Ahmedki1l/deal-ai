@@ -20,10 +20,10 @@ import {
   DropdownMenuShortcut,
 } from "@/components/ui/dropdown-menu";
 import { Dictionary } from "@/types/locale";
-import { CaseStudy, Post } from "@prisma/client";
+import { Post, StudyCase } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 
-type CaseStudyColumnType = CaseStudy & { posts: Post[] };
+type CaseStudyColumnType = StudyCase & { posts: Post[] };
 type CaseStudyTableProps = {
   data: CaseStudyColumnType[];
   disabled?: boolean;

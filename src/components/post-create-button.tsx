@@ -11,7 +11,7 @@ import { clientAction } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { postCreateSchema } from "@/validations/posts";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CaseStudy, Platform, Project } from "@prisma/client";
+import { Platform, Project, StudyCase } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -19,7 +19,7 @@ import { toast } from "sonner";
 import * as z from "zod";
 
 export type PostCreateButtonProps = {
-  caseStudy: CaseStudy;
+  caseStudy: StudyCase;
   project: Project & { platforms: Platform[] };
 } & Omit<DialogResponsiveProps, "open" | "setOpen"> &
   Dictionary["post-create-button"] &

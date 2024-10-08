@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Bin Cases" };
 export default async function BinCases({ params: { lang } }: BinCasesProps) {
   const dic = await getDictionary(lang);
   const c = dic?.["dashboard"]?.["user"]?.["bin"]?.["cases"];
-  const cases = await db.caseStudy.findMany({
+  const cases = await db.studyCase.findMany({
     where: {
       deletedAt: { not: null },
     },

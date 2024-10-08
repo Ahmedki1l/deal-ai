@@ -5,11 +5,11 @@ import { useLocale } from "@/hooks/use-locale";
 import { cn, getMonth } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import {
-  CaseStudy,
   Image as ImageType,
   Platform,
   Post,
   Project,
+  StudyCase,
 } from "@prisma/client";
 import dayjs from "dayjs";
 import { Fragment, useEffect, useState } from "react";
@@ -22,7 +22,7 @@ import { Button } from "./ui/button";
 export type SchedulerProps = {
   posts: (Post & {
     image: ImageType | null;
-    caseStudy: CaseStudy & { project: Project & { platforms: Platform[] } };
+    caseStudy: StudyCase & { project: Project & { platforms: Platform[] } };
   })[];
 } & Dictionary["scheduler"] &
   Dictionary["post-update-form"] &
@@ -174,7 +174,7 @@ export function Month({
   month: dayjs.Dayjs[][];
   posts: (Post & {
     image: ImageType | null;
-    caseStudy: CaseStudy & { project: Project };
+    caseStudy: StudyCase & { project: Project };
   })[];
 } & Dictionary["post-update-form"] &
   Dictionary["image-form"] &
@@ -207,7 +207,7 @@ export function Day({
   rowIdx: number;
   posts: (Post & {
     image: ImageType | null;
-    caseStudy: CaseStudy & { project: Project };
+    caseStudy: StudyCase & { project: Project };
   })[];
 } & Dictionary["post-update-form"] &
   Dictionary["image-form"] &

@@ -19,10 +19,10 @@ import {
   DropdownMenuShortcut,
 } from "@/components/ui/dropdown-menu";
 import { Dictionary } from "@/types/locale";
-import { CaseStudy } from "@prisma/client";
+import { StudyCase } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 
-type ColumnType = Pick<CaseStudy, "id" | "projectId" | "title" | "deletedAt">;
+type ColumnType = Pick<StudyCase, "id" | "projectId" | "title" | "deletedAt">;
 
 type BinCasesTableProps = {
   data: ColumnType[];

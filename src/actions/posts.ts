@@ -17,7 +17,7 @@ import {
   postUpdateScheduleSchema,
   postUpdateSchema,
 } from "@/validations/posts";
-import { CaseStudy, Image, Platform, Project } from "@prisma/client";
+import { Image, Platform, Project, StudyCase } from "@prisma/client";
 import axios from "axios";
 import { generateIdFromEntropySize } from "lucia";
 import { revalidatePath } from "next/cache";
@@ -57,7 +57,7 @@ export async function createPost({
   ...data
 }: z.infer<typeof postCreateSchema> & {
   project: Project & { platforms: Platform[] };
-  caseStudy: CaseStudy;
+  caseStudy: StudyCase;
 }) {
   const locale = await getLocale();
   const { actions: c } = await getDictionary(locale);

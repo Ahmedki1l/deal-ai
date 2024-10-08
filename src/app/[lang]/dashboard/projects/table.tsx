@@ -22,11 +22,11 @@ import {
 import { platforms } from "@/db/enums";
 import { useLocale } from "@/hooks/use-locale";
 import { Dictionary } from "@/types/locale";
-import { CaseStudy, Platform, Post, Project, Property } from "@prisma/client";
+import { Platform, Post, Project, Property, StudyCase } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 
 type ColumnType = Project & {
-  caseStudy: (CaseStudy & { posts: Post[] })[];
+  caseStudy: (StudyCase & { posts: Post[] })[];
   properties: Property[];
   platforms: Platform[];
 };

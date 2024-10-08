@@ -15,7 +15,7 @@ import { clientAction, cn } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { postUpdateSchema } from "@/validations/posts";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CaseStudy, Image as ImageType, Post, Project } from "@prisma/client";
+import { Image as ImageType, Post, Project, StudyCase } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -27,7 +27,7 @@ import { Link } from "./link";
 export type PostUpdateFormProps = {
   post: Post & {
     image: ImageType | null;
-    caseStudy: CaseStudy & { project: Project };
+    caseStudy: StudyCase & { project: Project };
   };
   disabled?: boolean;
 } & Dictionary["post-update-form"] &

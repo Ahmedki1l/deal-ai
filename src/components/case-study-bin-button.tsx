@@ -1,24 +1,25 @@
 "use client";
 
-import { updateCaseStudy } from "@/actions/case-studies";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
-import { clientAction } from "@/lib/utils";
+import axios from "@/lib/axios";
+import { clientHttpRequest } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { caseStudyBinSchema } from "@/validations/case-studies";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CaseStudy } from "@prisma/client";
+import { StudyCase } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { useSession } from "./session-provider";
 
 export type CaseStudyBinButtonProps = {
-  caseStudy: Pick<CaseStudy, "id">;
+  caseStudy: Pick<StudyCase, "id">;
 } & Omit<DialogResponsiveProps, "open" | "setOpen"> &
   Dictionary["case-study-bin-button"] &
   Dictionary["dialog"];
@@ -28,7 +29,8 @@ export function CaseStudyBinButton({
   caseStudy,
   ...props
 }: CaseStudyBinButtonProps) {
-  const lang = useLocale();
+  const locale = useLocale();
+  const { user } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
@@ -41,16 +43,18 @@ export function CaseStudyBinButton({
     },
   });
 
-  async function onSubmit(data: z.infer<typeof caseStudyBinSchema>) {
-    await clientAction(
-      async () => await updateCaseStudy({ ...data, deletedAt: new Date() }),
-      setLoading,
-    );
+  async function onSubmit({ id, ...data }: z.infer<typeof caseStudyBinSchema>) {
+    await clientHttpRequest(async () => {
+      await axios({ locale, user }).patch(`/api/study-cases/${id}`, {
+        ...data,
+        deletedAt: new Date(),
+      });
 
-    toast.success(c?.["deleted successfully."]);
-    setOpen(false);
-    form.reset();
-    router.refresh();
+      toast.success(c?.["deleted successfully."]);
+      setOpen(false);
+      form.reset();
+      router.refresh();
+    }, setLoading);
   }
 
   return (

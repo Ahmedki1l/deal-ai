@@ -238,9 +238,9 @@ class PhotoEditor {
     const editorRatio = this.stage!?.width() / this.stage!?.height();
 
     const scaleFactor =
-      (imageRatio > editorRatio
+      imageRatio > editorRatio
         ? this.stage!?.width() / width
-        : this.stage!?.height() / height) ?? 1;
+        : this.stage!?.height() / height;
 
     const scaledWidth = width * scaleFactor;
     const scaledHeight = height * scaleFactor;

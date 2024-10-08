@@ -1,37 +1,37 @@
 "use client";
 
-import { updateImage } from "@/actions/images";
 import { DialogResponsiveProps } from "@/components/dialog";
 import { Icons } from "@/components/icons";
 import { Image } from "@/components/image";
 import { ImageForm, ImageFormProps } from "@/components/image-form";
+import { useSession } from "@/components/session-provider";
 import { Tooltip } from "@/components/tooltip";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useLocale } from "@/hooks/use-locale";
+import axios from "@/lib/axios";
 import { ApplyFrameProps } from "@/lib/constants";
 import { PhotoEditor } from "@/lib/konva";
-import { clientAction, cn } from "@/lib/utils";
+import { clientHttpRequest, cn } from "@/lib/utils";
 import { ShortContents } from "@/types";
 import { Dictionary } from "@/types/locale";
 import { imageUpdateFormSchema } from "@/validations/images";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Image as ImageType, Post, Project, StudyCase } from "@prisma/client";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { Label } from "./ui/label";
-import { Separator } from "./ui/separator";
 
 export type ImageEditorProps = {
   image: ImageType & {
@@ -52,8 +52,8 @@ export function ImageEditor({
   contents,
   disabled,
 }: ImageEditorProps) {
-  const lang = useLocale();
-  const router = useRouter();
+  const locale = useLocale();
+  const { user } = useSession();
 
   const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const containerRef = useRef<null>(null);
@@ -106,18 +106,18 @@ export function ImageEditor({
     }
   }, []);
 
-  async function onSubmit(data: z.infer<typeof imageUpdateFormSchema>) {
-    await clientAction(
-      async () =>
-        await updateImage({
-          id: data?.["id"],
-          prompt: data?.["prompt"],
-          src: editor?.["current"]?.getResult()!,
-        }),
-      setLoading,
-    );
+  async function onSubmit({
+    id,
+    ...data
+  }: z.infer<typeof imageUpdateFormSchema>) {
+    await clientHttpRequest(async () => {
+      await axios({ locale, user }).patch(`/api/images/${id}`, {
+        prompt: data?.["prompt"],
+        src: editor?.["current"]?.getResult()!,
+      });
 
-    toast.success("saved");
+      toast.success("saved");
+    }, setLoading);
   }
 
   return (
@@ -537,7 +537,7 @@ export function ImageEditor({
                       size="icon"
                       onClick={() => {
                         const { textNode } = editor?.["current"]?.addText({
-                          lang,
+                          lang: locale,
                         })!;
                         form.setValue("editor.textNodes", [
                           ...form.getValues("editor.textNodes"),

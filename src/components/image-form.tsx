@@ -1,6 +1,5 @@
 "use client";
 
-import { generateImage, regenerateImagePrompt } from "@/actions/images";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
 import { Icons } from "@/components/icons";
 import { Image } from "@/components/image";
@@ -22,15 +21,17 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useLocale } from "@/hooks/use-locale";
+import axios from "@/lib/axios";
 import { ApplyFrameProps, FRAMES } from "@/lib/constants";
 import { PhotoEditor } from "@/lib/konva";
-import { clientAction, cn, fileToBase64 } from "@/lib/utils";
+import { clientHttpRequest, cn, fileToBase64 } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { imageUpdateFormSchema } from "@/validations/images";
 import { MutableRefObject, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { useSession } from "./session-provider";
 
 export type ImageFormProps = {
   loading: boolean;
@@ -93,44 +94,40 @@ export const ImageForm = {
       DialogResponsiveProps,
       "dic"
     >) {
+    const locale = useLocale();
+    const { user } = useSession();
     const [promptLoading, setPromptLoading] = useState<boolean>(false);
     const [imageLoading, setImageLoading] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
 
     async function regeneratePrompt() {
-      setPromptLoading(true);
-      const r = await clientAction(
-        async () =>
-          await regenerateImagePrompt({
-            prompt: form.getValues("prompt") ?? "",
-          }),
-        setPromptLoading,
-      );
-      if (r === undefined) return;
-
-      form.setValue("prompt", r);
-      toast.success(c?.["regenerate-image"]?.["enhanced successfully."]);
+      await clientHttpRequest(async () => {
+        const { data: r } = await axios({ locale, user }).post(
+          `/api/images/prompts/regenerate`,
+          { prompt: form.getValues("prompt") ?? "" },
+        );
+        console.log(r);
+        form.setValue("prompt", r?.["prompt"]);
+        toast.success(c?.["regenerate-image"]?.["enhanced successfully."]);
+      }, setPromptLoading);
     }
 
     async function regenerateImage() {
-      setImageLoading(true);
-      const r = await clientAction(
-        async () =>
-          await generateImage({
-            prompt: form.getValues("prompt") ?? "",
-          }),
-        setImageLoading,
-      );
-      console.log(r);
-      if (r === undefined) return;
+      await clientHttpRequest(async () => {
+        const { data: r } = await axios({ locale, user }).post(
+          `/api/images/regenerate`,
+          { prompt: form.getValues("prompt") ?? "" },
+        );
+        console.log(r);
 
-      setOpen(false);
-      const { photoNode } = await editor?.["current"]!.addPhoto({ url: r });
-
-      form.setValue("src", r);
-      form.setValue("editor.photo", photoNode);
-
-      toast.success(c?.["regenerate-image"]?.["generated successfully."]);
+        setOpen(false);
+        const { photoNode } = await editor?.["current"]!.addPhoto({
+          url: r?.["url"],
+        });
+        form.setValue("src", r?.["url"]);
+        form.setValue("editor.photo", photoNode);
+        toast.success(c?.["regenerate-image"]?.["generated successfully."]);
+      }, setImageLoading);
     }
 
     return (

@@ -1,6 +1,5 @@
 "use client";
 
-import { updatePost } from "@/actions/posts";
 import { Icons } from "@/components/icons";
 import { PostBinButton } from "@/components/post-bin-button";
 import { PostForm } from "@/components/post-form";
@@ -11,7 +10,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { clientAction, cn } from "@/lib/utils";
+import { useLocale } from "@/hooks/use-locale";
+import axios from "@/lib/axios";
+import { clientHttpRequest, cn } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { postUpdateSchema } from "@/validations/posts";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,6 +24,7 @@ import { toast } from "sonner";
 import * as z from "zod";
 import { Image } from "./image";
 import { Link } from "./link";
+import { useSession } from "./session-provider";
 
 export type PostUpdateFormProps = {
   post: Post & {
@@ -43,6 +45,8 @@ export function PostUpdateForm({
   post,
   disabled,
 }: PostUpdateFormProps) {
+  const locale = useLocale();
+  const { user } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const [open, setOpen] = useState<boolean>(false);
@@ -56,70 +60,74 @@ export function PostUpdateForm({
     },
   });
 
-  async function onSubmit(data: z.infer<typeof postUpdateSchema>) {
-    await clientAction(async () => await updatePost(data), setLoading);
-
-    toast.success(c?.["updated successfully."]);
-    setOpen(false);
-    form.reset();
-    router.refresh();
+  async function onSubmit({
+    id,
+    confirm,
+    ...data
+  }: z.infer<typeof postUpdateSchema>) {
+    await clientHttpRequest(async () => {
+      await axios({ locale, user }).patch(`/api/posts/${id}`, {
+        ...data,
+        confirmedAt: confirm ? new Date() : null,
+        status: confirm ? "CONFIRMED" : "PENDING",
+      });
+      toast.success(c?.["updated successfully."]);
+      setOpen(false);
+      form.reset();
+      router.refresh();
+    }, setLoading);
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              {/* <BackButton dic={dic} type="button" variant="ghost" size="sm" /> */}
-              <h1 className="text-md font-semibold">{c?.["post details"]}</h1>
-            </div>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          {/* <BackButton dic={dic} type="button" variant="ghost" size="sm" /> */}
+          <h1 className="text-md font-semibold">{c?.["post details"]}</h1>
+        </div>
 
-            <div className="hidden items-center gap-2 md:flex">
-              {post?.["deletedAt"] ? (
-                <PostRestoreButton
-                  disabled={post?.["deletedAt"] ? false : disabled}
-                  dic={dic}
-                  asChild
-                  post={post}
-                >
-                  <Button
-                    disabled={post?.["deletedAt"] ? false : disabled}
-                    variant="secondary"
-                    size="sm"
-                  >
-                    {c?.["restore post"]}
-                  </Button>
-                </PostRestoreButton>
-              ) : (
-                <PostBinButton
-                  disabled={loading || disabled}
-                  dic={dic}
-                  asChild
-                  post={post}
-                >
-                  <Button
-                    disabled={loading || disabled}
-                    size="sm"
-                    variant="destructive"
-                  >
-                    {c?.["delete post"]}
-                  </Button>
-                </PostBinButton>
-              )}
-
+        <div className="hidden items-center gap-2 md:flex">
+          {post?.["deletedAt"] ? (
+            <PostRestoreButton
+              disabled={post?.["deletedAt"] ? false : disabled}
+              dic={dic}
+              asChild
+              post={post}
+            >
               <Button
-                disabled={loading}
-                type="submit"
+                disabled={post?.["deletedAt"] ? false : disabled}
+                variant="secondary"
                 size="sm"
-                className="w-full"
               >
-                {!disabled && loading && <Icons.spinner />}
-                {c?.["save changes"]}
+                {c?.["restore post"]}
               </Button>
-            </div>
-          </div>
+            </PostRestoreButton>
+          ) : (
+            <PostBinButton
+              disabled={loading || disabled}
+              dic={dic}
+              asChild
+              post={post}
+            >
+              <Button
+                disabled={loading || disabled}
+                size="sm"
+                variant="destructive"
+              >
+                {c?.["delete post"]}
+              </Button>
+            </PostBinButton>
+          )}
 
+          <Button disabled={loading} type="submit" size="sm" className="w-full">
+            {!disabled && loading && <Icons.spinner />}
+            {c?.["save changes"]}
+          </Button>
+        </div>
+      </div>
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid gap-4 lg:grid-cols-[0.8fr,1fr]">
             <div>
               <div
@@ -249,8 +257,8 @@ export function PostUpdateForm({
               {c?.["save changes"]}
             </Button>
           </div>
-        </div>
-      </form>
-    </Form>
+        </form>
+      </Form>
+    </div>
   );
 }

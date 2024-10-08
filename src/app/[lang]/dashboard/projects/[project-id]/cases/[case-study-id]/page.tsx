@@ -36,14 +36,14 @@ import { getDictionary } from "@/lib/dictionaries";
 import { LocaleProps } from "@/types/locale";
 import { Metadata } from "next";
 
-type CaseStudyProps = Readonly<{
+type StudyCaseProps = Readonly<{
   params: { "project-id": string; "case-study-id": string } & LocaleProps;
 }>;
 
-export const metadata: Metadata = { title: "CaseStudy" };
-export default async function CaseStudy({
+export const metadata: Metadata = { title: "Study Case" };
+export default async function StudyCase({
   params: { lang, "project-id": projectId, "case-study-id": caseStudyId },
-}: CaseStudyProps) {
+}: StudyCaseProps) {
   const dic = await getDictionary(lang);
   const c =
     dic?.["dashboard"]?.["user"]?.["projects"]?.["project"]?.["cases"]?.[
@@ -55,14 +55,14 @@ export default async function CaseStudy({
       posts: {
         include: {
           image: {
-            // where: {
-            //   deletedAt: null,
-            // },
+            where: {
+              deletedAt: null,
+            },
           },
         },
-        // where: {
-        //   deletedAt: null,
-        // },
+        where: {
+          deletedAt: null,
+        },
       },
       project: {
         include: {

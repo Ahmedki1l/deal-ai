@@ -1,13 +1,13 @@
 "use client";
 
-import { createPost } from "@/actions/posts";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
 import { Icons } from "@/components/icons";
 import { PostForm } from "@/components/post-form";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
-import { clientAction } from "@/lib/utils";
+import axios from "@/lib/axios";
+import { clientHttpRequest } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { postCreateSchema } from "@/validations/posts";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +17,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { useSession } from "./session-provider";
 
 export type PostCreateButtonProps = {
   caseStudy: StudyCase;
@@ -33,7 +34,8 @@ export function PostCreateButton({
   disabled,
   ...props
 }: PostCreateButtonProps) {
-  const lang = useLocale();
+  const locale = useLocale();
+  const { user } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const [open, setOpen] = useState<boolean>(false);
@@ -44,15 +46,18 @@ export function PostCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof postCreateSchema>) {
-    await clientAction(
-      async () => await createPost({ ...data, project, caseStudy }),
-      setLoading,
-    );
+    await clientHttpRequest(async () => {
+      await axios({ locale, user }).post(`/api/posts`, {
+        ...data,
+        project,
+        caseStudy,
+      });
 
-    toast.success(c?.["created successfully."]);
-    setOpen(false);
-    form.reset();
-    router.refresh();
+      toast.success(c?.["created successfully."]);
+      setOpen(false);
+      form.reset();
+      router.refresh();
+    }, setLoading);
   }
   return (
     <DialogResponsive

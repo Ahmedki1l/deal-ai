@@ -1,12 +1,12 @@
 "use client";
 
-import { updatePostFeature } from "@/actions/posts";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
-import { clientAction } from "@/lib/utils";
+import axios from "@/lib/axios";
+import { clientHttpRequest } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { postBinSchema } from "@/validations/posts";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +16,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { useSession } from "./session-provider";
 
 export type PostBinButtonProps = {
   post: Pick<Post, "id">;
@@ -28,7 +29,8 @@ export function PostBinButton({
   post,
   ...props
 }: PostBinButtonProps) {
-  const lang = useLocale();
+  const locale = useLocale();
+  const { user } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
@@ -41,16 +43,17 @@ export function PostBinButton({
     },
   });
 
-  async function onSubmit(data: z.infer<typeof postBinSchema>) {
-    await clientAction(
-      async () => await updatePostFeature({ ...data, deletedAt: new Date() }),
-      setLoading,
-    );
-
-    toast.success(c?.["deleted successfully."]);
-    setOpen(false);
-    form.reset();
-    router.refresh();
+  async function onSubmit({ id, ...data }: z.infer<typeof postBinSchema>) {
+    await clientHttpRequest(async () => {
+      await axios({ locale, user }).patch(`/api/posts/${id}`, {
+        ...data,
+        deletedAt: new Date(),
+      });
+      toast.success(c?.["deleted successfully."]);
+      setOpen(false);
+      form.reset();
+      router.refresh();
+    }, setLoading);
   }
 
   return (

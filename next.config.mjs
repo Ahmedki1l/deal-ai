@@ -15,6 +15,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "takamolspace.lon1.digitaloceanspaces.com",
       },
+      {
+        protocol: "https",
+        hostname: "ideogram.ai",
+      },
       { protocol: "https", hostname: "images.unsplash.com" },
       {
         protocol: "https",

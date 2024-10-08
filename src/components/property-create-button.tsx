@@ -1,6 +1,5 @@
 "use client";
 
-import { createProperty } from "@/actions/properties";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
 import { Icons } from "@/components/icons";
 import { PropertyForm, PropertyFormProps } from "@/components/property-form";
@@ -8,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
-import { clientAction } from "@/lib/utils";
+import axios from "@/lib/axios";
+import { clientHttpRequest } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { propertyCreateFormSchema } from "@/validations/properties";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,6 +19,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { EmptyPlaceholder } from "./empty-placeholder";
+import { useSession } from "./session-provider";
 import { Tooltip } from "./tooltip";
 import {
   Accordion,
@@ -41,7 +42,8 @@ export function PropertyCreateButton({
   disabled,
   ...props
 }: PropertyCreateButtonProps) {
-  const lang = useLocale();
+  const locale = useLocale();
+  const { user } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const [open, setOpen] = useState<boolean>(false);
@@ -52,14 +54,18 @@ export function PropertyCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof propertyCreateFormSchema>) {
-    await clientAction(async () => await createProperty(data), setLoading);
+    await clientHttpRequest(async () => {
+      await axios({ locale, user }).post(`/api/properties`, {
+        ...data,
+      });
 
-    toast.success(c?.["created successfully."]);
-    setOpen(false);
-    form.reset();
-    router.refresh();
+      toast.success(c?.["created successfully."]);
+      setOpen(false);
+      form.reset();
+      router.refresh();
+    }, setLoading);
   }
-  console.log(form.formState.errors);
+
   return (
     <DialogResponsive
       dic={dic}

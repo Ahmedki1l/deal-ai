@@ -63,3 +63,24 @@ export const clientAction = async <T>(
     setLoading(false);
   }
 };
+
+export const clientHttpRequest = async <T>(
+  func: () => Promise<T>,
+  setLoading: Dispatch<SetStateAction<boolean>>,
+) => {
+  try {
+    setLoading(true);
+    return await func();
+  } catch (err: any) {
+    if (err?.["response"]) {
+      console.error("error response: ", err?.["response"]?.["data"]);
+      toast.error(err?.["response"]?.["data"]);
+      return;
+    }
+
+    console.error("error: ", err?.["message"]);
+    toast.error(err?.["message"]);
+  } finally {
+    setLoading(false);
+  }
+};

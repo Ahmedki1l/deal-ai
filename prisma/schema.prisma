@@ -81,13 +81,13 @@ model Project {
   platforms     Platform[]
 
   properties Property[]
-  caseStudy  CaseStudy[]
+  caseStudy  StudyCase[]
   user       User        @relation(references: [id], fields: [userId], onDelete: Cascade)
 
   @@map("projects")
 }
 
-model CaseStudy {
+model StudyCase {
   id        String    @id @map("_id")
   projectId String    @map("project-id")
   title     String
@@ -195,7 +195,7 @@ model Post {
   deletedAt   DateTime? @map("deleted-at")
 
   image     Image?    @relation(fields: [imageId], references: [id], onDelete: NoAction)
-  caseStudy CaseStudy @relation(references: [id], fields: [caseStudyId], onDelete: Cascade)
+  caseStudy StudyCase @relation(references: [id], fields: [caseStudyId], onDelete: Cascade)
 
   @@map("posts")
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { createProject } from "@/actions/projects";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
 import { Icons } from "@/components/icons";
 import { ProjectForm } from "@/components/project-form";
@@ -8,11 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
-import { clientAction, fileToBase64 } from "@/lib/utils";
-import { User } from "@/types/db";
+import axios from "@/lib/axios";
+import { clientHttpRequest, fileToBase64 } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { projectCreateFormSchema } from "@/validations/projects";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { User } from "lucia";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -36,7 +36,7 @@ export function ProjectCreateButton({
   disabled,
   ...props
 }: ProjectCreateButtonProps) {
-  const lang = useLocale();
+  const locale = useLocale();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const [open, setOpen] = useState<boolean>(false);
@@ -48,26 +48,24 @@ export function ProjectCreateButton({
   });
 
   async function onSubmit(data: z.infer<typeof projectCreateFormSchema>) {
-    const base64 = data?.["pdf"]?.["file"]
-      ? (await fileToBase64(data?.["pdf"]?.["file"]))!?.toString()
-      : null;
+    await clientHttpRequest(async () => {
+      const base64 = data?.["pdf"]?.["file"]
+        ? (await fileToBase64(data?.["pdf"]?.["file"]))!?.toString()
+        : null;
 
-    await clientAction(
-      async () =>
-        await createProject({
-          ...data,
-          pdf: {
-            file: undefined,
-            base64: base64 ?? null,
-          },
-        }),
-      setLoading,
-    );
+      await axios({ locale, user }).post(`/api/projects`, {
+        ...data,
+        pdf: {
+          file: undefined,
+          base64: base64 ?? null,
+        },
+      });
 
-    toast.success(c?.["created successfully."]);
-    setOpen(false);
-    form.reset();
-    router.refresh();
+      toast.success(c?.["created successfully."]);
+      setOpen(false);
+      form.reset();
+      router.refresh();
+    }, setLoading);
   }
 
   return (

@@ -1,12 +1,12 @@
 "use client";
 
-import { deleteProject } from "@/actions/projects";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
-import { clientAction } from "@/lib/utils";
+import axios from "@/lib/axios";
+import { clientHttpRequest } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { projectDeleteSchema } from "@/validations/projects";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +16,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { useSession } from "./session-provider";
 
 export type ProjectDeleteButtonProps = {
   project: Pick<Project, "id">;
@@ -28,7 +29,8 @@ export function ProjectDeleteButton({
   project,
   ...props
 }: ProjectDeleteButtonProps) {
-  const lang = useLocale();
+  const locale = useLocale();
+  const { user } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
@@ -40,13 +42,18 @@ export function ProjectDeleteButton({
     },
   });
 
-  async function onSubmit(data: z.infer<typeof projectDeleteSchema>) {
-    await clientAction(async () => await deleteProject(data), setLoading);
+  async function onSubmit({
+    id,
+    ...data
+  }: z.infer<typeof projectDeleteSchema>) {
+    await clientHttpRequest(async () => {
+      await axios({ locale, user }).delete(`/api/projects/${id}`);
 
-    toast.success(c?.["deleted successfully."]);
-    setOpen(false);
-    form.reset();
-    router.refresh();
+      toast.success(c?.["deleted successfully."]);
+      setOpen(false);
+      form.reset();
+      router.refresh();
+    }, setLoading);
   }
 
   return (

@@ -27,7 +27,7 @@ import { PhotoEditor } from "@/lib/konva";
 import { clientHttpRequest, cn, fileToBase64 } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { imageUpdateFormSchema } from "@/validations/images";
-import { MutableRefObject, useState } from "react";
+import { MutableRefObject, useRef, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -45,38 +45,42 @@ export const ImageForm = {
     form,
     editor,
   }: ImageFormProps & { editor: MutableRefObject<PhotoEditor | null> }) {
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     return (
       <FormItem>
         <FormLabel
-          htmlFor="file"
           className={cn(buttonVariants({ variant: "outline", size: "icon" }))}
         >
-          <Tooltip text="new image">
-            <div>
-              <Button
-                type="button"
-                disabled={loading}
-                variant="outline"
-                size="icon"
-              >
-                <Icons.add />
-              </Button>
-            </div>
-          </Tooltip>
-          {/* {c?.["height"]?.["height"]} */}
+          <div>
+            <Tooltip text="new image">
+              <div>
+                <Button
+                  type="button"
+                  disabled={loading}
+                  variant="outline"
+                  size="icon"
+                  onClick={() => fileInputRef.current?.click()} // Trigger file input click
+                >
+                  <Icons.add />
+                </Button>
+              </div>
+            </Tooltip>
+          </div>
         </FormLabel>
 
         <Input
+          ref={fileInputRef} // Attach ref to the hidden file input
           id="file"
           type="file"
           onChange={async (e) => {
-            const file = e?.["target"]?.["files"]?.[0];
+            const file = e?.target?.files?.[0];
             if (file) {
               const base64 = (await fileToBase64(file))!?.toString();
-              const { photoNode } = await editor?.["current"]!.addBase64({
+              const r = await editor?.current?.addBase64({
                 base64,
               });
-              form.setValue("editor.photo", photoNode);
+              form.setValue("editor.photo", r!?.["photoNode"]!);
             }
           }}
           disabled={loading}
@@ -106,7 +110,7 @@ export const ImageForm = {
           `/api/images/prompts/regenerate`,
           { prompt: form.getValues("prompt") ?? "" },
         );
-        console.log(r);
+
         form.setValue("prompt", r?.["prompt"]);
         toast.success(c?.["regenerate-image"]?.["enhanced successfully."]);
       }, setPromptLoading);
@@ -121,10 +125,11 @@ export const ImageForm = {
         console.log(r);
 
         setOpen(false);
-        const { photoNode } = await editor?.["current"]!.addPhoto({
-          url: r?.["url"],
+        const { photoNode } = await editor?.["current"]!.addBase64({
+          base64: r?.["base64"],
         });
-        form.setValue("src", r?.["url"]);
+
+        form.setValue("src", r?.["base64"]);
         form.setValue("editor.photo", photoNode);
         toast.success(c?.["regenerate-image"]?.["generated successfully."]);
       }, setImageLoading);

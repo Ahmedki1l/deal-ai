@@ -81,53 +81,55 @@ export function PostUpdateForm({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
+        <div className="flex w-full items-center justify-between gap-2">
           {/* <BackButton dic={dic} type="button" variant="ghost" size="sm" /> */}
           <h1 className="text-md font-semibold">{c?.["post details"]}</h1>
-        </div>
 
-        <div className="hidden items-center gap-2 md:flex">
-          {post?.["deletedAt"] ? (
-            <PostRestoreButton
-              disabled={post?.["deletedAt"] ? false : disabled}
-              dic={dic}
-              asChild
-              post={post}
-            >
-              <Button
+          <div>
+            {post?.["deletedAt"] ? (
+              <PostRestoreButton
                 disabled={post?.["deletedAt"] ? false : disabled}
-                variant="secondary"
-                size="sm"
+                dic={dic}
+                asChild
+                post={post}
               >
-                {c?.["restore post"]}
-              </Button>
-            </PostRestoreButton>
-          ) : (
-            <PostBinButton
-              disabled={loading || disabled}
-              dic={dic}
-              asChild
-              post={post}
-            >
-              <Button
+                <Button
+                  disabled={post?.["deletedAt"] ? false : disabled}
+                  variant="secondary"
+                  size="sm"
+                >
+                  {c?.["restore post"]}
+                </Button>
+              </PostRestoreButton>
+            ) : (
+              <PostBinButton
                 disabled={loading || disabled}
-                size="sm"
-                variant="destructive"
+                dic={dic}
+                asChild
+                post={post}
               >
-                {c?.["delete post"]}
-              </Button>
-            </PostBinButton>
-          )}
-
-          <Button disabled={loading} type="submit" size="sm" className="w-full">
-            {!disabled && loading && <Icons.spinner />}
-            {c?.["save changes"]}
-          </Button>
+                <Button
+                  disabled={loading || disabled}
+                  size="sm"
+                  variant="destructive"
+                >
+                  {c?.["delete post"]}
+                </Button>
+              </PostBinButton>
+            )}
+          </div>
         </div>
       </div>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div className="hidden items-center justify-end md:flex">
+            <Button type="submit" disabled={loading} size="sm">
+              {!disabled && loading && <Icons.spinner />}
+              {c?.["save changes"]}
+            </Button>
+          </div>
+
           <div className="grid gap-4 lg:grid-cols-[0.8fr,1fr]">
             <div>
               <div

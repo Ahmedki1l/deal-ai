@@ -1,6 +1,5 @@
 "use client";
 
-import { callChatGPTWithFunctions } from "@/actions/siri";
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
@@ -13,118 +12,106 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  clearMessagesFromoLocalStorage,
-  clientAction,
-  cn,
-  loadMessagesFromLocalStorage,
-  saveMessagesToLocalStorage,
-} from "@/lib/utils";
-import { z } from "@/lib/zod";
-import { SiriMessage } from "@/types";
-import { Dictionary } from "@/types/locale";
+import { openai } from "@/lib/siri";
+import { clientAction, cn } from "@/lib/utils";
+import { useConversation, useSpeechRecognition } from "@/siri";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z as Zod } from "zod";
+import { z } from "zod";
+import { useSession } from "./session-provider";
 
 const formSchema = z.object({
-  message: z.string("message"),
+  message: z
+    .string({
+      required_error: `message is required.`,
+      invalid_type_error: `message must be string.`,
+    })
+    .min(1, `message is required.`),
 });
 
-type SiriProps = {} & Omit<DialogResponsiveProps, "open" | "setOpen"> &
-  Dictionary["dialog"];
+type SiriProps = Omit<DialogResponsiveProps, "open" | "setOpen">;
+export function Siri({ ...props }: SiriProps) {
+  const { user } = useSession();
+  const [loading, setLoading] = useState(false);
 
-export function Siri({ dic, ...props }: SiriProps) {
-  const [conversation, setConversation] = useState<SiriMessage[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [open, setOpen] = useState<boolean>(false);
-  const form = useForm<Zod.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { message: undefined },
+  const { messages, updateMessages, clearMessages } =
+    useConversation("siriMessages");
+  const {
+    listening,
+    setListening,
+    open,
+    setOpen,
+    transcript,
+    setTranscript,
+    error,
+    setError,
+  } = useSpeechRecognition({
+    key: "Hi Siri", // Optional: If omitted, it starts listening immediately
+    recognitionOptions: {
+      lang: "en-US", // Custom recognition options, like language
+      continuous: true, // Keep listening continuously
+    },
   });
 
-  // Load cached messages when the component mounts
   useEffect(() => {
-    const savedMessages: SiriMessage[] = loadMessagesFromLocalStorage();
-    setConversation(savedMessages);
-  }, []);
-
-  // Function to handle voice recognition
-  const handleVoiceRecognition = () => {
-    if (typeof window === "undefined") return; // Ensure this code only runs in the browser
-
-    // Safely access the SpeechRecognition API
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
-      toast.error("Voice recognition is not supported by this browser.");
-      return;
+    if (transcript) {
+      form.setValue("message", form.getValues("message") + " " + transcript);
+      setTranscript(null);
     }
 
-    const recognition = new SpeechRecognition();
-    recognition.lang = "en-US";
-    recognition.continuous = false;
-    recognition.interimResults = false;
+    if (error) {
+      toast.error(error);
+      setError(null);
+    }
+  }, [transcript, error]);
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: { message: "" },
+  });
 
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
-      const transcript = event.results[0][0].transcript;
-      form.setValue("message", transcript); // Set the recognized speech as user input
-    };
-
-    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-      toast.error(`Voice recognition error: ${event.error}`);
-    };
-
-    recognition.start();
-  };
-
-  async function onSubmit(data: Zod.infer<typeof formSchema>) {
-    // Call OpenAI with the user's input and the existing conversation history
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     await clientAction(
       async () =>
-        await callChatGPTWithFunctions(data?.["message"], conversation),
+        await openai.callChatGPTWithFunctions({
+          userMessage: data.message,
+          existingMessages: messages,
+          args: { user: user },
+        }),
       setLoading,
     ).then((updatedMessages) => {
       if (!updatedMessages) return;
 
-      // Update the conversation history and clear the input
-      saveMessagesToLocalStorage(updatedMessages);
-      setConversation(updatedMessages);
+      updateMessages(updatedMessages);
       form.setValue("message", "");
     });
-  }
+  };
 
   return (
     <DialogResponsive
-      dic={dic}
       open={open}
       setOpen={setOpen}
       title="Chat with OpenAI (Voice & Text)"
-      description=""
       confirmButton={
-        <>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <Button
-                variant="secondary"
-                disabled={loading}
-                className="w-full md:w-fit"
-              >
-                {loading && <Icons.spinner />}
-                Send
-              </Button>
-            </form>
-          </Form>
-        </>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <Button
+              variant="secondary"
+              className="w-full md:w-fit"
+              disabled={loading || listening}
+            >
+              {loading && <Icons.spinner />}
+              Send
+            </Button>
+          </form>
+        </Form>
       }
       content={
         <>
           <div className="container h-60 w-full overflow-y-auto border py-4">
-            {conversation?.["length"] ? (
-              conversation.map((message, index) => (
+            {messages?.length ? (
+              messages?.map((message, index) => (
                 <div
                   key={index}
                   className={cn(
@@ -163,7 +150,7 @@ export function Siri({ dic, ...props }: SiriProps) {
                       <Textarea
                         className="min-h-20 w-full"
                         placeholder="Message AI..."
-                        disabled={loading}
+                        disabled={loading || listening}
                         {...field}
                       />
                     </FormControl>
@@ -174,28 +161,26 @@ export function Siri({ dic, ...props }: SiriProps) {
 
               <Button
                 type="button"
-                onClick={() => {
-                  clearMessagesFromoLocalStorage();
-                  setConversation([]);
-                }}
+                disabled={loading || listening}
+                onClick={clearMessages}
               >
                 Clear History
               </Button>
-              {/* <button
-                  type="button"
-                  onClick={handleVoiceRecognition}
-                  disabled={loading}
-                  style={{ padding: "10px", margin: "20px" }}
-                >
-                  {loading ? "Processing..." : "Speak"}
-                </button> */}
+
+              <Button
+                type="button"
+                disabled={loading}
+                onClick={() => setListening((prev) => !prev)}
+              >
+                {listening ? "Stop Listening" : "Start Listening"}
+              </Button>
             </form>
           </Form>
         </>
       }
       {...props}
     >
-      <Button className="absolute bottom-2 right-2">Siri</Button>
+      <Button className="fixed bottom-2 right-2">Siri</Button>
     </DialogResponsive>
   );
 }

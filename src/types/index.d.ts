@@ -23,15 +23,3 @@ export type ShortContents = {
   Medium: string;
   Long: string;
 };
-
-// Define message types for handling conversation
-type SiriMessage =
-  | {
-      role: "system" | "user" | "assistant";
-      content: string;
-    }
-  | {
-      role: "function";
-      name: string;
-      content: string;
-    };

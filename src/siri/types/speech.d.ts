@@ -1,5 +1,3 @@
-// SpeechRecognition
-// speech.d.ts
 declare global {
   interface Window {
     SpeechRecognition: any;
@@ -27,6 +25,7 @@ declare global {
   }
 
   interface SpeechRecognitionErrorEvent extends Event {
+    results: any;
     error: string;
   }
 }

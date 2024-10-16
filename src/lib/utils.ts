@@ -46,7 +46,7 @@ export function isValidUrl(src: string) {
 export const clientAction = async <T>(
   func: () => Promise<T | void | { error: string }>,
   setLoading: Dispatch<SetStateAction<boolean>>,
-) => {
+): Promise<Exclude<T, { error: string }> | void> => {
   try {
     setLoading(true);
     const result = await func();
@@ -56,7 +56,7 @@ export const clientAction = async <T>(
       return;
     }
 
-    return result;
+    return result as Exclude<T, { error: string }>;
   } catch (error: any) {
     toast.error(error?.["message"]);
   } finally {

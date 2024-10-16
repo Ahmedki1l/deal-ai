@@ -107,7 +107,7 @@ const CUSTOMIED_FUNCTION = [
 export async function callChatGPTWithFunctions(
   userMessage: string,
   existingMessages: SiriMessage[],
-): Promise<SiriMessage[]> {
+) {
   try {
     // Step 1: Append the user's message to the existing conversation history
     const messages: SiriMessage[] = [
@@ -159,8 +159,10 @@ export async function callChatGPTWithFunctions(
     // Step 5: Append the assistant's response to the conversation history
     const updatedMessages = [...messages, assistantMessage];
     return updatedMessages;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error calling ChatGPT:", error);
-    throw new Error("Something went wrong with the API request.");
+    return {
+      error: error?.["message"] ?? "Something went wrong with the API request.",
+    };
   }
 }

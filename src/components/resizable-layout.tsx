@@ -60,7 +60,7 @@ export function ResizableLayout({
   return (
     <ResizablePanelGroup
       direction="horizontal"
-      className="flex h-screen w-full flex-col dark:bg-[#121212]"
+      className="relative flex h-screen w-full flex-col dark:bg-[#121212]"
       onLayout={(sizes: number[]) => {
         document.cookie = `react-resizable-panels:layout=${JSON.stringify(
           sizes,

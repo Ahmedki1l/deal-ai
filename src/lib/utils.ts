@@ -84,3 +84,22 @@ export const clientHttpRequest = async <T>(
     setLoading(false);
   }
 };
+
+// Load messages from local storage
+export const loadMessagesFromLocalStorage = (): any => {
+  if (typeof window !== "undefined") {
+    const savedMessages = localStorage.getItem("cachedMessages");
+    return savedMessages ? JSON.parse(savedMessages) : [];
+  }
+  return [];
+};
+
+// Save messages to local storage
+export const saveMessagesToLocalStorage = (messages: any) => {
+  localStorage.setItem("cachedMessages", JSON.stringify(messages));
+};
+
+// Clear messages from local storage
+export const clearMessagesFromoLocalStorage = () => {
+  localStorage.removeItem("cachedMessages");
+};

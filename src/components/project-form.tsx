@@ -24,6 +24,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { platforms } from "@/db/enums";
 import { useLocale } from "@/hooks/use-locale";
+import axios from "@/lib/axios";
 import { t } from "@/lib/locale";
 import { clientAction, fileToBase64 } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
@@ -31,13 +32,13 @@ import {
   projectCreateFormSchema,
   projectUpdateFormSchema,
 } from "@/validations/projects";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { extractImagesFromPdf } from "sinsintro-pdf-extractor";
 import { toast } from "sonner";
 import * as z from "zod";
+import { useSession } from "./session-provider";
 import { Card, CardContent, CardHeader } from "./ui/card";
 
 export type ProjectFormProps = {
@@ -143,6 +144,8 @@ export const ProjectForm = {
     loading,
     form,
   }: ProjectFormProps) {
+    const locale = useLocale();
+    const { user } = useSession();
     const [loadingPdf, setLoadingPdf] = useState<boolean>(false);
     const { append } = useFieldArray({
       name: "properties",
@@ -179,7 +182,7 @@ export const ProjectForm = {
             Bathrooms: string;
             Livingrooms: string;
           }[];
-        } = await axios
+        } = await axios({ user, locale })
           .post(process.env.NEXT_PUBLIC_AI_API! + "/ar/pdf-data-extractor", {
             images: base64,
           })

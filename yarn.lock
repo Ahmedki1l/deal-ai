@@ -5436,10 +5436,10 @@ victory-vendor@^36.6.8:
     d3-time "^3.0.0"
     d3-timer "^3.0.1"
 
-voicegpt-assistant@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/voicegpt-assistant/-/voicegpt-assistant-1.0.4.tgz#35b7e2be2cb9a7a9895cc23da7ff708f897b75be"
-  integrity sha512-mbzqcu8HsgpmliwfW3l9F0wjJ2gcJeJpjBlcm7kQ+NtpcHJmyory4kNiRhY3zO5g5fFAe+butiOBqDsKUkjB3Q==
+voicegpt-assistant@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/voicegpt-assistant/-/voicegpt-assistant-1.0.5.tgz#3a6c9350e4e17cebf5f3e3f53301f30c6de7e485"
+  integrity sha512-Cs/QbV/WQ1p216O+qgpilp6QQhSKZFNx90EbGfOwdkw+qSRoODneFvZxRHEMCeMQxnkiukUV/OJVDtV95Gr3AQ==
   dependencies:
     openai "^4.67.3"
     react "^18.3.1"

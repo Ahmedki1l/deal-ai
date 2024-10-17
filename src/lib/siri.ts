@@ -1,6 +1,6 @@
 import { platformsArr } from "@/db/enums";
 import axios from "@/lib/axios";
-import { OpenAI } from "@/siri";
+import { OpenAI } from "voicegpt-assistant";
 
 const CUSTOMIED_FUNCTION = [
   {
@@ -87,7 +87,7 @@ const CUSTOMIED_FUNCTION = [
   },
 ];
 
-export const openai = OpenAI({
+export const { openai, ...AI } = OpenAI({
   configure: {
     // organization: "org-yourorg", // replace with your organization
     apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY!,

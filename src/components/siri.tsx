@@ -2,6 +2,7 @@
 
 import { DialogResponsive, DialogResponsiveProps } from "@/components/dialog";
 import { Icons } from "@/components/icons";
+import { useSession } from "@/components/session-provider";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,15 +13,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { openai } from "@/lib/siri";
+import { AI } from "@/lib/siri";
 import { clientAction, cn } from "@/lib/utils";
-import { useConversation, useSpeechRecognition } from "@/siri";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useConversation, useSpeechRecognition } from "voicegpt-assistant";
 import { z } from "zod";
-import { useSession } from "./session-provider";
 
 const formSchema = z.object({
   message: z
@@ -74,7 +74,7 @@ export function Siri({ ...props }: SiriProps) {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     await clientAction(
       async () =>
-        await openai.callChatGPTWithFunctions({
+        await AI.callChatGPTWithFunctions({
           userMessage: data.message,
           existingMessages: messages,
           args: { user: user },

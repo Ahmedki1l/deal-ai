@@ -4609,7 +4609,7 @@ react-transition-group@^4.4.5:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react@^18:
+react@^18, react@^18.3.1:
   version "18.3.1"
   resolved "https://registry.npmjs.org/react/-/react-18.3.1.tgz"
   integrity sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==
@@ -5435,6 +5435,14 @@ victory-vendor@^36.6.8:
     d3-shape "^3.1.0"
     d3-time "^3.0.0"
     d3-timer "^3.0.1"
+
+voicegpt-assistant@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/voicegpt-assistant/-/voicegpt-assistant-1.0.4.tgz#35b7e2be2cb9a7a9895cc23da7ff708f897b75be"
+  integrity sha512-mbzqcu8HsgpmliwfW3l9F0wjJ2gcJeJpjBlcm7kQ+NtpcHJmyory4kNiRhY3zO5g5fFAe+butiOBqDsKUkjB3Q==
+  dependencies:
+    openai "^4.67.3"
+    react "^18.3.1"
 
 web-streams-polyfill@4.0.0-beta.3:
   version "4.0.0-beta.3"

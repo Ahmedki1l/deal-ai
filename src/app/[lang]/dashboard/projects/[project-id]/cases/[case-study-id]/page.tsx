@@ -179,7 +179,7 @@ export default async function StudyCase({
                       <ul className="list-decimal ltr:pl-5 rtl:pr-5">
                         {Object.entries(data).map(([key, value]) => (
                           <li key={key} className="mb-1">
-                            <strong>{key?.split("_ ")?.join(" ")}:</strong>{" "}
+                            {key.split("_").join(" ")}:{" "}
                             {typeof value === "object" && value !== null
                               ? renderKeyValuePairs(value)
                               : value}

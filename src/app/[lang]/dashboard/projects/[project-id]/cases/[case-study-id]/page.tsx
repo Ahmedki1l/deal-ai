@@ -182,17 +182,18 @@ export default async function StudyCase({
                         {" "}
                         {/* Adjust padding as needed */}
                         {Object.entries(data).map(([key, value]) => {
-                          // Check if the key is numeric using a simple regex that matches only digits
-                          const isNumericKey = /^\d+$/.test(key);
-
                           return (
                             <li key={key}>
-                              {isNumericKey
-                                ? ""
-                                : `${key.split("_").join(" ")}: `}
-                              {typeof value === "object" && value !== null
-                                ? renderKeyValuePairs(value)
-                                : value}
+                              <strong>{key.split("_").join(" ")}:</strong>{" "}
+                              {Array.isArray(value) ? (
+                                <ul>
+                                  {value.map((item, index) => (
+                                    <li key={index}>{item}</li>
+                                  ))}
+                                </ul>
+                              ) : (
+                                value
+                              )}
                             </li>
                           );
                         })}

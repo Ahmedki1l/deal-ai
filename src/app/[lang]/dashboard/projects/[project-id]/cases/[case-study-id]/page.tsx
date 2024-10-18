@@ -176,15 +176,26 @@ export default async function StudyCase({
                       : null;
 
                     const renderKeyValuePairs = (data: Record<string, any>) => (
-                      <ul className="list-decimal ltr:pl-5 rtl:pr-5">
-                        {Object.entries(data).map(([key, value]) => (
-                          <li key={key} className="mb-1">
-                            {key.split("_").join(" ")}:{" "}
-                            {typeof value === "object" && value !== null
-                              ? renderKeyValuePairs(value)
-                              : value}
-                          </li>
-                        ))}
+                      <ul
+                        style={{ listStyleType: "none", paddingLeft: "20px" }}
+                      >
+                        {" "}
+                        {/* Adjust padding as needed */}
+                        {Object.entries(data).map(([key, value]) => {
+                          // Check if the key is numeric using a simple regex that matches only digits
+                          const isNumericKey = /^\d+$/.test(key);
+
+                          return (
+                            <li key={key}>
+                              {isNumericKey
+                                ? ""
+                                : `${key.split("_").join(" ")}: `}
+                              {typeof value === "object" && value !== null
+                                ? renderKeyValuePairs(value)
+                                : value}
+                            </li>
+                          );
+                        })}
                       </ul>
                     );
 

@@ -176,27 +176,15 @@ export default async function StudyCase({
                       : null;
 
                     const renderKeyValuePairs = (data: Record<string, any>) => (
-                      <ul
-                        style={{ listStyleType: "none", paddingLeft: "20px" }}
-                      >
-                        {" "}
-                        {/* Adjust padding as needed */}
-                        {Object.entries(data).map(([key, value]) => {
-                          return (
-                            <li key={key}>
-                              <strong>{key.split("_").join(" ")}:</strong>{" "}
-                              {Array.isArray(value) ? (
-                                <ul>
-                                  {value.map((item, index) => (
-                                    <li key={index}>{item}</li>
-                                  ))}
-                                </ul>
-                              ) : (
-                                value
-                              )}
-                            </li>
-                          );
-                        })}
+                      <ul className="list-decimal ltr:pl-5 rtl:pr-5">
+                        {Object.entries(data).map(([key, value]) => (
+                          <li key={key} className="mb-1">
+                            <strong>{key?.split("_ ")?.join(" ")}:</strong>{" "}
+                            {typeof value === "object" && value !== null
+                              ? renderKeyValuePairs(value)
+                              : value}
+                          </li>
+                        ))}
                       </ul>
                     );
 

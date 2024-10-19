@@ -176,13 +176,16 @@ export default async function StudyCase({
                       : null;
 
                     const renderKeyValuePairs = (data: Record<string, any>) => (
-                      <ul className="list-decimal ltr:pl-5 rtl:pr-5">
+                      <ul className="list-none pl-0">
+                        {" "}
+                        {/* Removed list-decimal and adjusted padding */}
                         {Object.entries(data).map(([key, value]) => {
+                          // Render different types appropriately
                           if (
                             typeof value === "string" ||
                             typeof value === "number"
                           ) {
-                            // Directly render string and number values
+                            // Render simple string and number values
                             return (
                               <li key={key} className="mb-1">
                                 <strong>{key.split("_").join(" ")}:</strong>{" "}
@@ -190,11 +193,11 @@ export default async function StudyCase({
                               </li>
                             );
                           } else if (Array.isArray(value)) {
-                            // Render array items without indices
+                            // Render array items without bullets for each item
                             return (
-                              <li key={key}>
+                              <li key={key} className="mb-1">
                                 <strong>{key.split("_").join(" ")}:</strong>
-                                <ul className="list-disc pl-5">
+                                <ul className="list-inside list-disc">
                                   {value.map((item, index) => (
                                     <li key={index}>{item}</li>
                                   ))}
@@ -202,9 +205,9 @@ export default async function StudyCase({
                               </li>
                             );
                           } else {
-                            // Recursively handle objects
+                            // Recursively render objects
                             return (
-                              <li key={key}>
+                              <li key={key} className="mb-1">
                                 <strong>{key.split("_").join(" ")}:</strong>
                                 {renderKeyValuePairs(value)}
                               </li>

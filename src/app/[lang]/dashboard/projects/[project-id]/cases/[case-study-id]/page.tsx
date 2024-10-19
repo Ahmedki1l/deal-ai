@@ -177,14 +177,29 @@ export default async function StudyCase({
 
                     const renderKeyValuePairs = (data: Record<string, any>) => (
                       <ul className="list-decimal ltr:pl-5 rtl:pr-5">
-                        {Object.entries(data).map(([key, value]) => (
-                          <li key={key} className="mb-1">
-                            <strong>{key?.split("_ ")?.join(" ")}:</strong>{" "}
-                            {typeof value === "object" && value !== null
-                              ? renderKeyValuePairs(value)
-                              : value}
-                          </li>
-                        ))}
+                        {Object.entries(data).map(([key, value]) => {
+                          // Check if the value is an array
+                          if (Array.isArray(value)) {
+                            return (
+                              <li key={key} className="mb-1">
+                                <strong>{key?.split("_").join(" ")}:</strong>
+                                <ul className="list-disc pl-5">
+                                  {value.map((item, index) => (
+                                    <li key={index}>{item}</li> // Render without index
+                                  ))}
+                                </ul>
+                              </li>
+                            );
+                          } else {
+                            // Render normal key-value pairs
+                            return (
+                              <li key={key} className="mb-1">
+                                <strong>{key?.split("_").join(" ")}:</strong>{" "}
+                                {value}
+                              </li>
+                            );
+                          }
+                        })}
                       </ul>
                     );
 
@@ -241,14 +256,29 @@ export default async function StudyCase({
 
                     const renderKeyValuePairs = (data: Record<string, any>) => (
                       <ul className="list-decimal ltr:pl-5 rtl:pr-5">
-                        {Object.entries(data).map(([key, value]) => (
-                          <li key={key} className="mb-1">
-                            <strong>{key?.split("_ ")?.join(" ")}:</strong>{" "}
-                            {typeof value === "object" && value !== null
-                              ? renderKeyValuePairs(value)
-                              : value}
-                          </li>
-                        ))}
+                        {Object.entries(data).map(([key, value]) => {
+                          // Check if the value is an array
+                          if (Array.isArray(value)) {
+                            return (
+                              <li key={key} className="mb-1">
+                                <strong>{key?.split("_").join(" ")}:</strong>
+                                <ul className="list-disc pl-5">
+                                  {value.map((item, index) => (
+                                    <li key={index}>{item}</li> // Render without index
+                                  ))}
+                                </ul>
+                              </li>
+                            );
+                          } else {
+                            // Render normal key-value pairs
+                            return (
+                              <li key={key} className="mb-1">
+                                <strong>{key?.split("_").join(" ")}:</strong>{" "}
+                                {value}
+                              </li>
+                            );
+                          }
+                        })}
                       </ul>
                     );
 

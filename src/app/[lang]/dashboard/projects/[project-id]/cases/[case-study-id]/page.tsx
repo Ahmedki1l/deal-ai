@@ -194,7 +194,7 @@ export default async function StudyCase({
                             return (
                               <li key={key}>
                                 <strong>{key.split("_").join(" ")}:</strong>
-                                <ul className="pl-5">
+                                <ul className="list-disc pl-3">
                                   {value.map((item, index) => (
                                     <li key={index}>{item}</li>
                                   ))}
@@ -284,7 +284,7 @@ export default async function StudyCase({
                             return (
                               <li key={key}>
                                 <strong>{key.split("_").join(" ")}:</strong>
-                                <ul className="pl-5">
+                                <ul className="list-disc pl-3">
                                   {value.map((item, index) => (
                                     <li key={index}>{item}</li>
                                   ))}
@@ -341,7 +341,7 @@ export default async function StudyCase({
                             return (
                               <li key={key} className="mb-1">
                                 <strong>{key?.split("_").join(" ")}:</strong>
-                                <ul className="list-disc pl-5">
+                                <ul className="list-disc pl-3">
                                   {value.map((item, index) => (
                                     <li key={index}>{item}</li> // Render without index
                                   ))}

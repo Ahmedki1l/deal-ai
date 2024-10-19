@@ -194,7 +194,7 @@ export default async function StudyCase({
                             return (
                               <li key={key}>
                                 <strong>{key.split("_").join(" ")}:</strong>
-                                <ul className="list-disc pl-3">
+                                <ul className="list-disc pl-5">
                                   {value.map((item, index) => (
                                     <li key={index}>{item}</li>
                                   ))}

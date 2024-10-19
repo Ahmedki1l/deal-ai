@@ -178,24 +178,35 @@ export default async function StudyCase({
                     const renderKeyValuePairs = (data: Record<string, any>) => (
                       <ul className="list-decimal ltr:pl-5 rtl:pr-5">
                         {Object.entries(data).map(([key, value]) => {
-                          // Check if the value is an array
-                          if (Array.isArray(value)) {
+                          if (
+                            typeof value === "string" ||
+                            typeof value === "number"
+                          ) {
+                            // Directly render string and number values
                             return (
                               <li key={key} className="mb-1">
-                                <strong>{key?.split("_").join(" ")}:</strong>
-                                <ul className="list-disc pl-5">
+                                <strong>{key.split("_").join(" ")}:</strong>{" "}
+                                {value}
+                              </li>
+                            );
+                          } else if (Array.isArray(value)) {
+                            // Render array items without indices
+                            return (
+                              <li key={key}>
+                                <strong>{key.split("_").join(" ")}:</strong>
+                                <ul className="pl-5">
                                   {value.map((item, index) => (
-                                    <li key={index}>{item}</li> // Render without index
+                                    <li key={index}>{item}</li>
                                   ))}
                                 </ul>
                               </li>
                             );
                           } else {
-                            // Render normal key-value pairs
+                            // Recursively handle objects
                             return (
-                              <li key={key} className="mb-1">
-                                <strong>{key?.split("_").join(" ")}:</strong>{" "}
-                                {value}
+                              <li key={key}>
+                                <strong>{key.split("_").join(" ")}:</strong>
+                                {renderKeyValuePairs(value)}
                               </li>
                             );
                           }
@@ -257,24 +268,35 @@ export default async function StudyCase({
                     const renderKeyValuePairs = (data: Record<string, any>) => (
                       <ul className="list-decimal ltr:pl-5 rtl:pr-5">
                         {Object.entries(data).map(([key, value]) => {
-                          // Check if the value is an array
-                          if (Array.isArray(value)) {
+                          if (
+                            typeof value === "string" ||
+                            typeof value === "number"
+                          ) {
+                            // Directly render string and number values
                             return (
                               <li key={key} className="mb-1">
-                                <strong>{key?.split("_").join(" ")}:</strong>
-                                <ul className="list-disc pl-5">
+                                <strong>{key.split("_").join(" ")}:</strong>{" "}
+                                {value}
+                              </li>
+                            );
+                          } else if (Array.isArray(value)) {
+                            // Render array items without indices
+                            return (
+                              <li key={key}>
+                                <strong>{key.split("_").join(" ")}:</strong>
+                                <ul className="pl-5">
                                   {value.map((item, index) => (
-                                    <li key={index}>{item}</li> // Render without index
+                                    <li key={index}>{item}</li>
                                   ))}
                                 </ul>
                               </li>
                             );
                           } else {
-                            // Render normal key-value pairs
+                            // Recursively handle objects
                             return (
-                              <li key={key} className="mb-1">
-                                <strong>{key?.split("_").join(" ")}:</strong>{" "}
-                                {value}
+                              <li key={key}>
+                                <strong>{key.split("_").join(" ")}:</strong>
+                                {renderKeyValuePairs(value)}
                               </li>
                             );
                           }

@@ -8,20 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "format": "prettier --write .",
-    "lint-staged": "lint-staged",
-    "prepare": "husky"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "pnpx prettier --plugin prettier-plugin-organize-imports --write .",
-      "pnpx prettier --plugin @ianvs/prettier-plugin-sort-imports --write .",
-      "pnpx prettier --plugin prettier-plugin-tailwindcss --write ."
-    ],
-    "*.css": [
-      "prettier --write"
-    ]
-  },
+    "format": "prettier --write ."
+  }, 
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.5.4",
     "@googlemaps/js-api-loader": "^1.16.8",
@@ -95,8 +83,6 @@
     "eslint-config-next": "14.2.5",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-tailwindcss": "^3.17.4",
-    "husky": "^9.1.5",
-    "lint-staged": "^15.2.9",
     "postcss": "^8",
     "prettier": "^3.3.3",
     "prettier-plugin-organize-imports": "^4.0.0",

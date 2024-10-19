@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import { useLocale } from "@/hooks/use-locale";
 import { AI } from "@/lib/siri";
 import { clientAction, cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,6 +22,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useConversation, useSpeechRecognition } from "voicegpt-assistant";
 import { z } from "zod";
+import { Tooltip } from "./tooltip";
 
 const formSchema = z.object({
   message: z
@@ -33,6 +35,7 @@ const formSchema = z.object({
 
 type SiriProps = Omit<DialogResponsiveProps, "open" | "setOpen">;
 export function Siri({ ...props }: SiriProps) {
+  const locale = useLocale();
   const { user } = useSession();
   const [loading, setLoading] = useState(false);
 
@@ -48,7 +51,7 @@ export function Siri({ ...props }: SiriProps) {
     error,
     setError,
   } = useSpeechRecognition({
-    key: "Hi Siri", // Optional: If omitted, it starts listening immediately
+    key: "Hi Deal", // Optional: If omitted, it starts listening immediately
     recognitionOptions: {
       lang: "en-US", // Custom recognition options, like language
       continuous: true, // Keep listening continuously
@@ -77,9 +80,9 @@ export function Siri({ ...props }: SiriProps) {
         await AI.callChatGPTWithFunctions({
           userMessage: data.message,
           existingMessages: messages,
-          args: { user: user },
+          args: { user: user, locale },
         }),
-      setLoading,
+      setLoading
     ).then((updatedMessages) => {
       if (!updatedMessages) return;
 
@@ -116,7 +119,7 @@ export function Siri({ ...props }: SiriProps) {
                   key={index}
                   className={cn(
                     "my-4 flex items-center",
-                    message.role === "user" ? "justify-end" : "justify-start",
+                    message.role === "user" ? "justify-end" : "justify-start"
                   )}
                 >
                   <p
@@ -124,7 +127,7 @@ export function Siri({ ...props }: SiriProps) {
                       "w-fit rounded-md px-2 py-1",
                       message.role === "user"
                         ? "bg-primary text-primary-foreground"
-                        : "bg-secondary text-secondary-foreground",
+                        : "bg-secondary text-secondary-foreground"
                     )}
                   >
                     {message.content}
@@ -180,7 +183,11 @@ export function Siri({ ...props }: SiriProps) {
       }
       {...props}
     >
-      <Button className="fixed bottom-2 right-2">Siri</Button>
+      <div>
+        <Tooltip text="say, Hi Deal">
+          <Button className="fixed bottom-2 right-2">Siri</Button>
+        </Tooltip>
+      </div>
     </DialogResponsive>
   );
 }

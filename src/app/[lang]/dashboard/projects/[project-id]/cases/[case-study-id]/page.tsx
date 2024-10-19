@@ -283,14 +283,29 @@ export default async function StudyCase({
 
                     const renderKeyValuePairs = (data: Record<string, any>) => (
                       <ul className="list-decimal ltr:pl-5 rtl:pr-5">
-                        {Object.entries(data).map(([key, value]) => (
-                          <li key={key} className="mb-1">
-                            <strong>{key?.split("_ ")?.join(" ")}:</strong>{" "}
-                            {typeof value === "object" && value !== null
-                              ? renderKeyValuePairs(value)
-                              : value}
-                          </li>
-                        ))}
+                        {Object.entries(data).map(([key, value]) => {
+                          // Check if the value is an array
+                          if (Array.isArray(value)) {
+                            return (
+                              <li key={key} className="mb-1">
+                                <strong>{key?.split("_").join(" ")}:</strong>
+                                <ul className="list-disc pl-5">
+                                  {value.map((item, index) => (
+                                    <li key={index}>{item}</li> // Render without index
+                                  ))}
+                                </ul>
+                              </li>
+                            );
+                          } else {
+                            // Render normal key-value pairs
+                            return (
+                              <li key={key} className="mb-1">
+                                <strong>{key?.split("_").join(" ")}:</strong>{" "}
+                                {value}
+                              </li>
+                            );
+                          }
+                        })}
                       </ul>
                     );
 
@@ -319,6 +334,7 @@ export default async function StudyCase({
                 })()}
               </AccordionContent>
             </AccordionItem>
+
             <AccordionItem value="ROI_Calculation">
               <AccordionTrigger>{c?.["ROI calculation"]}</AccordionTrigger>
               <AccordionContent>
@@ -367,16 +383,90 @@ export default async function StudyCase({
             <AccordionItem value="Strategic_Insights">
               <AccordionTrigger>{c?.["strategic insights"]}</AccordionTrigger>
               <AccordionContent>
-                {/* Remove quotes by directly rendering the content */}
-                {caseStudy?.["Strategic_Insights"]?.replace(/"/g, "")}
+                {(() => {
+                  try {
+                    // Parse the JSON string into an object
+                    const roiCalculation = caseStudy?.["Strategic_Insights"]
+                      ? JSON.parse(caseStudy["Strategic_Insights"])
+                      : null;
+
+                    // Function to render key-value pairs
+                    const renderKeyValuePairs = (data: Record<string, any>) => (
+                      <ul className="list-decimal ltr:pl-5 rtl:pr-5">
+                        {Object.entries(data).map(([key, value]) => (
+                          <li key={key} className="mb-1">
+                            <strong>{key?.split("_ ")?.join(" ")}:</strong>{" "}
+                            {typeof value === "object" && value !== null
+                              ? renderKeyValuePairs(value)
+                              : value}
+                          </li>
+                        ))}
+                      </ul>
+                    );
+
+                    if (
+                      roiCalculation &&
+                      typeof roiCalculation === "object" &&
+                      !Array.isArray(roiCalculation)
+                    ) {
+                      return renderKeyValuePairs(roiCalculation);
+                    } else {
+                      return (
+                        <p>
+                          {c?.["no valid ROI calculation data available."]}.
+                        </p>
+                      );
+                    }
+                  } catch (e) {
+                    console.error("Failed to parse ROI_Calculation JSON", e);
+                    return <p>{c?.["error loading ROI calculation data."]}</p>;
+                  }
+                })()}
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="Recommendations">
               <AccordionTrigger>{c?.["recommendations"]}</AccordionTrigger>
               <AccordionContent>
-                {/* Remove quotes by directly rendering the content */}
-                {caseStudy?.["Recommendations"]?.replace(/"/g, "")}
+                {(() => {
+                  try {
+                    // Parse the JSON string into an object
+                    const roiCalculation = caseStudy?.["Recommendations"]
+                      ? JSON.parse(caseStudy["Recommendations"])
+                      : null;
+
+                    // Function to render key-value pairs
+                    const renderKeyValuePairs = (data: Record<string, any>) => (
+                      <ul className="list-decimal ltr:pl-5 rtl:pr-5">
+                        {Object.entries(data).map(([key, value]) => (
+                          <li key={key} className="mb-1">
+                            <strong>{key?.split("_ ")?.join(" ")}:</strong>{" "}
+                            {typeof value === "object" && value !== null
+                              ? renderKeyValuePairs(value)
+                              : value}
+                          </li>
+                        ))}
+                      </ul>
+                    );
+
+                    if (
+                      roiCalculation &&
+                      typeof roiCalculation === "object" &&
+                      !Array.isArray(roiCalculation)
+                    ) {
+                      return renderKeyValuePairs(roiCalculation);
+                    } else {
+                      return (
+                        <p>
+                          {c?.["no valid ROI calculation data available."]}.
+                        </p>
+                      );
+                    }
+                  } catch (e) {
+                    console.error("Failed to parse ROI_Calculation JSON", e);
+                    return <p>{c?.["error loading ROI calculation data."]}</p>;
+                  }
+                })()}
               </AccordionContent>
             </AccordionItem>
             {caseStudy?.["Post_Frequency"] ? (

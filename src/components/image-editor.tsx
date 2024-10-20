@@ -164,7 +164,7 @@ export function ImageEditor({
               </ToggleGroup>
 
               {form.watch("editor.cropRect") ||
-              form.watch("editor.cropRect") ? (
+                form.watch("editor.cropRect") ? (
                 <div className="flex items-center gap-1">
                   <Input
                     type="number"
@@ -250,14 +250,22 @@ export function ImageEditor({
                 <ToggleGroup type="single" className="flex-col">
                   {form.watch("editor.cropRect") ? (
                     <>
-                      {[form.getValues("editor.cropRect")].map((node, i) => (
-                        <ToggleGroupItem
-                          key={`rect-${i + 1}`}
-                          value={`rect-${i + 1}`}
-                          onClick={() => editor?.["current"]!.dragNode(node)}
-                        >
-                          Image Size
-                        </ToggleGroupItem>
+                      {[form.getValues("editor.cropRect")!]?.map((node, i) => (
+                        <div key={`rect-${i + 1}`} className="flex justify-between items-center gap-2">
+                          <ToggleGroupItem
+                            value={`rect-${i + 1}`}
+                            onClick={() => editor?.["current"]!.dragNode(node)}
+                          >
+                            Image Size
+                          </ToggleGroupItem>
+                          <Tooltip text="recenter">
+                            <div>
+                              <Button type='button' variant='outline' size="sm" onClick={() => editor?.["current"]!.recenterNode(node)}>
+                                <Icons.reload />
+                              </Button>
+                            </div>
+                          </Tooltip>
+                        </div>
                       ))}
                       <Separator className="my-2" />
                     </>
@@ -265,29 +273,45 @@ export function ImageEditor({
 
                   {form.watch("editor.photo") ? (
                     <>
-                      {[form.getValues("editor.photo")].map((node, i) => (
-                        <ToggleGroupItem
-                          key={`photo-${i + 1}`}
-                          value={`photo-${i + 1}`}
-                          onClick={() => editor?.["current"]!.dragNode(node)}
-                        >
-                          <Image src={form.getValues("src")} alt="" />
-                        </ToggleGroupItem>
+                      {[form.getValues("editor.photo")!]?.map((node, i) => (
+                        <div key={`photo-${i + 1}`} className="flex justify-between items-center gap-2">
+                          <ToggleGroupItem
+                            value={`photo-${i + 1}`}
+                            onClick={() => editor?.["current"]!.dragNode(node)}
+                          >
+                            <Image src={form.getValues("src")} alt="" />
+                          </ToggleGroupItem>
+                          <Tooltip text="recenter">
+                            <div>
+                              <Button type='button' variant='outline' size="sm" onClick={() => editor?.["current"]!.recenterNode(node)}>
+                                <Icons.reload />
+                              </Button>
+                            </div>
+                          </Tooltip>
+                        </div>
                       ))}
-
                       <Separator className="my-2" />
                     </>
                   ) : null}
+
                   {form.watch("editor.frame") ? (
                     <>
-                      {[form.getValues("editor.frame")].map((node, i) => (
-                        <ToggleGroupItem
-                          key={`frame-${i + 1}`}
-                          value={`frame-${i + 1}`}
-                          onClick={() => editor?.["current"]!.dragNode(node)}
-                        >
-                          <Image src={form.getValues("filledFrame")!} alt="" />
-                        </ToggleGroupItem>
+                      {[form.getValues("editor.frame")!]?.map((node, i) => (
+                        <div key={`frame-${i + 1}`} className="flex justify-between items-center gap-2">
+                          <ToggleGroupItem
+                            value={`frame-${i + 1}`}
+                            onClick={() => editor?.["current"]!.dragNode(node)}
+                          >
+                            <Image src={form.getValues("filledFrame")!} alt="" />
+                          </ToggleGroupItem>
+                          <Tooltip text="recenter">
+                            <div>
+                              <Button type='button' variant='outline' size="sm" onClick={() => editor?.["current"]!.recenterNode(node)}>
+                                <Icons.reload />
+                              </Button>
+                            </div>
+                          </Tooltip>
+                        </div>
                       ))}
                       <Separator className="my-2" />
                     </>
@@ -295,18 +319,34 @@ export function ImageEditor({
 
                   {form.watch("editor.textNodes")
                     ? [...form.getValues("editor.textNodes")].map((node, i) => (
+                      <div key={`text-${i + 1}`} className="flex justify-between items-center gap-2">
                         <ToggleGroupItem
-                          key={`text-${i + 1}`}
                           value={`text-${i + 1}`}
                           onClick={() => editor?.["current"]!.dragNode(node)}
                         >
                           {node?.text()}
                         </ToggleGroupItem>
-                      ))
+                        <Tooltip text="recenter">
+                          <div>
+                            <Button type='button' variant='outline' size="sm" onClick={() => editor?.["current"]!.recenterNode(node)}>
+                              <Icons.reload />
+                            </Button>
+                          </div>
+                        </Tooltip>
+                      </div>
+                    ))
                     : null}
                 </ToggleGroup>
+
+                {/* Button to recenter all nodes */}
+                <div className="flex justify-center mt-4">
+                  <Button type='button' variant='outline' size='sm' onClick={() => editor?.["current"]!.recenterAllNodes()}>
+                    Recenter All Layers
+                  </Button>
+                </div>
               </CardContent>
             </Card>
+
 
             <Card className="space-y-1">
               <CardHeader className="flex flex-row items-center justify-between p-0 px-2">

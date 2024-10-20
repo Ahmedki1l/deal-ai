@@ -362,6 +362,29 @@ class PhotoEditor {
     // Redraw the layer
     this.layer.draw();
   }
+
+  recenterNode(node: Konva.Node) {
+    const { width, height } = node.size();
+    const stageWidth = this.stage.width();
+    const stageHeight = this.stage.height();
+  
+    const x = (stageWidth - width) / 2;
+    const y = (stageHeight - height) / 2;
+  
+    node.position({ x, y });
+    this.layer.draw(); // Ensure the layer is updated after recentering
+  }
+  
+  recenterAllNodes() {
+    if (this.photo) this.recenterNode(this.photo);
+    if (this.frame) this.recenterNode(this.frame);
+    if (this.cropRect) this.recenterNode(this.cropRect);
+    this.textNodes.forEach((textNode) => this.recenterNode(textNode));
+  
+    this.layer.draw(); // Redraw the layer after all nodes are centered
+  }
+  
+  
 }
 
 export { PhotoEditor };

@@ -16,8 +16,9 @@ export const propertySchema = z.object(
     rooms: z.string("rooms"),
     bathrooms: z.string("bathrooms"),
     livingrooms: z.string("livingrooms"),
+    price: z.string("price").optional(),
     garden: z.string("garden").optional(),
-    pool: z.string("hashtags").optional(),
+    pool: z.string("pool").optional(),
     view: z.string("view").optional(),
 
     deletedAt: z.date("deletedAt").nullable(),
@@ -35,6 +36,7 @@ export const propertyCreateSchema = propertySchema.pick({
   rooms: true,
   bathrooms: true,
   livingrooms: true,
+  price: true,
   garden: true,
   pool: true,
   view: true,

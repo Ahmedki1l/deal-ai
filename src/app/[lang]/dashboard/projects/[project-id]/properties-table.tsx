@@ -82,6 +82,16 @@ export function PropertyTable({
             ),
           },
           {
+            accessorKey: "price",
+            header: ({ column }) => (
+              <DataTableColumnHeader
+                dic={dic}
+                column={column}
+                title={c?.["price"]}
+              />
+            ),
+          },
+          {
             accessorKey: "type",
             header: ({ column }) => (
               <DataTableColumnHeader

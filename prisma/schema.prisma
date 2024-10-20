@@ -131,6 +131,7 @@ model Property {
   floors      String
   rooms       String
   bathrooms   String
+  price       String?
   livingrooms String?
   garden      String?
   pool        String?

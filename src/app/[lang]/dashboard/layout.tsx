@@ -38,7 +38,7 @@ export default async function DashboardLayout({
     >
       {children}
 
-      <Siri dic={dic} />
+      {/* <Siri dic={dic} /> */}
     </ResizableLayout>
   );
 }

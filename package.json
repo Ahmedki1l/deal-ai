@@ -9,7 +9,7 @@
     "lint": "next lint",
     "postinstall": "prisma generate",
     "format": "prettier --write ."
-  }, 
+  },
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.5.4",
     "@googlemaps/js-api-loader": "^1.16.8",

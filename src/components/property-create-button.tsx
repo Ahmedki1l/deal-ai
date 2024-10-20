@@ -222,6 +222,12 @@ export const ApartmentForm = ({
                           form={form as any}
                           loading={loading}
                         />
+                        <PropertyForm.price
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
                         <PropertyForm.space
                           dic={dic}
                           index={i}
@@ -388,6 +394,12 @@ export const VillaForm = ({
                           form={form as any}
                           loading={loading}
                         />
+                        <PropertyForm.price
+                        dic={dic}
+                        index={i}
+                        form={form as any}
+                        loading={loading}
+                      />
                         <PropertyForm.space
                           dic={dic}
                           index={i}

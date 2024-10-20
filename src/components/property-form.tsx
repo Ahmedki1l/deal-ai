@@ -194,6 +194,26 @@ export const PropertyForm = {
       )}
     />
   ),
+  price: ({
+    dic: { "property-form": c },
+    loading,
+    form,
+    index,
+  }: PropertyFormProps & { index: number }) => (
+    <FormField
+      control={form.control}
+      name={`properties.${index}.price`}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{c?.["price"]?.["label"]}</FormLabel>
+          <FormControl>
+            <Input type="text" disabled={loading} {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  ),
   garden: ({
     dic: { "property-form": c },
     loading,

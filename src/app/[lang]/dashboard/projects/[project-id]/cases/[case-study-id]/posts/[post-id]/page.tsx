@@ -1,4 +1,4 @@
-import { BackButton } from "@/components/back-button";
+import { PostBackButton } from "@/components/post-back-button";
 import { EmptyPlaceholder } from "@/components/empty-placeholder";
 import { Icons } from "@/components/icons";
 import { Link } from "@/components/link";
@@ -26,7 +26,7 @@ export default async function CaseStudy({
     "case-study-id": caseStudyId,
     "post-id": postId,
   },
-}: CaseStudyProps) {
+}: CaseStudyProps) { 
   const dic = await getDictionary(lang);
   const c =
     dic?.["dashboard"]?.["user"]?.["projects"]?.["project"]?.["cases"]?.[
@@ -55,7 +55,9 @@ export default async function CaseStudy({
           <EmptyPlaceholder.Description>
             {c?.["you have not created you post yet."]}
           </EmptyPlaceholder.Description>
-          <BackButton dic={dic} />
+          <PostBackButton 
+            href={`/dashboard/projects/${projectId}/cases/${caseStudyId}`}
+            dic={dic} />
         </EmptyPlaceholder>
       </div>
     );
@@ -69,6 +71,10 @@ export default async function CaseStudy({
       <div className="container flex flex-col gap-5 py-6">
         <div className="flex items-center justify-between gap-4">
           <div>
+            <PostBackButton
+              href={`/dashboard/projects/${projectId}/cases/${caseStudyId}`}
+              dic={dic} />
+{/*             
             <Link
               href={`/dashboard/projects/${projectId}/cases/${caseStudyId}`}
               className={buttonVariants({ variant: "ghost" })}
@@ -78,7 +84,7 @@ export default async function CaseStudy({
               <span className="font-bold">
                 {post?.["caseStudy"]?.["title"]}
               </span>
-            </Link>
+            </Link> */}
           </div>
         </div>
 

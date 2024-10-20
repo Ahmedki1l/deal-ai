@@ -648,7 +648,7 @@ export default async function StudyCase({
 
                             <CardHeader className="rounded-none p-0">
                               <Link
-                                href={`/dashboard/projects/${projectId}/cases/${caseStudyId}/posts/${e?.["id"]}`}
+                                href={`/dashboard/projects/${projectId}/cases/${caseStudyId}/posts/${e?.["id"]}?to=/dashboard/projects/${projectId}/cases/${caseStudyId}`}
                               >
                                 <Image
                                   src={

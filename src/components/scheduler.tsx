@@ -17,7 +17,8 @@ import { DialogResponsive } from "./dialog";
 import { Icons } from "./icons";
 import { PostUpdateForm } from "./post-update-form";
 import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
+import { Link } from "./link";
 
 export type SchedulerProps = {
   posts: (Post & {
@@ -267,47 +268,79 @@ export function Day({
           const Icon = Icons?.[p?.["icon"]!] ?? null;
 
           return (
-            <DialogResponsive
+            <Link
               key={i}
-              dic={dic}
-              content={
-                <PostUpdateForm
-                  key={i}
-                  disabled={evt?.["postAt"] < new Date()}
-                  post={evt}
-                  dic={dic}
-                />
+              href={`/dashboard/projects/${evt?.['caseStudy']?.['projectId']}/cases/${evt?.['caseStudyId']}/posts/${evt?.['id']}?to=/dashboard/calender`}
+            disabled={
+              // evt?.["postAt"] < new Date() ||
+              evt?.["status"] === "PUBLISHED"
+            }
+              className={cn(
+              buttonVariants({}),
+                "relative justify-between gap-2 px-1 text-xs"
+            )}
+          >
+            <Badge
+              variant={
+                evt?.["status"] === "PUBLISHED" ? "highlight" : "secondary"
               }
-              title={""}
-              description={""}
-              open={open}
-              setOpen={setOpen}
+              className="absolute left-0 top-0 -translate-x-1/2 -translate-y-full"
             >
-              <Button
-                disabled={
-                  // evt?.["postAt"] < new Date() ||
-                  evt?.["status"] === "PUBLISHED"
-                }
-                className="relative justify-between gap-2 px-1 text-xs"
-              >
-                <Badge
-                  variant={
-                    evt?.["status"] === "PUBLISHED" ? "highlight" : "secondary"
-                  }
-                  className="absolute left-0 top-0 -translate-x-1/2 -translate-y-full"
-                >
-                  {evt?.["status"]}
-                </Badge>
-                <div className="flex flex-col items-start">
-                  <h6>{evt?.["caseStudy"]?.["project"]?.["title"]}</h6>
-                  <p className="text-[9px] text-muted-foreground">
-                    {evt?.["title"]}
-                  </p>
-                </div>
+              {evt?.["status"]}
+              </Badge>
+              
+            <div className="flex flex-col items-start">
+              <h6>{evt?.["caseStudy"]?.["project"]?.["title"]}</h6>
+              <p className="text-[9px] text-muted-foreground">
+                {evt?.["title"]}
+              </p>
+            </div>
 
-                <div>{Icon && <Icon />}</div>
-              </Button>
-            </DialogResponsive>
+            <div>{Icon && <Icon />}</div>
+            </Link>
+            
+
+            // <DialogResponsive
+            //   key={i}
+            //   dic={dic}
+            //   content={
+            //     <PostUpdateForm
+            //       key={i}
+            //       disabled={evt?.["postAt"] < new Date()}
+            //       post={evt}
+            //       dic={dic}
+            //     />
+            //   }
+            //   title={""}
+            //   description={""}
+            //   open={open}
+            //   setOpen={setOpen}
+            // >
+          //   <Button
+          //   disabled={
+          //     // evt?.["postAt"] < new Date() ||
+          //     evt?.["status"] === "PUBLISHED"
+          //   }
+          //   className="relative justify-between gap-2 px-1 text-xs"
+          // >
+          //   <Badge
+          //     variant={
+          //       evt?.["status"] === "PUBLISHED" ? "highlight" : "secondary"
+          //     }
+          //     className="absolute left-0 top-0 -translate-x-1/2 -translate-y-full"
+          //   >
+          //     {evt?.["status"]}
+          //   </Badge>
+          //   <div className="flex flex-col items-start">
+          //     <h6>{evt?.["caseStudy"]?.["project"]?.["title"]}</h6>
+          //     <p className="text-[9px] text-muted-foreground">
+          //       {evt?.["title"]}
+          //     </p>
+          //   </div>
+
+          //   <div>{Icon && <Icon />}</div>
+          //   </Button> 
+            // </DialogResponsive>
           );
         })}
       </div>

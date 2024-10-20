@@ -26,7 +26,7 @@ import { platforms } from "@/db/enums";
 import { useLocale } from "@/hooks/use-locale";
 import axios from "@/lib/axios";
 import { t } from "@/lib/locale";
-import { clientAction, fileToBase64 } from "@/lib/utils";
+import { clientAction, fileToBase64, getPdfImages } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import {
   projectCreateFormSchema,
@@ -35,7 +35,6 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
-import { extractImagesFromPdf } from "sinsintro-pdf-extractor";
 import { toast } from "sonner";
 import * as z from "zod";
 import { useSession } from "./session-provider";
@@ -137,6 +136,200 @@ export const ProjectForm = {
       )}
     />
   ),
+  // pdf: function Component({
+  //   dic: {
+  //     "project-form": { pdf: c },
+  //   },
+  //   loading,
+  //   form,
+  // }: ProjectFormProps) {
+  // const locale = useLocale();
+  // const { user } = useSession();
+  //   const [loadingPdf, setLoadingPdf] = useState<boolean>(false);
+  //   const { append } = useFieldArray({
+  //     name: "properties",
+  //     control: form?.["control"],
+  //   });
+
+  //   async function uploadPdf() {
+  //     if (!form?.getValues("pdf")) {
+  //       toast.error("first choose a pdf");
+  //       return;
+  //     }
+
+  //     await clientAction(async () => {
+  //       // upload into space
+  //       const formData = new FormData();
+  //       formData.append("file", form.getValues("pdf")!);
+
+  //       const pdfImages: string[] = await axios({ user, locale })
+  //         .post(
+  //           "/api/images/upload-pdf",
+  //           formData
+  //         )
+  //         .then((r) => r?.["data"])
+  //         .catch((err) => {
+  //           console.error(
+  //             "ai pdf error: ",
+  //             err?.["response"] ? err?.["response"]?.["data"] : err?.["message"]
+  //           );
+  //         });
+
+  //       console.log(pdfImages);
+
+  //       // // get fields using pdgImages
+  //       // const data: {
+  //       //   Title: string;
+  //       //   Description: string;
+  //       //   District: string;
+  //       //   City: string;
+  //       //   Country: string;
+  //       //   Land_Area: string;
+  //       //   Project_Assets: {
+  //       //     Asset_Type: "Apartment" | "Villa";
+  //       //     Title: string;
+  //       //     No_Of_Units: string;
+  //       //     Space: string;
+  //       //     Finishing: string;
+  //       //     Floors: string;
+  //       //     Rooms: string;
+  //       //     Bathrooms: string;
+  //       //     Livingrooms: string;
+  //       //   }[];
+  //       // } = await axios({ user, locale })
+  //       //   .post(process.env.NEXT_PUBLIC_AI_API! + "/ar/pdf-data-extractor", {
+  //       //     images: base64,
+  // })
+  // .then((r) => r?.["data"])
+  // .catch((err) => {
+  //   console.error(
+  //     "ai pdf error: ",
+  //     err?.["response"] ? err?.["response"]?.["data"] : err?.["message"]
+  //   );
+  // });
+
+  //       // if (data?.["Title"] != "0") form.setValue("title", data?.["Title"]);
+  //       // if (data?.["Description"] != "0")
+  //       //   form.setValue("description", data?.["Description"]);
+  //       // if (data?.["District"] != "0")
+  //       //   form.setValue("distinct", data?.["District"]);
+  //       // if (data?.["City"] != "0") form.setValue("city", data?.["City"]);
+  //       // if (data?.["Country"] != "0")
+  //       //   form.setValue("country", data?.["Country"]);
+  //       // if (data?.["Land_Area"] != "0")
+  //       //   form.setValue("spaces", data?.["Land_Area"]);
+
+  //       // if (data?.["Project_Assets"]?.["length"]) {
+  //       //   const aprts = data?.["Project_Assets"]?.filter(
+  //       //     (e) => e?.["Asset_Type"] === "Apartment"
+  //       //   );
+
+  //       //   const villas = data?.["Project_Assets"]?.filter(
+  //       //     (e) => e?.["Asset_Type"] === "Villa"
+  //       //   );
+
+  //       //   if (villas?.["length"])
+  //       //     append(
+  //       //       villas?.map((e) => ({
+  //       //         type: "VILLA",
+  //       //         projectId: "x",
+  //       //         title: e?.["Title"] ?? undefined,
+  //       //         bathrooms: e?.["Bathrooms"] ?? undefined,
+  //       //         finishing: e?.["Finishing"] ?? undefined,
+  //       //         floors: e?.["Floors"] ?? undefined,
+  //       //         livingrooms: e?.["Livingrooms"] ?? undefined,
+  //       //         units: e?.["No_Of_Units"] ?? undefined,
+  //       //         rooms: e?.["Rooms"] ?? undefined,
+  //       //         space: e?.["Space"] ?? undefined,
+  //       //       }))
+  //       //     );
+
+  //       //   if (aprts?.["length"])
+  //       //     append(
+  //       //       aprts?.map((e) => ({
+  //       //         type: "APARTMENT",
+  //       //         projectId: "x",
+  //       //         title: e?.["Title"] ?? undefined,
+  //       //         bathrooms: e?.["Bathrooms"] ?? undefined,
+  //       //         finishing: e?.["Finishing"] ?? undefined,
+  //       //         floors: e?.["Floors"] ?? undefined,
+  //       //         livingrooms: e?.["Livingrooms"] ?? undefined,
+  //       //         units: e?.["No_Of_Units"] ?? undefined,
+  //       //         rooms: e?.["Rooms"] ?? undefined,
+  //       //         space: e?.["Space"] ?? undefined,
+  //       //       }))
+  //       //     );
+  //       // }
+  //     }, setLoadingPdf).then(() => {
+  //       toast.success(c?.["fields are filled using AI."]);
+  //     });
+  //   }
+
+  //   return (
+  //     <div className="flex flex-col items-center gap-4">
+  //       <FormField
+  //         control={form?.["control"]}
+  //         name="pdf"
+  //         render={({ field }) => (
+  //           <FormItem>
+  //             <div className="relative flex aspect-square h-20 cursor-pointer items-center justify-center rounded-full border border-dashed p-0 transition-all hover:bg-gray-50">
+  //               <div>
+  //                 <Icons.file className="text-gray-500" />
+  //                 {form.watch("pdf") && (
+  //                   <Button
+  //                     type="button"
+  //                     variant="outline"
+  //                     size="icon"
+  //                     className="absolute -right-5 -top-5 h-6 w-6"
+  //                     disabled={loading || loadingPdf}
+  //                     onClick={() => form.resetField("pdf")}
+  //                   >
+  //                     <Icons.x />
+  //                   </Button>
+  //                 )}
+  //               </div>
+  //               <FormLabel className="sr-only">{c?.["label"]} </FormLabel>
+  //               <FormControl>
+  //                 <Input
+  //                   {...field}
+  //                   type="file"
+  //                   accept="application/pdf"
+  //                   {...field}
+  //                   className="absolute h-full w-full cursor-pointer rounded-full p-0 opacity-0"
+  //                   disabled={loading || loadingPdf}
+  //                   value={undefined}
+  // onChange={async (e) => {
+  //   form.resetField("pdf");
+  //   const file = e?.["target"]?.["files"]?.[0];
+
+  //   if (file) {
+  //     // field.onChange(file);
+  //     form.setValue("pdf", file);
+  //   }
+  // }}
+  //                 />
+  //               </FormControl>
+  //             </div>
+
+  //             <FormMessage />
+  //           </FormItem>
+  //         )}
+  //       />
+
+  //       {form.watch("pdf") && (
+  //         <Button
+  //           type="button"
+  //           onClick={uploadPdf}
+  //           disabled={loading || loadingPdf}
+  //         >
+  //           {loadingPdf && <Icons.spinner />}
+  //           {c?.["fill fields using ai"]}
+  //         </Button>
+  //       )}
+  //     </div>
+  //   );
+  // },
+
   pdf: function Component({
     dic: {
       "project-form": { pdf: c },
@@ -152,18 +345,22 @@ export const ProjectForm = {
       control: form?.["control"],
     });
 
-    async function uploadPdf() {
-      if (!form?.getValues("pdf.file")) {
-        toast.error("first choose a pdf");
-        return;
-      }
+    const uploadPdf = async () => {
       await clientAction(async () => {
-        const base64 = await extractImagesFromPdf(
-          form.getValues("pdf.file"),
-          600,
-          700,
-        );
+        // upload into space
+        const formData = new FormData();
+        formData.append("file", form.getValues("pdfFile")!);
 
+        const pdfImages = await getPdfImages({
+          locale,
+          user,
+          file: form.getValues("pdfFile"),
+        });
+
+        form.setValue("pdf", pdfImages);
+        console.log(pdfImages);
+
+        // get fields using pdgImages
         const data: {
           Title: string;
           Description: string;
@@ -184,17 +381,17 @@ export const ProjectForm = {
           }[];
         } = await axios({ user, locale })
           .post(process.env.NEXT_PUBLIC_AI_API! + "/ar/pdf-data-extractor", {
-            images: base64,
+            images: pdfImages,
           })
           .then((r) => r?.["data"])
           .catch((err) => {
             console.error(
-              "ai pdf error: ",
-              err?.["response"]
-                ? err?.["response"]?.["data"]
-                : err?.["message"],
+              "pdf extractor error: ",
+              err?.["response"] ? err?.["response"]?.["data"] : err?.["message"]
             );
           });
+
+        console.log("data: ", data);
 
         if (data?.["Title"] != "0") form.setValue("title", data?.["Title"]);
         if (data?.["Description"] != "0")
@@ -209,11 +406,11 @@ export const ProjectForm = {
 
         if (data?.["Project_Assets"]?.["length"]) {
           const aprts = data?.["Project_Assets"]?.filter(
-            (e) => e?.["Asset_Type"] === "Apartment",
+            (e) => e?.["Asset_Type"] === "Apartment"
           );
 
           const villas = data?.["Project_Assets"]?.filter(
-            (e) => e?.["Asset_Type"] === "Villa",
+            (e) => e?.["Asset_Type"] === "Villa"
           );
 
           if (villas?.["length"])
@@ -229,7 +426,7 @@ export const ProjectForm = {
                 units: e?.["No_Of_Units"] ?? undefined,
                 rooms: e?.["Rooms"] ?? undefined,
                 space: e?.["Space"] ?? undefined,
-              })),
+              }))
             );
 
           if (aprts?.["length"])
@@ -245,57 +442,55 @@ export const ProjectForm = {
                 units: e?.["No_Of_Units"] ?? undefined,
                 rooms: e?.["Rooms"] ?? undefined,
                 space: e?.["Space"] ?? undefined,
-              })),
+              }))
             );
         }
-
-        console.log(data);
       }, setLoadingPdf).then(() => {
         toast.success(c?.["fields are filled using AI."]);
       });
-    }
+    };
 
     return (
       <div className="flex flex-col items-center gap-4">
         <FormField
           control={form?.["control"]}
-          name="pdf.file"
+          name="pdfFile"
           render={({ field }) => (
             <FormItem>
               <div className="relative flex aspect-square h-20 cursor-pointer items-center justify-center rounded-full border border-dashed p-0 transition-all hover:bg-gray-50">
                 <div>
                   <Icons.file className="text-gray-500" />
-                  {form.getValues("pdf.file") && (
+                  {form.watch("pdfFile") && (
                     <Button
                       type="button"
                       variant="outline"
                       size="icon"
                       className="absolute -right-5 -top-5 h-6 w-6"
                       disabled={loading || loadingPdf}
-                      onClick={() => form.resetField("pdf.file")}
+                      onClick={() => form.resetField("pdfFile")}
                     >
                       <Icons.x />
                     </Button>
                   )}
                 </div>
-                <FormLabel className="sr-only">{c?.["label"]} </FormLabel>
+                <FormLabel className="sr-only">{c?.["label"]}</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     type="file"
-                    accept="application/pdf"
-                    {...field}
+                    accept="application/pdfFile"
                     className="absolute h-full w-full cursor-pointer rounded-full p-0 opacity-0"
                     disabled={loading || loadingPdf}
                     value={undefined}
+                    // onChange={(e) => {
+                    //   const selectedFile = e?.target?.files[0];
+                    //   if (selectedFile) {
+                    //     form.setValue("pdfFile", selectedFile); // Set the selected file in the form state
+                    //   }
+                    // }}
                     onChange={async (e) => {
-                      form.resetField("pdf");
-                      const file = e?.["target"]?.["files"]?.[0];
-
-                      if (file) {
-                        // field.onChange(file);
-                        form.setValue("pdf.file", file);
-                      }
+                      const selectedFile = e?.["target"]?.["files"]?.[0];
+                      if (selectedFile) field.onChange(selectedFile);
                     }}
                   />
                 </FormControl>
@@ -306,7 +501,7 @@ export const ProjectForm = {
           )}
         />
 
-        {form.watch("pdf.file") && (
+        {form.watch("pdfFile") && (
           <Button
             type="button"
             onClick={uploadPdf}
@@ -319,7 +514,6 @@ export const ProjectForm = {
       </div>
     );
   },
-
   map: ({
     dic: {
       "project-form": { map: c },
@@ -536,7 +730,7 @@ export const ProjectForm = {
               authWindow = window.open(
                 `${domain}/twitter-login`,
                 "Twitter Login",
-                `width=${width},height=${height},top=${top},left=${left}`,
+                `width=${width},height=${height},top=${top},left=${left}`
               );
 
               receiveMessage = (event: MessageEvent) => {
@@ -546,17 +740,17 @@ export const ProjectForm = {
                   console.log("Twitter access token: ", event.data.accessToken);
                   console.log(
                     "Twitter access token: ",
-                    event.data.refreshToken,
+                    event.data.refreshToken
                   );
 
                   // Set the client ID in the form
                   form.setValue(
                     `platforms.${i}.clientId`,
-                    event.data.accessToken,
+                    event.data.accessToken
                   );
                   form.setValue(
                     `platforms.${i}.refreshToken`,
-                    event.data.refreshToken,
+                    event.data.refreshToken
                   );
 
                   // Close the window after successful authentication
@@ -586,7 +780,7 @@ export const ProjectForm = {
               authWindow = window.open(
                 `${domain}/linkedin-login`,
                 "LinkedIn Login",
-                `width=${width},height=${height},top=${top},left=${left}`,
+                `width=${width},height=${height},top=${top},left=${left}`
               );
 
               receiveMessage = (event: MessageEvent) => {
@@ -595,14 +789,14 @@ export const ProjectForm = {
                 if (event.data.type === "LINKEDIN_AUTH_SUCCESS") {
                   console.log(
                     "LinkedIn access token: ",
-                    event.data.accessToken,
+                    event.data.accessToken
                   );
                   console.log("LinkedIn access urn: ", event.data.urn);
 
                   // Set the client ID in the form
                   form.setValue(
                     `platforms.${i}.clientId`,
-                    event.data.accessToken,
+                    event.data.accessToken
                   );
                   form.setValue(`platforms.${i}.urn`, event.data.urn);
 
@@ -634,8 +828,8 @@ export const ProjectForm = {
                 // If the window was closed without receiving the token, reject the promise
                 reject(
                   new Error(
-                    "Authentication window was closed before completing the process.",
-                  ),
+                    "Authentication window was closed before completing the process."
+                  )
                 );
               }
             }, 500);
@@ -653,7 +847,7 @@ export const ProjectForm = {
             router.refresh();
             return c?.["connected successfully."];
           },
-        },
+        }
       );
     }
 

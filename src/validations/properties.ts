@@ -22,7 +22,7 @@ export const propertySchema = z.object(
     view: z.string("view").optional(),
 
     deletedAt: z.date("deletedAt").nullable(),
-  },
+  }
 );
 
 export const propertyCreateSchema = propertySchema.pick({
@@ -43,7 +43,7 @@ export const propertyCreateSchema = propertySchema.pick({
 });
 
 export const propertyCreateFormSchema = z.object({
-  properties: z.array(propertyCreateSchema),
+  properties: z.array(propertyCreateSchema).default([]),
 });
 
 export const propertyUpdateSchema = propertySchema.omit({

@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
 import axios from "@/lib/axios";
-import { clientHttpRequest, fileToBase64 } from "@/lib/utils";
+import { clientHttpRequest, getPdfImages } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { projectCreateFormSchema } from "@/validations/projects";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { ApartmentForm, VillaForm } from "./property-create-button";
+import { useSession } from "./session-provider";
 import { Accordion } from "./ui/accordion";
 
 export type ProjectCreateButtonProps = { user: User } & Omit<
@@ -32,11 +33,11 @@ export type ProjectCreateButtonProps = { user: User } & Omit<
 
 export function ProjectCreateButton({
   dic: { "project-create-button": c, ...dic },
-  user,
   disabled,
   ...props
 }: ProjectCreateButtonProps) {
   const locale = useLocale();
+  const { user } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(disabled ?? false);
   const [open, setOpen] = useState<boolean>(false);
@@ -47,18 +48,20 @@ export function ProjectCreateButton({
     defaultValues: { userId: user?.["id"], platforms: [{}], properties: [] },
   });
 
-  async function onSubmit(data: z.infer<typeof projectCreateFormSchema>) {
+  async function onSubmit({
+    pdfFile,
+    pdf: pdfImagesArr,
+    ...data
+  }: z.infer<typeof projectCreateFormSchema>) {
     await clientHttpRequest(async () => {
-      const base64 = data?.["pdf"]?.["file"]
-        ? (await fileToBase64(data?.["pdf"]?.["file"]))!?.toString()
-        : null;
+      const pdfImages =
+        pdfFile && !pdfImagesArr?.["length"]
+          ? await getPdfImages({ locale, user, file: pdfFile })
+          : pdfImagesArr;
 
       await axios({ locale, user }).post(`/api/projects`, {
         ...data,
-        pdf: {
-          file: undefined,
-          base64: base64 ?? null,
-        },
+        pdf: pdfImages,
       });
 
       toast.success(c?.["created successfully."]);

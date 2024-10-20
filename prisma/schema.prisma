@@ -62,11 +62,11 @@ model Platform {
 }
 
 model Project {
-  id          String  @id @map("_id")
-  userId      String  @map("user-id")
+  id          String   @id @map("_id")
+  userId      String   @map("user-id")
   title       String
   logo        String?
-  pdf         String?
+  pdf         String[] @default([])
   description String?
 
   country  String

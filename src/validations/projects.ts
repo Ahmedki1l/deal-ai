@@ -9,7 +9,7 @@ export const projectSchema = z.object(
     userId: z.string("userId"),
     title: z.string("title"),
     logo: z.string("logo").nullable().default(null),
-    pdf: z.string("pdf").nullable().default(null),
+    pdf: z.array(z.string("pdf image")).default([]),
     description: z.string("description").optional(),
 
     distinct: z.string("distinct"),
@@ -24,11 +24,11 @@ export const projectSchema = z.object(
         clientId: z.string("client id").optional(),
         refreshToken: z.string("refresh token").optional(),
         urn: z.string("urn").optional(),
-      }),
+      })
     ),
     // .min(1, "choose one platform at least.")
     deletedAt: z.date("deletedAt").nullable(),
-  },
+  }
 );
 
 export const projectCreateSchema = projectSchema.pick({
@@ -44,17 +44,11 @@ export const projectCreateSchema = projectSchema.pick({
   platforms: true,
 });
 export const projectCreateFormSchema = projectCreateSchema
-  .omit({ pdf: true })
   .and(
     z.object({
-      pdf: z
-        .object({
-          file: z.instanceof(File).optional(),
-          base64: z.string("base64").nullable().default(null),
-        })
-        .optional(),
+      pdfFile: z.instanceof(File).optional(),
       map: z.string("map").optional(),
-    }),
+    })
   )
   .and(propertyCreateFormSchema);
 
@@ -70,9 +64,9 @@ export const projectUpdateFormSchema = projectUpdateSchema
       propertyTypes: z.array(
         z.object({
           value: z.enum(propertyTypesArr),
-        }),
+        })
       ),
-    }),
+    })
   );
 
 export const projectDeleteSchema = projectSchema.pick({ id: true });

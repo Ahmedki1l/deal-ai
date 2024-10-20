@@ -19,8 +19,8 @@ export function Link({
   ...props
 }: LinkProps) {
   const lang = useLocale();
-  const isInternalLink = href.startsWith("/");
-  const isAnchorLink = href.startsWith("#");
+  const isInternalLink = href?.startsWith("/");
+  const isAnchorLink = href?.startsWith("#");
 
   if (isInternalLink || isAnchorLink) {
     return (

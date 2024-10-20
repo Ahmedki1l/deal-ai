@@ -1,15 +1,18 @@
+import { Locale } from "@/types/locale";
 import { clsx, type ClassValue } from "clsx";
 import dayjs from "dayjs";
+import { User } from "lucia";
 import { Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
+import axios from "./axios";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 export async function fileToBase64(
-  file: File,
+  file: File
 ): Promise<string | ArrayBuffer | null> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -45,7 +48,7 @@ export function isValidUrl(src: string) {
 
 export const clientAction = async <T>(
   func: () => Promise<T | void | { error: string }>,
-  setLoading: Dispatch<SetStateAction<boolean>>,
+  setLoading: Dispatch<SetStateAction<boolean>>
 ): Promise<Exclude<T, { error: string }> | void> => {
   try {
     setLoading(true);
@@ -66,7 +69,7 @@ export const clientAction = async <T>(
 
 export const clientHttpRequest = async <T>(
   func: () => Promise<T>,
-  setLoading: Dispatch<SetStateAction<boolean>>,
+  setLoading: Dispatch<SetStateAction<boolean>>
 ) => {
   try {
     setLoading(true);
@@ -84,3 +87,31 @@ export const clientHttpRequest = async <T>(
     setLoading(false);
   }
 };
+
+export async function getPdfImages({
+  file,
+  locale,
+  user,
+}: {
+  file: File | undefined;
+  locale: Locale;
+  user: User | null;
+}): Promise<string[]> {
+  const formData = new FormData();
+  if (!file) throw new Error("No selected File");
+
+  formData.append("file", file);
+
+  // Sending the file to the backend
+  return axios({ locale, user })
+    .post("/api/images/upload-pdf", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    .then((r) => r?.["data"])
+    .catch((err) => {
+      console.error(
+        "upload pdfs error: ",
+        err?.["response"] ? err?.["response"]?.["data"] : err?.["message"]
+      );
+    });
+}

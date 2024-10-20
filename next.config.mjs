@@ -17,6 +17,10 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "lon1.digitaloceanspaces.com",
+      },
+      {
+        protocol: "https",
         hostname: "ideogram.ai",
       },
       { protocol: "https", hostname: "images.unsplash.com" },

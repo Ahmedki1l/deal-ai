@@ -478,7 +478,7 @@ export const ProjectForm = {
                   <Input
                     {...field}
                     type="file"
-                    accept="application/pdfFile"
+                    accept="application/pdf"
                     className="absolute h-full w-full cursor-pointer rounded-full p-0 opacity-0"
                     disabled={loading || loadingPdf}
                     value={undefined}

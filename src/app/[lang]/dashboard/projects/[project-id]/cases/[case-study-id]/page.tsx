@@ -1,6 +1,7 @@
 import { BackButton } from "@/components/back-button";
 import { CaseStudyBinButton } from "@/components/case-study-bin-button";
 import { CaseStudyRestoreButton } from "@/components/case-study-restore-button";
+import { CaseStudyUpdateButton } from "@/components/case-study-update-button";
 import { EmptyPlaceholder } from "@/components/empty-placeholder";
 import { Icons } from "@/components/icons";
 import { Image } from "@/components/image";
@@ -164,408 +165,151 @@ export default async function StudyCase({
           <Accordion type="multiple">
             <AccordionItem value="content">
               <AccordionTrigger>{c?.["study case content"]}</AccordionTrigger>
-              <AccordionContent>{caseStudy?.["content"]}</AccordionContent>
+              <AccordionContent>
+                {caseStudy?.["content"]}
+                {/* <CaseStudyUpdateButton
+                  name="case content"
+                  jsonContent={
+                    caseStudy?.["content"]
+                      ? JSON.parse(caseStudy["content"])
+                      : null
+                  }
+                /> */}
+              </AccordionContent>
             </AccordionItem>
             <AccordionItem value="target-audience">
               <AccordionTrigger>{c?.["target audience"]}</AccordionTrigger>
               <AccordionContent>
-                {(() => {
-                  try {
-                    const targetAudience = caseStudy?.["targetAudience"]
+                <CaseStudyUpdateButton
+                  studyCase={caseStudy}
+                  keyName="targetAudience"
+                  name="target audience"
+                  jsonContent={
+                    caseStudy?.["targetAudience"]
                       ? JSON.parse(caseStudy["targetAudience"])
-                      : null;
-
-                    const renderKeyValuePairs = (data: Record<string, any>) => (
-                      <ul className="list-decimal ltr:pl-5 rtl:pr-5">
-                        {Object.entries(data).map(([key, value]) => {
-                          if (
-                            typeof value === "string" ||
-                            typeof value === "number"
-                          ) {
-                            // Directly render string and number values
-                            return (
-                              <li key={key} className="mb-1">
-                                <strong>{key.split("_").join(" ")}:</strong>{" "}
-                                {value}
-                              </li>
-                            );
-                          } else if (Array.isArray(value)) {
-                            // Render array items without indices
-                            return (
-                              <li key={key}>
-                                <strong>{key.split("_").join(" ")}:</strong>
-                                <ul className="list-inside list-disc">
-                                  {value.map((item, index) => (
-                                    <li key={index}>{item}</li>
-                                  ))}
-                                </ul>
-                              </li>
-                            );
-                          } else {
-                            // Recursively handle objects
-                            return (
-                              <li key={key}>
-                                <strong>{key.split("_").join(" ")}:</strong>
-                                {renderKeyValuePairs(value)}
-                              </li>
-                            );
-                          }
-                        })}
-                      </ul>
-                    );
-
-                    if (
-                      targetAudience &&
-                      typeof targetAudience === "object" &&
-                      !Array.isArray(targetAudience)
-                    ) {
-                      return renderKeyValuePairs(targetAudience);
-                    } else {
-                      return (
-                        <p>{c?.["no valid market strategy data available."]}</p>
-                      );
-                    }
-                  } catch (e) {
-                    console.error("Failed to parse Market_Strategy JSON", e);
-                    return <p>{c?.["error loading market strategy data."]}</p>;
+                      : null
                   }
-                })()}
+                />
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="pros">
               <AccordionTrigger>{c?.["pros"]}</AccordionTrigger>
               <AccordionContent>
-                <ul className="list-decimal ltr:pl-5 rtl:pr-5">
-                  {pros?.map((e, i) => (
-                    <li key={i} className="mb-1">
-                      {e}
-                    </li>
-                  ))}
-                </ul>
+                <CaseStudyUpdateButton
+                  studyCase={caseStudy}
+                  keyName="pros"
+                  name="pros"
+                  jsonContent={
+                    caseStudy?.["pros"] ? JSON.parse(caseStudy["pros"]) : null
+                  }
+                />
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="cons">
               <AccordionTrigger>{c?.["cons"]}</AccordionTrigger>
               <AccordionContent>
-                <ul className="list-decimal ltr:pl-5 rtl:pr-5">
-                  {cons?.map((e, i) => (
-                    <li key={i} className="mb-1">
-                      {e}
-                    </li>
-                  ))}
-                </ul>
+                <CaseStudyUpdateButton
+                  studyCase={caseStudy}
+                  keyName="cons"
+                  name="cons"
+                  jsonContent={
+                    caseStudy?.["cons"] ? JSON.parse(caseStudy["cons"]) : null
+                  }
+                />
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="Market_Strategy">
               <AccordionTrigger>{c?.["market strategy"]}</AccordionTrigger>
               <AccordionContent>
-                {(() => {
-                  try {
-                    const marketStrategy = caseStudy?.["Market_Strategy"]
+                <CaseStudyUpdateButton
+                  name="market strategy"
+                  studyCase={caseStudy}
+                  keyName="Market_Strategy"
+                  jsonContent={
+                    caseStudy?.["Market_Strategy"]
                       ? JSON.parse(caseStudy["Market_Strategy"])
-                      : null;
-
-                    const renderKeyValuePairs = (data: Record<string, any>) => (
-                      <ul className="list-decimal ltr:pl-5 rtl:pr-5">
-                        {Object.entries(data).map(([key, value]) => {
-                          if (
-                            typeof value === "string" ||
-                            typeof value === "number"
-                          ) {
-                            // Directly render string and number values
-                            return (
-                              <li key={key} className="mb-1">
-                                <strong>{key.split("_").join(" ")}:</strong>{" "}
-                                {value}
-                              </li>
-                            );
-                          } else if (Array.isArray(value)) {
-                            // Render array items without indices
-                            return (
-                              <li key={key}>
-                                <strong>{key.split("_").join(" ")}:</strong>
-                                <ul className="list-disc pl-3">
-                                  {value.map((item, index) => (
-                                    <li key={index}>{item}</li>
-                                  ))}
-                                </ul>
-                              </li>
-                            );
-                          } else {
-                            // Recursively handle objects
-                            return (
-                              <li key={key}>
-                                <strong>{key.split("_").join(" ")}:</strong>
-                                {renderKeyValuePairs(value)}
-                              </li>
-                            );
-                          }
-                        })}
-                      </ul>
-                    );
-
-                    if (
-                      marketStrategy &&
-                      typeof marketStrategy === "object" &&
-                      !Array.isArray(marketStrategy)
-                    ) {
-                      return renderKeyValuePairs(marketStrategy);
-                    } else {
-                      return (
-                        <p>{c?.["no valid market strategy data available."]}</p>
-                      );
-                    }
-                  } catch (e) {
-                    console.error("Failed to parse Market_Strategy JSON", e);
-                    return <p>{c?.["error loading market strategy data."]}</p>;
+                      : null
                   }
-                })()}
+                />
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="Performance_Metrics">
               <AccordionTrigger>{c?.["performance metrics"]}</AccordionTrigger>
               <AccordionContent>
-                {(() => {
-                  try {
-                    const performanceMetrics = caseStudy?.[
-                      "Performance_Metrics"
-                    ]
+                <CaseStudyUpdateButton
+                  studyCase={caseStudy}
+                  keyName="Performance_Metrics"
+                  name="performance metrics"
+                  jsonContent={
+                    caseStudy?.["Performance_Metrics"]
                       ? JSON.parse(caseStudy["Performance_Metrics"])
-                      : null;
-
-                    const renderKeyValuePairs = (data: Record<string, any>) => (
-                      <ul className="list-decimal ltr:pl-5 rtl:pr-5">
-                        {Object.entries(data).map(([key, value]) => {
-                          // Check if the value is an array
-                          if (Array.isArray(value)) {
-                            return (
-                              <li key={key} className="mb-1">
-                                <strong>{key?.split("_").join(" ")}:</strong>
-                                <ul className="list-inside list-disc">
-                                  {value.map((item, index) => (
-                                    <li key={index}>{item}</li> // Render without index
-                                  ))}
-                                </ul>
-                              </li>
-                            );
-                          } else {
-                            // Render normal key-value pairs
-                            return (
-                              <li key={key} className="mb-1">
-                                <strong>{key?.split("_").join(" ")}:</strong>{" "}
-                                {value}
-                              </li>
-                            );
-                          }
-                        })}
-                      </ul>
-                    );
-
-                    if (
-                      performanceMetrics &&
-                      typeof performanceMetrics === "object" &&
-                      !Array.isArray(performanceMetrics)
-                    ) {
-                      return renderKeyValuePairs(performanceMetrics);
-                    } else {
-                      return (
-                        <p>
-                          {c?.["no valid performance metrics data available."]}
-                        </p>
-                      );
-                    }
-                  } catch (e) {
-                    console.error(
-                      "Failed to parse Performance_Metrics JSON",
-                      e,
-                    );
-                    return (
-                      <p>{c?.["error loading performance metrics data."]}</p>
-                    );
+                      : null
                   }
-                })()}
+                />
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="ROI_Calculation">
               <AccordionTrigger>{c?.["ROI calculation"]}</AccordionTrigger>
               <AccordionContent>
-                {(() => {
-                  try {
-                    // Parse the JSON string into an object
-                    const roiCalculation = caseStudy?.["ROI_Calculation"]
+                <CaseStudyUpdateButton
+                  studyCase={caseStudy}
+                  keyName="ROI_Calculation"
+                  name="ROI calculation"
+                  jsonContent={
+                    caseStudy?.["ROI_Calculation"]
                       ? JSON.parse(caseStudy["ROI_Calculation"])
-                      : null;
-
-                    // Function to render key-value pairs
-                    const renderKeyValuePairs = (data: Record<string, any>) => (
-                      <ul className="list-decimal ltr:pl-5 rtl:pr-5">
-                        {Object.entries(data).map(([key, value]) => (
-                          <li key={key} className="mb-1">
-                            <strong>{key?.split("_ ")?.join(" ")}:</strong>{" "}
-                            {typeof value === "object" && value !== null
-                              ? renderKeyValuePairs(value)
-                              : value}
-                          </li>
-                        ))}
-                      </ul>
-                    );
-
-                    if (
-                      roiCalculation &&
-                      typeof roiCalculation === "object" &&
-                      !Array.isArray(roiCalculation)
-                    ) {
-                      return renderKeyValuePairs(roiCalculation);
-                    } else {
-                      return (
-                        <p>
-                          {c?.["no valid ROI calculation data available."]}.
-                        </p>
-                      );
-                    }
-                  } catch (e) {
-                    console.error("Failed to parse ROI_Calculation JSON", e);
-                    return <p>{c?.["error loading ROI calculation data."]}</p>;
+                      : null
                   }
-                })()}
+                />
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="Strategic_Insights">
               <AccordionTrigger>{c?.["strategic insights"]}</AccordionTrigger>
               <AccordionContent>
-                {(() => {
-                  try {
-                    // Parse the JSON string into an object
-                    const roiCalculation = caseStudy?.["Strategic_Insights"]
+                <CaseStudyUpdateButton
+                  studyCase={caseStudy}
+                  keyName="Strategic_Insights"
+                  name="strategic insights"
+                  jsonContent={
+                    caseStudy?.["Strategic_Insights"]
                       ? JSON.parse(caseStudy["Strategic_Insights"])
-                      : null;
-
-                    // Function to render key-value pairs
-                    const renderKeyValuePairs = (data: Record<string, any>) => (
-                      <ul className="list-decimal ltr:pl-5 rtl:pr-5">
-                        {Object.entries(data).map(([key, value]) => (
-                          <li key={key} className="mb-1">
-                            <strong>{key?.split("_ ")?.join(" ")}:</strong>{" "}
-                            {typeof value === "object" && value !== null
-                              ? renderKeyValuePairs(value)
-                              : value}
-                          </li>
-                        ))}
-                      </ul>
-                    );
-
-                    if (
-                      roiCalculation &&
-                      typeof roiCalculation === "object" &&
-                      !Array.isArray(roiCalculation)
-                    ) {
-                      return renderKeyValuePairs(roiCalculation);
-                    } else {
-                      return (
-                        <p>
-                          {c?.["no valid ROI calculation data available."]}.
-                        </p>
-                      );
-                    }
-                  } catch (e) {
-                    console.error("Failed to parse ROI_Calculation JSON", e);
-                    return <p>{c?.["error loading ROI calculation data."]}</p>;
+                      : null
                   }
-                })()}
+                />
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="Recommendations">
               <AccordionTrigger>{c?.["recommendations"]}</AccordionTrigger>
               <AccordionContent>
-                {(() => {
-                  try {
-                    // Parse the JSON string into an object
-                    const roiCalculation = caseStudy?.["Recommendations"]
+                <CaseStudyUpdateButton
+                  studyCase={caseStudy}
+                  keyName="Recommendations"
+                  name="recommendations"
+                  jsonContent={
+                    caseStudy?.["Recommendations"]
                       ? JSON.parse(caseStudy["Recommendations"])
-                      : null;
-
-                    // Function to render key-value pairs
-                    const renderKeyValuePairs = (data: Record<string, any>) => (
-                      <ul className="list-decimal ltr:pl-5 rtl:pr-5">
-                        {Object.entries(data).map(([key, value]) => (
-                          <li key={key} className="mb-1">
-                            <strong>{key?.split("_ ")?.join(" ")}:</strong>{" "}
-                            {typeof value === "object" && value !== null
-                              ? renderKeyValuePairs(value)
-                              : value}
-                          </li>
-                        ))}
-                      </ul>
-                    );
-
-                    if (
-                      roiCalculation &&
-                      typeof roiCalculation === "object" &&
-                      !Array.isArray(roiCalculation)
-                    ) {
-                      return renderKeyValuePairs(roiCalculation);
-                    } else {
-                      return (
-                        <p>
-                          {c?.["no valid ROI calculation data available."]}.
-                        </p>
-                      );
-                    }
-                  } catch (e) {
-                    console.error("Failed to parse ROI_Calculation JSON", e);
-                    return <p>{c?.["error loading ROI calculation data."]}</p>;
+                      : null
                   }
-                })()}
+                />
               </AccordionContent>
             </AccordionItem>
             {caseStudy?.["Post_Frequency"] ? (
               <AccordionItem value="Post Frequency">
                 <AccordionTrigger>{c?.["Post Frequency"]}</AccordionTrigger>
                 <AccordionContent>
-                  {(() => {
-                    try {
-                      // Parse the JSON string into an object
-                      const postFreq = caseStudy?.["Post_Frequency"]
+                  <CaseStudyUpdateButton
+                    studyCase={caseStudy}
+                    keyName="Post_Frequency"
+                    name="Post Frequency"
+                    jsonContent={
+                      caseStudy?.["Post_Frequency"]
                         ? JSON.parse(caseStudy["Post_Frequency"])
-                        : null;
-
-                      // Function to render key-value pairs
-                      const renderKeyValuePairs = (
-                        data: Record<string, any>,
-                      ) => (
-                        <ul className="list-decimal ltr:pl-5 rtl:pr-5">
-                          {Object.entries(data).map(([key, value]) => (
-                            <li key={key} className="mb-1">
-                              <strong>{key?.split("_ ")?.join(" ")}:</strong>{" "}
-                              {typeof value === "object" && value !== null
-                                ? renderKeyValuePairs(value)
-                                : value}
-                            </li>
-                          ))}
-                        </ul>
-                      );
-
-                      if (
-                        postFreq &&
-                        typeof postFreq === "object" &&
-                        !Array.isArray(postFreq)
-                      ) {
-                        return renderKeyValuePairs(postFreq);
-                      } else {
-                        return (
-                          <p>
-                            {c?.["no valid Post Frequency data available."]}.
-                          </p>
-                        );
-                      }
-                    } catch (e) {
-                      console.error("Failed to parse Post Frequency JSON", e);
-                      return <p>{c?.["error loading Post Frequency data."]}</p>;
+                        : null
                     }
-                  })()}
+                  />
                 </AccordionContent>
               </AccordionItem>
             ) : null}
@@ -611,7 +355,7 @@ export default async function StudyCase({
           <section className="space-y-8">
             {platforms(lang).map((platform, i) => {
               const posts = caseStudy?.["posts"]?.filter(
-                (p) => p?.["platform"] === platform?.["value"],
+                (p) => p?.["platform"] === platform?.["value"]
               );
               if (!posts?.["length"]) return null;
 
@@ -716,7 +460,7 @@ export default async function StudyCase({
                                   <p className="text-xs text-muted-foreground">
                                     {e?.["postAt"] &&
                                       new Date(
-                                        e?.["postAt"],
+                                        e?.["postAt"]
                                       ).toLocaleDateString()}
                                   </p>
                                 </div>
@@ -728,7 +472,7 @@ export default async function StudyCase({
                                     {c?.["campaign type"]}:{" "}
                                   </span>
                                   {dic?.["db"]?.["campaignTypes"]?.find(
-                                    (x) => x?.["value"] === e?.["campaignType"],
+                                    (x) => x?.["value"] === e?.["campaignType"]
                                   )?.["label"] ?? ""}
                                 </p>
                                 <p className="text-muted-foreground">
@@ -736,8 +480,7 @@ export default async function StudyCase({
                                     {c?.["content length"]}:{" "}
                                   </span>
                                   {dic?.["db"]?.["contentLength"]?.find(
-                                    (x) =>
-                                      x?.["value"] === e?.["contentLength"],
+                                    (x) => x?.["value"] === e?.["contentLength"]
                                   )?.["label"] ?? ""}
                                 </p>
                               </div>

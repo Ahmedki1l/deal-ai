@@ -1,10 +1,8 @@
-import { PostBackButton } from "@/components/post-back-button";
 import { EmptyPlaceholder } from "@/components/empty-placeholder";
 import { Icons } from "@/components/icons";
-import { Link } from "@/components/link";
+import { PostBackButton } from "@/components/post-back-button";
 import { PostUpdateForm } from "@/components/post-update-form";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { buttonVariants } from "@/components/ui/button";
 import { db } from "@/db";
 import { getDictionary } from "@/lib/dictionaries";
 import { LocaleProps } from "@/types/locale";
@@ -26,7 +24,7 @@ export default async function CaseStudy({
     "case-study-id": caseStudyId,
     "post-id": postId,
   },
-}: CaseStudyProps) { 
+}: CaseStudyProps) {
   const dic = await getDictionary(lang);
   const c =
     dic?.["dashboard"]?.["user"]?.["projects"]?.["project"]?.["cases"]?.[
@@ -55,9 +53,10 @@ export default async function CaseStudy({
           <EmptyPlaceholder.Description>
             {c?.["you have not created you post yet."]}
           </EmptyPlaceholder.Description>
-          <PostBackButton 
+          <PostBackButton
             href={`/dashboard/projects/${projectId}/cases/${caseStudyId}`}
-            dic={dic} />
+            dic={dic}
+          />
         </EmptyPlaceholder>
       </div>
     );
@@ -73,51 +72,10 @@ export default async function CaseStudy({
           <div>
             <PostBackButton
               href={`/dashboard/projects/${projectId}/cases/${caseStudyId}`}
-              dic={dic} />
-{/*             
-            <Link
-              href={`/dashboard/projects/${projectId}/cases/${caseStudyId}`}
-              className={buttonVariants({ variant: "ghost" })}
-            >
-              <Icons.chevronLeft />
-              {c?.["back to"]}{" "}
-              <span className="font-bold">
-                {post?.["caseStudy"]?.["title"]}
-              </span>
-            </Link> */}
+              dic={dic}
+            />
           </div>
         </div>
-
-        {/* <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href={`/${lang}/dashboard/projects`}>
-                {c?.["projects"]}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href={`/${lang}/dashboard/projects/${projectId}`}>
-                {post?.["caseStudy"]?.["project"]?.["title"]}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                href={`/${lang}/dashboard/projects/${projectId}/cases/${caseStudyId}`}
-              >
-                {post?.["caseStudy"]?.["title"]}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{post?.["title"]}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb> */}
-
         {projectDeleted ||
           (caseStudyDeleted && (
             <Alert variant="warning">

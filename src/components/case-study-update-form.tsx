@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { Icons } from "@/components/icons";
-import { JsonEditor } from "@/components/json-editor";
+import { JsonEditor, JsonEditorProps } from "@/components/json-editor";
 import { useSession } from "@/components/session-provider";
 import { Tooltip } from "@/components/tooltip";
 import {
@@ -16,6 +16,7 @@ import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
 import axios from "@/lib/axios";
 import { clientHttpRequest } from "@/lib/utils";
+import { Dictionary } from "@/types/locale";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StudyCase } from "@prisma/client";
 import { useForm } from "react-hook-form";
@@ -30,9 +31,11 @@ type CaseStudyUpdateFormProps = {
   label: string;
   name?: string;
   jsonContent: any;
-};
+} & Dictionary["case-study-update-form"] &
+  Pick<JsonEditorProps, "dic">;
 
 export function CaseStudyUpdateForm({
+  dic: { "case-study-update-form": c, ...dic },
   label,
   studyCase,
   keyName,
@@ -56,7 +59,7 @@ export function CaseStudyUpdateForm({
         { [keyName]: JSON.stringify(data) }
       );
 
-      toast.success("updated successfully.");
+      toast.success(c?.["updated successfully."]);
       form.reset({ ...data });
       setEditable(false);
     }, setLoading);
@@ -67,7 +70,7 @@ export function CaseStudyUpdateForm({
       <div className="flex items-center gap-2">
         <AccordionTrigger>{label}</AccordionTrigger>
 
-        <Tooltip text={editable ? "cancel" : "edit"}>
+        <Tooltip text={editable ? c?.["cancel"] : c?.["edit"]}>
           <div>
             <Button
               type="button"
@@ -95,11 +98,11 @@ export function CaseStudyUpdateForm({
               }}
               className="space-y-6"
             >
-              <JsonEditor form={form} data={form.getValues()} />
+              <JsonEditor dic={dic} form={form} data={form.getValues()} />
 
               <Button disabled={loading}>
                 {loading && <Icons.spinner />}
-                Submit
+                {c?.["submit"]}
               </Button>
             </form>
           </Form>
@@ -113,11 +116,11 @@ export function CaseStudyUpdateForm({
                 typeof form.getValues() !== "object" ||
                 !!Array.isArray(form.getValues())
               )
-                return <p> No valid {name} data available.</p>;
+                return <p>No valid {name} data available.</p>;
 
               return renderKeyValuePairs(form.getValues());
             } catch (e) {
-              console.error("Failed to parse Market_Strategy JSON", e);
+              console.error(`Failed to parse ${name} JSON`, e);
               return <p>error loading {name} data.</p>;
             }
           })()}

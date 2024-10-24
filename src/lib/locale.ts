@@ -5,8 +5,12 @@ import { NextRequest } from "next/server";
 import tl from "translate";
 
 export const i18n = {
-  defaultLocale: "en",
-  locales: ["en", "ar", "fr", "de"],
+  defaultLocale: "ar",
+  locales: [
+    "en",
+    "ar",
+    // "fr", "de"
+  ],
 } as const;
 
 // Get the preferred locale, similar to the above or using a library
@@ -29,18 +33,25 @@ type DictionaryObject = {
   [key: string]: DictionaryValue | DictionaryValue[];
 };
 
-export async function translateObject(
-  value: DictionaryValue | DictionaryValue[],
-  lang: Locale,
-): Promise<DictionaryValue | DictionaryValue[]> {
+export async function translateObject({
+  value,
+  from,
+  to,
+}: {
+  value: DictionaryValue | DictionaryValue[];
+  from: Locale;
+  to: Locale;
+}): Promise<DictionaryValue | DictionaryValue[]> {
   if (typeof value === "boolean") return value; // skip
-  if (typeof value === "string") return t(value, { from: "en", to: lang });
+  if (typeof value === "string") return t(value, { from, to });
 
   //  arrays of dictionaries
   if (Array.isArray(value)) {
     const translatedArray: DictionaryValue[] = [];
     for (const item of value)
-      translatedArray.push((await translateObject(item, lang)) as any);
+      translatedArray.push(
+        (await translateObject({ value: item, from, to })) as any
+      );
 
     return translatedArray;
   }
@@ -64,7 +75,11 @@ export async function translateObject(
         continue;
       }
 
-      translatedObject[key] = await translateObject(value[key], lang);
+      translatedObject[key] = await translateObject({
+        value: value[key],
+        from,
+        to,
+      });
     }
   }
   return translatedObject;
@@ -79,5 +94,9 @@ export const getDictionary = async (locale: Locale) => {
   if (locale === "ar" || locale === "en") return await site[locale]();
 
   const dic = await site["en"]();
-  return (await translateObject(dic as any, locale)) as unknown as typeof dic;
+  return (await translateObject({
+    value: dic as any,
+    from: "en",
+    to: locale,
+  })) as unknown as typeof dic;
 };

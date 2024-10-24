@@ -383,7 +383,12 @@ export default {
     "updating a study case allows you to refine and enhance the details of your ongoing developments":
       "تحديث دراسة حالة يتيح لك تحسين وتعزيز تفاصيل مشاريعك الحالية",
   },
-
+  "case-study-update-form": {
+    "updated successfully.": "تم التحديث بنجاح.",
+    submit: "إرسال",
+    cancel: "إلغاء",
+    edit: "تعديل",
+  },
   "resizeable-layout": {
     logout: "تسجيل الخروج",
   },
@@ -432,19 +437,34 @@ export default {
     cancel: "إلغاء",
   },
   "image-editor": {
-    "save changes": "save changes",
+    "updated successfully.": "تم التحديث بنجاح.",
+    dimensions: "الأبعاد",
+    download: "تحميل",
+    "post will be with no image": "سيكون المنشور بدون صورة",
+    clear: "مسح",
+    "save changes": "حفظ التغييرات",
+    layers: "الطبقات",
+    "image size": "حجم الصورة",
+    recenter: "إعادة التمركز",
+    "recenter all layers": "إعادة تمركز جميع الطبقات",
+    photo: "صورة",
+    width: "العرض",
+    height: "الارتفاع",
+    "choose frame": "اختر الإطار",
+    "edit text": "تحرير النص",
+    "new text": "نص جديد",
+    color: "اللون",
+    "font size": "حجم الخط",
   },
   "image-form": {
-    src: {
-      label: "مصدر الصورة",
-      url: "الرابط",
-    },
+    "upload-file": { "upload image": "تحميل صورة" },
     "regenerate-image": {
       prompt: "وصف الصورة",
       "enhance prompt": "تحسين الوصف",
       "generate image": "إنشاء صورة",
       "enhanced successfully.": "تم تحسينه بنجاح.",
       "generated successfully.": "تم إنشاؤه بنجاح.",
+      "generate image using AI": "generate Image using AI",
     },
     frame: {
       frame: "الإطار",
@@ -453,12 +473,23 @@ export default {
       "no frames to be applied...": "لا يوجد فريم للإختيا...",
     },
   },
+  "add-field-with-type": {
+    "add item": "إضافة عنصر",
+    "field type": "نوع الحقل",
+    types: [
+      { value: "string", label: "نص" },
+      { value: "number", label: "رقم" },
+      { value: "boolean", label: "قيمة منطقية" },
+      { value: "object", label: "كائن" },
+      { value: "array", label: "مصفوفة" },
+    ],
+  },
   "locale-switcher": {
     "current locale of the website": "اللغة الحالية للموقع",
     en: "الإنجليزية (EN)",
     ar: "العربية (AR)",
-    fr: "الفرنسية (FR)",
-    de: "الألمانية (DE)",
+    // fr: "الفرنسية (FR)",
+    // de: "الألمانية (DE)",
     "change language": "تغيير اللغة",
   },
   "mode-toggle": {
@@ -546,6 +577,7 @@ export default {
   "post-update-form": {
     "updated successfully.": "تم التحديث بنجاح.",
     submit: "إرسال",
+    "edit image": "تعديل الصورة",
     "post details": "تفاصيل المنشور",
     discard: "تجاهل",
     "save changes": "حفظ التغييرات",

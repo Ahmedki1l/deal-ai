@@ -116,7 +116,7 @@ export function ImageEditor({
         src: editor?.["current"]?.getResult()!,
       });
 
-      toast.success("saved");
+      toast.success(c?.["updated successfully."]);
     }, setLoading);
   }
 
@@ -129,7 +129,7 @@ export function ImageEditor({
         <div className="container flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2">
-              <h2>dimensions</h2>
+              <h2>{c?.["dimensions"]}</h2>
               <ToggleGroup type="single" defaultValue="1:1">
                 <ToggleGroupItem
                   value="1:1"
@@ -164,22 +164,22 @@ export function ImageEditor({
               </ToggleGroup>
 
               {form.watch("editor.cropRect") ||
-                form.watch("editor.cropRect") ? (
+              form.watch("editor.cropRect") ? (
                 <div className="flex items-center gap-1">
                   <Input
                     type="number"
                     disabled={loading}
                     defaultValue={Number(
                       Number(
-                        form.watch("editor.cropRect")?.width() ?? 0,
-                      )?.toFixed(0),
+                        form.watch("editor.cropRect")?.width() ?? 0
+                      )?.toFixed(0)
                     )}
                     onChange={(e) =>
                       form
                         .watch("editor.cropRect")
                         ?.width(Number(Number(e?.target?.value)?.toFixed(0)))
                     }
-                    className="m-0 w-14 p-0"
+                    className="m-0 w-14 p-0 text-center"
                   />
                   <span>x</span>
                   <Input
@@ -187,15 +187,15 @@ export function ImageEditor({
                     disabled={loading}
                     defaultValue={Number(
                       Number(
-                        form.watch("editor.cropRect")!?.height()! ?? 0,
-                      )?.toFixed(0),
+                        form.watch("editor.cropRect")!?.height()! ?? 0
+                      )?.toFixed(0)
                     )}
                     onChange={(e) =>
                       form
                         .watch("editor.cropRect")
                         ?.height(Number(Number(e?.target?.value)?.toFixed(0)))
                     }
-                    className="m-0 w-14 p-0"
+                    className="m-0 w-14 p-0 text-center"
                   />
                 </div>
               ) : null}
@@ -203,15 +203,11 @@ export function ImageEditor({
           </div>
 
           <div className="flex items-center gap-2">
-            <Tooltip text="download it locally">
-              <div>
-                <Button disabled={loading} type="button" size="sm">
-                  download
+            {/*  <Button disabled={loading} type="button" size="sm">
+                  {c?.["download"]}
                 </Button>
-              </div>
-            </Tooltip>
-
-            <Tooltip text="post will be with no image">
+               
+            <Tooltip text={c?.["post will be with no image"]}>
               <div>
                 <Button
                   disabled={loading}
@@ -222,10 +218,10 @@ export function ImageEditor({
                     editor?.current?.reset();
                   }}
                 >
-                  clear
+                  {c?.["clear"]}
                 </Button>
               </div>
-            </Tooltip>
+            </Tooltip> */}
 
             <Button
               disabled={loading}
@@ -243,7 +239,7 @@ export function ImageEditor({
           <div className="container absolute left-2 top-2 z-50 max-h-[100%] max-w-xs space-y-4 overflow-auto">
             <Card className="space-y-1">
               <CardHeader className="flex flex-row items-center justify-between p-0 px-2">
-                <CardTitle>Layers</CardTitle>
+                <CardTitle>{c?.["layers"]}</CardTitle>
               </CardHeader>
 
               <CardContent className="p-2 pt-0">
@@ -251,16 +247,26 @@ export function ImageEditor({
                   {form.watch("editor.cropRect") ? (
                     <>
                       {[form.getValues("editor.cropRect")!]?.map((node, i) => (
-                        <div key={`rect-${i + 1}`} className="flex justify-between items-center gap-2">
+                        <div
+                          key={`rect-${i + 1}`}
+                          className="flex items-center justify-between gap-2"
+                        >
                           <ToggleGroupItem
                             value={`rect-${i + 1}`}
                             onClick={() => editor?.["current"]!.dragNode(node)}
                           >
-                            Image Size
+                            {c?.["image size"]}
                           </ToggleGroupItem>
-                          <Tooltip text="recenter">
+                          <Tooltip text={c?.["recenter"]}>
                             <div>
-                              <Button type='button' variant='outline' size="sm" onClick={() => editor?.["current"]!.recenterNode(node)}>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  editor?.["current"]!.recenterNode(node)
+                                }
+                              >
                                 <Icons.reload />
                               </Button>
                             </div>
@@ -274,16 +280,26 @@ export function ImageEditor({
                   {form.watch("editor.photo") ? (
                     <>
                       {[form.getValues("editor.photo")!]?.map((node, i) => (
-                        <div key={`photo-${i + 1}`} className="flex justify-between items-center gap-2">
+                        <div
+                          key={`photo-${i + 1}`}
+                          className="flex items-center justify-between gap-2"
+                        >
                           <ToggleGroupItem
                             value={`photo-${i + 1}`}
                             onClick={() => editor?.["current"]!.dragNode(node)}
                           >
                             <Image src={form.getValues("src")} alt="" />
                           </ToggleGroupItem>
-                          <Tooltip text="recenter">
+                          <Tooltip text={c?.["recenter"]}>
                             <div>
-                              <Button type='button' variant='outline' size="sm" onClick={() => editor?.["current"]!.recenterNode(node)}>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  editor?.["current"]!.recenterNode(node)
+                                }
+                              >
                                 <Icons.reload />
                               </Button>
                             </div>
@@ -297,16 +313,29 @@ export function ImageEditor({
                   {form.watch("editor.frame") ? (
                     <>
                       {[form.getValues("editor.frame")!]?.map((node, i) => (
-                        <div key={`frame-${i + 1}`} className="flex justify-between items-center gap-2">
+                        <div
+                          key={`frame-${i + 1}`}
+                          className="flex items-center justify-between gap-2"
+                        >
                           <ToggleGroupItem
                             value={`frame-${i + 1}`}
                             onClick={() => editor?.["current"]!.dragNode(node)}
                           >
-                            <Image src={form.getValues("filledFrame")!} alt="" />
+                            <Image
+                              src={form.getValues("filledFrame")!}
+                              alt=""
+                            />
                           </ToggleGroupItem>
-                          <Tooltip text="recenter">
+                          <Tooltip text={c?.["recenter"]}>
                             <div>
-                              <Button type='button' variant='outline' size="sm" onClick={() => editor?.["current"]!.recenterNode(node)}>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  editor?.["current"]!.recenterNode(node)
+                                }
+                              >
                                 <Icons.reload />
                               </Button>
                             </div>
@@ -319,38 +348,52 @@ export function ImageEditor({
 
                   {form.watch("editor.textNodes")
                     ? [...form.getValues("editor.textNodes")].map((node, i) => (
-                      <div key={`text-${i + 1}`} className="flex justify-between items-center gap-2">
-                        <ToggleGroupItem
-                          value={`text-${i + 1}`}
-                          onClick={() => editor?.["current"]!.dragNode(node)}
+                        <div
+                          key={`text-${i + 1}`}
+                          className="flex items-center justify-between gap-2"
                         >
-                          {node?.text()}
-                        </ToggleGroupItem>
-                        <Tooltip text="recenter">
-                          <div>
-                            <Button type='button' variant='outline' size="sm" onClick={() => editor?.["current"]!.recenterNode(node)}>
-                              <Icons.reload />
-                            </Button>
-                          </div>
-                        </Tooltip>
-                      </div>
-                    ))
+                          <ToggleGroupItem
+                            value={`text-${i + 1}`}
+                            onClick={() => editor?.["current"]!.dragNode(node)}
+                          >
+                            {node?.text()}
+                          </ToggleGroupItem>
+                          <Tooltip text={c?.["recenter"]}>
+                            <div>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  editor?.["current"]!.recenterNode(node)
+                                }
+                              >
+                                <Icons.reload />
+                              </Button>
+                            </div>
+                          </Tooltip>
+                        </div>
+                      ))
                     : null}
                 </ToggleGroup>
 
                 {/* Button to recenter all nodes */}
-                <div className="flex justify-center mt-4">
-                  <Button type='button' variant='outline' size='sm' onClick={() => editor?.["current"]!.recenterAllNodes()}>
-                    Recenter All Layers
+                <div className="mt-4 flex justify-center">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => editor?.["current"]!.recenterAllNodes()}
+                  >
+                    {c?.["recenter all layers"]}
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
-
             <Card className="space-y-1">
               <CardHeader className="flex flex-row items-center justify-between p-0 px-2">
-                <CardTitle>Photo</CardTitle>
+                <CardTitle>{c?.["photo"]}</CardTitle>
 
                 <div className="flex items-center gap-2">
                   <ImageForm.regenerateImage
@@ -372,20 +415,20 @@ export function ImageEditor({
                 {form.watch("editor.photo") ? (
                   <div className="grid grid-cols-2 gap-2">
                     <div className="flex flex-col gap-1">
-                      <Label>Width</Label>
+                      <Label>{c?.["width"]}</Label>
                       <Input
                         type="number"
                         disabled={loading}
                         defaultValue={Number(
                           Number(
-                            form.watch("editor.photo")!?.width()! ?? 0,
-                          )?.toFixed(0),
+                            form.watch("editor.photo")!?.width()! ?? 0
+                          )?.toFixed(0)
                         )}
                         onChange={(e) =>
                           form
                             .watch("editor.photo")!
                             ?.width(
-                              Number(Number(e?.target?.value)?.toFixed(0)),
+                              Number(Number(e?.target?.value)?.toFixed(0))
                             )
                         }
                         className="m-0 p-0"
@@ -393,20 +436,20 @@ export function ImageEditor({
                     </div>
 
                     <div className="flex flex-col gap-1">
-                      <Label>Height</Label>
+                      <Label>{c?.["height"]}</Label>
                       <Input
                         type="number"
                         disabled={loading}
                         defaultValue={Number(
                           Number(
-                            form.watch("editor.photo")!?.height()! ?? 0,
-                          )?.toFixed(0),
+                            form.watch("editor.photo")!?.height()! ?? 0
+                          )?.toFixed(0)
                         )}
                         onChange={(e) =>
                           form
                             .watch("editor.photo")!
                             ?.height(
-                              Number(Number(e?.target?.value)?.toFixed(0)),
+                              Number(Number(e?.target?.value)?.toFixed(0))
                             )
                         }
                         className="m-0 p-0"
@@ -420,8 +463,8 @@ export function ImageEditor({
                         disabled={loading}
                         defaultValue={Number(
                           Number(
-                            form.watch("editor.photo")!?.x()! ?? 0,
-                          )?.toFixed(0),
+                            form.watch("editor.photo")!?.x()! ?? 0
+                          )?.toFixed(0)
                         )}
                         onChange={(e) =>
                           form
@@ -439,8 +482,8 @@ export function ImageEditor({
                         disabled={loading}
                         defaultValue={Number(
                           Number(
-                            form.watch("editor.photo")!?.y()! ?? 0,
-                          )?.toFixed(0),
+                            form.watch("editor.photo")!?.y()! ?? 0
+                          )?.toFixed(0)
                         )}
                         onChange={(e) =>
                           form
@@ -457,7 +500,7 @@ export function ImageEditor({
 
             <Card className="space-y-1">
               <CardHeader className="flex flex-row items-center justify-between p-0 px-2">
-                <CardTitle>Choose Frame</CardTitle>
+                <CardTitle>{c?.["choose frame"]}</CardTitle>
 
                 <ImageForm.frame
                   dic={dic}
@@ -481,20 +524,20 @@ export function ImageEditor({
                 {!!form.watch("editor.frame") ? (
                   <div className="grid grid-cols-2 gap-2">
                     <div className="flex flex-col gap-1">
-                      <Label>Width</Label>
+                      <Label>{c?.["width"]}</Label>
                       <Input
                         type="number"
                         disabled={loading}
                         defaultValue={Number(
                           Number(
-                            form.watch("editor.frame")!?.width()! ?? 0,
-                          )?.toFixed(0),
+                            form.watch("editor.frame")!?.width()! ?? 0
+                          )?.toFixed(0)
                         )}
                         onChange={(e) =>
                           form
                             .watch("editor.frame")!
                             ?.width(
-                              Number(Number(e?.target?.value)?.toFixed(0)),
+                              Number(Number(e?.target?.value)?.toFixed(0))
                             )
                         }
                         className="m-0 p-0"
@@ -502,20 +545,20 @@ export function ImageEditor({
                     </div>
 
                     <div className="flex flex-col gap-1">
-                      <Label>Height</Label>
+                      <Label>{c?.["height"]}</Label>
                       <Input
                         type="number"
                         disabled={loading}
                         defaultValue={Number(
                           Number(
-                            form.watch("editor.frame")!?.height()! ?? 0,
-                          )?.toFixed(0),
+                            form.watch("editor.frame")!?.height()! ?? 0
+                          )?.toFixed(0)
                         )}
                         onChange={(e) =>
                           form
                             .watch("editor.frame")!
                             ?.height(
-                              Number(Number(e?.target?.value)?.toFixed(0)),
+                              Number(Number(e?.target?.value)?.toFixed(0))
                             )
                         }
                         className="m-0 p-0"
@@ -529,8 +572,8 @@ export function ImageEditor({
                         disabled={loading}
                         defaultValue={Number(
                           Number(
-                            form.watch("editor.frame")!?.x()! ?? 0,
-                          )?.toFixed(0),
+                            form.watch("editor.frame")!?.x()! ?? 0
+                          )?.toFixed(0)
                         )}
                         onChange={(e) =>
                           form
@@ -548,8 +591,8 @@ export function ImageEditor({
                         disabled={loading}
                         defaultValue={Number(
                           Number(
-                            form.watch("editor.frame")!?.y()! ?? 0,
-                          )?.toFixed(0),
+                            form.watch("editor.frame")!?.y()! ?? 0
+                          )?.toFixed(0)
                         )}
                         onChange={(e) =>
                           form
@@ -566,9 +609,9 @@ export function ImageEditor({
 
             <Card className="space-y-1">
               <CardHeader className="flex flex-row items-center justify-between p-0 px-2">
-                <CardTitle>Edit Text</CardTitle>
+                <CardTitle>{c?.["edit text"]}</CardTitle>
 
-                <Tooltip text="new text">
+                <Tooltip text={c?.["new text"]}>
                   <div>
                     <Button
                       disabled={loading}
@@ -580,7 +623,7 @@ export function ImageEditor({
                           lang: locale,
                         })!;
                         form.setValue("editor.textNodes", [
-                          ...form.getValues("editor.textNodes"),
+                          ...(form?.getValues("editor.textNodes") ?? []),
                           textNode,
                         ]);
                       }}
@@ -612,7 +655,7 @@ export function ImageEditor({
                           <PopoverContent className="flex flex-col gap-2">
                             <div className="grid grid-cols-2 gap-2">
                               <div className="flex flex-col gap-1">
-                                <Label>Color</Label>
+                                <Label>{c?.["color"]}</Label>
                                 <Input
                                   type="color"
                                   disabled={loading}
@@ -624,19 +667,19 @@ export function ImageEditor({
                               </div>
 
                               <div className="flex flex-col gap-1">
-                                <Label>Font Size</Label>
+                                <Label>{c?.["font size"]}</Label>
 
                                 <Input
                                   type="number"
                                   disabled={loading}
                                   defaultValue={Number(
-                                    Number(txt?.fontSize()! ?? 0)?.toFixed(0),
+                                    Number(txt?.fontSize()! ?? 0)?.toFixed(0)
                                   )}
                                   onChange={(e) =>
                                     txt?.fontSize(
                                       Number(
-                                        Number(e?.target?.value)?.toFixed(0),
-                                      ),
+                                        Number(e?.target?.value)?.toFixed(0)
+                                      )
                                     )
                                   }
                                   className="m-0 p-0"
@@ -646,18 +689,18 @@ export function ImageEditor({
 
                             <div className="grid grid-cols-2 gap-2">
                               <div className="flex flex-col gap-1">
-                                <Label>Width</Label>
+                                <Label>{c?.["width"]}</Label>
                                 <Input
                                   type="number"
                                   disabled={loading}
                                   defaultValue={Number(
-                                    Number(txt?.width()! ?? 0)?.toFixed(0),
+                                    Number(txt?.width()! ?? 0)?.toFixed(0)
                                   )}
                                   onChange={(e) =>
                                     txt?.width(
                                       Number(
-                                        Number(e?.target?.value)?.toFixed(0),
-                                      ),
+                                        Number(e?.target?.value)?.toFixed(0)
+                                      )
                                     )
                                   }
                                   className="m-0 p-0"
@@ -665,18 +708,18 @@ export function ImageEditor({
                               </div>
 
                               <div className="flex flex-col gap-1">
-                                <Label>Height</Label>
+                                <Label>{c?.["height"]}</Label>
                                 <Input
                                   type="number"
                                   disabled={loading}
                                   defaultValue={Number(
-                                    Number(txt?.height()! ?? 0)?.toFixed(0),
+                                    Number(txt?.height()! ?? 0)?.toFixed(0)
                                   )}
                                   onChange={(e) =>
                                     txt?.height(
                                       Number(
-                                        Number(e?.target?.value)?.toFixed(0),
-                                      ),
+                                        Number(e?.target?.value)?.toFixed(0)
+                                      )
                                     )
                                   }
                                   className="m-0 p-0"
@@ -691,13 +734,13 @@ export function ImageEditor({
                                   type="number"
                                   disabled={loading}
                                   defaultValue={Number(
-                                    Number(txt?.x()! ?? 0)?.toFixed(0),
+                                    Number(txt?.x()! ?? 0)?.toFixed(0)
                                   )}
                                   onChange={(e) =>
                                     txt?.x(
                                       Number(
-                                        Number(e?.target?.value)?.toFixed(0),
-                                      ),
+                                        Number(e?.target?.value)?.toFixed(0)
+                                      )
                                     )
                                   }
                                   className="m-0 p-0"
@@ -710,13 +753,13 @@ export function ImageEditor({
                                   type="number"
                                   disabled={loading}
                                   defaultValue={Number(
-                                    Number(txt?.y()! ?? 0)?.toFixed(0),
+                                    Number(txt?.y()! ?? 0)?.toFixed(0)
                                   )}
                                   onChange={(e) =>
                                     txt?.y(
                                       Number(
-                                        Number(e?.target?.value)?.toFixed(0),
-                                      ),
+                                        Number(e?.target?.value)?.toFixed(0)
+                                      )
                                     )
                                   }
                                   className="m-0 p-0"
@@ -736,7 +779,7 @@ export function ImageEditor({
             id="photo-editor-container"
             ref={containerRef}
             className={cn(
-              "bg-grid relative flex flex-1 items-center justify-center",
+              "bg-grid relative flex flex-1 items-center justify-center"
             )}
           />
         </div>

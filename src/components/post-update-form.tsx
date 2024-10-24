@@ -79,7 +79,7 @@ export function PostUpdateForm({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="container max-w-screen-sm space-y-4">
       <div className="flex items-center justify-between gap-4">
         <div className="flex w-full items-center justify-between gap-2">
           {/* <BackButton dic={dic} type="button" variant="ghost" size="sm" /> */}
@@ -130,11 +130,11 @@ export function PostUpdateForm({
             </Button>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-[0.8fr,1fr]">
+          <div className="flex flex-col gap-4">
             <div>
               <div
                 className={cn(
-                  "relative h-full min-h-60 flex-col overflow-hidden rounded text-primary-foreground dark:border-r lg:flex",
+                  "relative h-full min-h-60 flex-col overflow-hidden rounded text-primary-foreground dark:border-r lg:flex"
                   // form.watch("image") && `bg-[src(${form.getValues("image")})]`,
                 )}
               >
@@ -142,7 +142,7 @@ export function PostUpdateForm({
                 <Image src={post?.["image"]?.["src"]!} alt="" />
 
                 <div className="absolute right-4 top-4 z-50 flex items-center gap-4 text-lg font-medium">
-                  <Tooltip text={"edit image"}>
+                  <Tooltip text={c?.["edit image"]}>
                     <div>
                       <Link
                         href={`/editors/images/${post?.["image"]?.["id"]}`}

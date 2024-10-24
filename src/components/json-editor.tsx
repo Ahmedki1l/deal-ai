@@ -19,14 +19,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Dictionary } from "@/types/locale";
 import { UseFormReturn } from "react-hook-form";
 
-type JsonEditorProps = {
+export type JsonEditorProps = {
   form: UseFormReturn<any, any, undefined>;
   data: any;
   path?: string;
-};
-export function JsonEditor({ form, data, path = "" }: JsonEditorProps) {
+} & Pick<AddFieldWithTypeProps, "dic">;
+export function JsonEditor({ dic, form, data, path = "" }: JsonEditorProps) {
   // Function to delete a key from the JSON data
   function deleteKey(path: string) {
     const pathParts = path.split(".");
@@ -114,7 +115,7 @@ export function JsonEditor({ form, data, path = "" }: JsonEditorProps) {
                 className="w-fit min-w-20 bg-muted"
               />
 
-              <JsonEditor form={form} data={value} path={newPath} />
+              <JsonEditor dic={dic} form={form} data={value} path={newPath} />
               <Button
                 type="button"
                 variant="destructive"
@@ -127,7 +128,7 @@ export function JsonEditor({ form, data, path = "" }: JsonEditorProps) {
             </div>
           );
         })}
-        <AddFieldWithType path={path} form={form} />
+        <AddFieldWithType dic={dic} path={path} form={form} />
       </div>
     );
   }
@@ -140,7 +141,13 @@ export function JsonEditor({ form, data, path = "" }: JsonEditorProps) {
           const newPath = [path, i]?.join(".");
           return (
             <li key={newPath} className="relative mb-2 flex items-center gap-2">
-              <JsonEditor key={i} form={form} data={e} path={newPath} />
+              <JsonEditor
+                dic={dic}
+                key={i}
+                form={form}
+                data={e}
+                path={newPath}
+              />
 
               <Button
                 type="button"
@@ -155,7 +162,7 @@ export function JsonEditor({ form, data, path = "" }: JsonEditorProps) {
           );
         })}
 
-        <AddFieldWithType path={path} form={form} />
+        <AddFieldWithType dic={dic} path={path} form={form} />
       </ul>
     );
   }
@@ -178,13 +185,15 @@ export function JsonEditor({ form, data, path = "" }: JsonEditorProps) {
   );
 }
 
-const AddFieldWithType = ({
-  form,
-  path,
-}: {
+type AddFieldWithTypeProps = {
   form: UseFormReturn<any, any, undefined>;
   path: string;
-}) => {
+} & Dictionary["add-field-with-type"];
+const AddFieldWithType = ({
+  dic: { "add-field-with-type": c },
+  form,
+  path,
+}: AddFieldWithTypeProps) => {
   // Function to add a new field to the JSON data
   function addField(selectedType: string) {
     const updatedData = { ...form.getValues() };
@@ -234,21 +243,15 @@ const AddFieldWithType = ({
       <DropdownMenu>
         <DropdownMenuTrigger>
           <div>
-            <Tooltip text="add item">
+            <Tooltip text={c?.["add item"]}>
               <Icons.add />
             </Tooltip>
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuLabel>New Field Type</DropdownMenuLabel>
+          <DropdownMenuLabel>{c?.["field type"]}</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {[
-            { value: "string", label: "String" },
-            { value: "number", label: "Number" },
-            { value: "boolean", label: "Boolean" },
-            { value: "object", label: "Object" },
-            { value: "array", label: "Array" },
-          ].map((e, i) => (
+          {c?.["types"].map((e, i) => (
             <DropdownMenuItem key={i} onClick={() => addField(e?.["value"])}>
               {e?.["label"]}
             </DropdownMenuItem>

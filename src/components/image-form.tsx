@@ -53,7 +53,7 @@ export const ImageForm = {
           className={cn(buttonVariants({ variant: "outline", size: "icon" }))}
         >
           <div>
-            <Tooltip text="new image">
+            <Tooltip text={c?.["upload-file"]?.["upload image"]}>
               <div>
                 <Button
                   type="button"
@@ -108,7 +108,7 @@ export const ImageForm = {
       await clientHttpRequest(async () => {
         const { data: r } = await axios({ locale, user }).post(
           `/api/images/prompts/regenerate`,
-          { prompt: form.getValues("prompt") ?? "" },
+          { prompt: form.getValues("prompt") ?? "" }
         );
 
         form.setValue("prompt", r?.["prompt"]);
@@ -120,7 +120,7 @@ export const ImageForm = {
       await clientHttpRequest(async () => {
         const { data: r } = await axios({ locale, user }).post(
           `/api/images/regenerate`,
-          { prompt: form.getValues("prompt") ?? "" },
+          { prompt: form.getValues("prompt") ?? "" }
         );
         console.log(r);
 
@@ -148,7 +148,7 @@ export const ImageForm = {
             disabled={promptLoading || imageLoading || loading}
           >
             {imageLoading && <Icons.spinner />}
-            generate Image using AI
+            {c?.["regenerate-image"]?.["generate image using AI"]}
           </Button>
         }
         content={
@@ -284,96 +284,4 @@ export const ImageForm = {
       />
     );
   },
-  // text: function Component({
-  //   dic: { "image-form": c },
-  //   loading,
-  //   form,
-  // }: ImageFormProps) {
-  //   return (
-  //     <FormField
-  //       control={form.control}
-  //       name={`editor.textNodes.${0}.text`}
-  //       render={({ field }) => (
-  //         <FormItem>
-  //           {/* <FormLabel className="sr-only">{c?.["width"]?.['width']}</FormLabel> */}
-  //           <FormControl>
-  //             <Input type="text"
-
-  //             defaultValue={txt?.text()}
-  //             onChange={(e) => txt?.setText(e?.target?.value)}
-
-  //             />
-  //           </FormControl>
-  //           <FormMessage />
-  //         </FormItem>
-  //       )}
-  //     />
-  //   );
-  // },
-  // text: function Component({
-  //   dic: { "image-form": c, ...dic },
-  //   loading,
-  //   form,
-  //   editor,
-  // }: ImageFormProps & { editor: MutableRefObject<PhotoEditor | null> } & Pick<
-  //     DialogResponsiveProps,
-  //     "dic"
-  //   >) {
-  //   return (
-  //     <FormField
-  //       control={form.control}
-  //       name="filledFrame"
-  //       render={({ field }) => (
-  //         <FormItem>
-  //           {/* <FormLabel className="sr-only">{c?.["filledFrame"]}</FormLabel> */}
-
-  //           <Popover>
-  //             <PopoverTrigger asChild>
-  //               <Button type="button" variant="outline" size="icon">
-  //                 <Icons.add />
-  //               </Button>
-  //             </PopoverTrigger>
-
-  //             <PopoverContent align="end">
-  //               <ToggleGroup
-  //                 type="single"
-  //                 variant="outline"
-  //                 className="grid grid-cols-3 gap-4"
-  //                 disabled={loading}
-  //                 onValueChange={(e) => {
-  //                   field.onChange(FRAMES?.[Number(e)]?.["filled"]);
-
-  //                   editor?.["current"]?.addFrame({
-  //                     url: FRAMES?.[Number(e)]?.["src"],
-  //                     data: {
-  //                       title: "x project",
-  //                       website: "www.x.com",
-  //                       phone: "0102 218 4878",
-  //                     },
-  //                   });
-  //                 }}
-  //               >
-  //                 {FRAMES?.map((f, i) => (
-  //                   <ToggleGroupItem
-  //                     key={i}
-  //                     value={i?.toString()}
-  //                     className="h-fit w-fit"
-  //                   >
-  //                     <Image
-  //                       src={f?.["src"]}
-  //                       alt=""
-  //                       className="h-20 rounded-none border-none"
-  //                     />
-  //                   </ToggleGroupItem>
-  //                 ))}
-  //               </ToggleGroup>
-  //             </PopoverContent>
-  //           </Popover>
-
-  //           <FormMessage />
-  //         </FormItem>
-  //       )}
-  //     />
-  //   );
-  // },
 };

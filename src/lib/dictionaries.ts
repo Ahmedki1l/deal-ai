@@ -12,5 +12,9 @@ export const getDictionary = cache(async (locale: Locale) => {
   if (locale === "ar" || locale === "en") return await site[locale]();
 
   const dic = await site["ar"]();
-  return (await translateObject(dic as any, locale)) as unknown as typeof dic;
+  return (await translateObject({
+    value: dic as any,
+    from: "en",
+    to: locale,
+  })) as unknown as typeof dic;
 });

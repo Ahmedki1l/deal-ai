@@ -144,7 +144,7 @@ class PhotoEditor {
         },
         (err) => {
           reject(err); // Handle error case if image fails to load
-        },
+        }
       );
     });
   }
@@ -229,7 +229,7 @@ class PhotoEditor {
         },
         (err) => {
           reject(err); // Handle error case if image fails to load
-        },
+        }
       );
     });
   }
@@ -310,11 +310,10 @@ class PhotoEditor {
   getResult(
     pixelRatio: number = 2,
     format: "png" | "jpeg" = "png",
-    quality: number = 1,
+    quality: number = 1
   ) {
     // if (!this.frame && !this.photo) return null;
     this.transformer.nodes([]);
-
     const cropArea = this.cropRect!.getClientRect(); // Get the cropping rectangle coordinates
 
     // Generate the data URL
@@ -343,7 +342,7 @@ class PhotoEditor {
   }
 
   dragNode(
-    node: any,
+    node: any
     // Konva.Rect | Konva.Image | Konva.Text
   ) {
     // Disable dragging for all nodes
@@ -367,24 +366,22 @@ class PhotoEditor {
     const { width, height } = node.size();
     const stageWidth = this.stage.width();
     const stageHeight = this.stage.height();
-  
+
     const x = (stageWidth - width) / 2;
     const y = (stageHeight - height) / 2;
-  
+
     node.position({ x, y });
     this.layer.draw(); // Ensure the layer is updated after recentering
   }
-  
+
   recenterAllNodes() {
     if (this.photo) this.recenterNode(this.photo);
     if (this.frame) this.recenterNode(this.frame);
     if (this.cropRect) this.recenterNode(this.cropRect);
     this.textNodes.forEach((textNode) => this.recenterNode(textNode));
-  
+
     this.layer.draw(); // Redraw the layer after all nodes are centered
   }
-  
-  
 }
 
 export { PhotoEditor };

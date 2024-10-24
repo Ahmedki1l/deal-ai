@@ -385,7 +385,12 @@ export default {
     "updating a study case allows you to refine and enhance the details of your ongoing developments":
       "Updating a study case allows you to refine and enhance the details of your ongoing developments",
   },
-
+  "case-study-update-form": {
+    "updated successfully.": "updated successfully.",
+    submit: "Submit",
+    cancel: "Cancel",
+    edit: "Edit",
+  },
   "resizeable-layout": { logout: "Logout" },
   "dashboard-posts-bar-chart": {
     posts: "Posts",
@@ -434,19 +439,34 @@ export default {
   },
 
   "image-editor": {
+    "updated successfully.": "updated successfully.",
+    dimensions: "dimensions",
+    download: "download",
+    "post will be with no image": "post will be with no image",
+    clear: "clear",
     "save changes": "save changes",
+    layers: "layers",
+    "image size": "image size",
+    recenter: "recenter",
+    "recenter all layers": "recenter all layers",
+    photo: "photo",
+    width: "width",
+    height: "height",
+    "choose frame": "choose frame",
+    "edit text": "edit text",
+    "new text": "new text",
+    color: "color",
+    "font size": "font size",
   },
   "image-form": {
-    src: {
-      label: "Image Source",
-      url: "url",
-    },
+    "upload-file": { "upload image": "upload image" },
     "regenerate-image": {
       prompt: "Prompt",
       "enhance prompt": "enhance prompt",
       "generate image": "generate image",
       "enhanced successfully.": "enhanced successfully.",
       "generated successfully.": "generated successfully.",
+      "generate image using AI": "إنشاء صورة باستخدام الذكاء الاصطناعي",
     },
     frame: {
       frame: "Frame",
@@ -455,12 +475,23 @@ export default {
       "no frames to be applied...": "No frames to be applied...",
     },
   },
+  "add-field-with-type": {
+    "add item": "Add Item",
+    "field type": "Field Type",
+    types: [
+      { value: "string", label: "String" },
+      { value: "number", label: "Number" },
+      { value: "boolean", label: "Boolean" },
+      { value: "object", label: "Object" },
+      { value: "array", label: "Array" },
+    ],
+  },
   "locale-switcher": {
     "current locale of the website": "current locale of the website",
     en: "English (EN)",
     ar: "العربية (AR)",
-    fr: "French (FR)",
-    de: "Deautch (DE)",
+    // fr: "French (FR)",
+    // de: "Deautch (DE)",
     "change language": "change language",
   },
   "mode-toggle": {
@@ -545,6 +576,7 @@ export default {
     "updated successfully.": "updated successfully.",
     submit: "Submit",
     "post details": "Post Details",
+    "edit image": "edit image",
     discard: "Discard",
     "save changes": "Save Changes",
     "post information": "Post Information",

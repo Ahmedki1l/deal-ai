@@ -154,7 +154,7 @@ export default async function StudyCase({
       </div>
 
       <Tabs defaultValue="content">
-        <div className="mb-4 flex items-center justify-between gap-4">
+        <div className="my-4 flex items-center justify-between gap-4">
           <div className="flex flex-col">
             <h2 className="text-2xl font-bold tracking-tight">
               {caseStudy?.["title"]}
@@ -163,8 +163,10 @@ export default async function StudyCase({
 
           <div>
             <TabsList>
-              <TabsTrigger value="content">Content</TabsTrigger>
-              <TabsTrigger value="posts">Posts</TabsTrigger>
+              <TabsTrigger value="content">
+                {c?.["study case content"]}
+              </TabsTrigger>
+              <TabsTrigger value="posts">{c?.["posts"]?.["posts"]}</TabsTrigger>
             </TabsList>
           </div>
         </div>
@@ -172,17 +174,12 @@ export default async function StudyCase({
         <TabsContent value="content">
           <div>
             <Accordion type="multiple">
-              <AccordionItem value="content">
-                <div className="flex items-center gap-2">
-                  <AccordionTrigger>
-                    {c?.["study case content"]}
-                  </AccordionTrigger>
-                </div>
-
-                <AccordionContent>{caseStudy["content"]}</AccordionContent>
-              </AccordionItem>
+              <div className="overflow-hidden py-4 text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
+                {caseStudy["content"]}
+              </div>
 
               {/* <CaseStudyUpdateForm
+                dic={dic}
                 label={c?.["study case content"]}
                 name="content"
                 keyName="content"
@@ -190,6 +187,7 @@ export default async function StudyCase({
                 studyCase={caseStudy}
               /> */}
               <CaseStudyUpdateForm
+                dic={dic}
                 label={c?.["target audience"]}
                 name="target audience"
                 keyName="targetAudience"
@@ -201,6 +199,7 @@ export default async function StudyCase({
                 studyCase={caseStudy}
               />
               <CaseStudyUpdateForm
+                dic={dic}
                 label={c?.["pros"]}
                 keyName="pros"
                 name="pros"
@@ -210,6 +209,7 @@ export default async function StudyCase({
                 studyCase={caseStudy}
               />
               <CaseStudyUpdateForm
+                dic={dic}
                 label={c?.["cons"]}
                 keyName="cons"
                 name="cons"
@@ -219,6 +219,7 @@ export default async function StudyCase({
                 studyCase={caseStudy}
               />
               <CaseStudyUpdateForm
+                dic={dic}
                 label={c?.["market strategy"]}
                 name="market strategy"
                 keyName="Market_Strategy"
@@ -230,6 +231,7 @@ export default async function StudyCase({
                 studyCase={caseStudy}
               />
               <CaseStudyUpdateForm
+                dic={dic}
                 label={c?.["performance metrics"]}
                 studyCase={caseStudy}
                 keyName="Performance_Metrics"
@@ -241,6 +243,7 @@ export default async function StudyCase({
                 }
               />
               <CaseStudyUpdateForm
+                dic={dic}
                 label={c?.["ROI calculation"]}
                 studyCase={caseStudy}
                 keyName="ROI_Calculation"
@@ -252,6 +255,7 @@ export default async function StudyCase({
                 }
               />
               <CaseStudyUpdateForm
+                dic={dic}
                 label={c?.["strategic insights"]}
                 studyCase={caseStudy}
                 keyName="Strategic_Insights"
@@ -263,6 +267,7 @@ export default async function StudyCase({
                 }
               />
               <CaseStudyUpdateForm
+                dic={dic}
                 label={c?.["recommendations"]}
                 studyCase={caseStudy}
                 keyName="Recommendations"
@@ -274,6 +279,7 @@ export default async function StudyCase({
                 }
               />
               <CaseStudyUpdateForm
+                dic={dic}
                 label={c?.["Post Frequency"]}
                 studyCase={caseStudy}
                 keyName="Post_Frequency"

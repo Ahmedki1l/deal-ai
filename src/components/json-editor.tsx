@@ -1,7 +1,16 @@
 "use client";
 
 import { Icons } from "@/components/icons";
+import { Tooltip } from "@/components/tooltip";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   FormControl,
   FormField,
@@ -10,13 +19,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 
 type JsonEditorProps = {
@@ -51,16 +53,66 @@ export function JsonEditor({ form, data, path = "" }: JsonEditorProps) {
     form.reset({ ...updatedData });
   }
 
+  // Function to update a key in the JSON data
+  function updateKey(oldPath: string, newKey: string) {
+    const pathParts = oldPath.split(".");
+    const updatedData = { ...form.getValues() };
+    let current = updatedData;
+
+    // Traverse the object to the second last key
+    for (let i = 0; i < pathParts.length - 1; i++) {
+      if (current[pathParts[i]] === undefined) {
+        return; // If the path is invalid, exit the function
+      }
+      current = current[pathParts[i]];
+    }
+
+    const lastKey = pathParts[pathParts.length - 1];
+    const value = current[lastKey];
+
+    // Update the key while preserving the order
+    if (typeof current === "object" && !Array.isArray(current)) {
+      const updatedObject = {};
+
+      // Iterate over the original object's keys to rebuild with the updated key
+      for (const key in current) {
+        if (key === lastKey) {
+          // Replace the old key with the new one
+          // @ts-ignore
+          updatedObject[newKey] = value;
+        } else {
+          // Keep other keys unchanged
+          // @ts-ignore
+          updatedObject[key] = current[key];
+        }
+      }
+
+      // Assign the rebuilt object to the current object
+      Object.keys(current).forEach((key) => delete current[key]);
+      Object.assign(current, updatedObject);
+    }
+
+    // Rebuild the updated values and reset the form
+    form.reset({ ...updatedData });
+  }
+
   if (typeof data === "object" && !Array.isArray(data)) {
     return (
-      <div className="bord rtl:mr-2er-l-2 pl-2 ltr:ml-2">
+      <div className="flex flex-col gap-2 first:border-none ltr:border-l-2 ltr:pl-2 rtl:border-r-2 rtl:pr-2">
         {Object.entries(data).map(([key, value]) => {
           // Create a new path for nested keys
           const newPath = (path ? [path, key] : [key])?.join(".");
 
           return (
-            <div key={key} className="relative mb-2 flex items-start gap-2">
-              <Label>{newPath}</Label>
+            <div key={key} className="relative my-2 flex items-start gap-2">
+              <Input
+                defaultValue={key}
+                onBlur={(e) => {
+                  const newKey = e?.["target"]?.["value"];
+                  if (newKey && newKey !== key) updateKey(newPath, newKey);
+                }}
+                className="w-fit min-w-20 bg-muted"
+              />
 
               <JsonEditor form={form} data={value} path={newPath} />
               <Button
@@ -82,24 +134,24 @@ export function JsonEditor({ form, data, path = "" }: JsonEditorProps) {
 
   if (Array.isArray(data)) {
     return (
-      <ul className="flex flex-col gap-2 ltr:ml-2 rtl:mr-2">
+      <ul className="flex flex-col gap-2 border-red-400 ltr:ml-6 ltr:border-l-2 ltr:pl-2 rtl:mr-6 rtl:border-r-2 rtl:pr-2">
         {data.map((e, i) => {
           // Create a new path for each item in the array
           const newPath = [path, i]?.join(".");
           return (
-            <div key={newPath} className="relative mb-2 flex items-start gap-2">
+            <li key={newPath} className="relative mb-2 flex items-center gap-2">
               <JsonEditor key={i} form={form} data={e} path={newPath} />
 
               <Button
                 type="button"
                 variant="destructive"
                 size="icon"
-                className="absolute -left-1 -top-1 h-4 w-4"
+                className="absolute top-1/2 h-4 w-4 -translate-y-1/2 ltr:-left-2 rtl:-right-2"
                 onClick={() => deleteKey(newPath)}
               >
                 <Icons.x />
               </Button>
-            </div>
+            </li>
           );
         })}
 
@@ -179,16 +231,30 @@ const AddFieldWithType = ({
 
   return (
     <>
-      <Select onValueChange={(v) => addField(v)}>
-        <SelectTrigger>Add Item</SelectTrigger>
-        <SelectContent>
-          <SelectItem value="string">String</SelectItem>
-          <SelectItem value="number">Number</SelectItem>
-          <SelectItem value="boolean">Boolean</SelectItem>
-          <SelectItem value="object">Object</SelectItem>
-          <SelectItem value="array">Array</SelectItem>
-        </SelectContent>
-      </Select>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <div>
+            <Tooltip text="add item">
+              <Icons.add />
+            </Tooltip>
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>New Field Type</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {[
+            { value: "string", label: "String" },
+            { value: "number", label: "Number" },
+            { value: "boolean", label: "Boolean" },
+            { value: "object", label: "Object" },
+            { value: "array", label: "Array" },
+          ].map((e, i) => (
+            <DropdownMenuItem key={i} onClick={() => addField(e?.["value"])}>
+              {e?.["label"]}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </>
   );
 };

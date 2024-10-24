@@ -5,9 +5,9 @@ import {
   CaseStudyBinButtonProps,
 } from "@/components/case-study-bin-button";
 import {
-  CaseStudyUpdateForm,
-  CaseStudyUpdateFormProps,
-} from "@/components/case-study-update-form";
+  CaseStudyUpdateButton,
+  CaseStudyUpdateButtonProps,
+} from "@/components/case-study-update-button";
 import { DataTable, DataTableProps } from "@/components/data-table";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { DataTableRowActions } from "@/components/data-table-row-actions";
@@ -28,7 +28,7 @@ type CaseStudyTableProps = {
   data: CaseStudyColumnType[];
   disabled?: boolean;
 } & Pick<DataTableProps<any, any>, "dic"> &
-  Pick<CaseStudyUpdateFormProps, "dic"> &
+  Pick<CaseStudyUpdateButtonProps, "dic"> &
   Pick<CaseStudyBinButtonProps, "dic"> &
   Dictionary["dashboard"];
 
@@ -143,7 +143,7 @@ export function CaseStudyTable({
               return (
                 <>
                   <DataTableRowActions dic={dic}>
-                    <CaseStudyUpdateForm
+                    <CaseStudyUpdateButton
                       disabled={disabled}
                       dic={dic}
                       asChild
@@ -156,7 +156,7 @@ export function CaseStudyTable({
                       >
                         {c?.["edit"]}
                       </Button>
-                    </CaseStudyUpdateForm>
+                    </CaseStudyUpdateButton>
                     <DropdownMenuSeparator />
 
                     <CaseStudyBinButton

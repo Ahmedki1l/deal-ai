@@ -376,7 +376,7 @@ export default {
     restore: "استعادة",
     "restore study case": "استعادة دراسة الحالة",
   },
-  "case-study-update-form": {
+  "case-study-update-button": {
     "updated successfully.": "تم التحديث بنجاح.",
     submit: "إرسال",
     "update study case": "تحديث دراسة حالة",

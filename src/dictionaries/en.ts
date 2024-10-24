@@ -378,7 +378,7 @@ export default {
     restore: "Restore",
     "restore study case": "Restore Study Case",
   },
-  "case-study-update-form": {
+  "case-study-update-button": {
     "updated successfully.": "updated successfully.",
     submit: "Submit",
     "update study case": "Update Study Case",

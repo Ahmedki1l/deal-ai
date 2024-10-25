@@ -26,7 +26,7 @@ import { platforms } from "@/db/enums";
 import { useLocale } from "@/hooks/use-locale";
 import axios from "@/lib/axios";
 import { t } from "@/lib/locale";
-import { clientAction, fileToBase64, getPdfImages } from "@/lib/utils";
+import { clientAction, fileToBase64 } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import {
   projectCreateFormSchema,
@@ -35,6 +35,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
+import { extractImagesFromPdf } from "sinsintro-pdf-extractor";
 import { toast } from "sonner";
 import * as z from "zod";
 import { useSession } from "./session-provider";
@@ -153,18 +154,33 @@ export const ProjectForm = {
 
     const uploadPdf = async () => {
       await clientAction(async () => {
-        // upload into space
-        const formData = new FormData();
-        formData.append("file", form.getValues("pdfFile")!);
+        const base64Arr = await extractImagesFromPdf(
+          form.getValues("pdfFile")!
+        );
+        console.log(base64Arr);
 
-        const pdfImages = await getPdfImages({
-          locale,
-          user,
-          file: form.getValues("pdfFile"),
-        });
+        const pdfImages: string[] = await axios({ user, locale })
+          .post("/api/images", base64Arr ?? [])
+          .then((r) => r?.["data"])
+          .catch((err) => {
+            console.error(
+              "upload images error: ",
+              err?.["response"] ? err?.["response"]?.["data"] : err?.["message"]
+            );
+          });
+        // // upload into space
+        // const formData = new FormData();
+        // formData.append("file", form.getValues("pdfFile")!);
 
-        form.setValue("pdf", pdfImages);
-        console.log(pdfImages);
+        // const pdfImages = await getPdfImages({
+        //   locale,
+        //   user,
+        //   file: form.getValues("pdfFile"),
+        // });
+        // if (!(pdfImages ?? [])?.["length"]) throw new Error("No images");
+
+        form.setValue("pdf", pdfImages ?? []);
+        console.log(pdfImages ?? []);
 
         // get fields using pdgImages
         const data: {
@@ -187,7 +203,7 @@ export const ProjectForm = {
           }[];
         } = await axios({ user, locale })
           .post(process.env.NEXT_PUBLIC_AI_API! + "/ar/pdf-data-extractor", {
-            images: pdfImages,
+            images: pdfImages ?? [],
           })
           .then((r) => r?.["data"])
           .catch((err) => {

@@ -99,7 +99,6 @@ export async function getPdfImages({
 }): Promise<string[]> {
   const formData = new FormData();
   if (!file) throw new Error("No selected File");
-
   formData.append("file", file);
 
   // Sending the file to the backend

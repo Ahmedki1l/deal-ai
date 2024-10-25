@@ -55,9 +55,11 @@ export function ProjectCreateButton({
   }: z.infer<typeof projectCreateFormSchema>) {
     await clientHttpRequest(async () => {
       const pdfImages =
-        pdfFile && !pdfImagesArr?.["length"]
+        (pdfFile && !pdfImagesArr?.["length"]
           ? await getPdfImages({ locale, user, file: pdfFile })
-          : pdfImagesArr;
+          : pdfImagesArr) ?? [];
+
+      console.log(pdfImages);
 
       await axios({ locale, user }).post(`/api/projects`, {
         ...data,

@@ -178,14 +178,6 @@ export default async function StudyCase({
                 {caseStudy["content"]}
               </div>
 
-              {/* <CaseStudyUpdateForm
-                dic={dic}
-                label={c?.["study case content"]}
-                name="content"
-                keyName="content"
-                jsonContent={caseStudy["content"]}
-                studyCase={caseStudy}
-              /> */}
               <CaseStudyUpdateForm
                 dic={dic}
                 label={c?.["target audience"]}

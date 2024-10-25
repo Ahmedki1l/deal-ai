@@ -21,7 +21,7 @@ const axios = ({ locale, user }: { locale: Locale; user: User | null }) => {
     },
     (error) => {
       return Promise.reject(error);
-    },
+    }
   );
 
   axiosInstance.interceptors.response.use(
@@ -37,7 +37,7 @@ const axios = ({ locale, user }: { locale: Locale; user: User | null }) => {
       const timeTaken = endTime - error.config.metadata.startTime;
       console.log(`Request to ${error.config.url} failed, took ${timeTaken}ms`);
       return Promise.reject(error);
-    },
+    }
   );
 
   return axiosInstance;

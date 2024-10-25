@@ -130,7 +130,7 @@ export function CaseStudyUpdateForm({
   );
 }
 
-const renderKeyValuePairs = (data: Record<string, any>) => (
+export const renderKeyValuePairs = (data: Record<string, any>) => (
   <ul className="flex flex-col gap-2 text-start ltr:border-l-2 ltr:pl-2 rtl:border-r-2 rtl:pr-2">
     {Object.entries(data).map(([key, value]) => {
       if (typeof value === "object" && !Array.isArray(value)) {

@@ -6,13 +6,7 @@ import * as React from "react";
 import { useFormContext } from "react-hook-form";
 
 export type MapProps = {} & Pick<Project, "distinct" | "city" | "country">;
-export function Map({
-  // dic: { dialog: c },
-  distinct,
-  city,
-  country,
-  ...props
-}: MapProps) {
+export function Map({ distinct, city, country, ...props }: MapProps) {
   const { loader } = useGoogleMaps();
   const mapRef = React.useRef<HTMLDivElement>(null);
 
@@ -38,7 +32,7 @@ export function Map({
             });
           } else {
             console.error(
-              "Geocode was not successful for the following reason: " + status,
+              "Geocode was not successful for the following reason: " + status
             );
           }
         });
@@ -58,8 +52,7 @@ export const MapPicker = () => {
   React.useEffect(() => {
     if (loader) {
       loader?.load()?.then((google) => {
-        const defaultCenter = { lat: 34.0522, lng: -118.2437 }; // Default to Los Angeles
-
+        const defaultCenter = { lat: 24.7136, lng: 46.6753 }; // Default to Riyadh, Saudi Arabia
         const initMap = (center: { lat: number; lng: number }) => {
           const map = new google.maps.Map(mapRef.current as HTMLDivElement, {
             center,
@@ -95,7 +88,7 @@ export const MapPicker = () => {
                         result.address_components.length === 3) ||
                       (result.types.includes("administrative_area_level_2") &&
                         result.types.includes("political") &&
-                        result.address_components.length === 3),
+                        result.address_components.length === 3)
                   )?.address_components;
 
                   if (addressComponents) {
@@ -112,7 +105,7 @@ export const MapPicker = () => {
                     setValue("country", country ?? "");
                     setValue(
                       "map",
-                      JSON.stringify(mapsMouseEvent.latLng ?? ""),
+                      JSON.stringify(mapsMouseEvent.latLng ?? "")
                     );
 
                     // Set a new marker
@@ -124,7 +117,7 @@ export const MapPicker = () => {
                     markerRef.current = marker;
                   }
                 }
-              },
+              }
             );
           });
         };
@@ -142,7 +135,7 @@ export const MapPicker = () => {
             () => {
               // Fallback to default if geolocation fails or is denied
               initMap(defaultCenter);
-            },
+            }
           );
         } else {
           // Geolocation isn't available or failed, use default

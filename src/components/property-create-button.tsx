@@ -34,7 +34,9 @@ export type PropertyCreateButtonProps = { project: Pick<Project, "id"> } & Omit<
 > &
   Dictionary["property-create-button"] &
   Dictionary["property-form"] &
-  Dictionary["dialog"];
+  Dictionary["dialog"] &
+  Dictionary["apartment-form"] &
+  Dictionary["villa-form"];
 
 export function PropertyCreateButton({
   dic: { "property-create-button": c, ...dic },
@@ -123,11 +125,13 @@ export function PropertyCreateButton({
 }
 
 export const ApartmentForm = ({
-  dic,
+  dic: { "apartment-form": c, ...dic },
   form,
   loading,
   project,
-}: PropertyFormProps & { project: Pick<Project, "id"> }) => {
+}: PropertyFormProps & {
+  project: Pick<Project, "id">;
+} & Dictionary["apartment-form"]) => {
   const { remove, append } = useFieldArray({
     name: "properties",
     control: form?.["control"],
@@ -138,7 +142,7 @@ export const ApartmentForm = ({
       <div className="flex items-center gap-2">
         <AccordionTrigger>
           <p className="items-center justify-start">
-            Apartments{" "}
+            {c?.["apartments"]}{" "}
             {form
               .watch("properties")
               ?.filter((e) => e?.["type"] === "APARTMENT")?.["length"] ? (
@@ -154,7 +158,7 @@ export const ApartmentForm = ({
             ) : null}
           </p>
         </AccordionTrigger>
-        <Tooltip text="new apartment">
+        <Tooltip text={c?.["new apartment"]}>
           <div>
             <Button
               type="button"
@@ -273,7 +277,9 @@ export const ApartmentForm = ({
             ) : (
               <EmptyPlaceholder className="border-none">
                 <EmptyPlaceholder.Icon name="empty" />
-                <EmptyPlaceholder.Title>no apartment</EmptyPlaceholder.Title>
+                <EmptyPlaceholder.Title>
+                  {c?.["no apartment"]}
+                </EmptyPlaceholder.Title>
 
                 <Button
                   type="button"
@@ -283,7 +289,7 @@ export const ApartmentForm = ({
                     append({ projectId: project?.["id"], type: "APARTMENT" })
                   }
                 >
-                  <Icons.add /> create new apartment
+                  <Icons.add /> {c?.["create new apartment"]}
                 </Button>
               </EmptyPlaceholder>
             )}
@@ -295,11 +301,13 @@ export const ApartmentForm = ({
 };
 
 export const VillaForm = ({
-  dic,
+  dic: { "villa-form": c, ...dic },
   form,
   loading,
   project,
-}: PropertyFormProps & { project: Pick<Project, "id"> }) => {
+}: PropertyFormProps & {
+  project: Pick<Project, "id">;
+} & Dictionary["villa-form"]) => {
   const { remove, append } = useFieldArray({
     name: "properties",
     control: form?.["control"],
@@ -310,7 +318,7 @@ export const VillaForm = ({
       <div className="flex items-center gap-2">
         <AccordionTrigger>
           <p className="items-center justify-start">
-            Villas{" "}
+            {c?.["villas"]}{" "}
             {form.watch("properties")?.filter((e) => e?.["type"] === "VILLA")?.[
               "length"
             ] ? (
@@ -326,7 +334,7 @@ export const VillaForm = ({
             ) : null}
           </p>
         </AccordionTrigger>
-        <Tooltip text="new villa">
+        <Tooltip text={c?.["new villa"]}>
           <div>
             <Button
               type="button"
@@ -395,11 +403,11 @@ export const VillaForm = ({
                           loading={loading}
                         />
                         <PropertyForm.price
-                        dic={dic}
-                        index={i}
-                        form={form as any}
-                        loading={loading}
-                      />
+                          dic={dic}
+                          index={i}
+                          form={form as any}
+                          loading={loading}
+                        />
                         <PropertyForm.space
                           dic={dic}
                           index={i}
@@ -463,7 +471,9 @@ export const VillaForm = ({
             ) : (
               <EmptyPlaceholder className="border-none">
                 <EmptyPlaceholder.Icon name="empty" />
-                <EmptyPlaceholder.Title>no villa</EmptyPlaceholder.Title>
+                <EmptyPlaceholder.Title>
+                  {c?.["no villa"]}
+                </EmptyPlaceholder.Title>
 
                 <Button
                   type="button"
@@ -473,7 +483,7 @@ export const VillaForm = ({
                     append({ projectId: project?.["id"], type: "VILLA" })
                   }
                 >
-                  <Icons.add /> create new villa
+                  <Icons.add /> {c?.["create new villa"]}
                 </Button>
               </EmptyPlaceholder>
             )}

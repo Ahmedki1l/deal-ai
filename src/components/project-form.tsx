@@ -158,9 +158,10 @@ export const ProjectForm = {
           form.getValues("pdfFile")!
         );
         console.log(base64Arr);
+if(!base64Arr?.['length']) throw new Error("no images")
 
         const pdfImages: string[] = await axios({ user, locale })
-          .post("/api/images", base64Arr ?? [])
+          .post("/api/images", {base64Arr}  )
           .then((r) => r?.["data"])
           .catch((err) => {
             console.error(
@@ -179,8 +180,9 @@ export const ProjectForm = {
         // });
         // if (!(pdfImages ?? [])?.["length"]) throw new Error("No images");
 
-        form.setValue("pdf", pdfImages ?? []);
-        console.log(pdfImages ?? []);
+if(!pdfImages?.['length']) throw new Error("no images")
+        form.setValue("pdf", pdfImages );
+        console.log(pdfImages );
 
         // get fields using pdgImages
         const data: {
@@ -213,6 +215,7 @@ export const ProjectForm = {
             );
           });
 
+          if(!data ) throw new Error("no data")
         console.log("data: ", data);
 
         if (data?.["Title"] != "0") form.setValue("title", data?.["Title"]);

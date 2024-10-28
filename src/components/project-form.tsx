@@ -240,14 +240,15 @@ export const ProjectForm = {
               villas?.map((e) => ({
                 type: "VILLA",
                 projectId: "x",
-                title: e?.["Title"] ?? undefined,
-                bathrooms: e?.["Bathrooms"] ?? undefined,
-                finishing: e?.["Finishing"] ?? undefined,
-                floors: e?.["Floors"] ?? undefined,
-                livingrooms: e?.["Livingrooms"] ?? undefined,
-                units: e?.["No_Of_Units"] ?? undefined,
-                rooms: e?.["Rooms"] ?? undefined,
-                space: e?.["Space"] ?? undefined,
+                title: e?.["Title"] ?? "بدون إسم",
+                price: "2,000,000",
+                bathrooms: e?.["Bathrooms"] ?? "2",
+                finishing: e?.["Finishing"] ?? "مودرن",
+                floors: e?.["Floors"] ?? "2",
+                livingrooms: e?.["Livingrooms"] ?? "1",
+                units: e?.["No_Of_Units"] ?? "10",
+                rooms: e?.["Rooms"] ?? "4",
+                space: e?.["Space"] ?? "120",
               }))
             );
 
@@ -256,14 +257,15 @@ export const ProjectForm = {
               aprts?.map((e) => ({
                 type: "APARTMENT",
                 projectId: "x",
-                title: e?.["Title"] ?? undefined,
-                bathrooms: e?.["Bathrooms"] ?? undefined,
-                finishing: e?.["Finishing"] ?? undefined,
-                floors: e?.["Floors"] ?? undefined,
-                livingrooms: e?.["Livingrooms"] ?? undefined,
-                units: e?.["No_Of_Units"] ?? undefined,
-                rooms: e?.["Rooms"] ?? undefined,
-                space: e?.["Space"] ?? undefined,
+                title: e?.["Title"] ?? "بدون إسم",
+                price: "2,000,000",
+                bathrooms: e?.["Bathrooms"] ?? "2",
+                finishing: e?.["Finishing"] ?? "مودرن",
+                floors: e?.["Floors"] ?? "2",
+                livingrooms: e?.["Livingrooms"] ?? "1",
+                units: e?.["No_Of_Units"] ?? "10",
+                rooms: e?.["Rooms"] ?? "4",
+                space: e?.["Space"] ?? "120",
               }))
             );
         }

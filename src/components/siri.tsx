@@ -51,7 +51,7 @@ export function Siri({ ...props }: SiriProps) {
     error,
     setError,
   } = useSpeechRecognition({
-    key: "Hi Deal", // Optional: If omitted, it starts listening immediately
+    key: "Hey Siri",
     recognitionOptions: {
       lang: "en-US", // Custom recognition options, like language
       continuous: true, // Keep listening continuously
@@ -184,7 +184,7 @@ export function Siri({ ...props }: SiriProps) {
       {...props}
     >
       <div>
-        <Tooltip text="say, Hi Deal">
+        <Tooltip text="Hey Siri">
           <Button className="fixed bottom-2 right-2">Siri</Button>
         </Tooltip>
       </div>

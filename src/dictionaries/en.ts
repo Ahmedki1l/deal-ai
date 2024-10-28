@@ -404,6 +404,19 @@ export default {
     "project name": "Project Name",
   },
 
+  "apartment-form": {
+    apartments: "apartments",
+    "no apartment": "no apartments",
+    "new apartment": "new apartment",
+    "create new apartment": "create new apartment",
+  },
+  "villa-form": {
+    villas: "villas",
+    "no villa": "no villas",
+    "new villa": "new villa",
+    "create new villa": "create new villa",
+  },
+
   "data-table": {
     "no results.": "No Results.",
   },

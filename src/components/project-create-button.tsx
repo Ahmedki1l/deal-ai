@@ -29,6 +29,8 @@ export type ProjectCreateButtonProps = { user: User } & Omit<
   Dictionary["project-create-button"] &
   Dictionary["project-form"] &
   Dictionary["property-form"] &
+  Dictionary["apartment-form"] &
+  Dictionary["villa-form"] &
   Dictionary["dialog"];
 
 export function ProjectCreateButton({

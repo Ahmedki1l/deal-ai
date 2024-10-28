@@ -1,3 +1,4 @@
+
 import { NavItem, SelectItem } from "@/types";
 import { PROPERTY_TYPE } from "@prisma/client";
 
@@ -303,6 +304,18 @@ export default {
     },
   },
 
+  "apartment-form": {
+    apartments: "شقق",
+    "no apartment": "لا توجد شقق",
+    "new apartment": "شقة جديدة",
+    "create new apartment": "إنشاء شقة جديدة",
+  },
+  "villa-form": {
+    villas: "فلل",
+    "no villa": "لا توجد فلل",
+    "new villa": "فيلا جديدة",
+    "create new villa": "إنشاء فيلا جديدة",
+  },
   "appearance-form": {
     theme: "الثيم",
     "automatically switch between day and night themes.":

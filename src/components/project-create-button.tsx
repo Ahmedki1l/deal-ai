@@ -60,9 +60,7 @@ export function ProjectCreateButton({
         (pdfFile && !pdfImagesArr?.["length"]
           ? await getPdfImages({ locale, user, file: pdfFile })
           : pdfImagesArr) ?? [];
-
-      console.log(pdfImages);
-
+ 
       await axios({ locale, user }).post(`/api/projects`, {
         ...data,
         pdf: pdfImages,

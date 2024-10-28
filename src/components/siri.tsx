@@ -23,6 +23,9 @@ import { toast } from "sonner";
 import { useConversation, useSpeechRecognition } from "voicegpt-assistant";
 import { z } from "zod";
 import { Tooltip } from "./tooltip";
+import { t } from "@/lib/locale";
+import { Dictionary } from "@/types/locale";
+import { Bot } from "lucide-react";
 
 const formSchema = z.object({
   message: z
@@ -33,8 +36,11 @@ const formSchema = z.object({
     .min(1, `message is required.`),
 });
 
-type SiriProps = Omit<DialogResponsiveProps, "open" | "setOpen">;
-export function Siri({ ...props }: SiriProps) {
+type SiriProps = {} &Omit<DialogResponsiveProps, "open" | "setOpen">&
+Pick<DialogResponsiveProps, 'dic'>
+&Dictionary['siri'];
+
+export function Siri({dic: {siri: c, ...dic},  ...props }: SiriProps) {
   const locale = useLocale();
   const { user } = useSession();
   const [loading, setLoading] = useState(false);
@@ -51,21 +57,23 @@ export function Siri({ ...props }: SiriProps) {
     error,
     setError,
   } = useSpeechRecognition({
-    key: "Hey Siri",
+    key: c?.['hello'],
     recognitionOptions: {
-      lang: "en-US", // Custom recognition options, like language
+      lang: locale === 'en'?  "en-US" : locale, // Custom recognition options, like language
       continuous: true, // Keep listening continuously
     },
   });
 
   useEffect(() => {
+    const trans = async (value:string) => await t(value, { from: "en", to: locale})
     if (transcript) {
       form.setValue("message", form.getValues("message") + " " + transcript);
       setTranscript(null);
     }
 
     if (error) {
-      toast.error(error);
+      const msg = trans(error)
+      toast.error(msg);
       setError(null);
     }
   }, [transcript, error]);
@@ -93,99 +101,98 @@ export function Siri({ ...props }: SiriProps) {
 
   return (
     <DialogResponsive
-      open={open}
+      dic={dic} open={open}
       setOpen={setOpen}
-      title="Chat with OpenAI (Voice & Text)"
-      confirmButton={
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <Button
-              variant="secondary"
-              className="w-full md:w-fit"
-              disabled={loading || listening}
-            >
-              {loading && <Icons.spinner />}
-              Send
-            </Button>
-          </form>
-        </Form>
-      }
-      content={
-        <>
-          <div className="container h-60 w-full overflow-y-auto border py-4">
-            {messages?.length ? (
-              messages?.map((message, index) => (
-                <div
-                  key={index}
+      title={c?.["Chat with OpenAI (Voice & Text)"]}
+      disabled={loading || listening}
+      confirmButton={<Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <Button
+            variant="secondary"
+            className="w-full md:w-fit"
+            disabled={loading || listening}
+          >
+            {loading && <Icons.spinner />}
+            {c?.['send']}
+          </Button>
+        </form>
+      </Form>}
+      content={<>
+        <div className="container h-60 w-full overflow-y-auto border py-4">
+          {messages?.length ? (
+            messages?.map((message, index) => (
+              <div
+                key={index}
+                className={cn(
+                  "my-4 flex items-center",
+                  message.role === "user" ? "justify-end" : "justify-start"
+                )}
+              >
+                <p
                   className={cn(
-                    "my-4 flex items-center",
-                    message.role === "user" ? "justify-end" : "justify-start"
+                    "w-fit rounded-md px-2 py-1",
+                    message.role === "user"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-secondary-foreground"
                   )}
                 >
-                  <p
-                    className={cn(
-                      "w-fit rounded-md px-2 py-1",
-                      message.role === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-secondary text-secondary-foreground"
-                    )}
-                  >
-                    {message.content}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <div className="flex h-full flex-1 items-center justify-center">
-                <p>No Messages Yet</p>
+                  {message.content}
+                </p>
               </div>
-            )}
+            ))
+          ) : (
+            <div className="flex h-full flex-1 items-center justify-center">
+              <p>{c?.['No Messages Yet']}</p>
+            </div>
+          )}
+        </div>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="message"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{c?.['Message']}</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      className="min-h-20 w-full"
+                      placeholder={c?.["Message AI..."]}
+                      disabled={loading || listening}
+                      {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+
+          <div className="flex items-center gap-2 justify-start">
+
+          <Button
+              type="button"
+              disabled={loading || listening}
+              onClick={clearMessages}
+            >
+              {c?.["clear history"]}
+            </Button>
+
+            <Button
+              type="button"
+              disabled={loading}
+              onClick={() => setListening((prev) => !prev)}
+            >
+              {listening ? c?.["Stop Listening"] : c?.["Start Listening"]}
+            </Button>
           </div>
-
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <FormField
-                control={form.control}
-                name="message"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Message</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        className="min-h-20 w-full"
-                        placeholder="Message AI..."
-                        disabled={loading || listening}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Button
-                type="button"
-                disabled={loading || listening}
-                onClick={clearMessages}
-              >
-                Clear History
-              </Button>
-
-              <Button
-                type="button"
-                disabled={loading}
-                onClick={() => setListening((prev) => !prev)}
-              >
-                {listening ? "Stop Listening" : "Start Listening"}
-              </Button>
-            </form>
-          </Form>
-        </>
-      }
-      {...props}
-    >
+          </form>
+        </Form>
+      </>}
+      {...props}    >
       <div>
-        <Tooltip text="Hey Siri">
-          <Button className="fixed bottom-2 right-2">Siri</Button>
+        <Tooltip text={c?.['hello']}>
+          <Button variant='outline' size='icon' className="fixed bottom-2 rtl:left-2 ltr:right-2">
+            <Bot />
+          </Button>
         </Tooltip>
       </div>
     </DialogResponsive>

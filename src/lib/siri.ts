@@ -1,6 +1,9 @@
 import { platformsArr } from "@/db/enums";
 import axios from "@/lib/axios";
 import { OpenAI } from "voicegpt-assistant";
+import { getDictionary } from "./dictionaries";
+import ar from "@/dictionaries/ar";
+import en from "@/dictionaries/en";
 
 const tools = [
   {
@@ -72,14 +75,15 @@ const tools = [
     trigger: async (data: { args?: any; response?: any } | void) => {
       try {
         if (!data) throw new Error("No Passed Data");
-        const { args, response } = data;
-
+        const { args, response } = data;  
+        const { actions: c }  = args?.['locale'] === 'ar' ? ar : en
+        
         await axios({ locale: args?.["locale"], user: args?.["user"] }).post(
           `/api/projects`,
           { ...response }
         );
 
-        return `project created successfully with title ${response?.["title"]}`;
+        return `${c?.["project created successfully with title"]} ${response?.["title"]}`;
       } catch (error: any) {
         console.error("error in creating project: ", error?.["message"]);
         throw new Error(error?.["message"] ?? `error in creating the project`);

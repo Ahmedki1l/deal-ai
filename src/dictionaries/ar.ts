@@ -303,7 +303,17 @@ export default {
       },
     },
   },
-
+  siri: {
+    "Chat with OpenAI (Voice & Text)":"المساعد الذكي",
+    "clear history": "مسح المحادثة",
+    hello:"مرحبا",
+    send: "إرسال",
+    "No Messages Yet":"لا توجد رسائل.",
+    "Message": "رسالة",
+    "Message AI...": "أكتب رسالة للذكاء الاصطناعي...","Stop Listening" :"إنهي التحدث",
+  "Start Listening" :"إبدأ التحدث",
+  
+  },
   "apartment-form": {
     apartments: "شقق",
     "no apartment": "لا توجد شقق",
@@ -839,6 +849,8 @@ export default {
       "لم يتم تحديث المشروع الخاص بك. الرجاء المحاولة مرة أخرى.",
     "your project was not deleted. please try again.":
       "لم يتم حذف المشروع الخاص بك. الرجاء المحاولة مرة أخرى.",
+      "project created successfully with title": "تم إنشاء المشروع بنجاح بعنوان",
+
 
     // "study-case": {
     "your study case was not created. please try again.":

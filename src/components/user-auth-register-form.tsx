@@ -61,8 +61,10 @@ export function UserAuthRegisterForm({
   });
 
   async function onSubmit(data: z.infer<typeof userAuthRegisterSchema>) {
-    await clientAction(async () => await signUpWithPassword(data), setLoading);
-    router.push(`/${locale}`);
+    await clientAction(
+      async () => await signUpWithPassword(data),
+      setLoading
+    ).then(() => router.push(`/${locale}`));
   }
   return (
     <>
@@ -132,7 +134,7 @@ export function UserAuthRegisterForm({
             onClick={async () => {
               await clientAction(
                 async () => await signInWithGoogle(),
-                setIsGoogleLoading,
+                setIsGoogleLoading
               ).then(() => setIsGoogleLoading(true));
             }}
             disabled={loading || isGoogleLoading || isFacebookLoading}

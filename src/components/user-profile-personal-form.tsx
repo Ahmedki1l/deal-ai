@@ -41,10 +41,13 @@ export function UserProfilePersonalForm({
   });
 
   async function onSubmit(
-    data: z.infer<typeof userUpdateProfilePersonalSchema>,
+    data: z.infer<typeof userUpdateProfilePersonalSchema>
   ) {
-    await clientAction(async () => await updateUser(data), setLoading);
-    toast.success(c?.["updated successfully."]);
+    await clientAction(async () => await updateUser(data), setLoading).then(
+      () => {
+        toast.success(c?.["updated successfully."]);
+      }
+    );
   }
 
   return (

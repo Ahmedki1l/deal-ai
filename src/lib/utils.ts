@@ -55,13 +55,13 @@ export const clientAction = async <T>(
     const result = await func();
 
     if (result && typeof result === "object" && "error" in result) {
-      toast.error(result?.["error"]);
-      return;
+      throw new Error(result?.["error"]);
     }
 
     return result as Exclude<T, { error: string }>;
   } catch (error: any) {
     toast.error(error?.["message"]);
+    throw new Error(error?.["message"]);
   } finally {
     setLoading(false);
   }

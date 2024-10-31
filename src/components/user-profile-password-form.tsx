@@ -41,7 +41,7 @@ export function UserProfilePasswordForm({
   });
 
   async function onSubmit(
-    data: z.infer<typeof userUpdateProfilePasswordFormSchema>,
+    data: z.infer<typeof userUpdateProfilePasswordFormSchema>
   ) {
     if (data?.["newPassword"] != data?.["confirmNewPassword"]) {
       form.setError("confirmNewPassword", {
@@ -56,10 +56,10 @@ export function UserProfilePasswordForm({
           id: data?.["id"],
           password: data?.["newPassword"],
         }),
-      setLoading,
-    );
-
-    toast.success(c?.["updated successfully."]);
+      setLoading
+    ).then(() => {
+      toast.success(c?.["updated successfully."]);
+    });
   }
 
   return (

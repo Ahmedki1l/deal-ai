@@ -24,7 +24,7 @@ export function getLocale(req: NextRequest) {
 }
 
 export async function t(value: string, opts?: { from: Locale; to: Locale }) {
-  return tl(value, opts);
+  return await tl(value, opts);
 }
 
 // -------------- logic for here

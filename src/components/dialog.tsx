@@ -40,8 +40,8 @@ export type DialogResponsiveProps = {
   content?: React.ReactNode;
   title?: string | React.ReactNode;
   description?: string | React.ReactNode;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  open: boolean;
+  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  open?: boolean;
   type?: "dialog" | "alert";
 } & Omit<AlertDialogTriggerProps, "content" | "open" | "setOpen" | "type"> &
   Dictionary["dialog"];

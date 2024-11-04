@@ -309,18 +309,18 @@ export default {
     },
   },
 
-siri: {
-  "Chat with OpenAI (Voice & Text)":"Chat with OpenAI (Voice & Text)",
-  "clear history": "Clear History",
-  hello:"Hello",
-  send: "Send",
-  "No Messages Yet":"No Messages Yet",
-  "Message": "Message",
-  "Message AI...": "Message AI...",
-  "Stop Listening" :"Stop Speaking",
-  "Start Listening" :"Start Speaking",
-  
-},
+  siri: {
+    "Chat with OpenAI (Voice & Text)": "Chat with OpenAI (Voice & Text)",
+    "clear history": "Clear History",
+    hello: "Hello",
+    send: "Send",
+    say: "Say",
+    "No Messages Yet": "No Messages Yet",
+    Message: "Message",
+    "Message AI...": "Message AI...",
+    "Stop Listening": "Stop Speaking",
+    "Start Listening": "Start Speaking",
+  },
   "appearance-form": {
     theme: "Theme",
     "automatically switch between day and night themes.":
@@ -830,7 +830,8 @@ siri: {
       "your project was not updated. Please try again.",
     "your project was not deleted. please try again.":
       "your project was not deleted. Please try again.",
-      "project created successfully with title": "project created successfully with title",
+    "project created successfully with title":
+      "project created successfully with title",
 
     // "study-case": {
     "your study case was not created. please try again.":
@@ -876,8 +877,5 @@ siri: {
       "this action needs you to be logged in.",
     "you don't have access to do this action.":
       "you don't have access to do this action.",
-  
-  
-    },
-  
+  },
 };

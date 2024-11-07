@@ -75,18 +75,89 @@ const tools = [
     trigger: async (data: { args?: any; response?: any } | void) => {
       try {
         if (!data) throw new Error("No Passed Data");
-        const { args, response } = data;  
-        const { actions: c }  = args?.['locale'] === 'ar' ? ar : en
-        
+        const { args, response } = data;
+        const { actions: c } = args?.["locale"] === "ar" ? ar : en;
+
         await axios({ locale: args?.["locale"], user: args?.["user"] }).post(
           `/api/projects`,
-          { ...response }
+          { ...response },
         );
 
         return `${c?.["project created successfully with title"]} ${response?.["title"]}`;
       } catch (error: any) {
         console.error("error in creating project: ", error?.["message"]);
         throw new Error(error?.["message"] ?? `error in creating the project`);
+      }
+    },
+  },
+  {
+    name: "deleteProject",
+    description:
+      "Deletes a project on the server using the specified parameters.",
+    parameters: {
+      type: "object",
+      properties: {
+        projectName: {
+          type: "string",
+          description: "The name of the project you want to delete.",
+        },
+        projectIndex: {
+          type: "integer",
+          description:
+            "The index of the project if there are multiple projects having the same name.",
+        },
+      },
+      required: ["projectName"],
+    },
+    trigger: async (data: { args?: any; response?: any } | void) => {
+      try {
+        if (!data) throw new Error("No Passed Data");
+        const { args, response } = data;
+
+        // Step 1: Retrieve all projects with the specified name
+        let projects = await axios({
+          locale: args?.locale,
+          user: args?.user,
+        })
+          .get(`/api/projects?title=${response?.["projectName"]}`)
+          .then((r) => r.data);
+
+        // Filter projects to only include those that match the user ID
+        projects = projects.filter(
+          (project: { userId: any }) => project.userId === args.user.id,
+        );
+
+        console.log("Projects: ", projects);
+
+        if (projects.length === 0) {
+          return `No project found with the name '${response?.["projectName"]}'.`;
+        }
+
+        // Step 2: Handle case where multiple projects are found
+        if (projects.length > 1 && !response?.["projectIndex"]) {
+          // Return list of projects with more details to help user select
+          const projectOptions = projects
+            .map(
+              (project: any, index: any) =>
+                `index: ${index + 1}, Name: ${project.name}, Created on: ${project.created_at}`,
+            )
+            .join("\n");
+
+          return `Multiple projects were found with the name '${response?.["projectName"]}':\n${projectOptions}\nPlease specify the project index to delete.`;
+        }
+
+        const projectIndex =
+          projects.length === 1 ? 0 : response?.["projectIndex"] - 1;
+
+        // Step 3: If only one project found, proceed with deletion
+        await axios({
+          locale: args?.locale,
+          user: args?.user,
+        }).delete(`/api/projects/${projects[projectIndex].id}`);
+        return `Project '${response?.["projectName"]}' has been deleted successfully.`;
+      } catch (error: any) {
+        console.error("Error deleting project:", error.message);
+        throw new Error("Failed to delete project.");
       }
     },
   },
@@ -100,13 +171,18 @@ const tools = [
         projectName: {
           type: "string",
           description: "The name of the project I want to create a case to",
-          howToGetThisName:
-            "To get the project name, you could scrape the whole /en/dashboard/projects page and let the user choose a project by name",
+          howToGetThisName: `To get the project name, you could scrape the whole /en/dashboard/projects page and let the user choose a project by name.
+            If the user gives you a name that is not a name of one of the projects, then tell him that is not a correct name and then ask him if he mean a similar one from his own projects (you need to say the name of the project that is similar to what he provided).`,
         },
         title: {
           type: "string",
           description:
             "The title of the case study to be created (e.g., 'Increasing Traffic Case').",
+        },
+        projectIndex: {
+          type: "integer",
+          description:
+            "The index of the project if there are multiple projects having the same name.",
         },
       },
       required: ["projectName", "title"],
@@ -117,38 +193,58 @@ const tools = [
         if (!data) throw new Error("No Passed Data");
         const { args, response } = data;
 
-        const projects = await axios({
+        let projects = await axios({
           locale: "en",
           user: args?.["user"],
         })
           .get(`/api/projects?title=${response?.["projectName"]}`)
           .then((r) => r?.["data"]);
 
+        // Filter projects to only include those that match the user ID
+        projects = projects.filter(
+          (project: { userId: any }) => project.userId === args.user.id,
+        );
+
         console.log(projects);
         if (!projects || projects?.["length"] == 0)
           return `No such a project name, you don't even have a project with this name`;
-        if (projects?.["length"] > 1)
-          return `You have multiple projects with the same name, weither delete the copies or do it yourself.`;
-        if (!projects?.[0]?.["id"]) return `No valid project.`;
+
+        // Step 2: Handle case where multiple projects are found
+        if (projects.length > 1 && !response?.["projectIndex"]) {
+          // Return list of projects with more details to help user select
+          const projectOptions = projects
+            .map(
+              (project: any, index: any) =>
+                `index: ${index + 1}, Name: ${project.name}, Created on: ${project.created_at}`,
+            )
+            .join("\n");
+
+          return `Multiple projects were found with the name '${response?.["projectName"]}':\n${projectOptions}\nPlease specify the project index to delete.`;
+        }
+
+        const projectIndex =
+          projects.length === 1 ? 0 : response?.["projectIndex"] - 1;
+
+        if (!projects?.[projectIndex]?.["id"]) return `No valid project.`;
 
         console.log({
           ...response,
-          projectId: projects?.[0]?.["id"],
+          projectId: projects?.[projectIndex]?.["id"],
         });
 
         await axios({ locale: "en", user: args?.["user"] }).post(
           `/api/study-cases`,
           {
-            ...response,
-            projectId: projects?.[0]?.["id"],
-          }
+            title: response?.["title"],
+            projectId: projects?.[projectIndex]?.["id"],
+          },
         );
 
         return `study case created successfully with title ${response?.["title"]}`;
       } catch (error: any) {
         console.error("error in creating case: ", error?.["message"]);
         throw new Error(
-          error?.["message"] ?? `error in creating the study case`
+          error?.["message"] ?? `error in creating the study case`,
         );
       }
     },

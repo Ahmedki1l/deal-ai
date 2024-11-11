@@ -351,9 +351,132 @@ const tools = [
           return `Multiple case studies were found with the name '${response?.["title"]}':\n${caseStudiesOptions}\nPlease specify the case study index to delete.`;
         }
 
-        const caseStudyIndex = caseStudies.length > 1 ? response?.["caseStudyIndex"] - 1 : 0
+        const caseStudyIndex = caseStudies.length > 1 ? response?.["caseStudyIndex"] - 1 : 0;
+        
+        if (!caseStudies?.[caseStudyIndex]?.id) return `No valid case study.`;
 
         await axios({ locale: "en", user: args?.["user"] }).delete(
+          `/api/study-cases/${caseStudies?.[caseStudyIndex]?.id}`
+        );
+
+        return `study case with title ${response?.["title"]} deleted successfully `;
+      } catch (error: any) {
+        console.error("error in creating case: ", error?.["message"]);
+        throw new Error(
+          error?.["message"] ?? `error in creating the study case`,
+        );
+      }
+    },
+  },
+  {
+    name: "createPosts",
+    description:
+      "Create posts for a study case of a project on the server with specified parameters.",
+    parameters: {
+      type: "object",
+      properties: {
+        projectName: {
+          type: "string",
+          description: "The name of the project I want to delete a case from",
+          howToGetThisName: `To get the project name, you could scrape the whole /en/dashboard/projects page and let the user choose a project by name.
+            If the user gives you a name that is not a name of one of the projects, then tell him that is not a correct name and then ask him if he mean a similar one from his own projects (you need to say the name of the project that is similar to what he provided).`,
+        },
+        caseStudyTitle: {
+          type: "string",
+          description:
+            "The title of the case study to be deleted (e.g., 'Increasing Traffic Case').",
+        },
+        projectIndex: {
+          type: "integer",
+          description:
+            "The index of the project if there are multiple projects having the same name.",
+        },
+        caseStudyIndex: {
+          type: "integer",
+          description:
+            "The index of the case study if there are multiple cases having the same name.",
+        },
+      },
+      required: ["projectName", "caseStudyTitle"],
+      additionalProperties: false,
+    },
+    trigger: async (data: { args?: any; response?: any } | void) => {
+      try {
+        if (!data) throw new Error("No Passed Data");
+        const { args, response } = data;
+
+        let projects = await axios({
+          locale: "en",
+          user: args?.["user"],
+        })
+          .get(`/api/projects?title=${response?.["projectName"]}`)
+          .then((r) => r?.["data"]);
+
+        // Filter projects to only include those that match the user ID
+        projects = projects.filter(
+          (project: { userId: any }) => project.userId === args.user.id,
+        );
+
+        console.log(projects);
+        if (!projects || projects?.["length"] == 0)
+          return `No such a project name, you don't even have a project with this name`;
+
+        // Step 2: Handle case where multiple projects are found
+        if (projects.length > 1 && !response?.["projectIndex"]) {
+          // Return list of projects with more details to help user select
+          const projectOptions = projects
+            .map(
+              (project: any, index: any) =>
+                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`,
+            )
+            .join("\n");
+
+          return `Multiple projects were found with the name '${response?.["projectName"]}':\n${projectOptions}\nPlease specify the project index to delete.`;
+        }
+
+        const projectIndex =
+          projects.length === 1 ? 0 : response?.["projectIndex"] - 1;
+
+        if (!projects?.[projectIndex]?.["id"]) return `No valid project.`;
+
+        console.log({
+          ...response,
+          projectId: projects?.[projectIndex]?.["id"],
+        });
+
+        let caseStudies = await axios({
+          locale: "en",
+          user: args?.["user"],
+        })
+          .get(`/api/study-cases`)
+          .then((r) => r?.["data"]);
+
+          
+          caseStudies = caseStudies.data.filter(
+            (c: any) => c.projectId === projects?.[projectIndex]?.["id"] && c.title === response?.["caseStudyTitle"],
+          );
+          
+          console.log("Case studies after filter: ", caseStudies);
+          
+        if (!response?.["caseStudyIndex"] && caseStudies.length > 1) {
+          // Return list of case studites with more details to help user select
+          const caseStudiesOptions = caseStudies
+            .map(
+              (c: any, index: any) =>
+                `index: ${index + 1}, Name: ${c.title}`,
+            )
+            .join("\n");
+
+          return `Multiple case studies were found with the name '${response?.["caseStudyTitle"]}':\n${caseStudiesOptions}\nPlease specify the case study index to delete.`;
+        }
+
+        const caseStudyIndex = caseStudies.length > 1 ? response?.["caseStudyIndex"] - 1 : 0;
+
+        if (!caseStudies?.[caseStudyIndex]?.id) return `No valid case study.`;
+
+
+
+        await axios({ locale: "en", user: args?.["user"] }).post(
           `/api/study-cases/${caseStudies?.[caseStudyIndex]?.id}`
         );
 

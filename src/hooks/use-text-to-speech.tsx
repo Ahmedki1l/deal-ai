@@ -1,87 +1,98 @@
-import { Locale } from "@/types/locale";
-import { useEffect, useState } from "react";
+import { openai } from "@/lib/siri";
+import { useCallback, useState } from "react";
 
-export const useTextToSpeech = ({ locale }: { locale: Locale }) => {
+export const useTextToSpeech = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  const [selectedVoice, setSelectedVoice] =
-    useState<SpeechSynthesisVoice | null>(null);
-  const [rate, setRate] = useState(1);
-  const [pitch, setPitch] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 
-  useEffect(() => {
-    const synth = window.speechSynthesis;
+  // Function to speak the provided text
+  const speak = useCallback(
+    async (text: string) => {
+      if (!text || loading || isSpeaking) return; // Prevent overlapping requests
 
-    const populateVoices = () => {
-      const availableVoices = synth.getVoices();
-      setVoices(availableVoices);
+      setLoading(true);
 
-      // Set default voice based on the current locale
-      const defaultVoice =
-        availableVoices.find((voice) => voice.lang.startsWith(locale)) ||
-        availableVoices.find((voice) => voice.lang.startsWith("en")); // Fallback to English if locale is not available
-      if (defaultVoice) setSelectedVoice(defaultVoice);
-    };
+      try {
+        // If there's already an audio playing, cancel it
+        if (audio) {
+          audio.pause();
+          audio.currentTime = 0;
+          URL.revokeObjectURL(audio.src);
+        }
 
-    populateVoices();
-    if (synth.onvoiceschanged !== undefined)
-      synth.onvoiceschanged = populateVoices;
-  }, [locale]);
+        // Request to generate speech audio from OpenAI
+        const mp3 = await openai.audio.speech.create({
+          model: "tts-1-hd",
+          voice: "fable",
+          input: text,
+        });
 
-  const getLanguageFromText = (text: string) => {
-    // Basic language detection logic based on text characters (adjust for your use case)
-    const arabicRegex = /[\u0600-\u06FF]/; // Arabic characters
-    if (arabicRegex.test(text)) return "ar";
-    return "en"; // Default to English
-  };
+        // Convert the audio data into a Blob and create an object URL
+        const audioBuffer = Buffer.from(await mp3.arrayBuffer());
+        const audioBlob = new Blob([new Uint8Array(audioBuffer)], {
+          type: "audio/mp3",
+        });
+        const audioUrl = URL.createObjectURL(audioBlob);
 
-  const speak = (text: string) => {
-    if (window.speechSynthesis.speaking) {
-      console.error("Speech synthesis is already in progress.");
-      return;
+        // Create a new audio element
+        const newAudio = new Audio(audioUrl);
+
+        // Play the audio and handle state changes
+        newAudio.play().then(() => {
+          setLoading(false);
+          setIsSpeaking(true); // Set isSpeaking when the audio starts
+        });
+
+        // Handle playback ending
+        newAudio.onended = () => {
+          setIsSpeaking(false);
+          setLoading(false);
+          URL.revokeObjectURL(audioUrl); // Clean up the URL
+          setAudio(null); // Clear the audio element reference
+        };
+
+        // Handle playback errors
+        newAudio.onerror = (err) => {
+          console.error("Error playing audio:", err);
+          setIsSpeaking(false);
+          setLoading(false);
+          URL.revokeObjectURL(audioUrl);
+          setAudio(null); // Clear the audio element reference
+        };
+
+        // Save the audio element to control later
+        setAudio(newAudio);
+      } catch (error) {
+        console.error("Error generating speech:", error);
+        setIsSpeaking(false);
+        setLoading(false);
+      }
+    },
+    [loading, isSpeaking, audio]
+  );
+
+  // Function to cancel the speech
+  const cancel = useCallback(() => {
+    if (audio) {
+      audio.pause(); // Stop the audio playback
+      audio.currentTime = 0; // Reset the playback position
+      setIsSpeaking(false);
+      setLoading(false);
+
+      // Clean up the URL
+      if (audio.src) {
+        URL.revokeObjectURL(audio.src);
+      }
+
+      setAudio(null); // Clear the audio element reference
     }
-
-    if (text.trim() === "") {
-      console.error("Text is empty. Please provide valid text to speak.");
-      return;
-    }
-
-    // Set voice based on detected language
-    const detectedLanguage = getLanguageFromText(text);
-    const voiceForLanguage = voices.find((voice) =>
-      voice.lang.startsWith(detectedLanguage)
-    );
-    if (voiceForLanguage) setSelectedVoice(voiceForLanguage);
-
-    const speech = new SpeechSynthesisUtterance(text);
-    speech.onstart = () => setIsSpeaking(true);
-    speech.onend = () => setIsSpeaking(false);
-    speech.onerror = (event) =>
-      console.error("Error in speech synthesis: ", event);
-
-    // Apply selected voice, rate, and pitch settings
-    if (selectedVoice) speech.voice = selectedVoice;
-    speech.rate = rate;
-    speech.pitch = pitch;
-
-    window.speechSynthesis.speak(speech);
-  };
-
-  const cancel = () => {
-    window.speechSynthesis.cancel();
-    setIsSpeaking(false);
-  };
+  }, [audio]);
 
   return {
     isSpeaking,
     speak,
     cancel,
-    voices,
-    selectedVoice,
-    setSelectedVoice,
-    rate,
-    setRate,
-    pitch,
-    setPitch,
+    loading,
   };
 };

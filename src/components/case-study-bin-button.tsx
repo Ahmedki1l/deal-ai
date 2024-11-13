@@ -59,6 +59,7 @@ export function CaseStudyBinButton({
 
   return (
     <DialogResponsive
+      type="alert"
       dic={dic}
       open={open}
       setOpen={setOpen}

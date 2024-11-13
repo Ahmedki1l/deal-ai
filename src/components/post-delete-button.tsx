@@ -54,6 +54,7 @@ export function PostDeleteButton({
 
   return (
     <DialogResponsive
+      type="alert"
       dic={dic}
       confirmButton={
         <>

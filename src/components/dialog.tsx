@@ -55,12 +55,12 @@ export function DialogResponsive({
   setOpen,
   open,
   disabled,
-  type,
+  type = "dialog",
   ...props
 }: DialogResponsiveProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  if (isDesktop && type === "dialog") {
+  if (isDesktop && type == "dialog") {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild {...props} />
@@ -85,7 +85,7 @@ export function DialogResponsive({
     );
   }
 
-  if (isDesktop) {
+  if (isDesktop && type === "alert") {
     return (
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogTrigger asChild {...props} />
@@ -113,6 +113,7 @@ export function DialogResponsive({
       </AlertDialog>
     );
   }
+
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild {...props} />

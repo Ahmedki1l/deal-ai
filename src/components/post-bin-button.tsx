@@ -58,6 +58,7 @@ export function PostBinButton({
 
   return (
     <DialogResponsive
+      type="alert"
       dic={dic}
       open={open}
       setOpen={setOpen}

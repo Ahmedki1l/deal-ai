@@ -23,6 +23,7 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import {
   Carousel,
@@ -376,8 +377,11 @@ export default async function StudyCase({
                                     />
                                   </Link>
                                 </CardHeader>
-                                <CardContent className="p-2 text-sm">
-                                  <p className="line-clamp-6">
+                                <CardContent className="p-2">
+                                  <CardTitle className="mb-2">
+                                    {e?.["title"]}
+                                  </CardTitle>
+                                  <p className="line-clamp-6 text-sm text-muted-foreground">
                                     {e?.["content"]}
                                   </p>
                                 </CardContent>

@@ -398,7 +398,7 @@ const tools = [
             "The index of the case study if there are multiple cases having the same name.",
         },
         numberOfWeeks: {
-          type: "integer",
+          type: "string",
           description: "The number of weeks that is used to determine how much posts the user needs."
         },
         contentLength: {

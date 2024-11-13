@@ -58,6 +58,7 @@ export function PropertyDeleteButton({
 
   return (
     <DialogResponsive
+      type="alert"
       dic={dic}
       confirmButton={
         <>

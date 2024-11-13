@@ -60,6 +60,7 @@ export function PropertyBinButton({
 
   return (
     <DialogResponsive
+      type="alert"
       dic={dic}
       open={open}
       setOpen={setOpen}

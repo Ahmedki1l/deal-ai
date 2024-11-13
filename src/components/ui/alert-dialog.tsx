@@ -4,6 +4,7 @@
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
+import { X } from "lucide-react";
 import * as React from "react";
 
 const AlertDialog = AlertDialogPrimitive.Root;
@@ -19,7 +20,7 @@ const AlertDialogOverlay = React.forwardRef<
   <AlertDialogPrimitive.Overlay
     className={cn(
       "fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-      className,
+      className
     )}
     {...props}
     ref={ref}
@@ -37,7 +38,7 @@ const AlertDialogContent = React.forwardRef<
       ref={ref}
       className={cn(
         "fixed left-[50%] top-[50%] z-50 grid w-full max-w-xl translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg",
-        className,
+        className
       )}
       {...props}
     />
@@ -52,7 +53,7 @@ const AlertDialogHeader = ({
   <div
     className={cn(
       "flex flex-col space-y-2 text-center sm:text-start",
-      className,
+      className
     )}
     {...props}
   />
@@ -66,7 +67,7 @@ const AlertDialogFooter = ({
   <div
     className={cn(
       "flex flex-col-reverse sm:flex-row sm:justify-end sm:gap-2",
-      className,
+      className
     )}
     {...props}
   />
@@ -119,17 +120,36 @@ const AlertDialogCancel = React.forwardRef<
     className={cn(
       buttonVariants({ variant: "outline" }),
       "mt-2 sm:mt-0",
-      className,
+      className
     )}
     {...props}
   />
 ));
 AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName;
 
+const AlertDialogCancelCircle = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Cancel>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel>
+>(({ className, ...props }, ref) => (
+  <AlertDialogCancel
+    ref={ref}
+    className={cn(
+      buttonVariants({ variant: "ghost", size: "icon" }),
+      "absolute right-4 top-4 size-6 rounded-full p-2 rtl:left-4",
+      className
+    )}
+    {...props}
+  >
+    <X className="size-3" />
+  </AlertDialogCancel>
+));
+AlertDialogCancelCircle.displayName = "AlertDialogCancelCircle";
+
 export {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
+  AlertDialogCancelCircle,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,

@@ -83,6 +83,9 @@ const tools = [
           { ...response }
         );
 
+        // Refresh the page
+		    window.location.reload();
+
         return `${c?.["project created successfully with title"]} ${response?.["title"]}`;
       } catch (error: any) {
         console.error("error in creating project: ", error?.["message"]);
@@ -154,6 +157,10 @@ const tools = [
           locale: args?.locale,
           user: args?.user,
         }).delete(`/api/projects/${projects[projectIndex].id}`);
+
+        // Refresh the page
+		    window.location.reload();
+
         return `Project '${response?.["projectName"]}' has been deleted successfully.`;
       } catch (error: any) {
         console.error("Error deleting project:", error.message);
@@ -239,6 +246,9 @@ const tools = [
             projectId: projects?.[projectIndex]?.["id"],
           }
         );
+
+        // Refresh the page
+		    window.location.reload();
 
         return `study case created successfully with title ${response?.["title"]}`;
       } catch (error: any) {
@@ -359,6 +369,9 @@ const tools = [
         await axios({ locale: "en", user: args?.["user"] }).delete(
           `/api/study-cases/${caseStudies?.[caseStudyIndex]?.id}`
         );
+
+        // Refresh the page
+		    window.location.reload();
 
         return `study case with title ${response?.["title"]} deleted successfully `;
       } catch (error: any) {
@@ -508,6 +521,9 @@ const tools = [
             caseStudyId: targetedCaseStudyId
           }
         );
+
+        // Refresh the page
+		    window.location.reload();
 
         return `posts for the case study of title ${response?.["caseStudyTitle"]} created successfully `;
       } catch (error: any) {

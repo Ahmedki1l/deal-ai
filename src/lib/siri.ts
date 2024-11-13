@@ -498,7 +498,7 @@ const tools = [
         let targetedProject = projects?.[projectIndex];
 
         await axios({ locale: "en", user: args?.["user"] }).post(
-          `/api/study-cases`,
+          `/api/posts`,
           {
             project: targetedProject,
             caseStudy: targetedCaseStudy,

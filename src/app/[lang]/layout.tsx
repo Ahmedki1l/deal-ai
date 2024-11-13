@@ -1,4 +1,4 @@
-import { SessionProvider } from "@/components/session-provider";
+import { Siri } from "@/components/siri";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -53,6 +53,7 @@ export default async function RootLayout({
   params: { lang },
 }: RootLayoutProps) {
   const session = await getAuth();
+  const dic = await getDictionary(lang);
 
   return (
     <html
@@ -62,7 +63,7 @@ export default async function RootLayout({
         // "leading-relaxed tracking-tight",
         cairo?.["className"],
         montserrat?.["variable"],
-        poppins?.["variable"],
+        poppins?.["variable"]
       )}
       suppressHydrationWarning
     >
@@ -70,22 +71,23 @@ export default async function RootLayout({
         suppressHydrationWarning
         // className="h-screen overflow-hidden"
       >
-        <SessionProvider value={session}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <TooltipProvider delayDuration={0} disableHoverableContent={true}>
-              {/* eslint-disable-next-line react/no-unknown-property */}
-              <div
+        {/* <SessionProvider value={session}> */}
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <TooltipProvider delayDuration={0} disableHoverableContent={true}>
+            {/* eslint-disable-next-line react/no-unknown-property */}
+            {/* <div
                 vaul-drawer-wrapper=""
                 className="flex min-h-screen flex-col bg-background"
               >
                 {children}
-              </div>
+              </div> */}
 
-              <Toaster />
-              <TailwindIndicator />
-            </TooltipProvider>
-          </ThemeProvider>
-        </SessionProvider>
+            <Siri dic={dic} />
+            <Toaster />
+            <TailwindIndicator />
+          </TooltipProvider>
+        </ThemeProvider>
+        {/* </SessionProvider> */}
       </body>
     </html>
   );

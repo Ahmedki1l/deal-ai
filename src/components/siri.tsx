@@ -20,12 +20,20 @@ import { AI } from "@/lib/siri";
 import { clientAction, cn } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BotMessageSquare, BotOff, Mic, MicOff } from "lucide-react";
+import { DashIcon } from "@radix-ui/react-icons";
+import {
+  BotMessageSquare,
+  BotOff,
+  Mic,
+  MicOff,
+  StopCircle,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useConversation } from "voicegpt-assistant";
 import { z } from "zod";
+import { Icons } from "./icons";
 import { Textarea } from "./ui/textarea";
 
 const formSchema = z.object({
@@ -63,7 +71,12 @@ export function Siri({ dic: { siri: c, ...dic }, ...props }: SiriProps) {
       continuous: true, // Keep listening continuously
     },
   });
-  const { speak, cancel, isSpeaking } = useTextToSpeech({ locale });
+  const {
+    speak,
+    cancel,
+    isSpeaking,
+    loading: isLoadingToSpeak,
+  } = useTextToSpeech();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: { message: "" },
@@ -104,10 +117,6 @@ export function Siri({ dic: { siri: c, ...dic }, ...props }: SiriProps) {
       if (!updatedMessages) return;
 
       updateMessages(updatedMessages);
-
-      if (!!updatedMessages?.slice(-1)?.pop()?.["content"])
-        speak(updatedMessages?.slice(-1)?.pop()?.["content"]!);
-
       form.setValue("message", "");
     });
   };
@@ -132,7 +141,7 @@ export function Siri({ dic: { siri: c, ...dic }, ...props }: SiriProps) {
             className="float-end"
             onClick={() => {
               setGotKey(true);
-              clearMessages();
+              // clearMessages();
               cancel();
             }}
           >
@@ -184,7 +193,32 @@ export function Siri({ dic: { siri: c, ...dic }, ...props }: SiriProps) {
                           : "bg-secondary text-secondary-foreground"
                       )}
                     >
-                      <p>{message.content}</p>
+                      <p>{message?.["content"]}</p>
+                      <div className="flex items-center justify-end">
+                        <Tooltip text={isSpeaking ? "stop" : "read aloud"}>
+                          <div>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="size-4"
+                              disabled={listening || isLoadingToSpeak}
+                              onClick={() => {
+                                if (isSpeaking) cancel();
+                                else speak(message?.["content"]);
+                              }}
+                            >
+                              {isLoadingToSpeak ? (
+                                <DashIcon className="size-3 animate-spin rounded-full border border-primary" />
+                              ) : isSpeaking ? (
+                                <StopCircle className="size-3" />
+                              ) : (
+                                <Icons.speaker className="size-3" />
+                              )}
+                            </Button>
+                          </div>
+                        </Tooltip>
+                      </div>
                     </div>
                   </div>
                 ))
@@ -243,9 +277,11 @@ export function Siri({ dic: { siri: c, ...dic }, ...props }: SiriProps) {
                   size="icon"
                   disabled={loading}
                   onClick={() => {
-                    cancel();
                     if (listening) stopListening();
-                    else startListening();
+                    else {
+                      cancel();
+                      startListening();
+                    }
                   }}
                 >
                   {listening ? (

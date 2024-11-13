@@ -43,7 +43,7 @@ import icon from "../../public/icon.png";
 import logo from "../../public/logo.png";
 import { Image as CutomImage } from "./image";
 
-export const IconsVariants = cva("w-4 h-4 shrink-0");
+export const IconsVariants = cva("h-4 w-4 shrink-0");
 export type IconProps = {} & LucideProps & VariantProps<typeof IconsVariants>;
 export type Icon = keyof typeof Icons;
 
@@ -55,7 +55,7 @@ export const Icons = {
       className={cn(
         IconsVariants({}),
         "flex h-6 w-6 items-center rounded-full border-none bg-transparent",
-        className,
+        className
       )}
       // {...props}
     />
@@ -68,7 +68,7 @@ export const Icons = {
       className={cn(
         IconsVariants({}),
         "mr-2 h-6 w-6 rounded-none border-none bg-transparent",
-        className,
+        className
       )}
       // {...props}
     />
@@ -114,6 +114,28 @@ export const Icons = {
   ),
   laptop: ({ className, ...props }: IconProps) => (
     <Laptop className={cn(IconsVariants({}), className)} {...props} />
+  ),
+  stopPlaying: ({ className, ...props }: IconProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      className={cn(IconsVariants({}), className)}
+      {...props}
+    >
+      <circle cx="12" cy="12" r="10" strokeWidth="2" fill="none" />
+      <line x1="12" y1="6" x2="12" y2="18" strokeWidth="2" />
+      <line x1="6" y1="12" x2="18" y2="12" strokeWidth="2" />
+    </svg>
+  ),
+  speaker: ({ className, ...props }: IconProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      className={cn(IconsVariants({}), className)}
+      {...props}
+    >
+      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-.77-3.37-2-4.47v8.93c1.23-1.1 2-2.7 2-4.46zm2-7.03v2.06c1.76 1.32 3 3.45 3 5.97s-1.24 4.65-3 5.97v2.06c2.91-1.54 5-4.54 5-8.03s-2.09-6.49-5-8.03z" />
+    </svg>
   ),
   globe: ({ className, ...props }: IconProps) => (
     <Globe className={cn(IconsVariants({}), className)} {...props} />
@@ -190,7 +212,7 @@ export const Icons = {
       className={cn(
         IconsVariants({}),
         "rounded-full bg-blue-600 p-0.5 text-primary-foreground",
-        className,
+        className
       )}
       {...props}
     />

@@ -402,12 +402,12 @@ const tools = [
           description: "The number of weeks that is used to determine how much posts the user needs."
         },
         contentLength: {
-          type: "enum",
+          type: "string",
           enum: ["SHORT", "MEDIUM", "LONG"],
           description: "Select the length of the content for the posts."
         },
         campaignType: {
-          type: "enum",
+          type: "string",
           enum: ["BRANDING_AWARENESS", "ENGAGEMENT", "SALES_CONVERSION"],
           description: "Select the type of campaign for the posts."
         }

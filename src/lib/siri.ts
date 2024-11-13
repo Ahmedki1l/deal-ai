@@ -2,6 +2,7 @@ import { platformsArr } from "@/db/enums";
 import ar from "@/dictionaries/ar";
 import en from "@/dictionaries/en";
 import axios from "@/lib/axios";
+import { Description } from "@radix-ui/react-dialog";
 import { OpenAI } from "voicegpt-assistant";
 
 const tools = [
@@ -396,8 +397,22 @@ const tools = [
           description:
             "The index of the case study if there are multiple cases having the same name.",
         },
+        numberOfWeeks: {
+          type: "string",
+          description: "The number of weeks that is used to determine how much posts the user needs."
+        },
+        contentLength: {
+          type: "string",
+          enum: ["SHORT", "MEDIUM", "LONG"],
+          description: "Select the length of the content for the posts."
+        },
+        campaignType: {
+          type: "string",
+          enum: ["BRANDING_AWARENESS", "ENGAGEMENT", "SALES_CONVERSION"],
+          description: "Select the type of campaign for the posts."
+        }
       },
-      required: ["projectName", "caseStudyTitle"],
+      required: ["projectName", "caseStudyTitle", "numberOfWeeks", "contentLength", "campaignType"],
       additionalProperties: false,
     },
     trigger: async (data: { args?: any; response?: any } | void) => {
@@ -475,11 +490,26 @@ const tools = [
 
         if (!caseStudies?.[caseStudyIndex]?.id) return `No valid case study.`;
 
+        let noOfWeeks = response?.["numberOfWeeks"];
+        let campaignType = response?.["campaignType"];
+        let contentLength = response?.["contentLength"];
+        let targetedCaseStudy = caseStudies?.[caseStudyIndex];
+        let targetedCaseStudyId = caseStudies?.[caseStudyIndex]?.id;
+        let targetedProject = projects?.[projectIndex];
+
         await axios({ locale: "en", user: args?.["user"] }).post(
-          `/api/study-cases/${caseStudies?.[caseStudyIndex]?.id}`
+          `/api/posts`,
+          {
+            project: targetedProject,
+            caseStudy: targetedCaseStudy,
+            noOfWeeks: noOfWeeks,
+            campaignType: campaignType,
+            contentLength: contentLength,
+            caseStudyId: targetedCaseStudyId
+          }
         );
 
-        return `study case with title ${response?.["title"]} deleted successfully `;
+        return `posts for the case study of title ${response?.["caseStudyTitle"]} created successfully `;
       } catch (error: any) {
         console.error("error in creating case: ", error?.["message"]);
         throw new Error(

@@ -1,4 +1,3 @@
-import { Siri } from "@/components/siri";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -71,23 +70,22 @@ export default async function RootLayout({
         suppressHydrationWarning
         // className="h-screen overflow-hidden"
       >
-        {/* <SessionProvider value={session}> */}
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <TooltipProvider delayDuration={0} disableHoverableContent={true}>
-            {/* eslint-disable-next-line react/no-unknown-property */}
-            {/* <div
+        <SessionProvider value={session}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <TooltipProvider delayDuration={0} disableHoverableContent={true}>
+              {/* eslint-disable-next-line react/no-unknown-property */}
+              <div
                 vaul-drawer-wrapper=""
                 className="flex min-h-screen flex-col bg-background"
               >
                 {children}
-              </div> */}
+              </div>
 
-            <Siri dic={dic} />
-            <Toaster />
-            <TailwindIndicator />
-          </TooltipProvider>
-        </ThemeProvider>
-        {/* </SessionProvider> */}
+              <Toaster />
+              <TailwindIndicator />
+            </TooltipProvider>
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );

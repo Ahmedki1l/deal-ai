@@ -669,7 +669,7 @@ const tools = [
           (p: { title: any }) => p.title === response?.["postTitle"],
         );
 
-        if (posts && !response?.["postIndex"] && posts.length > 1) {
+        if (!response?.["postIndex"] && posts.length > 1) {
           // Return list of case studites with more details to help user select
           const postsOptions = posts
             .map(
@@ -684,25 +684,8 @@ const tools = [
         let postIndex = posts.length > 1 ? response?.["postIndex"] - 1 : 0;
 
         await axios({locale: "en", user: args?.["user"]}).delete(
-          `api/posts`,
-          {
-            params:{
-              id: posts[postIndex]?.id
-            }
-          }
-        )
-
-        // await axios({ locale: "en", user: args?.["user"] }).post(
-        //   `/api/posts`,
-        //   {
-        //     project: targetedProject,
-        //     caseStudy: targetedCaseStudy,
-        //     noOfWeeks: noOfWeeks,
-        //     campaignType: campaignType,
-        //     contentLength: contentLength,
-        //     caseStudyId: targetedCaseStudyId
-        //   }
-        // );
+          `api/posts/${posts?.[postIndex]?.id}`
+        );
 
         // Refresh the page
         window.location.reload();

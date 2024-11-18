@@ -683,6 +683,8 @@ const tools = [
 
         let postIndex = posts.length > 1 ? response?.["postIndex"] - 1 : 0;
 
+        if (!posts?.[postIndex]?.id) return `No valid Post.`;
+
         await axios({locale: "en", user: args?.["user"]}).delete(
           `api/posts/${posts?.[postIndex]?.id}`
         );

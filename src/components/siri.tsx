@@ -116,6 +116,10 @@ export function Siri({ dic: { siri: c, ...dic }, ...props }: SiriProps) {
     ).then((updatedMessages) => {
       if (!updatedMessages) return;
 
+      const cnt = messages?.pop()?.["content"];
+      if (!loading && !listening && !isLoadingToSpeak && !isSpeaking && cnt)
+        speak(cnt);
+
       updateMessages(updatedMessages);
       form.setValue("message", "");
     });

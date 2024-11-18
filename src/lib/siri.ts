@@ -2,8 +2,7 @@ import { platformsArr } from "@/db/enums";
 import ar from "@/dictionaries/ar";
 import en from "@/dictionaries/en";
 import axios from "@/lib/axios";
-import { Description } from "@radix-ui/react-dialog";
-import { OpenAI } from "voicegpt-assistant";
+import { OpenAI } from "@/lib/openai";
 
 const tools = [
   {
@@ -80,7 +79,7 @@ const tools = [
 
         await axios({ locale: args?.["locale"], user: args?.["user"] }).post(
           `/api/projects`,
-          { ...response },
+          { ...response }
         );
 
         // Refresh the page
@@ -127,7 +126,7 @@ const tools = [
 
         // Filter projects to only include those that match the user ID
         projects = projects.filter(
-          (project: { userId: any }) => project.userId === args.user.id,
+          (project: { userId: any }) => project.userId === args.user.id
         );
 
         console.log("Projects: ", projects);
@@ -142,7 +141,7 @@ const tools = [
           const projectOptions = projects
             .map(
               (project: any, index: any) =>
-                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`,
+                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`
             )
             .join("\n");
 
@@ -209,7 +208,7 @@ const tools = [
 
         // Filter projects to only include those that match the user ID
         projects = projects.filter(
-          (project: { userId: any }) => project.userId === args.user.id,
+          (project: { userId: any }) => project.userId === args.user.id
         );
 
         console.log(projects);
@@ -222,7 +221,7 @@ const tools = [
           const projectOptions = projects
             .map(
               (project: any, index: any) =>
-                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`,
+                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`
             )
             .join("\n");
 
@@ -244,7 +243,7 @@ const tools = [
           {
             title: response?.["title"],
             projectId: projects?.[projectIndex]?.["id"],
-          },
+          }
         );
 
         // Refresh the page
@@ -254,7 +253,7 @@ const tools = [
       } catch (error: any) {
         console.error("error in creating case: ", error?.["message"]);
         throw new Error(
-          error?.["message"] ?? `error in creating the study case`,
+          error?.["message"] ?? `error in creating the study case`
         );
       }
     },
@@ -305,7 +304,7 @@ const tools = [
 
         // Filter projects to only include those that match the user ID
         projects = projects.filter(
-          (project: { userId: any }) => project.userId === args.user.id,
+          (project: { userId: any }) => project.userId === args.user.id
         );
 
         console.log(projects);
@@ -318,7 +317,7 @@ const tools = [
           const projectOptions = projects
             .map(
               (project: any, index: any) =>
-                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`,
+                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`
             )
             .join("\n");
 
@@ -345,7 +344,7 @@ const tools = [
         caseStudies = caseStudies.data.filter(
           (c: any) =>
             c.projectId === projects?.[projectIndex]?.["id"] &&
-            c.title === response?.["title"],
+            c.title === response?.["title"]
         );
 
         console.log("Case studies after filter: ", caseStudies);
@@ -354,7 +353,7 @@ const tools = [
           // Return list of case studites with more details to help user select
           const caseStudiesOptions = caseStudies
             .map(
-              (c: any, index: any) => `index: ${index + 1}, Name: ${c.title}`,
+              (c: any, index: any) => `index: ${index + 1}, Name: ${c.title}`
             )
             .join("\n");
 
@@ -367,7 +366,7 @@ const tools = [
         if (!caseStudies?.[caseStudyIndex]?.id) return `No valid case study.`;
 
         await axios({ locale: "en", user: args?.["user"] }).delete(
-          `/api/study-cases/${caseStudies?.[caseStudyIndex]?.id}`,
+          `/api/study-cases/${caseStudies?.[caseStudyIndex]?.id}`
         );
 
         // Refresh the page
@@ -377,7 +376,7 @@ const tools = [
       } catch (error: any) {
         console.error("error in creating case: ", error?.["message"]);
         throw new Error(
-          error?.["message"] ?? `error in creating the study case`,
+          error?.["message"] ?? `error in creating the study case`
         );
       }
     },
@@ -449,7 +448,7 @@ const tools = [
 
         // Filter projects to only include those that match the user ID
         projects = projects.filter(
-          (project: { userId: any }) => project.userId === args.user.id,
+          (project: { userId: any }) => project.userId === args.user.id
         );
 
         console.log(projects);
@@ -462,7 +461,7 @@ const tools = [
           const projectOptions = projects
             .map(
               (project: any, index: any) =>
-                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`,
+                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`
             )
             .join("\n");
 
@@ -489,7 +488,7 @@ const tools = [
         caseStudies = caseStudies.data.filter(
           (c: any) =>
             c.projectId === projects?.[projectIndex]?.["id"] &&
-            c.title === response?.["caseStudyTitle"],
+            c.title === response?.["caseStudyTitle"]
         );
 
         console.log("Case studies after filter: ", caseStudies);
@@ -498,7 +497,7 @@ const tools = [
           // Return list of case studites with more details to help user select
           const caseStudiesOptions = caseStudies
             .map(
-              (c: any, index: any) => `index: ${index + 1}, Name: ${c.title}`,
+              (c: any, index: any) => `index: ${index + 1}, Name: ${c.title}`
             )
             .join("\n");
 
@@ -533,7 +532,7 @@ const tools = [
       } catch (error: any) {
         console.error("error in creating case: ", error?.["message"]);
         throw new Error(
-          error?.["message"] ?? `error in creating the study case`,
+          error?.["message"] ?? `error in creating the study case`
         );
       }
     },
@@ -593,7 +592,7 @@ const tools = [
 
         // Filter projects to only include those that match the user ID
         projects = projects.filter(
-          (project: { userId: any }) => project.userId === args.user.id,
+          (project: { userId: any }) => project.userId === args.user.id
         );
 
         console.log(projects);
@@ -606,7 +605,7 @@ const tools = [
           const projectOptions = projects
             .map(
               (project: any, index: any) =>
-                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`,
+                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`
             )
             .join("\n");
 
@@ -633,7 +632,7 @@ const tools = [
         caseStudies = caseStudies.data.filter(
           (c: any) =>
             c.projectId === projects?.[projectIndex]?.["id"] &&
-            c.title === response?.["caseStudyTitle"],
+            c.title === response?.["caseStudyTitle"]
         );
 
         console.log("Case studies after filter: ", caseStudies);
@@ -642,7 +641,7 @@ const tools = [
           // Return list of case studites with more details to help user select
           const caseStudiesOptions = caseStudies
             .map(
-              (c: any, index: any) => `index: ${index + 1}, Name: ${c.title}`,
+              (c: any, index: any) => `index: ${index + 1}, Name: ${c.title}`
             )
             .join("\n");
 
@@ -666,7 +665,7 @@ const tools = [
           .then((r) => r?.["data"]);
 
         posts = posts.data.filter(
-          (p: { title: any }) => p.title === response?.["postTitle"],
+          (p: { title: any }) => p.title === response?.["postTitle"]
         );
 
         if (!response?.["postIndex"] && posts.length > 1) {
@@ -674,7 +673,7 @@ const tools = [
           const postsOptions = posts
             .map(
               (p: any, index: any) =>
-                `index: ${index + 1}, Name: ${p.title}, Contnet: ${p.content}`,
+                `index: ${index + 1}, Name: ${p.title}, Contnet: ${p.content}`
             )
             .join("\n");
 
@@ -685,7 +684,7 @@ const tools = [
 
         if (!posts?.[postIndex]?.id) return `No valid Post.`;
 
-        await axios({locale: "en", user: args?.["user"]}).delete(
+        await axios({ locale: "en", user: args?.["user"] }).delete(
           `api/posts/${posts?.[postIndex]?.id}`
         );
 
@@ -696,7 +695,7 @@ const tools = [
       } catch (error: any) {
         console.error("error in creating case: ", error?.["message"]);
         throw new Error(
-          error?.["message"] ?? `error in creating the study case`,
+          error?.["message"] ?? `error in creating the study case`
         );
       }
     },
@@ -705,7 +704,6 @@ const tools = [
 
 export const { openai, ...AI } = OpenAI({
   configure: {
-    // organization: "org-yourorg", // replace with your organization
     apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY!,
     dangerouslyAllowBrowser: true,
   },

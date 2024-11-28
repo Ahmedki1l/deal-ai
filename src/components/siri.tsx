@@ -54,6 +54,7 @@ export function Siri({ dic: { siri: c, ...dic }, ...props }: SiriProps) {
   const { user } = useSession();
   const [loading, setLoading] = useState(false);
   const [gotKey, setGotKey] = useState(false);
+  const [timer, setTimer] = useState(null);
 
   const { messages, updateMessages, clearMessages } =
     useConversation("siriMessages");
@@ -81,6 +82,27 @@ export function Siri({ dic: { siri: c, ...dic }, ...props }: SiriProps) {
     resolver: zodResolver(formSchema),
     defaultValues: { message: "" },
   });
+
+  const message = form.watch("message");
+
+  useEffect(() => {
+    // Clear any existing timer each time the user types or speaks
+    clearTimeout(timer);
+
+    // Check if there's a message and it's not just whitespace
+    if (message && message.trim()) {
+        const newTimer = setTimeout(() => {
+            form.handleSubmit(onSubmit)();
+        }, 3000); // Change the delay here if needed
+
+        // Save the new timer
+        setTimer(newTimer);
+    }
+
+    // Cleanup function to clear the timer when the effect re-runs or component unmounts
+    return () => clearTimeout(timer);
+}, [message, transcript]); // Include both message and transcript in the dependencies array
+
 
   useEffect(() => {
     if (transcript) {

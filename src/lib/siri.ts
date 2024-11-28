@@ -1,4 +1,4 @@
-import { platformsArr } from "@/db/enums";
+import { platformsArr, propertyTypesArr } from "@/db/enums";
 import ar from "@/dictionaries/ar";
 import en from "@/dictionaries/en";
 import axios from "@/lib/axios";
@@ -79,7 +79,7 @@ const tools = [
 
         await axios({ locale: args?.["locale"], user: args?.["user"] }).post(
           `/api/projects`,
-          { ...response }
+          { ...response },
         );
 
         // Refresh the page
@@ -126,7 +126,7 @@ const tools = [
 
         // Filter projects to only include those that match the user ID
         projects = projects.filter(
-          (project: { userId: any }) => project.userId === args.user.id
+          (project: { userId: any }) => project.userId === args.user.id,
         );
 
         console.log("Projects: ", projects);
@@ -141,7 +141,7 @@ const tools = [
           const projectOptions = projects
             .map(
               (project: any, index: any) =>
-                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`
+                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`,
             )
             .join("\n");
 
@@ -167,6 +167,295 @@ const tools = [
       }
     },
   },
+  {
+    name: "addPropertyTypes",
+    description:
+      "Adds some properties for a project on the server with specified parameters.",
+    parameters: {
+      type: "object",
+      properties: {
+        projectName: {
+          type: "string",
+          description: "The name of the project to which the property belongs.",
+        },
+        type: {
+          type: "string",
+          enum: propertyTypesArr,
+          description: "The property type of the properties being added.",
+        },
+        title: {
+          type: "string",
+          description: "The title of the property being added.",
+        },
+        units: {
+          type: "integer",
+          description: "The number of units for this specific property type.",
+        },
+        space: {
+          type: "integer",
+          description: "The area of the property in square meters.",
+        },
+        finishing: {
+          type: "string",
+          description: "The finishing standard of the property.",
+        },
+        floors: {
+          type: "string",
+          description: "The floors available for this property.",
+        },
+        rooms: {
+          type: "integer",
+          description: "The number of rooms in the property.",
+        },
+        bathrooms: {
+          type: "integer",
+          description: "The number of bathrooms in the property.",
+        },
+        price: {
+          type: "integer",
+          description: "The price of the property.",
+        },
+        livingrooms: {
+          type: "integer",
+          description: "The number of living rooms in the property.",
+        },
+        garden: {
+          type: "integer",
+          description:
+            "Whether the property has a garden (1 for yes, 0 for no).",
+        },
+        pool: {
+          type: "integer",
+          description: "Whether the property has a pool (1 for yes, 0 for no).",
+        },
+        view: {
+          type: "string",
+          description: "The view from the property.",
+        },
+        projectIndex: {
+          type: "integer",
+          description:
+            "The index of the project if multiple projects share the same name.",
+        },
+      },
+      required: [
+        "projectName",
+        "title",
+        "type",
+        "units",
+        "space",
+        "finishing",
+        "floors",
+        "rooms",
+        "bathrooms",
+        "price",
+        "livingrooms",
+        "garden",
+        "pool",
+        "view",
+      ],
+      additionalProperties: false,
+    },
+    trigger: async (data: { args?: any; response?: any } | void) => {
+      try {
+        if (!data) throw new Error("No Passed Data");
+        const { args, response } = data;
+
+        // Fetch projects matching the given name
+        let projects = await axios({
+          locale: "en",
+          user: args?.["user"],
+        })
+          .get(`/api/projects?title=${response?.["projectName"]}`)
+          .then((r) => r?.["data"]);
+
+        // Filter projects by the current user's ID
+        projects = projects.filter(
+          (project: { userId: any }) => project.userId === args.user.id,
+        );
+
+        if (!projects || projects?.length === 0)
+          return `No projects found with the name '${response?.["projectName"]}'.`;
+
+        if (projects.length > 1 && !response?.["projectIndex"]) {
+          // Ask user to specify a project if multiple projects are found
+          const projectOptions = projects
+            .map(
+              (project: any, index: any) =>
+                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`,
+            )
+            .join("\n");
+
+          return `Multiple projects found with the name '${response?.["projectName"]}'. Please specify the project index:\n${projectOptions}`;
+        }
+
+        const projectIndex =
+          projects.length === 1 ? 0 : response?.["projectIndex"] - 1;
+
+        if (!projects?.[projectIndex]?.["id"])
+          return `Invalid project selected.`;
+
+        const projectId = projects[projectIndex].id;
+
+        // Prepare property data to send to the backend
+        const properties = [
+          {
+            type: response?.["type"],
+            title: response?.["title"],
+            units: response?.["units"]?.toString(), // Convert integer to string
+            space: response?.["space"]?.toString(), // Convert integer to string
+            finishing: response?.["finishing"],
+            floors: response?.["floors"],
+            rooms: response?.["rooms"]?.toString(), // Convert integer to string
+            bathrooms: response?.["bathrooms"]?.toString(), // Convert integer to string
+            price: response?.["price"]?.toString(), // Convert integer to string
+            livingrooms: response?.["livingrooms"]?.toString(), // Convert integer to string
+            garden: response?.["garden"]?.toString(), // Convert integer to string
+            pool: response?.["pool"]?.toString(), // Convert integer to string
+            view: response?.["view"],
+            projectId, // Ensure this is valid
+            deletedAt: null, // Defaulting to `null` as per Prisma schema
+          },
+        ];
+        // Send property data to the backend
+        await axios({
+          locale: "en",
+          user: args?.["user"],
+        }).post(`/api/properties`, {
+          properties: properties,
+        });
+
+        return `Property '${response?.["title"]}' added successfully to project '${projects[projectIndex].title}'.`;
+      } catch (error: any) {
+        console.error("Error adding property: ", error.message);
+        throw new Error(
+          error.message ?? "Error occurred while adding the property.",
+        );
+      }
+    },
+  },
+  {
+    name: "deleteProperty",
+    description:
+      "Deletes a property from a project on the server with specified parameters.",
+    parameters: {
+      type: "object",
+      properties: {
+        projectName: {
+          type: "string",
+          description: "The name of the project to which the property belongs.",
+        },
+        propertyTitle: {
+          type: "string",
+          description: "The title of the property to be deleted.",
+        },
+        projectIndex: {
+          type: "integer",
+          description:
+            "The index of the project if multiple projects share the same name.",
+        },
+        propertyIndex: {
+          type: "integer",
+          description:
+            "The index of the property if multiple properties share the same title.",
+        },
+      },
+      required: ["projectName", "propertyTitle"],
+      additionalProperties: false,
+    },
+    trigger: async (data: { args?: any; response?: any } | void) => {
+      try {
+        if (!data) throw new Error("No Passed Data");
+        const { args, response } = data;
+  
+        // Step 1: Fetch projects matching the given name
+        let projects = await axios({
+          locale: "en",
+          user: args?.["user"],
+        })
+          .get(`/api/projects?title=${response?.["projectName"]}`)
+          .then((r) => r?.["data"]);
+  
+        // Step 2: Filter projects by the current user's ID
+        projects = projects.filter(
+          (project: { userId: any }) => project.userId === args.user.id
+        );
+  
+        if (!projects || projects.length === 0)
+          return `No projects found with the name '${response?.["projectName"]}'.`;
+  
+        if (projects.length > 1 && !response?.["projectIndex"]) {
+          // Ask user to specify a project if multiple projects are found
+          const projectOptions = projects
+            .map(
+              (project: any, index: any) =>
+                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`,
+            )
+            .join("\n");
+
+          return `Multiple projects found with the name '${response?.["projectName"]}'. Please specify the project index:\n${projectOptions}`;
+        }
+  
+        const projectIndex =
+          projects.length === 1 ? 0 : response?.["projectIndex"] - 1;
+  
+        if (!projects?.[projectIndex]?.["id"])
+          return `Invalid project selected.`;
+  
+        const projectId = projects[projectIndex].id;
+  
+        // Step 3: Fetch properties for the selected project
+        let properties = await axios({
+          locale: "en",
+          user: args?.["user"],
+        })
+          .get(`/api/properties`)
+          .then((r) =>
+            r?.["data"]?.data?.filter(
+              (property: any) =>
+                property.projectId === projectId &&
+                property.title === response?.["propertyTitle"]
+            )
+          );
+  
+        if (!properties || properties.length === 0)
+          return `No properties found with the title '${response?.["propertyTitle"]}' in project '${projects[projectIndex].title}'.`;
+  
+        if (properties.length > 1 && !response?.["propertyIndex"]) {
+          // Ask user to specify a property if multiple properties are found
+          const propertyOptions = properties
+            .map(
+              (property: any, index: any) =>
+                `index: ${index + 1}, Title: ${property.title}, Type: ${property.type}`
+            )
+            .join("\n");
+  
+          return `Multiple properties found with the title '${response?.["propertyTitle"]}'. Please specify the property index:\n${propertyOptions}`;
+        }
+  
+        const propertyIndex =
+          properties.length === 1 ? 0 : response?.["propertyIndex"] - 1;
+  
+        if (!properties?.[propertyIndex]?.["id"])
+          return `Invalid property selected.`;
+  
+        const propertyId = properties[propertyIndex].id;
+  
+        // Step 4: Delete the selected property
+        await axios({
+          locale: "en",
+          user: args?.["user"],
+        }).delete(`/api/properties/${propertyId}`);
+  
+        return `Property '${properties[propertyIndex].title}' deleted successfully from project '${projects[projectIndex].title}'.`;
+      } catch (error: any) {
+        console.error("Error deleting property: ", error.message);
+        throw new Error(
+          error.message ?? "Error occurred while deleting the property."
+        );
+      }
+    },
+  },  
   {
     name: "createStudyCase",
     description:
@@ -208,7 +497,7 @@ const tools = [
 
         // Filter projects to only include those that match the user ID
         projects = projects.filter(
-          (project: { userId: any }) => project.userId === args.user.id
+          (project: { userId: any }) => project.userId === args.user.id,
         );
 
         console.log(projects);
@@ -221,7 +510,7 @@ const tools = [
           const projectOptions = projects
             .map(
               (project: any, index: any) =>
-                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`
+                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`,
             )
             .join("\n");
 
@@ -243,7 +532,7 @@ const tools = [
           {
             title: response?.["title"],
             projectId: projects?.[projectIndex]?.["id"],
-          }
+          },
         );
 
         // Refresh the page
@@ -253,7 +542,7 @@ const tools = [
       } catch (error: any) {
         console.error("error in creating case: ", error?.["message"]);
         throw new Error(
-          error?.["message"] ?? `error in creating the study case`
+          error?.["message"] ?? `error in creating the study case`,
         );
       }
     },
@@ -304,7 +593,7 @@ const tools = [
 
         // Filter projects to only include those that match the user ID
         projects = projects.filter(
-          (project: { userId: any }) => project.userId === args.user.id
+          (project: { userId: any }) => project.userId === args.user.id,
         );
 
         console.log(projects);
@@ -317,7 +606,7 @@ const tools = [
           const projectOptions = projects
             .map(
               (project: any, index: any) =>
-                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`
+                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`,
             )
             .join("\n");
 
@@ -344,7 +633,7 @@ const tools = [
         caseStudies = caseStudies.data.filter(
           (c: any) =>
             c.projectId === projects?.[projectIndex]?.["id"] &&
-            c.title === response?.["title"]
+            c.title === response?.["title"],
         );
 
         console.log("Case studies after filter: ", caseStudies);
@@ -353,7 +642,7 @@ const tools = [
           // Return list of case studites with more details to help user select
           const caseStudiesOptions = caseStudies
             .map(
-              (c: any, index: any) => `index: ${index + 1}, Name: ${c.title}`
+              (c: any, index: any) => `index: ${index + 1}, Name: ${c.title}`,
             )
             .join("\n");
 
@@ -366,7 +655,7 @@ const tools = [
         if (!caseStudies?.[caseStudyIndex]?.id) return `No valid case study.`;
 
         await axios({ locale: "en", user: args?.["user"] }).delete(
-          `/api/study-cases/${caseStudies?.[caseStudyIndex]?.id}`
+          `/api/study-cases/${caseStudies?.[caseStudyIndex]?.id}`,
         );
 
         // Refresh the page
@@ -376,7 +665,7 @@ const tools = [
       } catch (error: any) {
         console.error("error in creating case: ", error?.["message"]);
         throw new Error(
-          error?.["message"] ?? `error in creating the study case`
+          error?.["message"] ?? `error in creating the study case`,
         );
       }
     },
@@ -448,7 +737,7 @@ const tools = [
 
         // Filter projects to only include those that match the user ID
         projects = projects.filter(
-          (project: { userId: any }) => project.userId === args.user.id
+          (project: { userId: any }) => project.userId === args.user.id,
         );
 
         console.log(projects);
@@ -461,7 +750,7 @@ const tools = [
           const projectOptions = projects
             .map(
               (project: any, index: any) =>
-                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`
+                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`,
             )
             .join("\n");
 
@@ -488,7 +777,7 @@ const tools = [
         caseStudies = caseStudies.data.filter(
           (c: any) =>
             c.projectId === projects?.[projectIndex]?.["id"] &&
-            c.title === response?.["caseStudyTitle"]
+            c.title === response?.["caseStudyTitle"],
         );
 
         console.log("Case studies after filter: ", caseStudies);
@@ -497,7 +786,7 @@ const tools = [
           // Return list of case studites with more details to help user select
           const caseStudiesOptions = caseStudies
             .map(
-              (c: any, index: any) => `index: ${index + 1}, Name: ${c.title}`
+              (c: any, index: any) => `index: ${index + 1}, Name: ${c.title}`,
             )
             .join("\n");
 
@@ -532,7 +821,7 @@ const tools = [
       } catch (error: any) {
         console.error("error in creating case: ", error?.["message"]);
         throw new Error(
-          error?.["message"] ?? `error in creating the study case`
+          error?.["message"] ?? `error in creating the study case`,
         );
       }
     },
@@ -592,7 +881,7 @@ const tools = [
 
         // Filter projects to only include those that match the user ID
         projects = projects.filter(
-          (project: { userId: any }) => project.userId === args.user.id
+          (project: { userId: any }) => project.userId === args.user.id,
         );
 
         console.log(projects);
@@ -605,7 +894,7 @@ const tools = [
           const projectOptions = projects
             .map(
               (project: any, index: any) =>
-                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`
+                `index: ${index + 1}, Name: ${project.title}, Created on: ${project.createdAt}`,
             )
             .join("\n");
 
@@ -632,7 +921,7 @@ const tools = [
         caseStudies = caseStudies.data.filter(
           (c: any) =>
             c.projectId === projects?.[projectIndex]?.["id"] &&
-            c.title === response?.["caseStudyTitle"]
+            c.title === response?.["caseStudyTitle"],
         );
 
         console.log("Case studies after filter: ", caseStudies);
@@ -641,7 +930,7 @@ const tools = [
           // Return list of case studites with more details to help user select
           const caseStudiesOptions = caseStudies
             .map(
-              (c: any, index: any) => `index: ${index + 1}, Name: ${c.title}`
+              (c: any, index: any) => `index: ${index + 1}, Name: ${c.title}`,
             )
             .join("\n");
 
@@ -665,7 +954,7 @@ const tools = [
           .then((r) => r?.["data"]);
 
         posts = posts.data.filter(
-          (p: { title: any }) => p.title === response?.["postTitle"]
+          (p: { title: any }) => p.title === response?.["postTitle"],
         );
 
         if (!response?.["postIndex"] && posts.length > 1) {
@@ -673,7 +962,7 @@ const tools = [
           const postsOptions = posts
             .map(
               (p: any, index: any) =>
-                `index: ${index + 1}, Name: ${p.title}, Contnet: ${p.content}`
+                `index: ${index + 1}, Name: ${p.title}, Contnet: ${p.content}`,
             )
             .join("\n");
 
@@ -685,7 +974,7 @@ const tools = [
         if (!posts?.[postIndex]?.id) return `No valid Post.`;
 
         await axios({ locale: "en", user: args?.["user"] }).delete(
-          `api/posts/${posts?.[postIndex]?.id}`
+          `api/posts/${posts?.[postIndex]?.id}`,
         );
 
         // Refresh the page
@@ -695,7 +984,7 @@ const tools = [
       } catch (error: any) {
         console.error("error in creating case: ", error?.["message"]);
         throw new Error(
-          error?.["message"] ?? `error in creating the study case`
+          error?.["message"] ?? `error in creating the study case`,
         );
       }
     },

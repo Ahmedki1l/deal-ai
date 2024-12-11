@@ -54,7 +54,9 @@ export function Siri({ dic: { siri: c, ...dic }, ...props }: SiriProps) {
   const { user } = useSession();
   const [loading, setLoading] = useState(false);
   const [gotKey, setGotKey] = useState(false);
-  const [timer, setTimer] = useState(null);
+  const [timer, setTimer] = useState(setTimeout(() => {
+    form.handleSubmit(onSubmit)();
+  }, 3000));
 
   const { messages, updateMessages, clearMessages } =
     useConversation("siriMessages");
@@ -91,17 +93,17 @@ export function Siri({ dic: { siri: c, ...dic }, ...props }: SiriProps) {
 
     // Check if there's a message and it's not just whitespace
     if (message && message.trim()) {
-        const newTimer = setTimeout(() => {
-            form.handleSubmit(onSubmit)();
-        }, 3000); // Change the delay here if needed
+      const newTimer = setTimeout(() => {
+        form.handleSubmit(onSubmit)();
+      }, 3000); // Change the delay here if needed
 
-        // Save the new timer
-        setTimer(newTimer);
+      // Save the new timer
+      setTimer(newTimer);
     }
 
     // Cleanup function to clear the timer when the effect re-runs or component unmounts
     return () => clearTimeout(timer);
-}, [message, transcript]); // Include both message and transcript in the dependencies array
+  }, [message, transcript]); // Include both message and transcript in the dependencies array
 
 
   useEffect(() => {

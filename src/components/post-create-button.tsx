@@ -47,11 +47,63 @@ export function PostCreateButton({
 
   async function onSubmit(data: z.infer<typeof postCreateSchema>) {
     await clientHttpRequest(async () => {
-      await axios({ locale, user }).post(`/api/posts`, {
+      const response = await axios({ locale, user }).post(`/api/posts/generate-content-ideas`, {
         ...data,
         project,
         caseStudy,
       });
+
+      if (response.data.success) {
+        const contentIdeas = response.data.data;
+
+        // 2. Prepare and Execute Concurrent POST Requests for Posts
+        const postPromises: any[] = [];
+
+        for (const platform in contentIdeas) {
+          if (contentIdeas.hasOwnProperty(platform)) {
+            const ideas = contentIdeas[platform];
+
+            ideas.forEach((idea: any) => {
+              const postData = {
+                ...data,
+                project,
+                caseStudy,
+                idea,
+                platform,
+              };
+
+              postPromises.push(
+                axios({ locale, user }).post(`/api/posts`, postData)
+              );
+            });
+          }
+        }
+
+        const responses = await Promise.all(postPromises);
+
+        // Handle individual post creation responses
+        responses.forEach((postResponse, index) => {
+          if (postResponse.data.success) {
+            console.log(`Post ${index + 1} created successfully:`, postResponse.data.data);
+          } else {
+            console.error(`Failed to create Post ${index + 1}:`, postResponse.data.error);
+          }
+        });
+
+        contentIdeas.map( async (idea: any) => {
+          await axios({ locale, user }).post(`/api/posts`, {
+            ...data,
+            project,
+            caseStudy,
+            idea,
+          });
+        })
+        console.log('Content Ideas Generated:', response.data.data);
+      } else {
+        console.error('Failed to generate content ideas:', response.data.error);
+      }
+
+      
 
       toast.success(c?.["created successfully."]);
       setOpen(false);

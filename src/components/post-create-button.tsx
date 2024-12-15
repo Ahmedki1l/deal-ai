@@ -50,94 +50,138 @@ export function PostCreateButton({
     await clientHttpRequest(async () => {
       try {
         if (!locale || !user) {
-          throw new Error('Locale or user information is missing.');
+          throw new Error("Locale or user information is missing.");
         }
-  
+
         const generateResponse = await axios({ locale, user }).post(
           `/api/ideas`,
           {
             ...data,
             project,
-            caseStudy
-          }
+            caseStudy,
+          },
         );
-  
+
         if (generateResponse.data.success) {
           const contentIdeas = generateResponse.data.data;
-  
-          if (!contentIdeas || typeof contentIdeas !== 'object') {
-            throw new Error('Invalid content ideas format received from the server.');
+
+          // Calculate the starting date for each account to ensure unique dates
+          let currentDate = new Date();
+
+          if (!contentIdeas || typeof contentIdeas !== "object") {
+            throw new Error(
+              "Invalid content ideas format received from the server.",
+            );
           }
-  
+
           const postPromises: Promise<any>[] = [];
-  
+
           for (const platform in contentIdeas) {
             if (contentIdeas.hasOwnProperty(platform)) {
               const ideas = contentIdeas[platform];
-  
+
+              let noOfPostsPerWeek =
+                data.campaignType === "BRANDING_AWARENESS" ||
+                data.campaignType === "ENGAGEMENT"
+                  ? 5
+                  : 3;
+
+              const numOfIdeas = Array.isArray(ideas) ? ideas.length : 0;
+
+              const daysToPost =
+                noOfPostsPerWeek === 3 ? [0, 2, 4] : [0, 1, 2, 3, 4];
+
               if (Array.isArray(ideas)) {
                 ideas.forEach((idea: any) => {
+                  currentDate.setDate(currentDate.getDate() + 1);
+
+                  // Adjust currentDate to the next valid posting day
+                  while (!daysToPost.includes(currentDate.getDay()))
+                    currentDate.setDate(currentDate.getDate() + 1);
+
+                  const randomHour = Math.floor(Math.random() * (20 - 11) + 11);
+                  currentDate.setHours(randomHour, 0, 0);
+
                   const postData = {
                     ...data,
                     project,
                     caseStudy,
                     idea,
                     platform,
+                    date: currentDate,
                   };
-  
+
                   postPromises.push(
-                    axios({ locale, user }).post(`/api/posts`, postData)
+                    axios({ locale, user }).post(`/api/posts`, postData),
                   );
                 });
               } else {
-                console.warn(`Ideas for platform "${platform}" are not in an array format.`);
+                console.warn(
+                  `Ideas for platform "${platform}" are not in an array format.`,
+                );
               }
             }
           }
-  
+
           if (postPromises.length === 0) {
-            console.warn('No post creation requests to process.');
+            console.warn("No post creation requests to process.");
           }
-  
+
           const postResponses = await Promise.allSettled(postPromises);
 
           postResponses.forEach((result, index) => {
-            if (result.status === 'fulfilled') {
+            if (result.status === "fulfilled") {
               const postResponse = result.value;
               if (postResponse.data.success) {
-                console.log(`Post ${index + 1} created successfully:`, postResponse.data.data);
+                console.log(
+                  `Post ${index + 1} created successfully:`,
+                  postResponse.data.data,
+                );
               } else {
-                console.error(`Failed to create Post ${index + 1}:`, postResponse.data.error);
+                console.error(
+                  `Failed to create Post ${index + 1}:`,
+                  postResponse.data.error,
+                );
               }
             } else {
               console.error(`Error creating Post ${index + 1}:`, result.reason);
             }
           });
-  
-          console.log('Content Ideas Generated:', contentIdeas);
+
+          console.log("Content Ideas Generated:", contentIdeas);
 
           toast.success("Posts created successfully.");
           setOpen(false);
           form.reset();
           router.refresh();
         } else {
-          console.error('Failed to generate content ideas:', generateResponse.data.error);
-          toast.error(generateResponse.data.error || "Failed to generate content ideas.");
+          console.error(
+            "Failed to generate content ideas:",
+            generateResponse.data.error,
+          );
+          toast.error(
+            generateResponse.data.error || "Failed to generate content ideas.",
+          );
         }
       } catch (error: any) {
         if (isAxiosError(error)) {
           if (error.response) {
-            console.error('Server Error:', error.response.data.error || error.message);
-            toast.error(error.response.data.error || "An error occurred on the server.");
+            console.error(
+              "Server Error:",
+              error.response.data.error || error.message,
+            );
+            toast.error(
+              error.response.data.error || "An error occurred on the server.",
+            );
           } else if (error.request) {
-            console.error('Network Error:', error.message);
+            console.error("Network Error:", error.message);
             toast.error("Network error. Please try again.");
           } else {
-            console.error('Error:', error.message);
+            console.error("Error:", error.message);
             toast.error(error.message || "An unexpected error occurred.");
           }
         } else {
-          console.error('Unexpected Error:', error.message);
+          console.error("Unexpected Error:", error.message);
           toast.error(error.message || "An unexpected error occurred.");
         }
       } finally {

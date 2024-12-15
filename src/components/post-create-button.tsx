@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useLocale } from "@/hooks/use-locale";
 import axios from "@/lib/axios";
+import { isAxiosError } from "axios";
 import { clientHttpRequest } from "@/lib/utils";
 import { Dictionary } from "@/types/locale";
 import { postCreateSchema } from "@/validations/posts";
@@ -47,70 +48,104 @@ export function PostCreateButton({
 
   async function onSubmit(data: z.infer<typeof postCreateSchema>) {
     await clientHttpRequest(async () => {
-      const response = await axios({ locale, user }).post(`/api/posts/generate-content-ideas`, {
-        ...data,
-        project,
-        caseStudy,
-      });
-
-      if (response.data.success) {
-        const contentIdeas = response.data.data;
-
-        // 2. Prepare and Execute Concurrent POST Requests for Posts
-        const postPromises: any[] = [];
-
-        for (const platform in contentIdeas) {
-          if (contentIdeas.hasOwnProperty(platform)) {
-            const ideas = contentIdeas[platform];
-
-            ideas.forEach((idea: any) => {
-              const postData = {
-                ...data,
-                project,
-                caseStudy,
-                idea,
-                platform,
-              };
-
-              postPromises.push(
-                axios({ locale, user }).post(`/api/posts`, postData)
-              );
-            });
-          }
+      try {
+        if (!locale || !user) {
+          throw new Error('Locale or user information is missing.');
         }
-
-        const responses = await Promise.all(postPromises);
-
-        // Handle individual post creation responses
-        responses.forEach((postResponse, index) => {
-          if (postResponse.data.success) {
-            console.log(`Post ${index + 1} created successfully:`, postResponse.data.data);
-          } else {
-            console.error(`Failed to create Post ${index + 1}:`, postResponse.data.error);
-          }
-        });
-
-        contentIdeas.map( async (idea: any) => {
-          await axios({ locale, user }).post(`/api/posts`, {
+  
+        const generateResponse = await axios({ locale, user }).post(
+          `/api/ideas`,
+          {
             ...data,
             project,
-            caseStudy,
-            idea,
+            caseStudy
+          }
+        );
+  
+        if (generateResponse.data.success) {
+          const contentIdeas = generateResponse.data.data;
+  
+          if (!contentIdeas || typeof contentIdeas !== 'object') {
+            throw new Error('Invalid content ideas format received from the server.');
+          }
+  
+          const postPromises: Promise<any>[] = [];
+  
+          for (const platform in contentIdeas) {
+            if (contentIdeas.hasOwnProperty(platform)) {
+              const ideas = contentIdeas[platform];
+  
+              if (Array.isArray(ideas)) {
+                ideas.forEach((idea: any) => {
+                  const postData = {
+                    ...data,
+                    project,
+                    caseStudy,
+                    idea,
+                    platform,
+                  };
+  
+                  postPromises.push(
+                    axios({ locale, user }).post(`/api/posts`, postData)
+                  );
+                });
+              } else {
+                console.warn(`Ideas for platform "${platform}" are not in an array format.`);
+              }
+            }
+          }
+  
+          if (postPromises.length === 0) {
+            console.warn('No post creation requests to process.');
+          }
+  
+          const postResponses = await Promise.allSettled(postPromises);
+
+          postResponses.forEach((result, index) => {
+            if (result.status === 'fulfilled') {
+              const postResponse = result.value;
+              if (postResponse.data.success) {
+                console.log(`Post ${index + 1} created successfully:`, postResponse.data.data);
+              } else {
+                console.error(`Failed to create Post ${index + 1}:`, postResponse.data.error);
+              }
+            } else {
+              console.error(`Error creating Post ${index + 1}:`, result.reason);
+            }
           });
-        })
-        console.log('Content Ideas Generated:', response.data.data);
-      } else {
-        console.error('Failed to generate content ideas:', response.data.error);
+  
+          console.log('Content Ideas Generated:', contentIdeas);
+
+          toast.success("Posts created successfully.");
+          setOpen(false);
+          form.reset();
+          router.refresh();
+        } else {
+          console.error('Failed to generate content ideas:', generateResponse.data.error);
+          toast.error(generateResponse.data.error || "Failed to generate content ideas.");
+        }
+      } catch (error: any) {
+        if (isAxiosError(error)) {
+          if (error.response) {
+            console.error('Server Error:', error.response.data.error || error.message);
+            toast.error(error.response.data.error || "An error occurred on the server.");
+          } else if (error.request) {
+            console.error('Network Error:', error.message);
+            toast.error("Network error. Please try again.");
+          } else {
+            console.error('Error:', error.message);
+            toast.error(error.message || "An unexpected error occurred.");
+          }
+        } else {
+          console.error('Unexpected Error:', error.message);
+          toast.error(error.message || "An unexpected error occurred.");
+        }
+      } finally {
+        setLoading(false);
       }
-
-      
-
-      toast.success(c?.["created successfully."]);
-      setOpen(false);
-      form.reset();
-      router.refresh();
     }, setLoading);
   }
+
   return (
     <DialogResponsive
       dic={dic}

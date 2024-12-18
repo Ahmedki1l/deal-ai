@@ -46,12 +46,33 @@ export function PostCreateButton({
     defaultValues: { caseStudyId: caseStudy?.["id"] },
   });
 
+  let firstSuccess = false; // Flag to track the first successful post
+
+  async function handleAxiosRequest(postData: any){
+    await axios({ locale, user }).post(`/api/posts`, postData);
+    if (!firstSuccess) {
+      firstSuccess = true;
+      // Stop loading and close the dialog
+      setLoading(false);
+      setOpen(false);
+      form.reset();
+      toast.success("Post created successfully.");
+      router.refresh();
+    } else {
+      // For subsequent posts, just refresh the UI
+      toast.success(`Another post created successfully.`);
+      router.refresh();
+    }
+  }
+
   async function onSubmit(data: z.infer<typeof postCreateSchema>) {
     await clientHttpRequest(async () => {
       try {
         if (!locale || !user) {
           throw new Error("Locale or user information is missing.");
         }
+
+        firstSuccess = false;
 
         const generateResponse = await axios({ locale, user }).post(
           `/api/ideas`,
@@ -112,7 +133,7 @@ export function PostCreateButton({
                   };
 
                   postPromises.push(
-                    axios({ locale, user }).post(`/api/posts`, postData),
+                    handleAxiosRequest(postData),
                   );
                 });
               } else {
@@ -127,24 +148,19 @@ export function PostCreateButton({
             console.warn("No post creation requests to process.");
           }
 
-          const postResponses = await Promise.allSettled(postPromises);
+          const postResponses = await Promise.all(postPromises);
 
           postResponses.forEach((result, index) => {
-            if (result.status === "fulfilled") {
-              const postResponse = result.value;
-              if (postResponse.data.success) {
-                console.log(
-                  `Post ${index + 1} created successfully:`,
-                  postResponse.data.data,
-                );
-              } else {
-                console.error(
-                  `Failed to create Post ${index + 1}:`,
-                  postResponse.data.error,
-                );
-              }
+            const postResponse = result;
+            console.log(postResponse);
+            if (postResponse.status === 201) {
+              console.log(
+                `Post ${index + 1} created successfully:`
+              );
             } else {
-              console.error(`Error creating Post ${index + 1}:`, result.reason);
+              console.error(
+                `Failed to create Post ${index + 1}:`
+              );
             }
           });
 

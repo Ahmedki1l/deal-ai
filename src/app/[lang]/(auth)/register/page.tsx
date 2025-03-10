@@ -22,7 +22,8 @@ export default async function Register({ params: { lang } }: RegisterProps) {
       <section className="container relative hidden h-full flex-col bg-[url('https://images.unsplash.com/photo-1649518325538-0e1a1e8c63db?q=80&w=1930&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover p-10 text-primary-foreground dark:border-r lg:flex">
         <div className="absolute inset-0 bg-primary/50" />
         <p className="z-20 flex items-center gap-2 text-lg font-medium">
-          <Icons.logo /> {dic?.["site"]?.["name"]}
+          <Icons.logo /> 
+          {/* {dic?.["site"]?.["name"]} */}
         </p>
 
         <div className="z-20 mt-auto">

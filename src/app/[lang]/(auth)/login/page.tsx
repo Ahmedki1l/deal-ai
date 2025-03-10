@@ -25,7 +25,7 @@ export default async function Login({ params: { lang } }: LoginProps) {
         <div className="absolute inset-0 bg-primary/50" />
         <p className="z-20 flex items-center gap-2 text-lg font-medium">
           <Icons.logo />
-          {dic?.["site"]?.["name"]}
+          {/* {dic?.["site"]?.["name"]} */}
         </p>
 
         <div className="z-20 mt-auto">

@@ -39,8 +39,8 @@ import {
   X,
   type LucideProps,
 } from "lucide-react";
-import icon from "../../public/icon.png";
-import logo from "../../public/logo.png";
+import icon from "../../public/images/Takamol_Logo.png";
+import logo from "../../public/images/Takaml.png";
 import { Image as CutomImage } from "./image";
 
 export const IconsVariants = cva("h-4 w-4 shrink-0");
